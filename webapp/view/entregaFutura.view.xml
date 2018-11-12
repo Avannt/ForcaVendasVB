@@ -1,7 +1,7 @@
-<mvc:View xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="testeui5.controller.Pedido" displayBlock="true">
-	<SplitContainer id="SplitContDemo" initialDetail="detail" initialMaster="master" mode="ShowHideMode">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="testeui5.controller.entregaFutura"	xmlns:html="http://www.w3.org/1999/xhtml">
+<SplitContainer id="SplitContDemo2" initialDetail="detail" initialMaster="master" mode="ShowHideMode">
 		<detailPages>
-			<Page id="detail" title="Pedidos" showNavButton="{device>/system/phone}" navButtonPress="onNavBack" class="sapUiStdPage">
+			<Page id="detail" title="Entrega futura" showNavButton="{device>/system/phone}" navButtonPress="onNavBack2" class="sapUiStdPage">
 				<content>
 					<ObjectHeader id="objectHeader" title="Nenhum cliente selecionado">
 						<statuses>
@@ -74,5 +74,4 @@
 				</content>
 			</Page>
 		</masterPages>
-	</SplitContainer>
-</mvc:View>
+	</SplitContainer></mvc:View>
