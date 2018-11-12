@@ -24,7 +24,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 22);
+					var open = indexedDB.open("VB_DataBase", 23);
 
 					// Create the Tables
 					open.onupgradeneeded = function(e) {
