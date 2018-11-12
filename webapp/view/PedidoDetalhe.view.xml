@@ -1,0 +1,288 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	displayBlock="true" controllerName="testeui5.controller.PedidoDetalhe">
+	<App>
+		<pages>
+			<Page title="Digitação do Pedido" class="sapUiResponsivePadding" showNavButton="true" navButtonPress="onNavBack">
+				<content>
+					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true">
+						<items>
+							<IconTabFilter id="tabClienteStep" text="Dados Cliente" enabled="true" icon="sap-icon://hint" key="tab1">
+								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+									<f:SimpleForm id="form0" minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="3" columnsL="2" columnsM="2">
+										<f:content>
+											<Label text="Cod Cli - Cod Repres"/>
+											<Input id="idCodCliente" value="" enabled="false"/>
+											<Label text="Nome"/>
+											<Input id="idNome" value="" enabled="false"/>
+											<Label text="CNPJ"/>
+											<Input id="idCNPJ" value="" enabled="false"/>
+											<Label text="Endereço"/>
+											<Input id="idEndereco" value="" enabled="false"/>
+											<Label text="Cidade"/>
+											<Input id="idCidade" value="" enabled="false"/>
+											<!--<Label text="E-mail envio XML"/>-->
+											<!--<Input id="idEmail" value="" enabled="false"/>-->
+											<Label text="Telefone"/>
+											<Input id="idFone" value="" enabled="false"/>
+										</f:content>
+									</f:SimpleForm>
+								</ScrollContainer>
+							</IconTabFilter>
+							<IconTabFilter id="tabPedidoWebStep" text="Pedido Web" enabled="true" icon="sap-icon://notes" key="tab2">
+								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
+										columnsM="2" class="" layout="ResponsiveGridLayout" title="">
+										<f:content>
+											<Label text="Nº Pedido"/>
+											<Input id="idNumeroPedido" value="{modelAux>/NrPedCli}" enabled="false"/>
+											<Label text="Situação"/>
+											<Input id="idSituacao" value="{modelDadosPedido>/SituacaoPedido}" enabled="false"/>
+											<Label text="Data pedido *"/>
+											<Input id="idDataPedido" value="{modelDadosPedido>/DataPedido}" enabled="false" change="onChangeDataPedido"/>
+											<Label text="Tipo pedido *"/>
+											<Select id="idTipoPedido" forceSelection="false" items="{ path: 'tiposPedidos>/' }" showSecondaryValues="true" change="onChangeTipoPedido">
+												<core:Item key="{tiposPedidos>idTipoPedido}" text="{tiposPedidos>idTipoPedido} - {tiposPedidos>descricao}"/>
+											</Select>
+											<Label text="Tipo negociação *"/>
+											<Select id="idTipoNegociacao" forceSelection="false" items="{ path: 'tipoNegociacao>/' }" showSecondaryValues="true"
+												change="onChangeTipoNegociacao">
+												<core:Item key="{tipoNegociacao>idNegociacao}" text="{tipoNegociacao>idNegociacao} - {tipoNegociacao>descNegociacao}"/>
+											</Select>
+											<Label text="Tabela preço *"/>
+											<Select id="idTabelaPreco" showSecondaryValues="false" forceSelection="false" items="{ path: 'tabPreco>/' }" change="onChangeTabelaPreco">
+												<core:Item key="{tabPreco>pltyp}" text="{tabPreco>pltyp} - {tabPreco>ptext}"/>
+											</Select>
+											<Label text="Tipo transporte *"/>
+											<Select id="idTipoTransporte" forceSelection="false" items="{ path: 'tipoTransporte>/' }" showSecondaryValues="true"
+												change="onChangeTipoTransporte">
+												<core:Item key="{tipoTransporte>idTransporte}" text="{tipoTransporte>idTransporte}"/>
+											</Select>
+										<!--	<Label text="Data entrega *"/>-->
+										<!--	<DatePicker id="idDataEntrega" class="readOnly" value="{modelDadosPedido>/DataEntrega}" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy"-->
+										<!--		change="onChangeDataEntrega" busyIndicatorDelay="0"/>-->
+										<!--	<Label text="Local entrega *"/>-->
+										<!--	<Input id="idLocalEntrega" value="{modelDadosPedido>/LocalEntrega}" enabled="false"/>-->
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
+										columnsM="2" class="" layout="ResponsiveGridLayout" title="Parcelamento">
+										<f:content>
+											<Label text="Dias da primeira parcela *" />
+											<Input id="idPrimeiraParcela" type="Number" value="{modelDadosPedido>/DiasPrimeiraParcela}" />
+											<Label text="Quantidade de parcelas *" />
+											<Input id="idQuantParcelas" type="Number" value="{modelDadosPedido>/QuantParcelas}" />
+											<Label text="Dias de intervalo entre as parcelas *" />
+											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}" />
+											<Label text="Existe entrada"/>
+											<CheckBox id="idCheckEntrada" selected="{modelDadosPedido>/ExisteEntradaPedido}" select="onExisteEntrada" />
+											<Label text="Valor (R$)"/>
+											<Input id="idValorEntrada" type="Text" value="{modelDadosPedido>/ValorEntradaPedido}" liveChange="onBloqueiaPercEntrada" visible="false" />
+											<Label text="Perc. (%)"/>
+											<Input id="idPercEntrada" type="Text" value="{modelDadosPedido>/PercEntradaPedido}"  liveChange="onBloqueiaValorEntrada"  visible="false" />
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
+										columnsM="2" layout="ResponsiveGridLayout" title="Informações Adicionais">
+										<f:content>
+											<Label text="Observações para auditoria" />
+											<TextArea id="idObservacoesAuditoria" value="{modelDadosPedido>/ObservacaoAuditoriaPedido}" maxLength="100" change="onChangeAuditoriaObservacoes"/>
+											<Label text="Observações para equipe de logística" />
+											<TextArea id="idObservacoes" value="{modelDadosPedido>/ObservacaoPedido}" maxLength="100" change="onChangeObservacoes"/>
+										</f:content>
+									</f:SimpleForm>
+									<Toolbar>
+										<ToolbarSpacer/>
+										<Button id="idLiberarItens" text="Salvar" type="Accept" press="onLiberarItensPedido"/>
+										<Button text="Cancelar" press="onCancelarPedido"/>
+									</Toolbar>
+								</ScrollContainer>
+							</IconTabFilter>
+							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" enabled="false" icon="sap-icon://add" key="tab3">
+								<ScrollContainer height="100%" width="100%" horizontal="true" vertical="true">
+									<Toolbar id="lineItemsToolbar">
+										<!--<Title id="lineItemsHeader"/>-->
+										<ToolbarSpacer/>
+										<Button id="idDiluirItens" icon="sap-icon://collections-insight" press="onCalculaDiluicaoItem" text="Diluir" type="Accept" enabled="false"/>
+										<Button id="idInserirItemDiluicao" icon="sap-icon://waiver" press="onNovoItemDiluicao" text="Item Diluição" type="Reject"/>
+										<Button id="idInserirItem" icon="sap-icon://add" press="onNovoItem" text="Item Pedido" type="Emphasized"/>
+									</Toolbar>
+									<Table id="table_pedidos" width="100%" items="{ path:'ItensPedidoGrid>/', sorter: { path: 'index', ascending: true }}"
+										updateFinished="onListUpdateFinished" mode="Delete" delete="onDeletarItemPedido" class="margins" itemPress="onEditarItemPress"
+										noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;"
+										busyIndicatorDelay="0" fixedLayout="false">
+										<columns>
+											<Column minScreenWidth="600px" hAlign="Left" vAlign="Left" visible="true" width="20px">
+												<Text text="Id"/>
+											</Column>
+											<Column minScreenWidth="320px" hAlign="Left" vAlign="Left" width="90px">
+												<Text text="Item"/>
+											</Column>
+											<Column minScreenWidth="870px" demandPopin="false" hAlign="Left" vAlign="Left" width="auto">
+												<Text text="Descrição"/>
+											</Column>
+											<!--<Column minScreenWidth="420px" demandPopin="false" hAlign="Left" vAlign="Left" width="80px">-->
+											<!--	<Text text="Preço"/>-->
+											<!--</Column>-->
+											<Column minScreenWidth="320px" hAlign="Left" vAlign="Left" width="50px">
+												<Text text="Qnt"/>
+											</Column>
+											<Column minScreenWidth="360px" demandPopin="true" hAlign="Left" vAlign="Left" width="70px">
+												<Text text="Desc"/>
+											</Column>
+											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left" vAlign="Left">
+												<Text text="Valor UN"/>
+											</Column>
+											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left" vAlign="Left">
+												<Text text="Valor Total"/>
+											</Column>
+											<!--<Column minScreenWidth="500px" demandPopin="false" hAlign="Left" vAlign="Left" width="110px">-->
+											<!--	<Text text="Comissão"/>-->
+											<!--</Column>-->
+											<!--<Column minScreenWidth="550px" demandPopin="false" hAlign="Left" vAlign="Left" width="110px">-->
+											<!--	<Text text="Verba"/>-->
+											<!--</Column>-->
+											<!--<Column minScreenWidth="470px" demandPopin="false" width="60px" hAlign="Center">-->
+											<!--	<Text text="Rent."/>-->
+											<!--</Column>-->
+										</columns>
+										<items class="margins">
+											<ColumnListItem type="Active">
+												<customData>
+													<core:CustomData key="mydata" value="{ItensPedidoGrid>tipoItem}" writeToDom="true"/>
+												</customData>
+												<cells>
+													<Text text="{path : 'ItensPedidoGrid>index', type: 'sap.ui.model.type.Integer'}" visible="true"/>
+													<Text text="{ItensPedidoGrid>matnr}" />
+													<Text text="{path: 'ItensPedidoGrid>maktx'}" />
+													<!--<Text text="R$: {ItensPedidoGrid>zzVprod}" />-->
+													<Text text="{ItensPedidoGrid>zzQnt}" />
+													<!--<Text text="{ItensPedidoGrid>zzDesitem} %"/>-->
+													<Text text="{ItensPedidoGrid>zzPercDescTotal} %"/>
+													<Text text="R$: {ItensPedidoGrid>zzVprodDesc}" />
+													<Text text="R$: {ItensPedidoGrid>zzVprodDescTotal}" />
+													<!--<Text text="{ItensPedidoGrid>zzPercom} %" />-->
+													<!--<Text text="{ItensPedidoGrid>zzPervm} %" />-->
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</ScrollContainer>
+							</IconTabFilter>
+							<!--<IconTabFilter id="tabItensDiluicaoPedidoStep" text="Itens Diluição" enabled="false" icon="sap-icon://lead" key="tab4">-->
+							<!--	<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">-->
+							<!--		<Toolbar>-->
+							<!--			<Title/>-->
+							<!--			<ToolbarSpacer/>-->
+							<!--			<Button icon="sap-icon://add" press="onNovoItemDiluicao" type="Emphasized"/>-->
+							<!--		</Toolbar>-->
+							<!--		<Table id="table_diluicao" width="100%" items="{ path:'ItensDiluicaoGrid>/', sorter: { path: 'index', ascending: true }}" updateFinished="onListUpdateFinished" mode="Delete" delete="onDeletarItemPedido" class="margins" itemPress="onEditarItemPress" noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;" busyIndicatorDelay="0" fixedLayout="false">-->
+							<!--			<columns>-->
+							<!--				<Column minScreenWidth="600px" hAlign="Left" visible="true" width="20px">-->
+							<!--					<Text text="Id"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="320px" hAlign="Left" width="80px">-->
+							<!--					<Text text="Item"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="870px" demandPopin="false" hAlign="Left" width="auto">-->
+							<!--					<Text text="Descrição"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="320px" demandPopin="true" hAlign="Left" width="80px">-->
+							<!--					<Text text="Preço"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="320px" hAlign="Left" width="50px">-->
+							<!--					<Text text="Qnt"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="360px" demandPopin="true" hAlign="Left" width="50px">-->
+							<!--					<Text text="Desc"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">-->
+							<!--					<Text text="Preço Desc"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="500px" demandPopin="false" hAlign="Left" width="110px">-->
+							<!--					<Text text="Comissão"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="550px" demandPopin="false" hAlign="Left" width="110px">-->
+							<!--					<Text text="Verba"/>-->
+							<!--				</Column>-->
+							<!--			</columns>-->
+							<!--			<items class="margins">-->
+							<!--				<ColumnListItem type="Active">-->
+							<!--					<cells>-->
+							<!--						<Text text="{path : 'ItensDiluicaoPedidoGrid>index', type: 'sap.ui.model.type.Integer'}" hAlign="Left" visible="true"/>-->
+							<!--						<Text text="{ItensDiluicaoPedidoGrid>matnr}" hAlign="Left"/>-->
+							<!--						<Text text="{path: 'ItensDiluicaoPedidoGrid>maktx'}" hAlign="Left"/>-->
+							<!--						<Text text="R$: {ItensDiluicaoPedidoGrid>zzVprod}" hAlign="Right"/>-->
+							<!--						<Text text="{ItensDiluicaoPedidoGrid>zzQnt}" hAlign="Right"/>-->
+							<!--						<Text text="{ItensDiluicaoPedidoGrid>zzDesitem} %" hAlign="Right"/>-->
+							<!--						<Text text="R$: {ItensDiluicaoPedidoGrid>zzVprodDesc}" hAlign="Right"/>-->
+							<!--						<Text text="{ItensDiluicaoPedidoGrid>zzPercom} %" hAlign="Right"/>-->
+							<!--						<Text text="{ItensDiluicaoPedidoGrid>zzPervm} %" hAlign="Right"/>-->
+							<!--					</cells>-->
+							<!--				</ColumnListItem>-->
+							<!--			</items>-->
+							<!--		</Table>-->
+							<!--	</ScrollContainer>-->
+							<!--</IconTabFilter>-->
+							<IconTabFilter id="tabBalancoVerbaStep" text="Balanço Verbas" enabled="false" icon="sap-icon://waiver" key="tab6">
+								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
+											<Label text="Valor Excedente Regra de Desconto" class="bold"/>
+											<Input id="idExcedenteDesconto" value="{modelDescontos>/descontoDisponivel}" enabled="false" class="desabilitado marginBottomInpu"/>
+											<Label text="Verba de Marketing"/>
+											<Input id="idVerbaDesconto" enabled="true" type="Number" class=""/>
+											<Label text="Comissão"/>
+											<Input id="idComissaoDesconto" enabled="true" type="Number" class=""/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
+											<Label text="Valor Excedente Regra de Prazo Médio" class="bold"/>
+											<Input id="idExcedentePrazo" value="{modelDescontos>/descontoDisponivel}" enabled="false" class="desabilitado marginBottomInpu"/>
+											<Label text="Verba de Marketing"/>
+											<Input id="idVerbaPrazo" enabled="true" type="Number" class=""/>
+											<Label text="Comissão"/>
+											<Input id="idComissaoPrazo" enabled="true" type="Number" class=""/>
+										</f:content>
+									</f:SimpleForm>
+									<Toolbar>
+										<ToolbarSpacer/>
+										<Button id="idTransferirVerbas" text="Aplicar Balanço" type="Accept" press="onCalculaBalancoVenda"/>
+									</Toolbar>
+								</ScrollContainer>
+							</IconTabFilter>
+							<IconTabFilter id="tabTotalStep" text="Total Pedido" enabled="false" icon="sap-icon://expense-report" key="tab5">
+								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
+											<Label text="Total Pedido"/>
+											<Input id="idTotalPedido" value="R$ {modelDadosPedido>/ValTotPed}" enabled="false" class="desabilitado"/>
+											<Label text="Total Desconto"/>
+											<Input id="idDescontoTotalPedido" value="R$ {modelDadosPedido>/ValDescontoTotal}" enabled="false" class="desabilitado"/>
+											<Label text="Total Itens"/>
+											<Input id="idTotalItens" value="{modelDadosPedido>/TotalItensPedido}" enabled="false" class="desabilitado"/>
+											<Label text="Peso Líquido"/>
+											<Input id="idPesoLiquido" value="{modelDadosPedido>/Ntgew} KG" enabled="false" class="desabilitado"/>
+											<Label text="Verba Pedido "/>
+											<Input id="idVerbaPedido" value="R$ {modelDadosPedido>/verbaGasta}" enabled="false" class="desabilitado"/>
+										</f:content>
+									</f:SimpleForm>
+									<Toolbar>
+										<ToolbarSpacer/>
+										<Label id="labelVerificacao" text="Finalize o Pedido!" class="vermelho"/>
+										<Button id="idFinalizar" text="Finalizar" type="Accept" press="onFinalizarPedido"/>
+										<Button id="idCancelarPedido" text="Cancelar" press="onCancelarPedido"/>
+									</Toolbar>
+								</ScrollContainer>
+							</IconTabFilter>
+						</items>
+					</IconTabBar>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

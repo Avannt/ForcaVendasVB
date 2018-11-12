@@ -1,0 +1,11 @@
+<core:FragmentDefinition id="promocoes" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:form="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout">
+	<Dialog contentWidth="93%" contentHeight="96%" stretchOnPhone="true">
+		<content>
+			<Image id="idImagemPromocao" src="{modelAux>/imagem}" densityAware="false" width="100%"></Image>
+		</content>
+		<endButton>
+			<Button text="OK" press="onDialogPromocoesCancelButton"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

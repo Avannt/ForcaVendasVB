@@ -1,0 +1,74 @@
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="testeui5.controller.detalhesRelatorioTabelas"
+	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Consultar Tabela Preço">
+		<subHeader>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<ToolbarSpacer/>
+				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
+				<SearchField class="camposDialog" id="idProdutoRelatorio" placeholder="Digite do Produto" enableSuggestions="true"
+					search="onItemChange" suggest="_handleValueHelpSearch" width="100%"
+					suggestionItems="{ path: 'produtosRelatorio>/', sorter: { path: 'ProdutoId' } }">
+					<suggestionItems>
+						<SuggestionItem text="{produtosRelatorio>ProdutoId}" description="{produtosRelatorio>Descricao}" key="{produtosRelatorio>ProdutoId}"/>
+					</suggestionItems>
+				</SearchField>
+			</Toolbar>
+		</subHeader>
+		<semantic:FullscreenPage id="page">
+			<semantic:content>
+				<Table id="idtablePrecos" busyIndicatorDelay="2000" growing="true" growingScrollToLoad="false" growingThreshold="10" showRowCount="true"
+					noDataText="Não possue itens na tabela de preço" updateFinished="onUpdateFinished" width="100%"
+					items="{ path: 'relatorioTabelas>/', sorter: { path: 'ProdutoId', ascending: true}}">
+					<columns>
+						<Column minScreenWidth="320px" hAlign="left" demandPopin="false">
+							<Text text="Cod"/>
+						</Column>
+						<Column minScreenWidth="960px" demandPopin="true" hAlign="Left">
+							<Text text="Desc"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="460px" hAlign="Right">
+							<Text text="Pallet"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="380px" hAlign="Center">
+							<Text text="P. Tab"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="320px" hAlign="Center">
+							<Text text="P + ST"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="525px" hAlign="Center">
+							<Text text="Canal"/>
+						</Column>
+						<Column minScreenWidth="600px" demandPopin="false" hAlign="Center">
+							<Text text="Promoção"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="320px" hAlign="Center">
+							<Text text="P. Liq"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem type="Navigation">
+							<!--press="onSelectionChange"-->
+							<cells>
+								<Text text="{relatorioTabelas>ProdutoId}" hAlign="Left"/>
+								<Text text="{relatorioTabelas>Descricao}" hAlign="Left"/>
+								<Text text="{relatorioTabelas>QtPallet}" hAlign="Right"/>
+								<Text text="R$: {relatorioTabelas>PrecoVenda}" hAlign="Center"/>
+								<Text text="R$: {relatorioTabelas>PrecoSubstituicao}" hAlign="Center"/>
+								<Text text="{relatorioTabelas>Canal} %" hAlign="Center"/>
+								<Text text="{relatorioTabelas>PctDescPromo} %" hAlign="Center"/>
+								<Text text="R$: {relatorioTabelas>PrecoLiq}" hAlign="Center"/>
+								<!--<Text text="{CodPedVda}"/>-->
+								<!--<Text text="{path: 'DatEmisDocto'}"/>-->
+								<!--<ObjectListItem number="{DiasAtraso}" numberState="{= ${DiasAtraso} >= 0 ? 'Error' : 'None' }"/>-->
+								<!--<Text text="R$ {ValOriginTitAcr}" hAlign="Left"/>-->
+								<!--<Text text="R$ {ValSdoTitAcr}" hAlign="Right"/>-->
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</semantic:content>
+		</semantic:FullscreenPage>
+	</Page>
+</mvc:View>

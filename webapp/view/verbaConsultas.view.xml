@@ -1,0 +1,57 @@
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	controllerName="testeui5.controller.verbaConsultas" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+	<Page id="detail" title="Consultas de Verbas" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
+		<content>
+			<ObjectHeader id="objectHeader_nomeUsuario" title="Nenhum Usuário selecionado">
+				<statuses>
+					<ObjectStatus id="objectStatus_codUsuario"/>
+				</statuses>
+				<attributes>
+					<ObjectAttribute id="objectAttribute_email"/>
+				</attributes>
+			</ObjectHeader>
+			<Table id="table_Verbas" width="100%" items="{ path:'/'}" updateFinished="onListUpdateFinished" mode="Single" itemPress="onItemPress"
+				noDataText="Nenhuma verba disponivel no momento." busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
+				<headerToolbar>
+					<Toolbar id="lineItemsToolbar">
+						<Title id="lineItemsHeader" text="Verbas / Empresas"/>
+						<ToolbarSpacer/>
+						<!--<Button icon="sap-icon://add" press="onAddPedido"/>-->
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column hAlign="Left">
+						<Text text="Nome Emp."/>
+					</Column>
+					<Column>
+						<Text text="Per."/>
+					</Column>
+					<Column>
+						<Text text="Saldo Inicial"/>
+					</Column>
+					<Column minScreenWidth="Tablet" demandPopin="true">
+						<Text text="Débito"/>
+					</Column>
+					<Column minScreenWidth="Tablet" demandPopin="true">
+						<Text text="Crédito"/>
+					</Column>
+					<Column minScreenWidth="Tablet" demandPopin="true">
+						<Text text="Saldo Final"/>
+					</Column>
+				</columns>
+				<items >
+					<ColumnListItem type="Active">
+						<cells>
+							<Text text="{NomEmpresa}" hAlign="Left"/>
+							<Text text="{Periodo}"/>
+							<Text text="R$ {SaldoInicial}" />
+							<Text text="R$ {Debito}" />
+							<Text text="R$ {Credito}" />
+							<ObjectListItem number="R$ {SaldoFinal}" numberState="{= ${SaldoFinal} > 0 ? 'Success' : 'Error' }"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+	</Page>
+</mvc:View>

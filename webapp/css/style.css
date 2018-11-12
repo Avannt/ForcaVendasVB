@@ -1,0 +1,107 @@
+.desabilitado .sapMInputBaseInner {
+    background-color: #F8F8FF;
+}
+.marginBottomInpu {
+	padding-botton: 20px !important;
+}
+
+.removePadding {
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-botton: 0px !important;
+    margin-top: 0px !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    margin-botton: 0px !important;
+
+}
+
+tr[data-mydata="Diluicao"]{	
+  background:  #EDFFEF !important;
+}
+
+tr[data-mydata="Diluido"]{	
+  background:  #FFE187 !important;
+}
+tr[data-mydata="Normal"]{	
+  background:  #FFFFFF !important;
+}
+
+.cssClasse {
+	background-image: url("img/bg.png");
+}
+
+.camposDialog .sapMInputBaseInner {
+    background-color: #ebf7f5;
+}
+
+.camposDialogPRECOUNI .sapMInputBaseInner {
+    background-color: #86fd48;
+}
+
+.fundoInicio {
+	background-color: #dde6ed;
+}
+
+.sapMStdTileTitle{
+	font-size: 1.25rem !important;
+}
+
+.bold{
+	font-weight:bold;
+}
+
+.vermelho{
+	color: #ff092c;
+}
+
+#labelVerificacao {
+	color: #ff092c;
+}
+
+.backgroundAzul {
+    background-image: linear-gradient(rgb(201, 216, 231), white, rgb(47, 60, 72));
+    
+    padding-top: 0px !important;
+}
+
+.customizedDialog.sapMDialog>.sapMDialogSection {
+	
+	background-image: linear-gradient(white, rgb(47, 60, 72));
+}
+
+.center .sapMInputBaseInner{
+	display: block;
+    margin: 0 auto;
+}
+
+.tamanhopeq {
+    widht: 100px;
+}
+
+#__xmlview5--idTopLevelIconTabBar-content {
+	padding: 0px;
+}
+
+#__xmlview3--idTopLevelIconTabBar-content {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+body {
+    margin: 0px;
+}
+
+.margins{
+	padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-botton: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-botton: 0px;
+}

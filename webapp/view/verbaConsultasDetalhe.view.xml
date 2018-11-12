@@ -1,0 +1,93 @@
+<mvc:View displayBlock="true" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form"
+	controllerName="testeui5.controller.verbaConsultasDetalhe">
+	<App>
+		<pages>
+			<Page title="Consultas de Verbas" showNavButton="true" navButtonPress="onNavBack">
+				<content>
+					<IconTabBar id="idTopLevelIconTabBar" key="tab" width="100%">
+						<items>
+							<IconTabFilter id="tabInfoVerba" key="tab1" text="Dados Verba" icon="sap-icon://hint">
+								<content>
+									<f:SimpleForm id="simpleFormChange" title="" editable="true" class="editableForm">
+										<f:content>
+											<Label text="Código"/>
+											<Input id="idCodigoCliente" enabled="false"/>
+											<Label text="Nome Empresa"/>
+											<Input id="idNomeEmpresa" enabled="false"/>
+											<Label text="Período"/>
+											<Input id="idPeriodo" enabled="false"/>
+											<Label text="Verba Inicial"/>
+											<Input id="idVerbaInicial" enabled="false"/>
+											<Label text="Débito"/>
+											<Input id="idDebito" enabled="false"/>
+											<Label text="Crédito"/>
+											<Input id="idCredito" enabled="false"/>
+											<Label text="Verba Final"/>
+											<Input id="idVerbaFinal" enabled="false"/>
+										</f:content>
+									</f:SimpleForm>
+								</content>
+							</IconTabFilter>
+							<IconTabFilter id="tabMovimentacao" key="tab2" text="Movimentação" icon="sap-icon://table-view" width="100%">
+								<Table id="table_TabelaPrecos" width="100%" class="table" items="{ path: '/' }" updateFinished="onListUpdateFinished"
+									noDataText="Nenhuma movimentação cadastrada para o cliente" busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
+									<headerToolbar>
+										<Toolbar id="lineItemsToolbar">
+											<Title id="lineItemsHeader" text="Tabela Movimentação "/>
+											<ToolbarSpacer/>
+											<!--<Button icon="sap-icon://add" press="onAddPedido"/>-->
+										</Toolbar>
+									</headerToolbar>
+									<columns>
+										<Column>
+											<Text text="Tipo"/>
+										</Column>
+										<Column>
+											<Text text="Data"/>
+										</Column>
+										<Column minScreenWidth="835px" demandPopin="false">
+											<Text text="Hora"/>
+										</Column>
+										<Column>
+											<Text text="Valr"/>
+										</Column>
+										<Column>
+											<Text text="Saldo"/>
+										</Column>
+										<Column minScreenWidth="655px" demandPopin="false">
+											<Text text="Descrição"/>
+										</Column>
+										<Column minScreenWidth="770px" demandPopin="false">
+											<Text text="Nome Cli."/>
+										</Column>
+										<Column minScreenWidth="400px" demandPopin="false">
+											<Text text="Pedido"/>
+										</Column>
+										<Column minScreenWidth="910px" demandPopin="false">
+											<Text text="Usuár."/>
+										</Column>
+									</columns>
+									<items >
+										<ColumnListItem type="Active">
+											<cells>
+												<Text text="{Tipo}"/>
+												<Text text="{Data}"/>
+												<Text text="{Hora}"/>
+												<Text text="{Valor}"/>
+												<Text text="{Saldo}"/>
+												<Text text="{Descricao}"/>
+												<Text text="{NomeAbrev}"/>
+												<Text text="{NrPedCli}"/>
+												<Text text="{Usuario}"/>
+											</cells>
+										</ColumnListItem>
+									</items>
+								</Table>
+							</IconTabFilter>
+						</items>
+					</IconTabBar>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

@@ -1,0 +1,68 @@
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="testeui5.controller.relatorioTitulos"
+	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Títulos">
+		<subHeader>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<ToolbarSpacer/>
+				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
+				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite código do cliente" enableSuggestions="true"
+					search="onItemChange" suggest="_handleValueHelpSearch" width="100%"
+					suggestionItems="{ path: 'cliRelatorio>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'} }">
+					<suggestionItems>
+						<SuggestionItem text="{cliRelatorio>CodCliente}" description="{cliRelatorio>NomeEmit}" key="{cliRelatorio>CodCliente}"/>
+					</suggestionItems>
+				</SearchField>
+			</Toolbar>
+		</subHeader>
+		<semantic:FullscreenPage id="page">
+			<semantic:content>
+				<Table id="idtableTitulos" growing="true" growingScrollToLoad="false" showRowCount="true" growingThreshold="5" noDataText="Não possui duplicatas em aberto" 
+					updateFinished="onUpdateFinished" width="100%" selectionChange="onSelectionChange"
+					items="{ path: '/', sorter: { path: 'CodTitAcr', ascending: true, parameter: 'Codigo'}}">
+					<columns>
+						<Column minScreenWidth="320px" hAlign="left" demandPopin="false">
+							<Text text="Titulo"/>
+						</Column>
+						<Column minScreenWidth="765px" demandPopin="true">
+							<Text text="Pedido"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="425px">
+							<Text text="Emissão"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="515px">
+							<Text text="Venc"/>
+						</Column>
+						<Column minScreenWidth="600px" demandPopin="false">
+							<Text text="Atras."/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="320px" hAlign="Center">
+							<Text text="Vlr Orig"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="320px" hAlign="Right">
+							<Text text="Saldo"/>
+						</Column>
+						<Column demandPopin="true" minScreenWidth="1000px" hAlign="Right">
+							<Text text="Emp"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem press="onSelectionChange" type="Navigation">
+							<cells>
+								<Text text="{CodTitAcr}" hAlign="Left"/>
+								<Text text="{CodPedVda}"/>
+								<Text text="{DatEmisDocto}"/>
+								<Text text="{DatVenctoTitAcr}"/>
+								<ObjectListItem number="{DiasAtraso}" numberState="{= ${DiasAtraso} >= 0 ? 'Error' : 'None' }"/>
+								<Text text="R$ {ValOriginTitAcr}" hAlign="Left"/>
+								<Text text="R$ {ValSdoTitAcr}" hAlign="Right"/>
+								<Text text="{NomEmpresa}" hAlign="Right"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</semantic:content>
+		</semantic:FullscreenPage>
+	</Page>
+</mvc:View>

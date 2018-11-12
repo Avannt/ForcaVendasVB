@@ -1,0 +1,61 @@
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" controllerName="testeui5.controller.enviarPedidos"
+	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Envio de Pedidos">
+		<subHeader>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<ToolbarSpacer/>
+				<ToolbarSpacer/>
+				<Button text="Enviar" press="onEnviarPedido" icon="sap-icon://upload" type="Accept"/>
+			</Toolbar>
+		</subHeader>
+		<semantic:FullscreenPage id="page">
+			<semantic:content>
+				<Table id="idTableEnvioPedidos" busyIndicatorDelay="500" growing="true" growingScrollToLoad="true" mode="MultiSelect"
+					noDataText="Nenhum Pedido Pendente" updateFinished="onUpdateFinished" width="100%"
+					items="{ path: 'PedidosEnviar>/', sorter: { path: 'NomeEmit', descending: false, parameter: 'Codigo'}}">
+					<columns>
+						<Column minScreenWidth="320px" width="70px" demandPopin="false" hAlign="Left">
+							<Text text="Emp"/>
+						</Column>
+						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
+							<Text text="Cliente"/>
+						</Column>
+						<Column minScreenWidth="600px" demandPopin="false" hAlign="Left">
+							<Text text="Data"/>
+						</Column>
+						<Column minScreenWidth="380px" demandPopin="true" hAlign="Left">
+							<Text text="Verba"/>
+						</Column>
+						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left">
+							<Text text="V. Tot"/>
+						</Column>
+						<Column minScreenWidth="700px" visible="false" demandPopin="true">
+							<Text text="NumeroPedido"/>
+						</Column>
+						<!--<Column minScreenWidth="600px" demandPopin="true">-->
+						<!--	<Text text="Valor verba"/>-->
+						<!--</Column>-->
+						<!--<Column minScreenWidth="500px" demandPopin="true">-->
+						<!--	<Text text="Rentab."/>-->
+						<!--</Column>-->
+					</columns>
+					<items>
+						<ColumnListItem type="Active" press="detalharPedido">
+							<cells>
+								<Text text="{path : 'PedidosEnviar>CodEmpresa', formatter:'.myFormatterCodEmpresa'}" hAlign="Left" />
+								<Text text="{PedidosEnviar>NomeAbrev}"  hAlign="Left"/>
+								<Text text="{path : 'PedidosEnviar>DatImpl', formatter:'.myFormatterDataImp'}" hAlign="Left"/>
+								<Text text="R$: {path :'PedidosEnviar>ValVerbaPedido'}" hAlign="Left"/>
+								<Text text="R$: {PedidosEnviar>ValTotPed}" hAlign="Left"/>
+								<Text text="{PedidosEnviar>NrPedcli}" visible="false"/>
+								<!--<Text text="{PedidosEnviar>ValVerbaPedido}"/>-->
+								<!--<Text text="{PedidosEnviar>Rentabilidade}"/>-->
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</semantic:content>
+		</semantic:FullscreenPage>
+	</Page>
+</mvc:View>

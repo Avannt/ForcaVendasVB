@@ -1,0 +1,40 @@
+<core:FragmentDefinition id="idPageDialogLogin" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"
+	xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	<Dialog id="idDialogLogin" title="Gerenciamento de Parâmetros" contentWidth="70%" contentHeight="96%" stretchOnPhone="true" class="customizedDialog">
+		<content>
+			<f:Form id="idForm" editable="true" ariaLabelledBy="Title1" class="">
+				<f:layout>
+					<f:ResponsiveGridLayout labelSpanXL="2" labelSpanL="2" labelSpanM="2" labelSpanS="3" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0"
+						emptySpanM="0" emptySpanS="0" columnsXL="6" columnsL="6" columnsM="12" />
+					</f:layout>
+				<f:FormContainer ariaLabelledBy="Title1">
+					<f:formElements>
+						<f:FormElement label="Usuário">
+							<f:fields>
+								<Input id="idUsuario" type="Numeric" placeholder="" submit="onLoginChange">
+									<layoutData>
+										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
+									</layoutData>
+								</Input>
+							</f:fields>
+						</f:FormElement>
+						<f:FormElement label="Senha">
+							<f:fields>
+								<Input id="idSenha" type="Password" placeholder="" submit="" class="">
+									<layoutData>
+										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
+									</layoutData>
+								</Input>
+							</f:fields>
+						</f:FormElement>
+					</f:formElements>
+				</f:FormContainer>
+			</f:Form>
+		</content>
+		<buttons>
+			<Button text="" type="Accept" icon="sap-icon://accept" press="onDialogChecarLoginsButton"/>
+			<Button text="" type="Reject" icon="sap-icon://decline" press="onDialogResetarLoginsButton"/>
+			<Button text="Sair" press="onDialogCancelLoginsButton"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

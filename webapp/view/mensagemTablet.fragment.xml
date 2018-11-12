@@ -1,0 +1,11 @@
+<core:FragmentDefinition id="mensagemTablet" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:form="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout">
+	<Dialog contentWidth="40%" contentHeight="40%" stretchOnPhone="false" title="Alerta!">
+		<content>
+			<Image id="idImagemAlertaTablet" src="img/alertaTablet.png" densityAware="false" width="100%"></Image>
+		</content>
+		<endButton>
+			<Button text="OK" press="onDialogCloseImagem"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

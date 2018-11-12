@@ -1,0 +1,78 @@
+<mvc:View xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="testeui5.controller.Pedido" displayBlock="true">
+	<SplitContainer id="SplitContDemo" initialDetail="detail" initialMaster="master" mode="ShowHideMode">
+		<detailPages>
+			<Page id="detail" title="Pedidos" showNavButton="{device>/system/phone}" navButtonPress="onNavBack2" class="sapUiStdPage">
+				<content>
+					<ObjectHeader id="objectHeader" title="Nenhum cliente selecionado">
+						<statuses>
+							<ObjectStatus id="objectStatus_cidade"/>
+						</statuses>
+						<attributes>
+							<ObjectAttribute id="objectAttribute_cnpj"/>
+						</attributes>
+					</ObjectHeader>
+				</content>
+				<content>
+					<Table id="table_pedidos" width="100%" backgroundDesign="Translucent" items="{ path:'pedidosCadastrados&gt;/', sorter: { path: 'NrPedCli', descending: true}}" mode="Delete" delete="onExcluirPedido" itemPress="onItemPress"
+						growingThreshold="3" growingTriggerText="Proximos Pedidos >>" growing="true" noDataText="Nenhum pedido cadastrado para o cliente" busyIndicatorDelay="0" fixedLayout="false">
+						<headerToolbar>
+							<Toolbar id="lineItemsToolbar">
+								<Title id="lineItemsHeader" text="Pedidos"/>
+								<ToolbarSpacer/>
+								<Label text="Digitar Pedido"/>
+								<Button id="idAddPedido" icon="sap-icon://add" press="onAddPedido"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left" width="150px">
+								<Text text="N°Ped"/>
+							</Column>
+							<Column minScreenWidth="320px" hAlign="Left" width="70px" popinDisplay="Inline">
+								<Text text="Data"/>
+							</Column>
+							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Valor total"/>
+							</Column>
+							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Valor líq."/>
+							</Column>
+							<Column minScreenWidth="320px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Status"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem type="Active" >
+								<cells>
+									<Text text="{path : 'pedidosCadastrados>nrPedCli'}"/>
+									<Text text="{path : 'pedidosCadastrados>dataImpl', formatter:'.myFormatterDataImp'}"/>
+									<Text text="R$: {path : 'pedidosCadastrados>valTotPed'}"/>
+									<Text text="R$: {path : 'pedidosCadastrados>valLiqPed'}"/>
+									<Text text="{path :'pedidosCadastrados>statusPedido'}"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</content>
+			</Page>
+		</detailPages>
+		<masterPages>
+			<Page id="master" title="Clientes" icon="sap-icon://action" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
+				<headerContent/>
+				<subHeader>
+					<Toolbar id="searchBar">
+						<SearchField id="searchField" showRefreshButton="false" placeholder="Pesquisar Nome/Cod" tooltip="Pesquisar Clientes pelo Nome" width="100%" liveChange="onSearch" search="onSearch"/>
+					</Toolbar>
+				</subHeader>
+				<content>
+					<List id="listClientes" items="{ path: 'clientesCadastrados>/' }" busyIndicatorDelay="0" noDataText="Nenhum Cliente Encontrado!" mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
+						<items>
+							<ObjectListItem id="ObjListCliente" type="Active" press="onSelectionChange" title="{clientesCadastrados>name1}" number="{clientesCadastrados>kunnr}" intro="CPF: {clientesCadastrados>stcd1}">
+							
+							</ObjectListItem>
+						</items>
+					</List>
+				</content>
+			</Page>
+		</masterPages>
+	</SplitContainer>
+</mvc:View>

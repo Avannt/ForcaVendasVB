@@ -1,0 +1,123 @@
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="testeui5.controller.relatorioTabelas"
+	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+	<Page title="Relatório de Tabelas" class="" showNavButton="true" navButtonPress="onNavBack">
+		<content>
+			<VBox class="">
+				<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+					emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2" class="">
+					<form:content>
+						<core:Title/>
+						<Label text="Estabelecimento *"/>
+						<Select id="idEstabelecimento" forceSelection="false" required="true" showSecondaryValues="false" items="{ path: 'ComboEstabelecimento>/' }"
+							placeholder="Selecione o Estabelecimento" change="onChangeEstabelecimento">
+							<core:Item key="{ComboEstabelecimento>CodEstabel}" text="{ComboEstabelecimento>NomEstabel}"/>
+						</Select>
+						<Label text="Cliente *"/>
+						<SearchField class="camposDialog" id="idtabClienteRelatorio" placeholder="Digite código do cliente" enableSuggestions="true"
+							search="onClienteChange" suggest="_handleValueHelpSearch" width="100%"
+							suggestionItems="{ path: 'tabCliente>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'} }">
+							<suggestionItems>
+								<SuggestionItem text="{tabCliente>CodCliente}" description="{tabCliente>NomeEmit}" key="{tabCliente>CodCliente}"/>
+							</suggestionItems>
+						</SearchField>
+						<Label text="Tabela preço *"/>
+						<Select id="idTabelaPreco" required="true" showSecondaryValues="true" forceSelection="false" items="{ path: '/' }"
+							placeholder="Selecione a Tabela de Preço" change="onChangeTabelaPreco">
+							<core:ListItem key="{NrTabPreco}" text="{DescTabela}"/>
+						</Select>
+						<Label text="Vencimentos *"/>
+						<Select id="idVencimento1" showSecondaryValues="false" forceSelection="false" required="true" items="{ path: 'ComboVencimento1>/' }"
+							placeholder="Selecione o Vencimento1" change="onChangeVencimento1">
+							<core:Item key="{ComboVencimento1>QtdDias}" text="{path: 'ComboVencimento1>QtdDias'}"/>
+						</Select>
+						<Select id="idVencimento2" showSecondaryValues="false" forceSelection="false" items="{ path: 'ComboVencimento2>/' }"
+							placeholder="Selecione o Vencimento2" change="onChangeVencimento2">
+							<core:Item key="{ComboVencimento2>QtdDias}" text="{ComboVencimento2>QtdDias}"/>
+						</Select>
+						<Select id="idVencimento3" showSecondaryValues="false" forceSelection="false" items="{ path: 'ComboVencimento3>/' }"
+							placeholder="Selecione o Vencimento3" change="onChangeVencimento3">
+							<core:Item key="{ComboVencimento3>QtdDias}" text="{ComboVencimento3>QtdDias}"/>
+						</Select>
+						<Label text="Índice *"/>
+						<Input id="idIndice" value="" enabled="false"/>
+						<Label text="Exibição *"/>
+						<Select id="idExibicao" forceSelection="true" required="true" showSecondaryValues="false" items="{ path: 'ComboExibicao>/' }"
+							placeholder="Exibição da tabela de preço" change="onChangeExibicao">
+							<core:Item key="{ComboExibicao>idExibicao}" text="{ComboExibicao>descricao}"/>
+						</Select>
+						<Label text=""/>
+						<Button id="idLoadTabelaPreco" text="Carregar Itens" type="Accept" press="loadTabelaPreco"/>
+						<!--<Button text="Cancelar" press="onCancelarPedido"/>-->
+					</form:content>
+				</form:SimpleForm>
+			</VBox>
+		</content>
+	</Page>
+	<!--<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Consultar Tabela Preço dos Clientes">-->
+	<!--<subHeader>-->
+	<!--	<Toolbar>-->
+	<!--		<ToolbarSpacer/>-->
+	<!--		<ToolbarSpacer/>-->
+	<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
+	<!--	</Toolbar>-->
+	<!--</subHeader>-->
+	<!--	<semantic:FullscreenPage id="page">-->
+	<!--		<semantic:content>-->
+	<!--<SearchField class="camposDialog" id="idtabClienteRelatorio" placeholder="Digite código do cliente" enableSuggestions="true"-->
+	<!--	search="onItemChange" suggest="_handleValueHelpSearch" width="100%"-->
+	<!--	suggestionItems="{ path: 'tabCliente>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'} }">-->
+	<!--	<suggestionItems>-->
+	<!--		<SuggestionItem text="{tabCliente>CodCliente}" description="{tabCliente>NomeEmit}" key="{tabCliente>CodCliente}"/>-->
+	<!--	</suggestionItems>-->
+	<!--</SearchField>-->
+	<!--			<Label text="Estabelecimento *"/>-->
+	<!--			<Select id="idEstabelecimento" forceSelection="false" required="true" showSecondaryValues="false" items="{ path: 'ComboEstabelecimento>/' }"-->
+	<!--				placeholder="Selecione o Estabelecimento" change="onChangeEstabelecimento">-->
+	<!--				<core:Item key="{ComboEstabelecimento>CodEstabel}" text="{ComboEstabelecimento>NomEstabel}"/>-->
+	<!--			</Select>-->
+	<!--			<Label text="Vencimentos *"/>-->
+	<!--			<Select id="idVencimento1" showSecondaryValues="false" forceSelection="false" required="true" items="{ path: 'ComboVencimento1>/' }"-->
+	<!--				placeholder="Selecione o Vencimento1" change="onChangeVencimento1">-->
+	<!--				<core:Item key="{ComboVencimento1>QtdDias}" text="{ComboVencimento1>QtdDias}"/>-->
+	<!--			</Select>-->
+	<!--			<Select id="idVencimento2" showSecondaryValues="false" forceSelection="false" items="{ path: 'ComboVencimento2>/' }"-->
+	<!--				placeholder="Selecione o Vencimento2" change="onChangeVencimento2">-->
+	<!--				<core:Item key="{ComboVencimento2>QtdDias}" text="{ComboVencimento2>QtdDias}"/>-->
+	<!--			</Select>-->
+	<!--			<Select id="idVencimento3" showSecondaryValues="false" forceSelection="false" items="{ path: 'ComboVencimento3>/' }"-->
+	<!--				placeholder="Selecione o Vencimento3" change="onChangeVencimento3">-->
+	<!--				<core:Item key="{ComboVencimento3>QtdDias}" text="{ComboVencimento3>QtdDias}"/>-->
+	<!--			</Select>-->
+	<!--<Table id="table_clientes" busyIndicatorDelay="{worklistView>/tableBusyDelay}" growing="true" growingScrollToLoad="true"-->
+	<!--	noDataText="Nenhuma tabela encontrada" updateFinished="onUpdateFinished" width="100%" selectionChange="onSelectionChange"-->
+	<!--	items="{ path: '/', sorter: { path: 'NomeEmit', descending: false, parameter: 'Codigo'}}">-->
+	<!--	<columns>-->
+	<!--		<Column minScreenWidth="320px" hAlign="Left" demandPopin="false">-->
+	<!--			<Text text="Cód Estabel."/>-->
+	<!--		</Column>-->
+	<!--		<Column hAlign="Center" demandPopin="true" minScreenWidth="420px">-->
+	<!--			<Text text="Nome Estabel"/>-->
+	<!--		</Column>-->
+	<!--		<Column hAlign="Center" demandPopin="false" minScreenWidth="500px">-->
+	<!--			<Text text="Nr Tabela"/>-->
+	<!--		</Column>-->
+	<!--		<Column minScreenWidth="580px" demandPopin="true" hAlign="Left">-->
+	<!--			<Text text="Desc. Tab"/>-->
+	<!--		</Column>-->
+	<!--	</columns>-->
+	<!--	<items>-->
+	<!--		<ColumnListItem type="Navigation">-->
+	<!--			<cells>-->
+	<!--				<Text text="{CodEstabel}" hAlign="Left"/>-->
+	<!--				<Text text="{NomEstabel}"/>-->
+	<!--				<Text text="{NrTabPreco}"/>-->
+	<!--				<Text text="{DescTabela}" hAlign="Left"/>-->
+	<!--			</cells>-->
+	<!--		</ColumnListItem>-->
+	<!--	</items>-->
+	<!--</Table>-->
+	<!--		</semantic:content>-->
+	<!--	</semantic:FullscreenPage>-->
+	<!--</Page>-->
+</mvc:View>

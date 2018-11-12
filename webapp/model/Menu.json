@@ -1,0 +1,56 @@
+{
+	"Principal": [{
+		"id": "pedido",
+		"icon": "sales-order",
+		"title": "Pedido",
+		"info": "Digitação Pedidos"
+	},{
+		"id": "envioPedidos",
+		"icon": "upload",
+		"title": "Enviar",
+		"info": "Envio de Pedidos"
+	}, {
+		"id": "menuConsultas",
+		"icon": "search",
+		"title": "Consultas",
+		"info": "Consultas"
+	},{
+		"id": "relatorios",
+		"icon": "manager-insight",
+		"title": "Relatórios",
+		"info": "Relatórios"
+	}],
+	"Consultas": [{
+		"id": "clienteConsultas",
+		"icon": "customer",
+		"title": "Clientes",
+		"info": "Descr. dos Clientes"
+	}, {
+		"id": "produtoConsultas",
+		"icon": "product",
+		"title": "Produtos",
+		"info": "Descr. dos Produtos"
+	}, {
+		"id": "verbaConsultas",
+		"icon": "waiver",
+		"title": "Verbas",
+		"info": "Movim. e Saldo"
+	}],
+	
+	"Relatorios": [{
+		"id": "relatorioPedidos",
+		"icon": "expense-report",
+		"title": "Pedidos",
+		"info": "Levant. dos Pedidos"
+	}, {
+		"id": "relatorioTitulos",
+		"icon": "activity-individual",
+		"title": "Títulos",
+		"info": "Levant. de Titulos"
+	}, {
+		"id": "relatorioTabelas",
+		"icon": "sales-quote",
+		"title": "Tab Preços",
+		"info": "Preço dos Prod."
+	}]
+}

@@ -1,0 +1,38 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form" xmlns:form="sap.ui.layout.form" xmlns:course="opensap.manageproducts.control" height="100%"
+	controllerName="testeui5.controller.produtoConsultas">
+	<Page id="masterProdutos" title="Produtos" icon="sap-icon://action" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
+		<headerContent/>
+		<subHeader>
+			<Toolbar id="searchBar">
+				<SearchField id="searchField" showRefreshButton="false" placeholder="Digite Desc./Cód. Produto" tooltip="Pesquisar Clientes pelo Nome."
+					width="100%" liveChange="onSearch" search="onSearch"/>
+			</Toolbar>
+		</subHeader>
+		<content>
+			<Table noDataText="Sem dados." id="tableProdutos" width="100%"
+				items="{ path: 'consultasProdutos>/', sorter: { path: 'matnr', descending: false, parameter: 'matnr'}}">
+				<columns>
+					<Column minScreenWidth="320px" hAlign="Left" demandPopin="false">
+						<Text text="Código"/>
+					</Column>
+					<Column minScreenWidth="320px" hAlign="Right" demandPopin="false">
+						<Text text="Descrição"/>
+					</Column>
+					<Column minScreenWidth="320px" hAlign="Right" demandPopin="false">
+						<Text text="Estoque"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Active" id="item1">
+						<cells>
+							<Text text="{consultasProdutos>matnr}" hAlign="Left"/>
+							<Text text="{consultasProdutos>maktx}" hAlign="Left"/>
+							<Text text="10000" hAlign="Right"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+	</Page>
+</mvc:View>

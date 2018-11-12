@@ -1,0 +1,104 @@
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="testeui5.controller.relatorioPedidos"
+	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Relatório de Pedidos">
+		<subHeader>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<ToolbarSpacer/>
+				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
+				<DatePicker id="DP6" valueFormat="dd/MM/yyyy" placeholder="Digite Data .." displayFormat="long" change="handleChange" width="50%"/>
+				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite cód/ Nome .." enableSuggestions="true" search="onItemChange"
+					suggest="_handleValueHelpSearch" width="50%"
+					suggestionItems="{ path: 'cliRelatorio>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'}}">
+					<suggestionItems>
+						<SuggestionItem text="{cliRelatorio>CodCliente}" description="{cliRelatorio>NomeEmit}" key="{cliRelatorio>CodCliente}"/>
+					</suggestionItems>
+				</SearchField>
+			</Toolbar>
+		</subHeader>
+		<semantic:FullscreenPage id="page">
+			<semantic:content>
+				<Table id="table_relatorio_pedidos" busyIndicatorDelay="2000" growing="true" growingThreshold="5" growingScrollToLoad="false"
+					noDataText="Nenhum pedido encontrado" updateFinished="onUpdateFinished" width="100%" selectionChange="onSelectionChange"
+					items="{ path: 'pedidoRelatorio>/', sorter: { path: 'NrPedCliDTS', descending: true}}">
+					<columns>
+						<!--	<Column minScreenWidth="320px" hAlign="Left" demandPopin="false">-->
+						<!--		<Text text="Nr Pedido"/>-->
+						<!--	</Column>-->
+						<!--	<Column hAlign="Center" demandPopin="true" minScreenWidth="770px">-->
+						<!--		<Text text="Data"/>-->
+						<!--	</Column>-->
+						<!--	<Column hAlign="Center" demandPopin="true" minScreenWidth="640px">-->
+						<!--		<Text text="Cod. Cliente"/>-->
+						<!--	</Column>-->
+						<!--	<Column demandPopin="true" minScreenWidth="1000px" hAlign="Left">-->
+						<!--		<Text text="Nome Cliente"/>-->
+						<!--	</Column>-->
+						<!--	<Column hAlign="Center" minScreenWidth="320px" demandPopin="true">-->
+						<!--		<Text text="Valor Total"/>-->
+						<!--	</Column>-->
+						<!--	<Column demandPopin="true" minScreenWidth="500px" hAlign="Left">-->
+						<!--		<Text text="Status"/>-->
+						<!--	</Column>-->
+						<!--	<Column demandPopin="true" minScreenWidth="1000px" hAlign="Left">-->
+						<!--		<Text text="Emp."/>-->
+						<!--	</Column>-->
+						<!---->
+						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left" width="100px">
+							<Text text="N°Ped"/>
+						</Column>
+						<Column minScreenWidth="1000px" hAlign="Left" popinDisplay="Inline" demandPopin="true">
+							<Text text="Emp."/>
+						</Column>
+						<Column minScreenWidth="320px" hAlign="Left" width="70px">
+							<Text text="Data"/>
+						</Column>
+						<Column minScreenWidth="385px" demandPopin="true" popinDisplay="Inline">
+							<Text text="Valor total"/>
+						</Column>
+						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline">
+							<Text text="Valor líquido"/>
+						</Column>
+						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline">
+							<Text text="Valor verba"/>
+						</Column>
+						<Column minScreenWidth="505px" demandPopin="true" popinDisplay="Inline">
+							<Text text="Rentab."/>
+						</Column>
+						<Column minScreenWidth="505px" demandPopin="true" popinDisplay="Inline">
+							<Text text="Semáf."/>
+						</Column>
+						<Column minScreenWidth="320px" hAlign="Center" width="70px">
+							<Text text="Status"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem press="onSelectionChange" type="Navigation">
+							<cells>
+								<!--<ObjectIdentifier text="{pedidoRelatorio>NrPedCliDTS}" hAlign="Left"/>-->
+								<!--<Text text="{path : 'pedidoRelatorio>DatImpl', formatter:'.myFormatterDataImp'}" hAlign="Left"/>-->
+								<!--<Text text="{pedidoRelatorio>CodCliente}"/>-->
+								<!--<Text text="{pedidoRelatorio>NomeCliente}"/>-->
+								<!--<Text text="R$ {pedidoRelatorio>ValTotPed}"/>-->
+								<!--<Text text="{pedidoRelatorio>DescStatus}"/>-->
+								<!--<Text text="{path : 'pedidoRelatorio>IdBase', formatter:'.myFormatterEmp'}"/>-->
+								<Text text="{path : 'pedidoRelatorio>NrPedCliDTS'}" hAlign="Left"/>
+								<Text text="{path : 'pedidoRelatorio>CodEmpresa', formatter:'.myFormatterCodEmpresa'}" hAlign="Left"/>
+								<Text text="{path : 'pedidoRelatorio>DatImpl'}"/>
+								<Text text="R$: {path :'pedidoRelatorio>ValTotPed'}"/>
+								<Text text="R$: {path :'pedidoRelatorio>ValLiqPed'}"/>
+								<Text text="R$: {path :'pedidoRelatorio>ValVerbaPedido'}"/>
+								<Text text="{path: 'pedidoRelatorio>PercLucro', formatter: '.formatRentabilidade'} %" hAlign="Left" visible="false"/>
+								<Image src="{path : 'pedidoRelatorio>rentabilidadeTotalImg'}" width="20%" backgroundSize="20%" backgroundPosition="Center"/>
+								<!--<ObjectListItem number="{pedidoRelatorio>PercLucro} %" numberState="{= ${pedidoRelatorio>PercLucro} >= 0 ? 'Success' : 'Error' }"-->
+								<!--	hAlign="left"/>-->
+								<Text text="{path :'pedidoRelatorio>DescStatus'}" hAlign="Right"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</semantic:content>
+		</semantic:FullscreenPage>
+	</Page>
+</mvc:View>
