@@ -1395,6 +1395,7 @@ sap.ui.define([
 			var Qnt = 0;
 			var QntProdutos = 0;
 			var Ntgew = 0;
+			var totalExcedenteDescontos = 0;
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (objItensPedidoTemplate[i].tipoItem !== "Diluicao") {
@@ -1407,6 +1408,14 @@ sap.ui.define([
 					if (objItensPedidoTemplate[i].ntgew > 0) {
 						Ntgew += objItensPedidoTemplate[i].ntgew * objItensPedidoTemplate[i].zzQnt;
 					}
+					
+					//Calculando o valor total da excessão por bloco:
+					//EXCEDIDO POR PERCENTUAL.
+					if(objItensPedidoTemplate[i].zzValExcedidoItem < 0){
+						
+						totalExcedenteDescontos += Math.round(objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt * 100) / 100;
+						
+					}
 
 				}
 			}
@@ -1415,7 +1424,9 @@ sap.ui.define([
 
 			var descontoTotal = Total - TotalDesc;
 			descontoTotal = Math.round(parseFloat(descontoTotal * 100)) / 100;
-
+			
+			console.log(totalExcedenteDescontos);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalExcedenteDescontos", totalExcedenteDescontos);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", QntProdutos);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", TotalDesc);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", Ntgew);
@@ -1676,7 +1687,8 @@ sap.ui.define([
 			};
 		},
 
-		onCalculaBalancoVenda: function() {
+		onInicioBalancoVerbas: function(resolve, reject) {
+			//Carrega as tabelas necessarias para fazer os calculos dos excedentes.
 			//buscar os campos zzPrzmax/ zzPrzmin/ zzVlrPedMin na tabela de preço
 			var that = this;
 			var vetorRange = [];
@@ -1742,6 +1754,12 @@ sap.ui.define([
 										that.onDefineFamilias(that.vetorRange, "Normal");
 										that.onDefineFamilias(that.vetorRange, "Extra");
 										that.onCalculaPrazoMedio(vetorParametros);
+										
+										//Fazer o calculo do que foi excedido
+										//Neste momento tenho os percentuais do max permitido de cada item de acordo com as familias cadastradas
+										that.onCalculaExcedentes(objItensPedidoTemplate);
+										resolve();
+										console.log("resolve Perc Descontos");
 
 									};
 								}
@@ -1750,6 +1768,44 @@ sap.ui.define([
 					};
 				}
 			};
+		},
+		
+		onCalculaExcedentes: function(objItensPedidoTemplate){
+			
+			for(var i=0; i<objItensPedidoTemplate.length; i++){
+				var valorProdutoCheio = objItensPedidoTemplate[i].zzVprod;
+				//VALOR DO PRODUTO INICIAL É DESCONTADO O PERCENTUAL DA TABELA AVISTA QUANDO TIVER
+				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
+
+					 valorProdutoCheio = valorProdutoCheio - (valorProdutoCheio * 5 / 100);
+
+				}
+				
+				var valorMaxPermitido = valorProdutoCheio  - (valorProdutoCheio * parseFloat(objItensPedidoTemplate[i].maxDescPermitido)/100);
+				valorMaxPermitido = valorMaxPermitido - (valorMaxPermitido * parseFloat(objItensPedidoTemplate[i].maxDescPermitidoExtra)/100);
+				
+				var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc - valorMaxPermitido)*100)/100;
+				objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
+				//Negatvo .. excedeu o valor.
+				console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
+				
+			}
+		},
+		
+		onTablFilterEvent: function(evt){
+			var that = this;
+			var item = evt.getParameters();
+			if(item.selectedKey == "tab6"){
+				
+				var promise = new Promise(function(resolve, reject) {
+					that.onInicioBalancoVerbas(resolve, reject);
+				});
+
+				promise.then(function() {
+					that.calculaTotalPedido();
+				});
+			}
+			
 		},
 
 		onDefineFamilias: function(vetorRange, tipoDesconto) {
@@ -1791,7 +1847,7 @@ sap.ui.define([
 							// e verificar se o desconto aplicado é maior que o permitido.
 							//fazendo ( preço cheio - preço de venda )
 							vetorFamilia.push(vetorGeral[o]);
-							this.onBuscaPorcentagem(vetorFamilia, vetorRange);
+							this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
 							proximoItemDiferente = true;
 						}
 
@@ -1844,7 +1900,7 @@ sap.ui.define([
 							// e verificar se o desconto aplicado é maior que o permitido.
 							//fazendo ( preço cheio - preço de venda )
 							vetorFamilia.push(vetorGeralExtra[o]);
-							this.onBuscaPorcentagem(vetorFamilia, vetorRange);
+							this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
 							proximoItemDiferente = true;
 						}
 

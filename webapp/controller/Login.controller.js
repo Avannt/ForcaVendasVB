@@ -569,10 +569,41 @@ sap.ui.define([
 
 														for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
 															var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
+															var date = retornoTitulosAbertos.results[i].Budat;
+															var dia = String(date.getDate());
+															var mes = String(date.getMonth() + 1);
+															var ano = String(date.getFullYear());
+															ano = ano.substring(2, 4);
+															var minuto = String(date.getMinutes());
+															var hora = String(date.getHours());
+															var seg = String(date.getSeconds());
+											
+															if (dia.length == 1) {
+																dia = "0" + String(dia);
+															}
+											
+															if (mes.length == 1) {
+																mes = "0" + String(mes);
+															}
+											
+															if (minuto.length == 1) {
+																minuto = "0" + String(minuto);
+															}
+															if (hora.length == 1) {
+																hora = "0" + String(hora);
+															}
+															if (seg.length == 1) {
+																seg = "0" + String(seg);
+															}
+															//HRIMP E DATIMP
+															//var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
+															var data = String(dia + "/" + mes + "/" + ano);
+															
+															
 															var objBancoTitulosAbertos = {
-																idTituloAberto: retornoTitulosAbertos.results[i].Belnr + "." + auxDmbtr,
+																idTituloAberto: retornoTitulosAbertos.results[i].Belnr + "." + retornoTitulosAbertos.results[i].Kunnr +"." + auxDmbtr + "." + data,
 																belnr: retornoTitulosAbertos.results[i].Belnr,
-																budat: retornoTitulosAbertos.results[i].Budat,
+																budat: data,
 																dmbtr: auxDmbtr,
 																kunnr: retornoTitulosAbertos.results[i].Kunnr
 															};
