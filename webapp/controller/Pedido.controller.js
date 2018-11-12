@@ -10,7 +10,6 @@ sap.ui.define([
 	"use strict";
 	var vetorCliente = [];
 	var oPrePedidos = [];
-	var variavelCodigoCliente = "";
 	var ajaxCall;
 
 	return BaseController.extend("testeui5.controller.Pedido", {

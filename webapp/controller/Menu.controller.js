@@ -17,6 +17,13 @@ sap.ui.define([
 				case "pedido":
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
 					break;
+				case "entregaFutura":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("entregaFutura");
+					break;
+				case "aprovacoes":
+					sap.m.MessageToast.show("Em construção.");
+					//sap.ui.core.UIComponent.getRouterFor(this).navTo("");
+					break;
 				case "relatorios":
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("menuRelatorios");
 					break;
