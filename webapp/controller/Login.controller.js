@@ -13,16 +13,6 @@ sap.ui.define([
 
 			onInit: function() {
 				var that = this;
-
-				// var promise1 = Promise.resolve(3);
-				// var promise2 = 42;
-				// var promise3 = new Promise(function(resolve, reject) {
-				//   setTimeout(resolve, 100, 'foo');
-				// }).then(function(value) {
-				//   console.log(value);
-				//   // expected output: "foo"
-				// });
-
 				this.onInicializaModels();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
@@ -73,6 +63,10 @@ sap.ui.define([
 							var objTituloAberto = db.createObjectStore("TitulosAbertos", {
 								keyPath: "idTituloAberto",
 								unique: true
+							});
+							
+							objTituloAberto.createIndex("kunnr", "kunnr", {
+								unique: false
 							});
 						}
 
@@ -437,6 +431,7 @@ sap.ui.define([
 			getImei: function() {
 				var that = this;
 				var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
+				var isTablet = "Android";
 				if (device.platform == 'Android') {
 					window.plugins.sim.hasReadPermission(successCallback1, errorCallback1);
 					window.plugins.sim.requestReadPermission(successCallback2, errorCallback2);
@@ -569,23 +564,26 @@ sap.ui.define([
 												oModel.read("/TitulosAbertos", {
 													success: function(retornoTitulosAbertos) {
 
-														var txTiposPedidos = db.transaction("TiposPedidos", "readwrite");
-														var objTiposPedidos = txTiposPedidos.objectStore("TiposPedidos");
+														var txTitulosAbertos = db.transaction("TitulosAbertos", "readwrite");
+														var objTitulosAbertos = txTitulosAbertos.objectStore("TitulosAbertos");
 
-														for (var i = 0; i < retornoTiposPedidos.results.length; i++) {
-
-															var objBancoTiposPedidos = {
-																idTituloAberto: retornoTiposPedidos.results[i].IdTipoPedido,
-																descricao: retornoTiposPedidos.results[i].Descricao
+														for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
+															var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
+															var objBancoTitulosAbertos = {
+																idTituloAberto: retornoTitulosAbertos.results[i].Belnr + "." + auxDmbtr,
+																belnr: retornoTitulosAbertos.results[i].Belnr,
+																budat: retornoTitulosAbertos.results[i].Budat,
+																dmbtr: auxDmbtr,
+																kunnr: retornoTitulosAbertos.results[i].Kunnr
 															};
 
-															var requestTiposPedidos = objTiposPedidos.add(objBancoTiposPedidos);
+															var requestTitulosAbertos = objTitulosAbertos.add(objBancoTitulosAbertos);
 
-															requestTiposPedidos.onsuccess = function(event) {
-																console.log("Dados TiposPedidos inseridos");
+															requestTitulosAbertos.onsuccess = function(event) {
+																console.log("Dados TitulosAbertos inseridos");
 															};
-															requestTiposPedidos.onerror = function(event) {
-																console.log("Dados TiposPedidos não foram inseridos :" + event);
+															requestTitulosAbertos.onerror = function(event) {
+																console.log("Dados TitulosAbertos não foram inseridos :" + event);
 															};
 														}
 
