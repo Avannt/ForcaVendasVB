@@ -4,7 +4,8 @@
 		<pages>
 			<Page title="Digitação do Pedido" class="sapUiResponsivePadding" showNavButton="true" navButtonPress="onNavBack">
 				<content>
-					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true">
+					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true" enableTabReordering="true" 
+						select="onTablFilterEvent">
 						<items>
 							<IconTabFilter id="tabClienteStep" text="Dados Cliente" enabled="true" icon="sap-icon://hint" key="tab1">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
@@ -32,7 +33,7 @@
 							<IconTabFilter id="tabPedidoWebStep" text="Pedido Web" enabled="true" icon="sap-icon://notes" key="tab2">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
-										columnsM="2" class="" layout="ResponsiveGridLayout" title="">
+										columnsM="2"  layout="ResponsiveGridLayout" title="">
 										<f:content>
 											<Label text="Nº Pedido"/>
 											<Input id="idNumeroPedido" value="{modelAux>/NrPedCli}" enabled="false"/>
@@ -66,7 +67,7 @@
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
-										columnsM="2" class="" layout="ResponsiveGridLayout" title="Parcelamento">
+										columnsM="2"  layout="ResponsiveGridLayout" title="Parcelamento">
 										<f:content>
 											<Label text="Dias da primeira parcela *" />
 											<Input id="idPrimeiraParcela" type="Number" value="{modelDadosPedido>/DiasPrimeiraParcela}" />
@@ -98,7 +99,7 @@
 									</Toolbar>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" enabled="false" icon="sap-icon://add" key="tab3">
+							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" enabled="false" icon="sap-icon://add" key="tab3" >
 								<ScrollContainer height="100%" width="100%" horizontal="true" vertical="true">
 									<Toolbar id="lineItemsToolbar">
 										<!--<Title id="lineItemsHeader"/>-->
@@ -112,28 +113,28 @@
 										noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;"
 										busyIndicatorDelay="0" fixedLayout="false">
 										<columns>
-											<Column minScreenWidth="600px" hAlign="Left" vAlign="Left" visible="true" width="20px">
+											<Column minScreenWidth="600px" visible="true" width="20px" hAlign="Left" >
 												<Text text="Id"/>
 											</Column>
-											<Column minScreenWidth="320px" hAlign="Left" vAlign="Left" width="90px">
+											<Column minScreenWidth="320px" width="90px" hAlign="Left" >
 												<Text text="Item"/>
 											</Column>
-											<Column minScreenWidth="870px" demandPopin="false" hAlign="Left" vAlign="Left" width="auto">
+											<Column minScreenWidth="870px" demandPopin="false" width="auto" hAlign="Left" >
 												<Text text="Descrição"/>
 											</Column>
 											<!--<Column minScreenWidth="420px" demandPopin="false" hAlign="Left" vAlign="Left" width="80px">-->
 											<!--	<Text text="Preço"/>-->
 											<!--</Column>-->
-											<Column minScreenWidth="320px" hAlign="Left" vAlign="Left" width="50px">
+											<Column minScreenWidth="320px" width="50px" hAlign="Left" >
 												<Text text="Qnt"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="true" hAlign="Left" vAlign="Left" width="70px">
+											<Column minScreenWidth="360px" demandPopin="true" width="70px" hAlign="Left" >
 												<Text text="Desc"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left" vAlign="Left">
+											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left" >
 												<Text text="Valor UN"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left" vAlign="Left">
+											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">
 												<Text text="Valor Total"/>
 											</Column>
 											<!--<Column minScreenWidth="500px" demandPopin="false" hAlign="Left" vAlign="Left" width="110px">-->
@@ -169,72 +170,17 @@
 									</Table>
 								</ScrollContainer>
 							</IconTabFilter>
-							<!--<IconTabFilter id="tabItensDiluicaoPedidoStep" text="Itens Diluição" enabled="false" icon="sap-icon://lead" key="tab4">-->
-							<!--	<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">-->
-							<!--		<Toolbar>-->
-							<!--			<Title/>-->
-							<!--			<ToolbarSpacer/>-->
-							<!--			<Button icon="sap-icon://add" press="onNovoItemDiluicao" type="Emphasized"/>-->
-							<!--		</Toolbar>-->
-							<!--		<Table id="table_diluicao" width="100%" items="{ path:'ItensDiluicaoGrid>/', sorter: { path: 'index', ascending: true }}" updateFinished="onListUpdateFinished" mode="Delete" delete="onDeletarItemPedido" class="margins" itemPress="onEditarItemPress" noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;" busyIndicatorDelay="0" fixedLayout="false">-->
-							<!--			<columns>-->
-							<!--				<Column minScreenWidth="600px" hAlign="Left" visible="true" width="20px">-->
-							<!--					<Text text="Id"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="320px" hAlign="Left" width="80px">-->
-							<!--					<Text text="Item"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="870px" demandPopin="false" hAlign="Left" width="auto">-->
-							<!--					<Text text="Descrição"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="320px" demandPopin="true" hAlign="Left" width="80px">-->
-							<!--					<Text text="Preço"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="320px" hAlign="Left" width="50px">-->
-							<!--					<Text text="Qnt"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="360px" demandPopin="true" hAlign="Left" width="50px">-->
-							<!--					<Text text="Desc"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">-->
-							<!--					<Text text="Preço Desc"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="500px" demandPopin="false" hAlign="Left" width="110px">-->
-							<!--					<Text text="Comissão"/>-->
-							<!--				</Column>-->
-							<!--				<Column minScreenWidth="550px" demandPopin="false" hAlign="Left" width="110px">-->
-							<!--					<Text text="Verba"/>-->
-							<!--				</Column>-->
-							<!--			</columns>-->
-							<!--			<items class="margins">-->
-							<!--				<ColumnListItem type="Active">-->
-							<!--					<cells>-->
-							<!--						<Text text="{path : 'ItensDiluicaoPedidoGrid>index', type: 'sap.ui.model.type.Integer'}" hAlign="Left" visible="true"/>-->
-							<!--						<Text text="{ItensDiluicaoPedidoGrid>matnr}" hAlign="Left"/>-->
-							<!--						<Text text="{path: 'ItensDiluicaoPedidoGrid>maktx'}" hAlign="Left"/>-->
-							<!--						<Text text="R$: {ItensDiluicaoPedidoGrid>zzVprod}" hAlign="Right"/>-->
-							<!--						<Text text="{ItensDiluicaoPedidoGrid>zzQnt}" hAlign="Right"/>-->
-							<!--						<Text text="{ItensDiluicaoPedidoGrid>zzDesitem} %" hAlign="Right"/>-->
-							<!--						<Text text="R$: {ItensDiluicaoPedidoGrid>zzVprodDesc}" hAlign="Right"/>-->
-							<!--						<Text text="{ItensDiluicaoPedidoGrid>zzPercom} %" hAlign="Right"/>-->
-							<!--						<Text text="{ItensDiluicaoPedidoGrid>zzPervm} %" hAlign="Right"/>-->
-							<!--					</cells>-->
-							<!--				</ColumnListItem>-->
-							<!--			</items>-->
-							<!--		</Table>-->
-							<!--	</ScrollContainer>-->
-							<!--</IconTabFilter>-->
 							<IconTabFilter id="tabBalancoVerbaStep" text="Balanço Verbas" enabled="false" icon="sap-icon://waiver" key="tab6">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
 											<Label text="Valor Excedente Regra de Desconto" class="bold"/>
-											<Input id="idExcedenteDesconto" value="{modelDescontos>/descontoDisponivel}" enabled="false" class="desabilitado marginBottomInpu"/>
+											<Input id="idExcedenteDesconto" value="{modelDadosPedido>/TotalExcedenteDescontos}" enabled="false" class="desabilitado marginBottomInpu"/>
 											<Label text="Verba de Marketing"/>
-											<Input id="idVerbaDesconto" enabled="true" type="Number" class=""/>
+											<Input id="idVerbaDesconto" enabled="true" type="Number" />
 											<Label text="Comissão"/>
-											<Input id="idComissaoDesconto" enabled="true" type="Number" class=""/>
+											<Input id="idComissaoDesconto" enabled="true" type="Number" />
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
@@ -243,14 +189,14 @@
 											<Label text="Valor Excedente Regra de Prazo Médio" class="bold"/>
 											<Input id="idExcedentePrazo" value="{modelDescontos>/descontoDisponivel}" enabled="false" class="desabilitado marginBottomInpu"/>
 											<Label text="Verba de Marketing"/>
-											<Input id="idVerbaPrazo" enabled="true" type="Number" class=""/>
+											<Input id="idVerbaPrazo" enabled="true" type="Number" />
 											<Label text="Comissão"/>
-											<Input id="idComissaoPrazo" enabled="true" type="Number" class=""/>
+											<Input id="idComissaoPrazo" enabled="true" type="Number" />
 										</f:content>
 									</f:SimpleForm>
 									<Toolbar>
 										<ToolbarSpacer/>
-										<Button id="idTransferirVerbas" text="Aplicar Balanço" type="Accept" press="onCalculaBalancoVenda"/>
+										<Button id="idTransferirVerbas" text="Aplicar Balanço" type="Accept" press="onInicioBalancoVerbas"/>
 									</Toolbar>
 								</ScrollContainer>
 							</IconTabFilter>
