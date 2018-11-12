@@ -71,8 +71,7 @@
 					"defaultBindingMode": "TwoWay",
 					"defaultCountMode": "Request"
 				},
-				"dataSource": "ZFORCA_VENDAS_VB_SRV",
-				"preload": true
+				"dataSource": "ZFORCA_VENDAS_VB_SRV"
 			}
 		},
 		"resources": {
