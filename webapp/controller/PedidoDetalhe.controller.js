@@ -146,7 +146,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/LocalEntrega",
 				this.getOwnerComponent().getModel("modelCliente").getProperty("/Ort01"));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
@@ -2042,28 +2042,31 @@ sap.ui.define([
 			if (existeEntrada === false || existeEntrada == "") {
 				//Calculo prazo medio normal
 				var prazoMedio = Math.round((parseInt(intervaloParcelas) * parseInt(quantidadeParcelas) + parseInt(diasPrimeiraParcela)) /
-					parseInt(
-						quantidadeParcelas) * 100) / 100;
+					parseInt(quantidadeParcelas) * 100) / 100;
 				if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 					if (valTotPed < valorPedMin && prazoMedio >= prazoMinAvista) {
 
 						diasExcedente = prazoMedio - prazoMinAvista;
 						percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 					} else if (valTotPed < valorPedMin && prazoMedio < prazoMinAvista) {
 						//Não gera excedente.
-						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente); 						
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 					} else if (valTotPed >= valorPedMin && prazoMedio >= prazoMaxAvista) {
 
 						diasExcedente = prazoMedio - prazoMaxAvista;
 						percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
-						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente); 						
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed); 
 
 					} else if (valTotPed >= valorPedMin && prazoMedio < prazoMaxAvista) {
 						//Não gera excedente.
 						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 					}
 
 				} else if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
@@ -2072,20 +2075,24 @@ sap.ui.define([
 						diasExcedente = prazoMedio - prazoMinAprazo;
 						percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 					} else if (valTotPed < valorPedMin && prazoMedio < prazoMinAprazo) {
 						//Não gera excedente.
 						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 					} else if (valTotPed >= valorPedMin && prazoMedio >= prazoMaxAprazo) {
 
 						diasExcedente = prazoMedio - prazoMaxAprazo;
 						percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 					} else if (valTotPed >= valorPedMin && prazoMedio < prazoMaxAprazo) {
 						//Não gera excedente.
 						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 					}
 				}
@@ -2111,20 +2118,24 @@ sap.ui.define([
 							diasExcedente = mediaPonderada - prazoMinAvista;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 						} else if (valTotPed < valorPedMin && mediaPonderada < prazoMinAvista) {
 							//Não gera excedente.
 							console.log("Não gerou excedente 1");
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAvista) {
 
 							diasExcedente = mediaPonderada - prazoMaxAvista;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 						} else if (valTotPed >= valorPedMin && mediaPonderada < prazoMaxAvista) {
 							//Não gera excedente.
 							console.log("Não gerou excedente 2");
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 						}
 
 					} else if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
@@ -2133,20 +2144,24 @@ sap.ui.define([
 							diasExcedente = mediaPonderada - prazoMinAprazo;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 						} else if (valTotPed < valorPedMin && mediaPonderada < prazoMinAprazo) {
 							//Não gera excedente.
 							console.log("Não gerou excedente 3");
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAprazo) {
 
 							diasExcedente = mediaPonderada - prazoMaxAprazo;
 							percExcedentePrazoMed = Math.round((Math.round((diasExcedente * (percJurosDia)) * 100) / 100) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 						} else if (valTotPed >= valorPedMin && mediaPonderada < prazoMaxAprazo) {
 							//Não gera excedente.
 							console.log("Não gerou excedente 4");
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 						}
 					}
 				} else if (percEntradaPedido > 0 || percEntradaPedido != null || percEntradaPedido != undefined) {
@@ -2167,19 +2182,24 @@ sap.ui.define([
 							diasExcedente = mediaPonderada - prazoMinAvista;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 						} else if (valTotPed < valorPedMin && mediaPonderada < prazoMinAvista) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
+							
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAvista) {
 
 							diasExcedente = mediaPonderada - prazoMaxAvista;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 						} else if (valTotPed >= valorPedMin && mediaPonderada < prazoMaxAvista) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 						}
 
 					} else if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
@@ -2187,17 +2207,25 @@ sap.ui.define([
 
 							diasExcedente = mediaPonderada - prazoMinAprazo;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
+							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 						} else if (valTotPed < valorPedMin && mediaPonderada < prazoMinAprazo) {
 							//Não gera excedente.
+							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAprazo) {
 
 							diasExcedente = mediaPonderada - prazoMaxAprazo;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
+							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 						} else if (valTotPed >= valorPedMin && mediaPonderada < prazoMaxAprazo) {
 							//Não gera excedente.
+							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 
 						}
 					}
