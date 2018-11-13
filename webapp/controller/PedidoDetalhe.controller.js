@@ -3036,14 +3036,13 @@ sap.ui.define([
 					title: "Corrigir o campo!",
 					actions: [MessageBox.Action.OK]
 				});
+			} else if (this.byId("idQuantParcelas").getValue() <= 0) {
+				MessageBox.show("Quantidade de parcelas deve ser maior que 0.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Corrigir o campo!",
+					actions: [MessageBox.Action.OK]
+				});
 			}
-			// else if (dataEntrega.indexOf("/") == -1) {
-			// 	MessageBox.show("Data Entrega inválida. Informe a data no seguinte formato : dd/MM/aaaa", {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Corrigir o campo!",
-			// 		actions: [MessageBox.Action.OK]
-			// 	});
-			// }
 			// else if (tamanhoDataEntrega < 10 || tamanhoDataEntrega > 10) {
 			// 	MessageBox.show("Data Entrega inválida. Informe a data no seguinte formato : dd/MM/aaaa", {
 			// 		icon: MessageBox.Icon.ERROR,
