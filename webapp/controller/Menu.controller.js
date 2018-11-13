@@ -21,8 +21,7 @@ sap.ui.define([
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("entregaFutura");
 					break;
 				case "aprovacoes":
-					sap.m.MessageToast.show("Em construção.");
-					//sap.ui.core.UIComponent.getRouterFor(this).navTo("");
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("Aprovacoes");
 					break;
 				case "relatorios":
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("menuRelatorios");
