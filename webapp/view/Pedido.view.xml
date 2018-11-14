@@ -34,9 +34,9 @@
 								<Text text="Valor total"/>
 							</Column>
 							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Valor líq."/>
+								<Text text="Total Itens"/>
 							</Column>
-							<Column minScreenWidth="320px" hAlign="Center" width="70px" popinDisplay="Inline">
+							<Column minScreenWidth="320px" hAlign="Left" width="100px" popinDisplay="Inline">
 								<Text text="Status"/>
 							</Column>
 						</columns>
@@ -46,8 +46,8 @@
 									<Text text="{path : 'pedidosCadastrados>nrPedCli'}"/>
 									<Text text="{path : 'pedidosCadastrados>dataImpl', formatter:'.myFormatterDataImp'}"/>
 									<Text text="R$: {path : 'pedidosCadastrados>valTotPed'}"/>
-									<Text text="R$: {path : 'pedidosCadastrados>valLiqPed'}"/>
-									<Text text="{path :'pedidosCadastrados>statusPedido'}"/>
+									<Text text="{path : 'pedidosCadastrados>totalItensPedido'}"/>
+									<Text text="{path :'pedidosCadastrados>situacaoPedido'}"/>
 								</cells>
 							</ColumnListItem>
 						</items>
@@ -56,7 +56,7 @@
 			</Page>
 		</detailPages>
 		<masterPages>
-			<Page id="master" title="Clientes" icon="sap-icon://action" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
+			<Page id="master" title="Clientes" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
 				<headerContent/>
 				<subHeader>
 					<Toolbar id="searchBar">
