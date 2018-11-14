@@ -1,12 +1,11 @@
-<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" controllerName="testeui5.controller.Aprovacoes"
-	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" controllerName="testeui5.controller.Aprovacoes" xmlns="sap.m"
+	xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Aprovações">
 		<subHeader>
 			<Toolbar>
 				<ToolbarSpacer/>
 				<ToolbarSpacer/>
 				<ToolbarSpacer/>
-				<Button text="Enviar" press="onEnviarPedido" icon="sap-icon://upload" type="Accept"/>
 			</Toolbar>
 		</subHeader>
 		<semantic:FullscreenPage id="page">
@@ -56,6 +55,10 @@
 					</items>
 				</Table>
 			</semantic:content>
+			<semantic:customFooterContent>
+				<Button text="Aprovar" press="onAprovarPedido" icon="sap-icon://accept" type="Accept"/>
+				<Button text="Reprovar" press="onReprovarPedido" icon="sap-icon://decline" type="Reject"/>
+			</semantic:customFooterContent>
 		</semantic:FullscreenPage>
 	</Page>
 </mvc:View>
