@@ -170,7 +170,7 @@
 									</Table>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabBalancoVerbaStep" text="Balanço Verbas" enabled="false" icon="sap-icon://waiver" key="tab6">
+							<IconTabFilter id="tabBalancoVerbaStep" text="Balanço Verbas" enabled="false" icon="sap-icon://waiver" key="tab5">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
@@ -188,8 +188,8 @@
 										<f:content>
 											<Label text="Valor excedente prazo médio" class="bold"/>
 											<Input id="idExcedentePrazo" value="{modelDadosPedido>/ValTotalAcresPrazoMed}" enabled="false" class="desabilitado"/>
-											<Label text="Verba de Marketing"/>
-											<Input id="idVerbaPrazo" enabled="true" type="Number" />
+											<!--<Label text="Verba de Marketing"/>-->
+											<!--<Input id="idVerbaPrazo" enabled="true" type="Number" />-->
 											<Label text="Comissão"/>
 											<Input id="idComissaoPrazo" enabled="true" type="Number" />
 										</f:content>
@@ -227,7 +227,7 @@
 									</Toolbar>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabTotalStep" text="Total Pedido" enabled="false" icon="sap-icon://expense-report" key="tab5">
+							<IconTabFilter id="tabTotalStep" text="Total Pedido" enabled="false" icon="sap-icon://expense-report" key="tab6">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">

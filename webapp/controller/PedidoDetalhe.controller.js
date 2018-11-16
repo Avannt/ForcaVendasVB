@@ -1455,6 +1455,8 @@ sap.ui.define([
 
 			var descontoTotal = Total - TotalPedidoDesc;
 			descontoTotal = Math.round(parseFloat(descontoTotal * 100)) / 100;
+			
+			//Balanço de verbas totais
 
 			console.log(totalExcedenteDescontos);
 
@@ -1831,7 +1833,7 @@ sap.ui.define([
 		onTablFilterEvent: function (evt) {
 			var that = this;
 			var item = evt.getParameters();
-			if (item.selectedKey == "tab6") {
+			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
 
 				var promise = new Promise(function (resolve, reject) {
 					that.onInicioBalancoVerbas(resolve, reject);
@@ -2829,8 +2831,8 @@ sap.ui.define([
 			var data = this.onDataAtualizacao();
 			var horario = data[1];
 
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/situacaoDadosPedido", "PEN");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/idSituacaoDadosPedido", 2);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "PEN");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 2);
 
 			var totalItens = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido");
 			var completoPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo");
@@ -2872,7 +2874,7 @@ sap.ui.define([
 							werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
 							codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
 							tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
-							idStatus: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
+							idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
 							situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
 							tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
 							completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
@@ -3280,7 +3282,6 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "");
-			this.getOwnerComponent().getModel("modelAux").setProperty("/CodRepres", "");
 
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", "");
