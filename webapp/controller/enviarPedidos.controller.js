@@ -3,7 +3,7 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/m/MessageBox"
-], function(BaseController, Filter, FilterOperator, MessageBox) {
+], function (BaseController, Filter, FilterOperator, MessageBox) {
 	"use strict";
 	var oPedidosEnviar = [];
 	var oItensPedidoGrid = [];
@@ -11,54 +11,54 @@ sap.ui.define([
 	var oItensPedidoEnviar = [];
 	var deletarMovimentos = [];
 	var ajaxCall;
-	
+
 	return BaseController.extend("testeui5.controller.enviarPedidos", {
 
-		onInit: function() {
+		onInit: function () {
 			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
 
 		},
 
-		onNavBack: function() {
+		onNavBack: function () {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
 		},
 
-		myFormatterDataImp: function(value) {
+		myFormatterDataImp: function (value) {
 			var aux = value.split("/");
 			var aux2 = aux[2].substring(2, aux[2].length);
 			value = aux[0] + "/" + aux[1] + "/" + aux2;
 			return value;
 		},
 
-		onItemPress: function(oEvent) {
+		onItemPress: function (oEvent) {
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("nrPedCli");
 			var variavelCodigoCliente = oItem.getBindingContext("PedidosEnviar").getProperty("kunnr");
 			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", variavelCodigoCliente);
 			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", nrPedCli);
-			
+
 			MessageBox.show("Deseja mesmo detalhar o Pedido?", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Detalhamento Solicitado",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-				onClose: function(oAction) {
+				onClose: function (oAction) {
 					if (oAction == sap.m.MessageBox.Action.YES) {
 
 						var open = indexedDB.open("VB_DataBase");
 
-						open.onerror = function() {
+						open.onerror = function () {
 							console.log("não foi possivel encontrar e/ou carregar a base de clientes");
 						};
 
-						open.onsuccess = function(e) {
+						open.onsuccess = function (e) {
 							var db = e.target.result;
-							
-							var promise = new Promise(function(resolve, reject) {
+
+							var promise = new Promise(function (resolve, reject) {
 								that.carregaModelCliente(db, resolve, reject);
 							});
-							
-							promise.then(function() {
+
+							promise.then(function () {
 								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 							});
 						};
@@ -67,7 +67,7 @@ sap.ui.define([
 			});
 		},
 
-		carregaModelCliente: function(db, resolve, reject) {
+		carregaModelCliente: function (db, resolve, reject) {
 			var that = this;
 
 			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
@@ -77,7 +77,7 @@ sap.ui.define([
 
 			var request = objUsuarios.get(codCliente);
 
-			request.onsuccess = function(e1) {
+			request.onsuccess = function (e1) {
 
 				var result = e1.target.result;
 
@@ -105,7 +105,7 @@ sap.ui.define([
 			};
 		},
 
-		_onLoadFields: function() {
+		_onLoadFields: function () {
 			var that = this;
 			oPedidosEnviar = [];
 			oItensPedidoGrid = [];
@@ -118,7 +118,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -126,11 +126,11 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 
 				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
-				store.openCursor().onsuccess = function(event) {
+				store.openCursor().onsuccess = function (event) {
 					var cursor = event.target.result;
 
 					if (cursor) {
@@ -144,9 +144,9 @@ sap.ui.define([
 
 						// var tx = db.transaction("ItensPedido", "readwrite");
 						// var objItensPedido = tx.objectStore("ItensPedido");
-						
+
 						var store1 = db.transaction("ItensPedido").objectStore("ItensPedido");
-						store1.openCursor().onsuccess = function(event1) {
+						store1.openCursor().onsuccess = function (event1) {
 							cursor = event1.target.result;
 
 							if (cursor) {
@@ -163,7 +163,7 @@ sap.ui.define([
 			};
 		},
 
-		onSelectionChange: function(oEvent) {
+		onSelectionChange: function (oEvent) {
 			console.log(oItensPedidoGrid);
 			console.log(oPedidoGrid);
 			oPedidosEnviar = [];
@@ -176,7 +176,7 @@ sap.ui.define([
 			that.getOwnerComponent().getModel("modelAux").setProperty("/numeroPedido", nrPedCli);
 
 			var open = indexedDB.open("VB_DataBase");
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -184,12 +184,12 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 				var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
 
 				var store = db.transaction("PrePedidos", "readwrite").objectStore("PrePedidos");
-				store.openCursor().onsuccess = function(event) {
+				store.openCursor().onsuccess = function (event) {
 					var cursor = event.target.result;
 					if (cursor) {
 						if (cursor.value.IdBase == IdBase && cursor.value.idStatus == 2 && cursor.value.NrPedcli == nrPedCli) {
@@ -200,7 +200,7 @@ sap.ui.define([
 				};
 
 				var store1 = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
-				store1.openCursor().onsuccess = function(event) {
+				store1.openCursor().onsuccess = function (event) {
 					var cursor = event.target.result;
 					if (cursor) {
 						if (cursor.value.IdBase == IdBase && cursor.value.NrPedcli == nrPedCli) {
@@ -210,6 +210,54 @@ sap.ui.define([
 					}
 				};
 			};
+		},
+
+		onEnviarPedido: function (oEvent) {
+			var objPedido = {
+				Nrpedcli: "1",
+				Iditempedido: "1",
+				Tindex: "",
+				Matnr: "",
+				Maktx: "",
+				Ntgew: "",
+				Knumh: "",
+				Knumhextra: "",
+				Konda: "",
+				Kondaextra: "",
+				Kondm: "",
+				Kondmextra: "",
+				Tipoitem: "",
+				Zzdesext: "",
+				Zzdesitem: "",
+				Zzpercdescdiluicao: "",
+				Zzpercdesctotal: "",
+				Zzpercom: "",
+				Zzpervm: "",
+				Zzqnt: "",
+				Zzvprod: "",
+				Zzvproddesc: "",
+				Zzvproddesctotal: "",
+				Length: "",
+			};
+			var oModel = this.getView().getModel();
+
+			oModel.create("/InserirOV", objPedido, {
+				success: function (data) {
+					MessageBox.show("Pedido Enviado!", {
+						icon: MessageBox.Icon.SUCCESS,
+						title: "Pedido enviado!",
+						actions: [MessageBox.Action.OK],
+					});
+				},
+				error: function (data) {
+					MessageBox.show("Verificar sistema!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Verificar sistema!",
+						actions: [MessageBox.Action.OK],
+					});
+
+				}
+			});
 		}
 	});
 });
