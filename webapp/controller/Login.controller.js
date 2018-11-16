@@ -301,9 +301,25 @@ sap.ui.define([
 			onInicializaModels: function() {
 
 				var oModel = new sap.ui.model.json.JSONModel({
+					Ntgew: 0,
+					ValComissaoPedido: 0,
+					ValVerbaPedido: 0,
+					ValCampGlobal: 0,
+					ValCampBrinde: 0,
+					ValCampEnxoval: 0,
+					ValDescontoTotal: 0,
+					ValTotPed:0,
+					TotalItensPedido: 0,
+					ValTotalExcedenteDescontos: 0,
+					ValTotalAcresPrazoMed: 0,
+					ValorEntradaPedido: 0,
+					ValComissao: 0,
+					ValMinPedido: 0,
+					PercEntradaPedido: 0,
+					ExisteEntradaPedido: "",
 					Completo: "",
 					NrPedCli: "",
-					IdStatus: "",
+					IdStatusPedido: "",
 					SituacaoPedido: "",
 					DataPedido: "",
 					LocalEntrega: "",
@@ -311,15 +327,12 @@ sap.ui.define([
 					QuantParcelas: "",
 					IntervaloParcelas: "",
 					ObservacaoPedido: "",
-					ValMinPedido: "",
+					ObservacaoAuditoriaPedido: "",
 					TabPreco: "",
 					TipoTransporte: "",
 					TipoNegociacao: "",
 					TipoPedido: "",
-					PesoLiquido: "",
-					PesoBruto: "",
-					DataImpl: "",
-					ValComissao: ""
+					DataImpl: ""
 				});
 				this.getOwnerComponent().setModel(oModel, "modelDadosPedido");
 

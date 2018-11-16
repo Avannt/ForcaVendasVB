@@ -16,25 +16,7 @@ sap.ui.define([
 				modelUserDepartamentShell: ""
 			});
 			this.getOwnerComponent().setModel(oModel, "modelShell");
-
-			var oHeader = this.getView().byId("MyShell").getHeader();
-			oHeader.addStyleClass("myShellHeader");
-
-			// attach to onAfterRendering of the header to manipulate dom via jquery.
-			oHeader.addEventDelegate({
-				onAfterRendering: function() {
-					//console.log("shell header onAfterRendering");
-					// get relevent dom element (here the label attribute)
-					// var sLabel = label.getId();
-					var oRef = jQuery("__component0---app--MyShell-header-hdr-begin");
-					oRef.empty();
-					// var sText = label.getTooltip();
-					// use the tooltip attribute to display the wanted text
-					oRef.append("<span>" + "Fernanda" + "</span>");
-					// note the needed css that adapts the settings for 
-					// the second shellHeadItem
-				}
-			});
+			
 		},
 
 		onAfterRendering: function() {
@@ -45,25 +27,7 @@ sap.ui.define([
 			var that = this;
 			sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
 			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
-			
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataEntrega", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/LocalEntrega", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PesoBruto", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PesoLiquido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "");
+			this.onResetaCamposPrePedido();
 			
 			// var oModel = new sap.ui.model.json.JSONModel();
 			// this.getView().setModel(oModel);
@@ -227,6 +191,44 @@ sap.ui.define([
 			// }
 			// sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
 		},
+		
+		onResetaCamposPrePedido: function () {
+			//*modelDadosPedido
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", "");
+			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/LocalEntrega", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
+
+			var objItensPedidoTemplate = [];
+			var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+			this.getView().setModel(oModel, "ItensPedidoGrid");
+		},
 
 		showId: function() {
 			var id = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
@@ -241,45 +243,7 @@ sap.ui.define([
 			}
 
 		},
-
-		resetModelos: function() {
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserName", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserId", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserPassword", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserCPF", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserCidade", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserEstado", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserDepartament", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserEntryDate", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserEnterpriseName", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserAmountMoney", "");
-			this.getOwnerComponent().getModel("modelUser").setProperty("/modelUserPhoto", "");
-			
-			
-			var oModel = new sap.ui.model.json.JSONModel();
-			this.getView().setModel(oModel);
-			
-			this.getOwnerComponent().setModel(oModel, "modelCliente");
-			this.getOwnerComponent().setModel(oModel, "modelDadosPedido");
-			this.getOwnerComponent().setModel(oModel, "modelDescontos");
-			this.getOwnerComponent().getModel(oModel, "modelAux");
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoAplicar", 0);
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoDisponivel", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idDesconto", "");
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/idDescontoCamp", "");
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoAplicarCamp", 0);
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoDisponivelCamp", 0);
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/idDescontoBoleto", "");
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoAplicarBoleto", 0);
-			this.getOwnerComponent().getModel("modelAux").setProperty("/numeroPedido", "");
-		},
-
-		resetModeloShell: function() {
-			this.getOwnerComponent().getModel("modelShell").setProperty("/modelUserNameShell", "");
-			this.getOwnerComponent().getModel("modelShell").setProperty("/modelUserIdShell", "");
-			this.getOwnerComponent().getModel("modelShell").setProperty("/modelUserDepartamentShell", "");
-		},
-
+		
 		handleLogoffPress: function() {
 			
 			var that = this; // RECONHECE O CONTROLER ATUAL CHAMADO.

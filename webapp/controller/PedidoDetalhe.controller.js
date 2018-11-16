@@ -4,7 +4,7 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"testeui5/model/formatter"
 
-], function(BaseController, JSONModel, MessageBox, formatter) {
+], function (BaseController, JSONModel, MessageBox, formatter) {
 	"use strict";
 	//variavel para salvar o obj ATUAL do item do pedido E obj pra salvar TODOS os items do pedido
 	var oItemTemplate = [];
@@ -24,11 +24,11 @@ sap.ui.define([
 
 		formatter: formatter,
 
-		onInit: function() {
+		onInit: function () {
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this._onLoadFields, this);
 		},
 
-		_onLoadFields: function() {
+		_onLoadFields: function () {
 			var that = this;
 			this.getView().setModel(this.getView().getModel("modelCliente"));
 			this.getView().setModel(this.getView().getModel("modelAux"));
@@ -41,7 +41,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -49,15 +49,15 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 
-				var promise = new Promise(function(resolve, reject) {
+				var promise = new Promise(function (resolve, reject) {
 					that.onCarregaCampos(db);
 					resolve();
 				});
 
-				promise.then(function(value) {
+				promise.then(function (value) {
 
 					if (that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli") === "") {
 						console.log("Criando numero pedido");
@@ -72,7 +72,7 @@ sap.ui.define([
 			};
 		},
 
-		onCarregaCliente: function() {
+		onCarregaCliente: function () {
 
 			this.byId("idCodCliente").setValue(this.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + "-" +
 				this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"));
@@ -84,35 +84,38 @@ sap.ui.define([
 			this.byId("idFone").setValue();
 		},
 
-		onResetaCamposPrePedido: function() {
+		onResetaCamposPrePedido: function () {
 			//*modelDadosPedido
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataEntrega", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/LocalEntrega", "");
+			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/LocalEntrega", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PesoBruto", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PesoLiquido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
 
 			this.byId("idTabelaPreco").setSelectedKey();
 			this.byId("idTipoTransporte").setSelectedKey();
@@ -125,7 +128,7 @@ sap.ui.define([
 		},
 
 		//CARREGA OS CAMPOS, POPULANDO OS COMBO BOX
-		onCarregaCampos: function(db, resolve, reject) {
+		onCarregaCampos: function (db, resolve, reject) {
 			var that = this;
 			oVetorTabPreco = [];
 			oVetorMateriais = [];
@@ -138,41 +141,43 @@ sap.ui.define([
 			var Kunnr = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
 
 			//Inicialização de Variáveis. *modelDadosPedido
+
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "EM DIGITAÇÃO");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 1);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", data[0] + "-" + data[1]);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", data[0]);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataEntrega", data[0]);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/LocalEntrega",
-				this.getOwnerComponent().getModel("modelCliente").getProperty("/Ort01"));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PesoBruto", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PesoLiquido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
 
 			//CARREGA OS MATERIAIS
 			var transaction = db.transaction("Materiais", "readonly");
 			var objectStore = transaction.objectStore("Materiais");
 
 			if ("getAll" in objectStore) {
-				objectStore.getAll().onsuccess = function(event) {
+				objectStore.getAll().onsuccess = function (event) {
 					oVetorMateriais = event.target.result;
 
 					var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
@@ -185,7 +190,7 @@ sap.ui.define([
 			var objectStoreTiposPedidos = transactionTiposPedidos.objectStore("TiposPedidos");
 
 			if ("getAll" in objectStore) {
-				objectStoreTiposPedidos.getAll().onsuccess = function(event) {
+				objectStoreTiposPedidos.getAll().onsuccess = function (event) {
 					oVetorTiposPedidos = event.target.result;
 
 					var oModel = new sap.ui.model.json.JSONModel(oVetorTiposPedidos);
@@ -218,7 +223,7 @@ sap.ui.define([
 			var transactionA961 = db.transaction(["A961"], "readonly");
 			var objectStoreA961 = transactionA961.objectStore("A961");
 
-			objectStoreA961.openCursor().onsuccess = function(event) {
+			objectStoreA961.openCursor().onsuccess = function (event) {
 				var cursor = event.target.result;
 				if (cursor) {
 					if (cursor.value.kunnr == Kunnr) {
@@ -240,7 +245,7 @@ sap.ui.define([
 						var transactionA963 = db.transaction(["A963"], "readonly");
 						var objectStoreA963 = transactionA963.objectStore("A963");
 
-						objectStoreA963.openCursor().onsuccess = function(event) {
+						objectStoreA963.openCursor().onsuccess = function (event) {
 							var cursor1 = event.target.result;
 							if (cursor1) {
 								if (cursor.value.lifnr == CodRepres) {
@@ -262,7 +267,7 @@ sap.ui.define([
 			};
 		},
 
-		onCriarNumeroPedido: function() {
+		onCriarNumeroPedido: function () {
 			var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "Não");
 
@@ -299,7 +304,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", numeroPed);
 		},
 
-		onCarregaDadosPedido: function(db) {
+		onCarregaDadosPedido: function (db) {
 			var that = this;
 			objItensPedidoTemplate = [];
 
@@ -313,7 +318,7 @@ sap.ui.define([
 
 			var requestPrePedidos = objPrePedidos.get(that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"));
 
-			requestPrePedidos.onsuccess = function(e) {
+			requestPrePedidos.onsuccess = function (e) {
 				var oPrePedido = e.target.result;
 
 				if (oPrePedido == undefined) {
@@ -338,9 +343,6 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", oPrePedido.situacaoPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", oPrePedido.idStatusPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", oPrePedido.dataImpl);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", oPrePedido.dataPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataEntrega", oPrePedido.dataEntrega);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/LocalEntrega", oPrePedido.localEntrega);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", oPrePedido.diasPrimeiraParcela);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", oPrePedido.quantParcelas);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", oPrePedido.intervaloParcelas);
@@ -350,24 +352,35 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", oPrePedido.percEntradaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", oPrePedido.valorEntradaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", oPrePedido.valMinPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oPrePedido.tabPreco);
-					that.byId("idTabelaPreco").setSelectedKey(oPrePedido.tabPreco);
-
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oPrePedido.tipoTransporte);
-					that.byId("idTipoTransporte").setSelectedKey(oPrePedido.tipoTransporte);
 
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oPrePedido.tipoNegociacao);
-					that.byId("idTipoNegociacao").setSelectedKey(oPrePedido.tipoNegociacao);
-
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oPrePedido.tipoPedido);
-					that.byId("idTipoPedido").setSelectedKey(oPrePedido.tipoPedido);
-
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PesoBruto", oPrePedido.pesoBruto);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PesoLiquido", oPrePedido.pesoLiquido);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", oPrePedido.ntgew);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", oPrePedido.alTotPed);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", oPrePedido.valDescontoTotal);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", oPrePedido.valorTotalAcresPrazoMed);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", oPrePedido.valTotalExcedenteDescontos);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", oPrePedido.totalItensPedido);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", oPrePedido.valCampEnxoval);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", oPrePedido.valCampBrinde);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", oPrePedido.valCampGlobal);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", oPrePedido.valVerbaPedido);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", oPrePedido.valComissaoPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", oPrePedido.completo);
 
+					//Tela cabeçalho (2º aba)
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oPrePedido.tipoTransporte);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oPrePedido.tabPreco);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oPrePedido.tipoNegociacao);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oPrePedido.tipoPedido);
+
+					//Seleciona o valor do combo
+					that.byId("idTabelaPreco").setSelectedKey(oPrePedido.tabPreco);
+					that.byId("idTipoTransporte").setSelectedKey(oPrePedido.tipoTransporte);
+					that.byId("idTipoNegociacao").setSelectedKey(oPrePedido.tipoNegociacao);
+					that.byId("idTipoPedido").setSelectedKey(oPrePedido.tipoPedido);
+
 					var storeItensPedido = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
-					storeItensPedido.openCursor().onsuccess = function(event) {
+					storeItensPedido.openCursor().onsuccess = function (event) {
 						// consulta resultado do event
 						var cursor = event.target.result;
 						if (cursor) {
@@ -389,7 +402,7 @@ sap.ui.define([
 			};
 		},
 
-		onDataAtualizacao: function() {
+		onDataAtualizacao: function () {
 			var date = new Date();
 			var dia = String(date.getDate());
 			var mes = String(date.getMonth() + 1);
@@ -420,7 +433,7 @@ sap.ui.define([
 			return [data, horario];
 		},
 
-		myFormatterRentabilidade: function(Value) {
+		myFormatterRentabilidade: function (Value) {
 			// var rentabilidade = sap.ui.getCore().byId("idRentabilidade").getValue();
 
 			if (Value <= -3) {
@@ -441,7 +454,7 @@ sap.ui.define([
 			}
 		},
 
-		myFormatterRentabilidadePorcentagem: function(Value) {
+		myFormatterRentabilidadePorcentagem: function (Value) {
 			// var rentabilidade = sap.ui.getCore().byId("idRentabilidade").getValue();
 
 			if (Value > -3) {
@@ -455,13 +468,13 @@ sap.ui.define([
 			}
 		},
 
-		carregarItensPedido: function(db) {
+		carregarItensPedido: function (db) {
 			var that = this;
 			db = open.result;
 
 			var store = db.transaction("ItensPedido").objectStore("ItensPedido");
 			//CARREGA TODOS OS ITENS DE UM DETERMINADO PEDIDO
-			store.openCursor().onsuccess = function(event) {
+			store.openCursor().onsuccess = function (event) {
 				// consulta resultado do event
 				var cursor = event.target.result;
 				var numeroPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/numeroPedido");
@@ -480,11 +493,11 @@ sap.ui.define([
 
 		/// EVENTOS STANDARD  APLICAÇÃO 			<<<<<<<<<<<<
 
-		onAfterRendering: function() {},
+		onAfterRendering: function () {},
 
-		onBeforerRendering: function() {},
+		onBeforerRendering: function () {},
 
-		onExit: function() {
+		onExit: function () {
 
 		},
 
@@ -492,12 +505,12 @@ sap.ui.define([
 
 		/// EVENTOS CAMPOS							<<<<<<<<<<<<
 
-		onChangeTipoPedido: function(evt) {
+		onChangeTipoPedido: function (evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oSource.getSelectedKey());
 		},
 
-		onExisteEntrada: function(evt) {
+		onExisteEntrada: function (evt) {
 
 			var bSelected = evt.getParameter("selected");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", bSelected);
@@ -514,7 +527,7 @@ sap.ui.define([
 			}
 		},
 
-		onBloqueiaPercEntrada: function(evt) {
+		onBloqueiaPercEntrada: function (evt) {
 			var percEntrada = evt.getSource();
 
 			if (percEntrada.getValue() > 0) {
@@ -526,7 +539,7 @@ sap.ui.define([
 
 		},
 
-		onBloqueiaValorEntrada: function(evt) {
+		onBloqueiaValorEntrada: function (evt) {
 
 			var vlrEntrada = evt.getSource();
 
@@ -538,31 +551,31 @@ sap.ui.define([
 			}
 		},
 
-		onChangeTipoNegociacao: function(evt) {
+		onChangeTipoNegociacao: function (evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oSource.getSelectedKey());
 		},
 
-		onChangeTabelaPreco: function(evt) {
+		onChangeTabelaPreco: function (evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oSource.getSelectedKey());
 		},
 
-		onChangeTipoTransporte: function(evt) {
+		onChangeTipoTransporte: function (evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oSource.getSelectedKey());
 		},
 
-		onChangeDataPedido: function() {
+		onChangeDataPedido: function () {
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", this.byId("idDataPedido").getValue());
 		},
 
-		onChangeObservacoes: function(evt) {
+		onChangeObservacoes: function (evt) {
 			var oObservacoes = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", oObservacoes.getValue());
 		},
 
-		onChangeAuditoriaObservacoes: function(evt) {
+		onChangeAuditoriaObservacoes: function (evt) {
 			var oObservacoes = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", oObservacoes.getValue());
 		},
@@ -571,7 +584,7 @@ sap.ui.define([
 
 		/// EVENTOS UTILITARIOS						<<<<<<<<<<<<
 
-		bloquearCampos: function() {
+		bloquearCampos: function () {
 
 			this.byId("idEstabelecimento").setProperty("enabled", false);
 			this.byId("idTipoPedido").setProperty("enabled", false);
@@ -583,7 +596,7 @@ sap.ui.define([
 
 		},
 
-		desbloquearCampos: function() {
+		desbloquearCampos: function () {
 			this.byId("idEstabelecimento").setProperty("enabled", true);
 			this.byId("idTipoPedido").setProperty("enabled", true);
 			this.byId("idVencimento1").setProperty("enabled", true);
@@ -594,7 +607,7 @@ sap.ui.define([
 
 		},
 
-		resetarCamposTela: function() {
+		resetarCamposTela: function () {
 
 			this.byId("idNumeroPedido").setValue("");
 			this.byId("idSituacao").setValue("");
@@ -603,8 +616,8 @@ sap.ui.define([
 			this.byId("idTipoNegociacao").setSelectedKey("");
 			this.byId("idTabelaPreco").setSelectedKey("");
 			this.byId("idTipoTransporte").setSelectedKey("");
-			this.byId("idDataEntrega").setSelectedKey("");
-			this.byId("idLocalEntrega").setSelectedKey("");
+			// this.byId("idDataEntrega").setSelectedKey("");
+			// this.byId("idLocalEntrega").setSelectedKey("");
 			this.byId("idPrimeiraParcela").setValue("");
 			this.byId("idQuantParcelas").setValue("");
 			this.byId("idIntervaloParcelas").setValue("");
@@ -613,7 +626,7 @@ sap.ui.define([
 
 		},
 
-		onNavBack: function() {
+		onNavBack: function () {
 
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
@@ -625,7 +638,7 @@ sap.ui.define([
 
 		// EVENTOS DO FRAGMENTO 					<<<<<<<<<<<<
 
-		onItemChange: function(oEvent) {
+		onItemChange: function (oEvent) {
 			var that = this;
 			var itemExistente = false;
 			var oProduto = oEvent.getSource();
@@ -637,7 +650,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -645,7 +658,7 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 
 				oPanel.setBusy(true);
@@ -657,7 +670,7 @@ sap.ui.define([
 
 					var requestMaterial = objMaterial.get(codItem);
 
-					requestMaterial.onsuccess = function(e) {
+					requestMaterial.onsuccess = function (e) {
 						var oMaterial = e.target.result;
 
 						if (oMaterial == undefined) {
@@ -667,7 +680,7 @@ sap.ui.define([
 								icon: MessageBox.Icon.ERROR,
 								title: "Produto não encontrado.",
 								actions: [MessageBox.Action.YES],
-								onClose: function() {
+								onClose: function () {
 									that.onResetaCamposDialog();
 									sap.ui.getCore().byId("idItemPedido").focus();
 								}
@@ -702,7 +715,7 @@ sap.ui.define([
 
 								var requesA960 = objA960.get(idA960);
 
-								requesA960.onsuccess = function(e) {
+								requesA960.onsuccess = function (e) {
 									var oA960 = e.target.result;
 
 									if (oA960 == undefined) {
@@ -713,7 +726,7 @@ sap.ui.define([
 												icon: MessageBox.Icon.ERROR,
 												title: "Preço do produto não encontrado.",
 												actions: [MessageBox.Action.YES],
-												onClose: function() {
+												onClose: function () {
 													that.onResetaCamposDialog();
 												}
 											});
@@ -745,7 +758,7 @@ sap.ui.define([
 										var vetorAuxFamiliasExtra = [];
 										//Buscando informações da FAMILIA de desconto normal
 										var objA965 = db.transaction("A965").objectStore("A965");
-										objA965.openCursor().onsuccess = function(event) {
+										objA965.openCursor().onsuccess = function (event) {
 
 											var cursor = event.target.result;
 
@@ -761,7 +774,7 @@ sap.ui.define([
 											} else {
 
 												var objA966 = db.transaction("A966").objectStore("A966");
-												objA966.openCursor().onsuccess = function(event2) {
+												objA966.openCursor().onsuccess = function (event2) {
 													var cursor2 = event2.target.result;
 
 													if (cursor2) {
@@ -779,7 +792,7 @@ sap.ui.define([
 													} else {
 
 														var objA967 = db.transaction("A967").objectStore("A967");
-														objA967.openCursor().onsuccess = function(event3) {
+														objA967.openCursor().onsuccess = function (event3) {
 															var cursorA967 = event3.target.result;
 
 															if (cursorA967) {
@@ -798,7 +811,7 @@ sap.ui.define([
 																//Buscando Familia de desconto extra
 
 																var objA962 = db.transaction("A962").objectStore("A962");
-																objA962.openCursor().onsuccess = function(event) {
+																objA962.openCursor().onsuccess = function (event) {
 
 																	var cursor = event.target.result;
 
@@ -814,7 +827,7 @@ sap.ui.define([
 																	} else {
 
 																		var objA968 = db.transaction("A968").objectStore("A968");
-																		objA968.openCursor().onsuccess = function(event2) {
+																		objA968.openCursor().onsuccess = function (event2) {
 																			cursor2 = event2.target.result;
 
 																			if (cursor2) {
@@ -833,7 +846,7 @@ sap.ui.define([
 																			} else {
 
 																				var objA969 = db.transaction("A969").objectStore("A969");
-																				objA969.openCursor().onsuccess = function(event3) {
+																				objA969.openCursor().onsuccess = function (event3) {
 																					var cursorA969 = event3.target.result;
 
 																					if (cursorA969) {
@@ -875,7 +888,7 @@ sap.ui.define([
 									icon: MessageBox.Icon.ERROR,
 									title: "Produto já inserido.",
 									actions: [MessageBox.Action.YES],
-									onClose: function() {
+									onClose: function () {
 
 										that.onResetaCamposDialog();
 										sap.ui.getCore().byId("idItemPedido").focus();
@@ -895,7 +908,7 @@ sap.ui.define([
 			};
 		},
 
-		onCriarIndexItemPedido: function() {
+		onCriarIndexItemPedido: function () {
 			//Define o index do produto a ser inserido
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (i === 0) {
@@ -920,7 +933,7 @@ sap.ui.define([
 			return indexItem;
 		},
 
-		onItemChangeDiluicao: function(oEvent) {
+		onItemChangeDiluicao: function (oEvent) {
 			var that = this;
 			var objAuxItem = {};
 			var itemJaInseridoDiluicao = false;
@@ -933,7 +946,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -941,7 +954,7 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 
 				if (codItem !== "") {
@@ -952,7 +965,7 @@ sap.ui.define([
 
 					var requestMaterial = objMaterial.get(codItem);
 
-					requestMaterial.onsuccess = function(e) {
+					requestMaterial.onsuccess = function (e) {
 						var oMaterial = e.target.result;
 
 						if (oMaterial == undefined) {
@@ -962,7 +975,7 @@ sap.ui.define([
 								icon: MessageBox.Icon.ERROR,
 								title: "Produto não encontrado.",
 								actions: [MessageBox.Action.YES],
-								onClose: function() {
+								onClose: function () {
 									that.onResetaCamposDialog();
 									sap.ui.getCore().byId("idItemPedido").focus();
 								}
@@ -1025,7 +1038,7 @@ sap.ui.define([
 									icon: MessageBox.Icon.ERROR,
 									title: "Item inválido.",
 									actions: [MessageBox.Action.OK],
-									onClose: function() {
+									onClose: function () {
 										oPanel.setBusy(false);
 										sap.ui.getCore().byId("idItemPedido").focus();
 										itemJaInseridoDiluicao = false;
@@ -1049,7 +1062,7 @@ sap.ui.define([
 
 								var requesA960 = objA960.get(idA960);
 
-								requesA960.onsuccess = function(e) {
+								requesA960.onsuccess = function (e) {
 									var oA960 = e.target.result;
 
 									if (oA960 == undefined) {
@@ -1060,7 +1073,7 @@ sap.ui.define([
 												icon: MessageBox.Icon.ERROR,
 												title: "Preço do produto não encontrado.",
 												actions: [MessageBox.Action.YES],
-												onClose: function() {
+												onClose: function () {
 													that.onResetaCamposDialog();
 												}
 											});
@@ -1100,7 +1113,7 @@ sap.ui.define([
 										var vetorAuxFamilias = [];
 										var vetorAuxFamiliasExtra = [];
 										var objA965 = db.transaction("A965").objectStore("A965");
-										objA965.openCursor().onsuccess = function(event) {
+										objA965.openCursor().onsuccess = function (event) {
 
 											var cursor = event.target.result;
 
@@ -1116,7 +1129,7 @@ sap.ui.define([
 											} else {
 
 												var objA966 = db.transaction("A966").objectStore("A966");
-												objA966.openCursor().onsuccess = function(event2) {
+												objA966.openCursor().onsuccess = function (event2) {
 													var cursor2 = event2.target.result;
 
 													if (cursor2) {
@@ -1134,7 +1147,7 @@ sap.ui.define([
 													} else {
 														// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 														var objA967 = db.transaction("A967").objectStore("A967");
-														objA967.openCursor().onsuccess = function(event3) {
+														objA967.openCursor().onsuccess = function (event3) {
 															var cursorA967 = event3.target.result;
 
 															if (cursorA967) {
@@ -1152,7 +1165,7 @@ sap.ui.define([
 
 																var auxRangeQuant = 0;
 																var objKonm = db.transaction("Konm").objectStore("Konm");
-																objKonm.openCursor().onsuccess = function(event2) {
+																objKonm.openCursor().onsuccess = function (event2) {
 																	var cursor3 = event2.target.result;
 
 																	if (cursor3) {
@@ -1173,7 +1186,7 @@ sap.ui.define([
 																		//Buscando Familia de desconto extra
 
 																		var objA962 = db.transaction("A962").objectStore("A962");
-																		objA962.openCursor().onsuccess = function(event) {
+																		objA962.openCursor().onsuccess = function (event) {
 
 																			var cursor = event.target.result;
 
@@ -1189,7 +1202,7 @@ sap.ui.define([
 																			} else {
 
 																				var objA968 = db.transaction("A968").objectStore("A968");
-																				objA968.openCursor().onsuccess = function(event2) {
+																				objA968.openCursor().onsuccess = function (event2) {
 																					cursor2 = event2.target.result;
 
 																					if (cursor2) {
@@ -1208,7 +1221,7 @@ sap.ui.define([
 																					} else {
 
 																						var objA969 = db.transaction("A969").objectStore("A969");
-																						objA969.openCursor().onsuccess = function(event3) {
+																						objA969.openCursor().onsuccess = function (event3) {
 																							var cursorA969 = event3.target.result;
 
 																							if (cursorA969) {
@@ -1251,7 +1264,7 @@ sap.ui.define([
 			};
 		},
 
-		onResetaCamposDialog: function() {
+		onResetaCamposDialog: function () {
 			oItemPedido = [];
 			sap.ui.getCore().byId("idItemPedido").setValue();
 			sap.ui.getCore().byId("idDesconto").setValue();
@@ -1264,11 +1277,11 @@ sap.ui.define([
 
 		},
 
-		onQuantidadeChange: function(evt) {
+		onQuantidadeChange: function (evt) {
 			var that = this;
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -1276,7 +1289,7 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 
 				var store = db.transaction("Materiais", "readwrite");
@@ -1284,7 +1297,7 @@ sap.ui.define([
 
 				var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
 
-				requestMaterial.onsuccess = function(e) {
+				requestMaterial.onsuccess = function (e) {
 					var oMaterial = e.target.result;
 
 					if (oMaterial == undefined) {
@@ -1293,7 +1306,7 @@ sap.ui.define([
 							icon: MessageBox.Icon.ERROR,
 							title: "Produto não encontrado.",
 							actions: [MessageBox.Action.YES],
-							onClose: function() {
+							onClose: function () {
 								that.onResetaCamposDialog();
 								sap.ui.getCore().byId("idItemPedido").focus();
 							}
@@ -1313,7 +1326,7 @@ sap.ui.define([
 								icon: MessageBox.Icon.ERROR,
 								title: "Quantidade inválida.",
 								actions: [MessageBox.Action.OK],
-								onClose: function() {
+								onClose: function () {
 									sap.ui.getCore().byId("idQuantidade").setValue(1);
 									sap.ui.getCore().byId("idQuantidade").focus();
 
@@ -1325,11 +1338,11 @@ sap.ui.define([
 			};
 		},
 
-		onFocusQnt: function() {
+		onFocusQnt: function () {
 			sap.ui.getCore().byId("idDesconto").focus();
 		},
 
-		onDescontoChange: function() {
+		onDescontoChange: function () {
 			var desconto = sap.ui.getCore().byId("idDesconto").getValue();
 			if (desconto === "") {
 				desconto = 0;
@@ -1346,19 +1359,19 @@ sap.ui.define([
 					icon: MessageBox.Icon.ERROR,
 					title: "Desconto inválida.",
 					actions: [MessageBox.Action.OK],
-					onClose: function() {
+					onClose: function () {
 
 					}
 				});
 			}
 		},
 
-		calculaPrecoItem: function() {
+		calculaPrecoItem: function () {
 			oItemPedido.zzPercDescTotal = 0;
 
 			if (oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr > 0) {
 
-				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
+				oItemPedido.zzVprodDesc = Math.round(oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100));
 				oItemPedido.zzPercDescTotal = oItemPedido.kbetr + oItemPedido.zzPercDescDiluicao;
 
 			} else {
@@ -1373,7 +1386,7 @@ sap.ui.define([
 				}
 
 				//2º Aplicar o Desconto digitado na tela de digitação dos itens
-				oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100));
+				oItemPedido.zzVprodDesc = Math.round(oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100)));
 
 				// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
 				// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
@@ -1389,18 +1402,25 @@ sap.ui.define([
 			oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
 		},
 
-		calculaTotalPedido: function() {
-			var TotalDesc = 0;
+		calculaTotalPedido: function () {
 			var Total = 0;
+			var TotalPedidoDesc = 0;
 			var Qnt = 0;
 			var QntProdutos = 0;
 			var Ntgew = 0;
 			var totalExcedenteDescontos = 0;
+			var totalComissaoGerada = 0;
+			var totalVerbaGerada = 0;
+			var valorTotalAcresPrazoMed = 0;
+			var percAcresPrazoMed = 0;
+			var valorCampEnxoval = 0;
+			var valorCampBrinde = 0;
+			var valorCampGlobal = 0;
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (objItensPedidoTemplate[i].tipoItem !== "Diluicao") {
 
-					TotalDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
+					TotalPedidoDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
 					Total += objItensPedidoTemplate[i].zzVprod * objItensPedidoTemplate[i].zzQnt;
 					Qnt += objItensPedidoTemplate[i].zzQnt;
 					QntProdutos += 1;
@@ -1408,40 +1428,58 @@ sap.ui.define([
 					if (objItensPedidoTemplate[i].ntgew > 0) {
 						Ntgew += objItensPedidoTemplate[i].ntgew * objItensPedidoTemplate[i].zzQnt;
 					}
-					
+
 					//Calculando o valor total da excessão por bloco:
-					//EXCEDIDO POR PERCENTUAL.
-					if(objItensPedidoTemplate[i].zzValExcedidoItem < 0){
-						
+					//VALOR EXCEDIDO DO PERCENTUAL DE DESCONTO.
+					if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
+
 						totalExcedenteDescontos += Math.round(objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt * 100) / 100;
-						
+
 					}
+
+					//VALOR DE COMISSÃO GERADA NO PEDIDO
+					totalComissaoGerada += Math.round(objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPercom / 100) * 100) / 100;
+
+					//VALOR DE VERBA GERADA NO PEDIDO
+					totalVerbaGerada += Math.round(objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) * 100) / 100;
 
 				}
 			}
-			//Calculando total de desconto dado.
-			TotalDesc = Math.round(parseFloat(TotalDesc * 100)) / 100;
 
-			var descontoTotal = Total - TotalDesc;
+			//Calculo do acréscimo de prazo médio .
+			percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
+			valorTotalAcresPrazoMed = Math.round(parseFloat(TotalPedidoDesc * (percAcresPrazoMed / 100) * 100)) / 100;
+
+			//Calculando total de desconto dado.
+			TotalPedidoDesc = Math.round(parseFloat(TotalPedidoDesc * 100)) / 100;
+
+			var descontoTotal = Total - TotalPedidoDesc;
 			descontoTotal = Math.round(parseFloat(descontoTotal * 100)) / 100;
 			
+			//Balanço de verbas totais
+
 			console.log(totalExcedenteDescontos);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalExcedenteDescontos", totalExcedenteDescontos);
+
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", valorTotalAcresPrazoMed);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", Math.abs(totalExcedenteDescontos));
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", totalVerbaGerada);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", totalComissaoGerada);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", QntProdutos);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", TotalDesc);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", TotalPedidoDesc);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", Ntgew);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", descontoTotal);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", valorCampEnxoval);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", valorCampBrinde);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", valorCampGlobal);
 
 			console.log("Dados Totais atualizados para itens Normais. (Diluição não entra na soma)");
 		},
 
-		onCalculaDiluicaoItem: function() {
+		onCalculaDiluicaoItem: function () {
 			var that = this;
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -1449,11 +1487,11 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 				var NrPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
 				var store = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
-				store.openCursor().onsuccess = function(event) {
+				store.openCursor().onsuccess = function (event) {
 					// consulta resultado do event
 					var cursor = event.target.result;
 					if (cursor) {
@@ -1464,10 +1502,10 @@ sap.ui.define([
 
 							var request = objItemPedido.delete(cursor.key);
 
-							request.onsuccess = function() {
+							request.onsuccess = function () {
 								console.log("Itens Pedido deletado(s)!");
 							};
-							request.onerror = function() {
+							request.onerror = function () {
 								console.log("Itens Pedido não foi deletado(s)!");
 							};
 						}
@@ -1656,11 +1694,11 @@ sap.ui.define([
 
 							var requestADDItem = objItensPedido.add(objItensPedidoTemplate[p]);
 
-							requestADDItem.onsuccess = function(e3) {
+							requestADDItem.onsuccess = function (e3) {
 								console.log("Item adicionado com sucesso");
 
 							};
-							requestADDItem.onerror = function(e3) {
+							requestADDItem.onerror = function (e3) {
 								console.log("Falha ao adicionar o Item");
 							};
 
@@ -1687,7 +1725,7 @@ sap.ui.define([
 			};
 		},
 
-		onInicioBalancoVerbas: function(resolve, reject) {
+		onInicioBalancoVerbas: function (resolve, reject) {
 			//Carrega as tabelas necessarias para fazer os calculos dos excedentes.
 			//buscar os campos zzPrzmax/ zzPrzmin/ zzVlrPedMin na tabela de preço
 			var that = this;
@@ -1701,7 +1739,7 @@ sap.ui.define([
 			var prazoMaxAprazo = 0;
 
 			var open = indexedDB.open("VB_DataBase");
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -1709,14 +1747,14 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				var db = open.result;
 
 				var transaction = db.transaction("Konm", "readonly");
 				var objectStore = transaction.objectStore("Konm");
 
 				if ("getAll" in objectStore) {
-					objectStore.getAll().onsuccess = function(event) {
+					objectStore.getAll().onsuccess = function (event) {
 
 						that.vetorRange = event.target.result;
 
@@ -1724,7 +1762,7 @@ sap.ui.define([
 						var objectStore1 = transaction1.objectStore("A964");
 
 						if ("getAll" in objectStore1) {
-							objectStore1.getAll().onsuccess = function(event) {
+							objectStore1.getAll().onsuccess = function (event) {
 
 								var vetorPerc = event.target.result;
 
@@ -1735,7 +1773,7 @@ sap.ui.define([
 								var objectStore2 = transaction2.objectStore("A960");
 
 								if ("getAll" in objectStore2) {
-									objectStore2.getAll().onsuccess = function(event) {
+									objectStore2.getAll().onsuccess = function (event) {
 
 										var perc = event.target.result;
 
@@ -1754,7 +1792,7 @@ sap.ui.define([
 										that.onDefineFamilias(that.vetorRange, "Normal");
 										that.onDefineFamilias(that.vetorRange, "Extra");
 										that.onCalculaPrazoMedio(vetorParametros);
-										
+
 										//Fazer o calculo do que foi excedido
 										//Neste momento tenho os percentuais do max permitido de cada item de acordo com as familias cadastradas
 										that.onCalculaExcedentes(objItensPedidoTemplate);
@@ -1769,46 +1807,46 @@ sap.ui.define([
 				}
 			};
 		},
-		
-		onCalculaExcedentes: function(objItensPedidoTemplate){
-			
-			for(var i=0; i<objItensPedidoTemplate.length; i++){
+
+		onCalculaExcedentes: function (objItensPedidoTemplate) {
+
+			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				var valorProdutoCheio = objItensPedidoTemplate[i].zzVprod;
 				//VALOR DO PRODUTO INICIAL É DESCONTADO O PERCENTUAL DA TABELA AVISTA QUANDO TIVER
 				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 
-					 valorProdutoCheio = valorProdutoCheio - (valorProdutoCheio * 5 / 100);
+					valorProdutoCheio = valorProdutoCheio - (valorProdutoCheio * 5 / 100);
 
 				}
-				
-				var valorMaxPermitido = valorProdutoCheio  - (valorProdutoCheio * parseFloat(objItensPedidoTemplate[i].maxDescPermitido)/100);
-				valorMaxPermitido = valorMaxPermitido - (valorMaxPermitido * parseFloat(objItensPedidoTemplate[i].maxDescPermitidoExtra)/100);
-				
-				var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc - valorMaxPermitido)*100)/100;
+
+				var valorMaxPermitido = valorProdutoCheio - (valorProdutoCheio * parseFloat(objItensPedidoTemplate[i].maxDescPermitido) / 100);
+				valorMaxPermitido = valorMaxPermitido - (valorMaxPermitido * parseFloat(objItensPedidoTemplate[i].maxDescPermitidoExtra) / 100);
+
+				var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc - valorMaxPermitido) * 100) / 100;
 				objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
 				//Negatvo .. excedeu o valor.
 				console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
-				
+
 			}
 		},
-		
-		onTablFilterEvent: function(evt){
+
+		onTablFilterEvent: function (evt) {
 			var that = this;
 			var item = evt.getParameters();
-			if(item.selectedKey == "tab6"){
-				
-				var promise = new Promise(function(resolve, reject) {
+			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
+
+				var promise = new Promise(function (resolve, reject) {
 					that.onInicioBalancoVerbas(resolve, reject);
 				});
 
-				promise.then(function() {
+				promise.then(function () {
 					that.calculaTotalPedido();
 				});
 			}
-			
+
 		},
 
-		onDefineFamilias: function(vetorRange, tipoDesconto) {
+		onDefineFamilias: function (vetorRange, tipoDesconto) {
 			var vetorGeral = objItensPedidoTemplate;
 			var vetorGeralExtra = objItensPedidoTemplate;
 			var vetorFamilia = [];
@@ -1816,9 +1854,9 @@ sap.ui.define([
 			var percDescPermitido = 0;
 
 			if (tipoDesconto == "Normal") {
-				
+
 				//Ordenando para desconto Familia normal
-				vetorGeral.sort(function(a, b) {
+				vetorGeral.sort(function (a, b) {
 					return parseInt(a.kondm) - parseInt(b.kondm);
 				});
 
@@ -1851,8 +1889,7 @@ sap.ui.define([
 							proximoItemDiferente = true;
 						}
 
-					} 
-					else if ((o + 1) == vetorGeral.length) {
+					} else if ((o + 1) == vetorGeral.length) {
 
 						//sinal proximoItemDiferente = true e limpou
 						if (vetorFamilia.length > 0) {
@@ -1869,9 +1906,9 @@ sap.ui.define([
 				}
 				console.log(objItensPedidoTemplate);
 			} else if (tipoDesconto == "Extra") {
-				
+
 				//Ordenando para desconto Familia normal
-				vetorGeralExtra.sort(function(a, b) {
+				vetorGeralExtra.sort(function (a, b) {
 					return a.kondmExtra - b.kondmExtra;
 				});
 
@@ -1924,7 +1961,7 @@ sap.ui.define([
 		},
 
 		//Calcula se o item entra no desconto extra e calcula o desconto normal
-		onBuscaPorcentagem: function(vetorFamilia, vetorDescontos, tipoDesconto) {
+		onBuscaPorcentagem: function (vetorFamilia, vetorDescontos, tipoDesconto) {
 
 			var auxRangeQuant = 0;
 			var auxRangeQuantExtra = 0;
@@ -1946,7 +1983,7 @@ sap.ui.define([
 					}
 				}
 
-				vetorAuxFamilia.sort(function(a, b) {
+				vetorAuxFamilia.sort(function (a, b) {
 					return a.kondm - b.kondm;
 				});
 
@@ -1969,7 +2006,7 @@ sap.ui.define([
 				for (u = 0; u < vetorFamilia.length; u++) {
 					vetorFamilia[u].maxDescPermitido = percDescPermitido;
 				}
-				
+
 				return vetorFamilia;
 
 			} else if (tipoDesconto == "Extra") {
@@ -1985,7 +2022,7 @@ sap.ui.define([
 					}
 				}
 
-				vetorAuxFamilia.sort(function(a, b) {
+				vetorAuxFamilia.sort(function (a, b) {
 					return a.kondm - b.kondm;
 				});
 
@@ -2008,12 +2045,12 @@ sap.ui.define([
 				for (u = 0; u < vetorFamilia.length; u++) {
 					vetorFamilia[u].maxDescPermitidoExtra = percDescPermitidoExtra;
 				}
-				
+
 				return vetorFamilia;
 			}
 		},
 
-		onCalculaPrazoMedio: function(vetorParametros) {
+		onCalculaPrazoMedio: function (vetorParametros) {
 
 			//pre requisito ter executado total do pedido antes de executar essa função
 			//Parâmetros pegos do banco antes de executar a função 
@@ -2053,15 +2090,15 @@ sap.ui.define([
 
 					} else if (valTotPed < valorPedMin && prazoMedio < prazoMinAvista) {
 						//Não gera excedente.
-						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente); 						
+						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 					} else if (valTotPed >= valorPedMin && prazoMedio >= prazoMaxAvista) {
 
 						diasExcedente = prazoMedio - prazoMaxAvista;
 						percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
-						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente); 						
-						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed); 
+						console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+						this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 
 					} else if (valTotPed >= valorPedMin && prazoMedio < prazoMaxAvista) {
 						//Não gera excedente.
@@ -2188,7 +2225,7 @@ sap.ui.define([
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-							
+
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAvista) {
 
 							diasExcedente = mediaPonderada - prazoMaxAvista;
@@ -2234,13 +2271,13 @@ sap.ui.define([
 
 		},
 
-		onNavegaBalancoVenda: function() {
+		onNavegaBalancoVenda: function () {
 
 			this.byId("idTopLevelIconTabBar").setSelectedKey("tab6");
 
 		},
 
-		popularCamposItemPedido: function() {
+		popularCamposItemPedido: function () {
 
 			sap.ui.getCore().byId("idItemPedido").setValue(oItemPedido.matnr);
 			sap.ui.getCore().byId("idDescricao").setValue(oItemPedido.maktx);
@@ -2256,7 +2293,7 @@ sap.ui.define([
 
 		},
 
-		_handleValueHelpSearch: function(evt) {
+		_handleValueHelpSearch: function (evt) {
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("matnr", sap.ui.model.FilterOperator.Contains, sValue), new sap.ui.model.Filter(
@@ -2267,7 +2304,7 @@ sap.ui.define([
 			sap.ui.getCore().byId("idItemPedido").suggest();
 		},
 
-		onDialogCancelButton: function() {
+		onDialogCancelButton: function () {
 			var that = this;
 			oItemTemplateTotal = [];
 
@@ -2277,7 +2314,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function() {
+			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -2285,13 +2322,13 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function() {
+			open.onsuccess = function () {
 				objItensPedidoTemplate = [];
 				var db = open.result;
 				var numeroPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
 
 				var store = db.transaction("ItensPedido").objectStore("ItensPedido");
-				store.openCursor().onsuccess = function(event1) {
+				store.openCursor().onsuccess = function (event1) {
 					var cursor = event1.target.result;
 
 					if (cursor) {
@@ -2313,7 +2350,7 @@ sap.ui.define([
 			};
 		},
 
-		onDialogSubmitButton: function() {
+		onDialogSubmitButton: function () {
 
 			var that = this;
 			var aux = [];
@@ -2353,7 +2390,7 @@ sap.ui.define([
 					icon: MessageBox.Icon.ERROR,
 					title: "Falha ao inserir",
 					actions: [MessageBox.Action.OK],
-					onClose: function() {
+					onClose: function () {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
 					}
@@ -2364,7 +2401,7 @@ sap.ui.define([
 					icon: MessageBox.Icon.ERROR,
 					title: "Campo Inválido.",
 					actions: [MessageBox.Action.OK],
-					onClose: function() {
+					onClose: function () {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
 						sap.ui.getCore().byId("idQuantidade").setValue(oItemTemplate.QtdPedida);
@@ -2375,7 +2412,7 @@ sap.ui.define([
 			} else {
 				var open = indexedDB.open("VB_DataBase");
 
-				open.onerror = function() {
+				open.onerror = function () {
 					oButtonSalvar.setEnabled(true);
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
@@ -2384,7 +2421,7 @@ sap.ui.define([
 					});
 				};
 
-				open.onsuccess = function() {
+				open.onsuccess = function () {
 					var db = open.result;
 
 					var store = db.transaction("Materiais", "readwrite");
@@ -2392,7 +2429,7 @@ sap.ui.define([
 
 					var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
 
-					requestMaterial.onsuccess = function(e) {
+					requestMaterial.onsuccess = function (e) {
 						var oMaterial = e.target.result;
 
 						if (oMaterial == undefined) {
@@ -2402,7 +2439,7 @@ sap.ui.define([
 								icon: MessageBox.Icon.ERROR,
 								title: "Produto não encontrado.",
 								actions: [MessageBox.Action.YES],
-								onClose: function() {
+								onClose: function () {
 									that.onResetaCamposDialog();
 									sap.ui.getCore().byId("idItemPedido").focus();
 									oButtonSalvar.setEnabled(true);
@@ -2417,7 +2454,7 @@ sap.ui.define([
 							// indexEdit inicia com 0, só é populado quando clica para editar 1 item. Senão sempre vai adicionar novo item
 							var request = objItensPedido.get(indexEdit);
 
-							request.onsuccess = function(e3) {
+							request.onsuccess = function (e3) {
 								var result2 = e3.target.result;
 								//preparar o obj a ser adicionado ou editado
 								if (result2 == undefined) {
@@ -2427,7 +2464,7 @@ sap.ui.define([
 									oItemPedido.index = indexItem;
 									oItemPedido.nrPedCli = nrPedCli;
 									var requestADDItem = objItensPedido.add(oItemPedido);
-									requestADDItem.onsuccess = function(e3) {
+									requestADDItem.onsuccess = function (e3) {
 
 										objItensPedidoTemplate.push(oItemPedido);
 										// indexItem = indexItem + 1;
@@ -2441,7 +2478,7 @@ sap.ui.define([
 										that.calculaTotalPedido();
 
 									};
-									requestADDItem.onerror = function(e3) {
+									requestADDItem.onerror = function (e3) {
 										oButtonSalvar.setEnabled(true);
 										console.log("Falha ao adicionar o Item: " + oItemPedido.index);
 									};
@@ -2455,7 +2492,7 @@ sap.ui.define([
 									oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarIndexItem");
 
 									var requestPutItens = objItensPedido.put(oItemPedido);
-									requestPutItens.onsuccess = function() {
+									requestPutItens.onsuccess = function () {
 										for (var j = 0; j < objItensPedidoTemplate.length; j++) {
 											if (objItensPedidoTemplate[j].idItemPedido === oItemPedido.idItemPedido) {
 												objItensPedidoTemplate[j] = oItemPedido;
@@ -2480,7 +2517,7 @@ sap.ui.define([
 										console.log("Item: " + oItemPedido.index + " foi Atualizado");
 
 									};
-									requestPutItens.onerror = function(event) {
+									requestPutItens.onerror = function (event) {
 										console.log(" Dados itensPedido não foram inseridos");
 
 										oButtonSalvar.setEnabled(true);
@@ -2497,7 +2534,7 @@ sap.ui.define([
 			}
 		},
 
-		onDialogDiluicaoSubmitButton: function() {
+		onDialogDiluicaoSubmitButton: function () {
 
 			var that = this;
 			var nrPedCli = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
@@ -2512,7 +2549,7 @@ sap.ui.define([
 					icon: MessageBox.Icon.ERROR,
 					title: "Falha ao inserir",
 					actions: [MessageBox.Action.OK],
-					onClose: function() {
+					onClose: function () {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
 					}
@@ -2523,7 +2560,7 @@ sap.ui.define([
 					icon: MessageBox.Icon.ERROR,
 					title: "Campo Inválido.",
 					actions: [MessageBox.Action.OK],
-					onClose: function() {
+					onClose: function () {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
 						sap.ui.getCore().byId("idQuantidade").setValue(oItemTemplate.QtdPedida);
@@ -2534,19 +2571,19 @@ sap.ui.define([
 			} else {
 				var open = indexedDB.open("VB_DataBase");
 
-				open.onerror = function() {
+				open.onerror = function () {
 
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
 						title: "Banco não encontrado!",
 						actions: [MessageBox.Action.OK],
-						onClose: function() {
+						onClose: function () {
 							oButtonSalvar.setEnabled(true);
 						}
 					});
 				};
 
-				open.onsuccess = function() {
+				open.onsuccess = function () {
 					var db = open.result;
 
 					var store = db.transaction("Materiais", "readwrite");
@@ -2554,7 +2591,7 @@ sap.ui.define([
 
 					var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
 
-					requestMaterial.onsuccess = function(e) {
+					requestMaterial.onsuccess = function (e) {
 						var oMaterial = e.target.result;
 
 						if (oMaterial == undefined) {
@@ -2564,7 +2601,7 @@ sap.ui.define([
 								icon: MessageBox.Icon.ERROR,
 								title: "Produto não encontrado.",
 								actions: [MessageBox.Action.YES],
-								onClose: function() {
+								onClose: function () {
 									that.onResetaCamposDialog();
 									sap.ui.getCore().byId("idItemPedido").focus();
 									oButtonSalvar.setEnabled(true);
@@ -2581,7 +2618,7 @@ sap.ui.define([
 							oItemPedido.index = indexItem;
 							oItemPedido.nrPedCli = nrPedCli;
 							var requestADDItem = objItensPedido.add(oItemPedido);
-							requestADDItem.onsuccess = function(e3) {
+							requestADDItem.onsuccess = function (e3) {
 
 								objItensPedidoTemplate.push(oItemPedido);
 								// indexItem = indexItem + 1;
@@ -2597,7 +2634,7 @@ sap.ui.define([
 								that.calculaTotalPedido();
 
 							};
-							requestADDItem.onerror = function(e3) {
+							requestADDItem.onerror = function (e3) {
 								oButtonSalvar.setEnabled(true);
 								console.log("Falha ao adicionar o Item: " + oItemPedido.index);
 							};
@@ -2615,7 +2652,7 @@ sap.ui.define([
 		// FIM DOS DADOS FRAGMENTO
 
 		// EVENTOS DA TABLE 						<<<<<<<<<<<<
-		onNovoItem: function() {
+		onNovoItem: function () {
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idSituacaoDadosPedido");
 			oItemPedido = [];
 
@@ -2643,7 +2680,7 @@ sap.ui.define([
 			}
 		},
 
-		onNovoItemDiluicao: function() {
+		onNovoItemDiluicao: function () {
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idSituacaoDadosPedido");
 			oItemPedido = [];
 
@@ -2672,7 +2709,7 @@ sap.ui.define([
 			}
 		},
 
-		onEditarItemPress: function(oEvent) {
+		onEditarItemPress: function (oEvent) {
 
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
@@ -2704,7 +2741,7 @@ sap.ui.define([
 			sap.ui.getCore().byId("idItemPedido").setEnabled(false);
 		},
 
-		onDeletarItemPedido: function(oEvent) {
+		onDeletarItemPedido: function (oEvent) {
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var idItemPedido = oItem.getBindingContext("ItensPedidoGrid").getProperty("idItemPedido");
 			var idItem = oItem.getBindingContext("ItensPedidoGrid").getProperty("matnr");
@@ -2721,7 +2758,7 @@ sap.ui.define([
 					icon: MessageBox.Icon.WARNING,
 					title: "Exclusão de Item!",
 					actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-					onClose: function(oAction) {
+					onClose: function (oAction) {
 						if (oAction === sap.m.MessageBox.Action.YES) {
 
 							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
@@ -2749,7 +2786,7 @@ sap.ui.define([
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
 							var open = indexedDB.open("VB_DataBase");
-							open.onerror = function() {
+							open.onerror = function () {
 								MessageBox.show(open.error.mensage, {
 									icon: MessageBox.Icon.ERROR,
 									title: "Banco não encontrado!",
@@ -2757,7 +2794,7 @@ sap.ui.define([
 								});
 							};
 
-							open.onsuccess = function() {
+							open.onsuccess = function () {
 								var db = open.result;
 
 								that.setaCompleto(db, "Não");
@@ -2767,10 +2804,10 @@ sap.ui.define([
 								var objPedido = store1.objectStore("ItensPedido");
 
 								var request = objPedido.delete(idItemPedido);
-								request.onsuccess = function() {
+								request.onsuccess = function () {
 									console.log("Item com ID: " + idItemPedido + " foi deletado!");
 								};
-								request.onerror = function() {
+								request.onerror = function () {
 									console.log("ERRO!! Item: " + idItemPedido + "Não foi deletado!");
 								};
 							};
@@ -2784,40 +2821,20 @@ sap.ui.define([
 
 		// EVENTOS DOS BOTÕES 						<<<<<<<<<<<<
 
-		onFinalizarPedido: function() {
+		onFinalizarPedido: function () {
 
 			//Percorre os itens do pedido para fazer uma verificação se realmente não tem produto repetido.
 			var i = 0;
-			var results = [];
-			var itemDuplicado = false;
-			var vetorAux = oItemTemplateTotal.slice().sort(); // Copia o vetor e já ordena ele.
-
-			for (i = 0; i < vetorAux.length - 1; i++) {
-				if (vetorAux[i + 1].ItCodigo == vetorAux[i].ItCodigo) {
-					results.push(vetorAux[i]);
-				}
-			}
-
-			if (results.length > 0 && typeof results != null && typeof results != undefined) {
-
-				itemDuplicado = true;
-
-			} else {
-
-				itemDuplicado = false;
-
-			}
 
 			var that = this;
 			//HRIMP E DATIMP
 			var data = this.onDataAtualizacao();
 			var horario = data[1];
 
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/situacaoDadosPedido", "PEN");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/idSituacaoDadosPedido", 2);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "PEN");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 2);
 
-			var totalItens = that.getOwnerComponent().getModel("modelTotalPedido").getProperty("/totalItens");
-			var codMotivoDesconto = that.getOwnerComponent().getModel("modelDescontos").getProperty("/idDescontoPedido");
+			var totalItens = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido");
 			var completoPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo");
 
 			if (totalItens <= 0 || totalItens === undefined) {
@@ -2826,17 +2843,19 @@ sap.ui.define([
 					title: "Falha ao Completar Pedido.",
 					actions: [MessageBox.Action.OK]
 				});
-			} else if (itemDuplicado == true) {
-				MessageBox.show("O pedido possui itens duplicados. Favor rever sua lista de itens!", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Falha ao Completar Pedido.",
-					actions: [MessageBox.Action.OK]
-				});
-			} else {
+			}
+			// else if (itemDuplicado == true) {
+			// 	MessageBox.show("O pedido possui itens duplicados. Favor rever sua lista de itens!", {
+			// 		icon: MessageBox.Icon.ERROR,
+			// 		title: "Falha ao Completar Pedido.",
+			// 		actions: [MessageBox.Action.OK]
+			// 	});
+			// } 
+			else {
 				//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Atualizando o PrePedido PEDIDO NO BANCO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 				var open = indexedDB.open("VB_DataBase");
 
-				open.onerror = function() {
+				open.onerror = function () {
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
 						title: "Falha ao abrir o banco para inserir os dados do pedido!",
@@ -2844,122 +2863,63 @@ sap.ui.define([
 					});
 				};
 
-				open.onsuccess = function() {
+				open.onsuccess = function () {
 					var db = open.result;
 
 					if (completoPedido == "Não") {
 
 						var objBancoPrePedido = {
-							NomeAbrev: that.getOwnerComponent().getModel("modelCliente").getProperty("/nomeAbrevCliente"),
-							IdBase: that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase"),
-							NrPedcli: that.getOwnerComponent().getModel("modelAux").getProperty("/numeroPedido"),
-							NrPedCliDTS: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/NrPedCliDTS"),
-							CodEstabel: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/estabelecimentoDadosPedido"),
-							Estado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/estadoEstabelDadosPedido"),
-							ValTotPed: parseFloat(that.getOwnerComponent().getModel("modelTotalPedido").getProperty("/totalPedido")),
-							TipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/tipoDadosPedido"),
-							ValDescontoTotal: 0,
-							ValDescontoDisp: parseFloat(that.getOwnerComponent().getModel("modelDescontos").getProperty("/descontoDisponivel")),
-							ValDescontoInform: that.getOwnerComponent().getModel("modelDescontos").getProperty("/descontoAplicar"),
-							ValLiqPed: parseFloat(that.getOwnerComponent().getModel("modelTotalPedido").getProperty("/totalLiquidoPedido")),
-							idStatus: parseInt(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idSituacaoDadosPedido")),
-							DescStatus: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/situacaoDadosPedido"),
-							CodCliente: parseInt(that.getOwnerComponent().getModel("modelAux").getProperty("/CodCliente")),
-							CodCondPag1: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/vencimento1DadosPedido"),
-							CodCondPag2: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/vencimento2DadosPedido"),
-							CodCondPag3: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/vencimento3DadosPedido"),
-							DatEntrega: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/dataEntregaDadosPedido"),
-							DatLimFat: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/dataLimiteFaturamentoDadosPedido"),
-							CodEntrega: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/localEntregaDadosPedido"),
-							NrTabpre: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/tabelaPrecoDadosPedido"),
-							LogCotacao: "",
-							ValVerbaPedido: parseFloat(that.getOwnerComponent().getModel("modelTotalPedido").getProperty("/verbaGasta")),
-							PesoLiquido: parseFloat(that.getOwnerComponent().getModel("modelTotalPedido").getProperty("/pesoLiquido")),
-							PesoBruto: parseFloat(that.getOwnerComponent().getModel("modelTotalPedido").getProperty("/pesoBruto")),
-							ValTotIpi: 0,
-							ValTotSt: parseFloat(that.getOwnerComponent().getModel("modelTotalPedido").getProperty("/totalComSTPedido")),
-							ValTotIpiSt: 0,
-							CodRep: parseInt(that.getOwnerComponent().getModel("modelCliente").getProperty("/codigoRepresentante")),
-							TabIndFin: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/indiceDadosPedido")),
-							ValPctDescontoCanal: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
-								"/ValPctDescontoCanalDadosPedido")),
-							PercAcresc: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercAcrescDadosPedido")),
-							PercReduc: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercReducDadosPedido")),
-							PercFator: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercFatorDadosPedido")),
-							ValPctDescontoValor: that.getOwnerComponent().getModel("modelDescontos").getProperty("/descontoAplicar"),
-							ValPctDescontoTotal: parseFloat(that.getOwnerComponent().getModel("modelDescontos").getProperty("/descontoDisponivel")),
-							CodMotivDesconto: that.getOwnerComponent().getModel("modelDescontos").getProperty("/idDesconto"),
-							Completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
-							ValMinPed: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/valorMinimoDadosPedido")),
-							PedidoOrigem: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/pedidoOrigemClienteDadosPedido"),
-							UserImpl: that.getOwnerComponent().getModel("modelAux").getProperty("/userID"),
-							DatImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/dataDadosPedido"),
-							HraImpl: horario,
-							ValCustoFixo: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCustoFixoDadosPedido")),
-							ValCpmf: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCpmfDadosPedido")),
-							ValIr: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValIrDadosPedido")),
-							ValFrete: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValFreteDadosPedido")),
-							ValComissao: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoDadosPedido")),
-							ValContrato: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValContratoDadosPedido")),
-							ValLucro: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValLucroDadosPedido")),
-							PercIcms: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercIcmsDadosPedido")),
-							PercPis: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercPisDadosPedido")),
-							PercCofins: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercCofinsDadosPedido")),
-							PercCpmf: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercCpmfDadosPedido")),
-							PercIr: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercIrDadosPedido")),
-							PercFrete: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercFreteDadosPedido")),
-							PercComissao: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercComissaoDadosPedido")),
-							PercContrato: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercContratoDadosPedido")),
-							ValRoyalties: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValRoyaltiesDadosPedido")),
-							PercRoyalties: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercRoyaltiesDadosPedido")),
-							PercGanho: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercGanhoDadosPedido")),
-							ValGanho: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValGanhoDadosPedido")),
-							ValPrecoBase: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValPrecoBaseDadosPedido")),
-							PercPromo: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercPromoDadosPedido")),
-							ValPromocao: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValPromocaoDadosPedido")),
-							PercCustoFixo: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercCustoFixoDadosPedido")),
-							PercLucro: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercLucroDadosPedido")),
-							ValIcms: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValIcmsDadosPedido")),
-							ValFinsocial: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValFinsocialDadosPedido")),
-							ValPis: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValPisDadosPedido")),
-							PercRedIcm: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercRedIcmDadosPedido")),
-							NrMesina: parseInt(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/NrMesinaDadosPedido")),
-							PercIncent: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercIncentDadosPedido")),
-							DescJustificativa: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/observacoesDadosPedido"),
-							CodMensagem1: parseInt(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/mensagem1DadosPedido")),
-							CodMensagem2: parseInt(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/mensagem2DadosPedido")),
-							CodMensagem3: parseInt(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/mensagem3DadosPedido")),
-							TipoTransporte: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/tipoTransporteDadosPedido"),
-							CodEmpresa: parseInt(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/CodEmpresaDadosPedido")),
-							LogItUnidNegoc: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/LogItUnidNegocDadosPedido"),
-							PercRentNeg: parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercRentNegDadosPedido")),
-							LogVerbaRentNeg: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/LogVerbaRentNegDadosPedido"),
-							LogEnviaEmailCliente: that.byId("idCheckEmailCliente").getSelected(),
-							LogEnviaEmailRepres: that.byId("idCheckEmailRepres").getSelected(),
-							EmailCliente: that.byId("idEmailCliente").getValue(),
-							EmailRepres: that.byId("idEmailRepres").getValue(),
-							CodMotivDescCamp: that.getOwnerComponent().getModel("modelDescontos").getProperty("/idDescontoCamp"),
-							ValDescCampDisp: that.getOwnerComponent().getModel("modelDescontos").getProperty("/descontoDisponivelCamp"),
-							ValDescCampInform: that.getOwnerComponent().getModel("modelDescontos").getProperty("/descontoAplicarCamp"),
-							rentabilidadeTotalImg: that.getOwnerComponent().getModel("modelTotalPedido").getProperty("/rentabilidadeTotalImg"),
-							TipoIntegrBol: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoIntegrBol"),
-							ValDescBoletoInform: that.getOwnerComponent().getModel("modelDescontos").getProperty("/descontoAplicarBoleto"),
-							CodMotivDescBoleto: that.getOwnerComponent().getModel("modelDescontos").getProperty("/idDescontoBoleto")
+							nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
+							kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
+							werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
+							codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
+							tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
+							idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
+							situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
+							tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
+							completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
+							valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
+							dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
+							dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
+							valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
+							observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
+							observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
+							existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),
+							percEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido"),
+							valorEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido"),
+							tipoTransporte: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoTransporte"),
+							diasPrimeiraParcela: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasPrimeiraParcela"),
+							quantParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"),
+							intervaloParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"),
+							tipoNegociacao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao"),
+							ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
+							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
+							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
+							valorTotalAcresPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAcresPrazoMed"),
+							valTotalExcedenteDescontos: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDescontos"),
+							totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
+							valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
+							valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
+							valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
+							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
+							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido")
+
 						};
 
 						var store1 = db.transaction("PrePedidos", "readwrite");
 						var objPedido = store1.objectStore("PrePedidos");
 						var request = objPedido.put(objBancoPrePedido);
 
-						request.onsuccess = function() {
+						request.onsuccess = function () {
 							// that.atualizaMovtoVerba(db);
 							that.setaCompleto(db, "Sim");
 							that.resetarCamposPrePedido();
 							oItemTemplate = [];
 							oItemTemplateTotal = [];
+							console.log("Pedido inserido");
 						};
 
-						request.onerror = function() {
+						request.onerror = function () {
 							console.log("Pedido não foi Inserido!");
 						};
 					}
@@ -2968,7 +2928,7 @@ sap.ui.define([
 						icon: MessageBox.Icon.ERROR,
 						title: "Atenção",
 						actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
-						onClose: function(oAction) {
+						onClose: function (oAction) {
 							if (oAction == sap.m.MessageBox.Action.YES) {
 								sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
 								that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
@@ -2983,16 +2943,8 @@ sap.ui.define([
 			}
 		},
 
-		onLiberarItensPedido: function() {
+		onLiberarItensPedido: function () {
 			var that = this;
-
-			// var dataEntrega = this.byId("idDataEntrega").getValue();
-			// var tamanhoDataEntrega = dataEntrega.length;
-			// var dataEntregaSplit = dataEntrega.split("/");
-			// var dataSplit = parseInt(String(dataEntregaSplit[2]) + String(dataEntregaSplit[1]) + String(dataEntregaSplit[0]));
-			// var dataSplitDia = dataEntregaSplit[0];
-			// var dataSplitMes = dataEntregaSplit[1];
-			// var dataSplitAno = dataEntregaSplit[2];
 
 			var date = new Date();
 
@@ -3107,11 +3059,11 @@ sap.ui.define([
 				// this.byId("tabItensDiluicaoPedidoStep").setProperty("enabled", true);
 
 				var open = indexedDB.open("VB_DataBase");
-				open.onerror = function(hxr) {
+				open.onerror = function (hxr) {
 					console.log("falha abrir tabela PrePedido as tabelas");
 				};
 				//Load tables
-				open.onsuccess = function() {
+				open.onsuccess = function () {
 					var db = open.result;
 
 					var tx = db.transaction("PrePedidos", "readwrite");
@@ -3119,7 +3071,7 @@ sap.ui.define([
 
 					var request = objPrePedido.get(that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"));
 
-					request.onsuccess = function(e) {
+					request.onsuccess = function (e) {
 						var result = e.target.result;
 
 						var objBancoPrePedido = {
@@ -3128,13 +3080,11 @@ sap.ui.define([
 							werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
 							codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
 							tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
-							idStatus: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
+							idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
 							situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
-							dataEntrega: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataEntrega"),
-							localEntrega: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/LocalEntrega"),
 							tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
 							completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
-							valMinPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
+							valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
 							dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
 							dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
 							valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
@@ -3156,10 +3106,47 @@ sap.ui.define([
 							valLiqPed: 0,
 							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
 							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
-							pesoBruto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PesoBruto"),
 							valPctDescontoValor: 0,
 							valPctDescontoTotal: 0,
 							valCustoFixo: 0
+						};
+
+						var objBancoPrePedido = {
+							nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
+							kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
+							werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
+							codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
+							tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
+							idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
+							situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
+							tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
+							completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
+							valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
+							dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
+							dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
+							valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
+							observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
+							observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
+							existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),
+							percEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido"),
+							valorEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido"),
+							tipoTransporte: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoTransporte"),
+							diasPrimeiraParcela: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasPrimeiraParcela"),
+							quantParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"),
+							intervaloParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"),
+							tipoNegociacao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao"),
+							ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
+							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
+							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
+							valorTotalAcresPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAcresPrazoMed"),
+							valTotalExcedenteDescontos: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDescontos"),
+							totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
+							valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
+							valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
+							valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
+							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
+							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido")
+
 						};
 
 						//ADICIONAR O OBJ .. QND FOR UNDEFINED, POIS O OBJ NÃO FOI ENCONTRADO, ESTÁ VAZIO.
@@ -3173,13 +3160,11 @@ sap.ui.define([
 								werks: "",
 								codRepres: "",
 								tipoPedido: "",
-								idStatus: "",
+								idStatusPedido: "",
 								situacaoPedido: "",
-								dataEntrega: "",
-								localEntrega: "",
 								tabPreco: "",
 								completo: "",
-								valMinPed: "",
+								valMinPedido: "",
 								dataPedido: "",
 								dataImpl: "",
 								valComissao: "",
@@ -3201,19 +3186,17 @@ sap.ui.define([
 								valLiqPed: "",
 								valVerbaPedido: "",
 								valComissaoPedido: "",
-								pesoLiquido: "",
-								pesoBruto: "",
 								valPctDescontoValor: "",
 								valPctDescontoTotal: "",
 								valCustoFixo: ""
 							};
 
-							request1.onsuccess = function() {
+							request1.onsuccess = function () {
 								MessageBox.show("Inclusão Efetivada com Sucesso!", {
 									icon: MessageBox.Icon.SUCCESS,
 									title: "Confirmação",
 									actions: [MessageBox.Action.OK],
-									onClose: function() {
+									onClose: function () {
 										that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
 										console.log("Dados PrePedido inseridos");
 									}
@@ -3221,7 +3204,7 @@ sap.ui.define([
 
 							};
 
-							request1.onerror = function(event) {
+							request1.onerror = function (event) {
 								console.log("Dados PrePedido não foram inseridos :" + event.Message);
 							};
 
@@ -3237,13 +3220,11 @@ sap.ui.define([
 								werks: "",
 								codRepres: "",
 								tipoPedido: "",
-								idStatus: "",
+								idStatusPedido: "",
 								situacaoPedido: "",
-								dataEntrega: "",
-								localEntrega: "",
 								tabPreco: "",
 								completo: "",
-								valMinPed: "",
+								valMinPedido: "",
 								dataPedido: "",
 								dataImpl: "",
 								valComissao: "",
@@ -3265,32 +3246,30 @@ sap.ui.define([
 								valLiqPed: "",
 								valVerbaPedido: "",
 								valComissaoPedido: "",
-								pesoLiquido: "",
-								pesoBruto: "",
 								valPctDescontoValor: "",
 								valPctDescontoTotal: "",
 								valCustoFixo: ""
 							};
 
-							request1.onsuccess = function() {
+							request1.onsuccess = function () {
 								MessageBox.show("Cabeçalho atualizado com Sucesso!", {
 									icon: MessageBox.Icon.SUCCESS,
 									title: "Concluido!",
 									actions: [MessageBox.Action.OK],
-									onClose: function() {
+									onClose: function () {
 										that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
 										console.log("Dados PrePedido Atualizados");
 									}
 								});
 							};
 
-							request1.onerror = function(event) {
+							request1.onerror = function (event) {
 								console.log("Dados PrePedido não foram Atualizados :" + event.Message);
 							};
 						}
 					};
 
-					request.onerror = function(e) {
+					request.onerror = function (e) {
 						console.log("Error");
 						console.dir(e);
 					};
@@ -3298,31 +3277,57 @@ sap.ui.define([
 			}
 		},
 
-		onCancelarPedido: function() {
+		resetarCamposPrePedido: function () {
+
+			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
+			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
+			this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "");
+
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", 0);
+
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "");
+
+			//Tela cabeçalho (2º aba)
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", "");
+		},
+
+		onCancelarPedido: function () {
 			this.resetarCamposPrePedido();
 			oItemTemplate = [];
 			oItemTemplateTotal = [];
-			this.getOwnerComponent().getModel("modelAux").setProperty("/numeroPedido", "");
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoAplicar", 0);
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoDisponivel", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idDesconto", "");
 
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoDisponivel", 0);
-			this.getOwnerComponent().getModel("modelDescontos").setProperty("/descontoAplicar", 0);
-			this.getOwnerComponent().getModel("modelTotalPedido").setProperty("/totalPedido", 0);
-			this.getOwnerComponent().getModel("modelTotalPedido").setProperty("/totalLiquidoPedido", 0);
-			this.getOwnerComponent().getModel("modelTotalPedido").setProperty("/totalComSTPedido", 0);
-			this.getOwnerComponent().getModel("modelTotalPedido").setProperty("/totalItens", 0);
-			this.getOwnerComponent().getModel("modelTotalPedido").setProperty("/pesoBruto", 0);
-			this.getOwnerComponent().getModel("modelTotalPedido").setProperty("/pesoLiquido", 0);
-			this.getOwnerComponent().getModel("modelTotalPedido").setProperty("/verbaGasta", 0);
-			this.getOwnerComponent().getModel("modelTotalPedido").setProperty("/rentabilidadeTotal", 0);
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
 		},
 
 		// FIM EVENTOS DOS BOTÕES 					
 
-		setaCompleto: function(db, completo) {
+		setaCompleto: function (db, completo) {
 			var that = this;
 			var objSetaCompletoPedido = [];
 			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", completo);
@@ -3332,7 +3337,7 @@ sap.ui.define([
 
 			var request = objPrePedido.get(that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"));
 
-			request.onsuccess = function(e) {
+			request.onsuccess = function (e) {
 				var result = e.target.result;
 				objSetaCompletoPedido = result;
 				objSetaCompletoPedido.completo = completo;
@@ -3341,16 +3346,16 @@ sap.ui.define([
 				var objPedido = store1.objectStore("PrePedidos");
 				var request1 = objPedido.put(objSetaCompletoPedido);
 
-				request1.onsuccess = function() {
+				request1.onsuccess = function () {
 					console.log("O campo completo foi atualizado para > " + completo);
 				};
-				request1.onerror = function() {
+				request1.onerror = function () {
 					console.log("Erro ao abrir o Pedido > " + that.getOwnerComponent().getModel("modelAux").getProperty("/nrPedCli"));
 				};
 			};
 		},
 
-		onAddOV: function() {
+		onAddOV: function () {
 
 			var oModel = new sap.ui.model.odata.ODataModel({
 				serviceUrl: "/sap/opu/odata/sap/zforca_vendas_srv/",
@@ -3374,19 +3379,19 @@ sap.ui.define([
 			};
 
 			oModel.create("/OrdemVendas", ordemVenda, {
-				success: function(data) {
+				success: function (data) {
 
 					MessageBox.show("Ordem de Venda: " + data.Salesdocumentin + " criada com sucesso!", {
 						icon: MessageBox.Icon.SUCCESS,
 						title: "Ordem de Venda CRIADA!",
 						actions: [MessageBox.Action.OK],
-						onClose: function() {
+						onClose: function () {
 
 						}
 					});
 
 				},
-				error: function(error) {
+				error: function (error) {
 
 					console.log(error);
 
@@ -3394,7 +3399,7 @@ sap.ui.define([
 						icon: MessageBox.Icon.ERROR,
 						title: "Não encontrado!",
 						actions: [MessageBox.Action.OK],
-						onClose: function() {
+						onClose: function () {
 							console.log(error.response);
 
 						}

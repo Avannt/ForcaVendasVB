@@ -11,51 +11,50 @@
 		</subHeader>
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
-				<Table id="idTableEnvioPedidos" busyIndicatorDelay="500" growing="true" growingScrollToLoad="true" mode="MultiSelect"
-					noDataText="Nenhum Pedido Pendente" updateFinished="onUpdateFinished" width="100%"
-					items="{ path: 'PedidosEnviar>/', sorter: { path: 'NomeEmit', descending: false, parameter: 'Codigo'}}">
-					<columns>
-						<Column minScreenWidth="320px" width="70px" demandPopin="false" hAlign="Left">
-							<Text text="Emp"/>
-						</Column>
-						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
-							<Text text="Cliente"/>
-						</Column>
-						<Column minScreenWidth="600px" demandPopin="false" hAlign="Left">
-							<Text text="Data"/>
-						</Column>
-						<Column minScreenWidth="380px" demandPopin="true" hAlign="Left">
-							<Text text="Verba"/>
-						</Column>
-						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left">
-							<Text text="V. Tot"/>
-						</Column>
-						<Column minScreenWidth="700px" visible="false" demandPopin="true">
-							<Text text="NumeroPedido"/>
-						</Column>
-						<!--<Column minScreenWidth="600px" demandPopin="true">-->
-						<!--	<Text text="Valor verba"/>-->
-						<!--</Column>-->
-						<!--<Column minScreenWidth="500px" demandPopin="true">-->
-						<!--	<Text text="Rentab."/>-->
-						<!--</Column>-->
-					</columns>
-					<items>
-						<ColumnListItem type="Active" press="detalharPedido">
-							<cells>
-								<Text text="{path : 'PedidosEnviar>CodEmpresa', formatter:'.myFormatterCodEmpresa'}" hAlign="Left" />
-								<Text text="{PedidosEnviar>NomeAbrev}"  hAlign="Left"/>
-								<Text text="{path : 'PedidosEnviar>DatImpl', formatter:'.myFormatterDataImp'}" hAlign="Left"/>
-								<Text text="R$: {path :'PedidosEnviar>ValVerbaPedido'}" hAlign="Left"/>
-								<Text text="R$: {PedidosEnviar>ValTotPed}" hAlign="Left"/>
-								<Text text="{PedidosEnviar>NrPedcli}" visible="false"/>
-								<!--<Text text="{PedidosEnviar>ValVerbaPedido}"/>-->
-								<!--<Text text="{PedidosEnviar>Rentabilidade}"/>-->
-							</cells>
-						</ColumnListItem>
-					</items>
-				</Table>
-			</semantic:content>
+				<Table id="table_pedidos" width="100%" backgroundDesign="Translucent" items="{ path:'PedidosEnviar>/', sorter: { path: 'NrPedCli', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange" itemPress="onItemPress"
+						growingThreshold="3" growingTriggerText="Proximos Pedidos >>" growing="true" noDataText="Nenhum pedido cadastrado para o cliente" busyIndicatorDelay="0" fixedLayout="false">
+						<headerToolbar>
+							<Toolbar id="lineItemsToolbar">
+								<Title id="lineItemsHeader" text="Pedidos"/>
+								<ToolbarSpacer/>
+								<Label text="Digitar Pedido"/>
+								<Button id="idAddPedido" icon="sap-icon://add" press="onAddPedido"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline"  hAlign="Left" width="auto">
+								<Text text="Cliente"/>
+							</Column>
+							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left" width="150px">
+								<Text text="N°Ped"/>
+							</Column>
+							<Column minScreenWidth="320px" hAlign="Left" width="70px" popinDisplay="Inline">
+								<Text text="Data"/>
+							</Column>
+							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Total Itens"/>
+							</Column>
+							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Valor total"/>
+							</Column>
+							<Column minScreenWidth="320px" hAlign="Left" width="60px" popinDisplay="Inline">
+								<Text text="Status"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem type="Active" >
+								<cells>
+									<Text text="{path : 'PedidosEnviar>kunnr'}"/>
+									<Text text="{path : 'PedidosEnviar>nrPedCli'}"/>
+									<Text text="{path : 'PedidosEnviar>dataPedido', formatter:'.myFormatterDataImp'}"/>
+									<Text text="{path : 'PedidosEnviar>totalItensPedido'}"/>
+									<Text text="R$: {path : 'PedidosEnviar>valTotPed'}"/>
+									<Text text="{path :'PedidosEnviar>situacaoPedido'}"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</semantic:content>
 		</semantic:FullscreenPage>
 	</Page>
 </mvc:View>
