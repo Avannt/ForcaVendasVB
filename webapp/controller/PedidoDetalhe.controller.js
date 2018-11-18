@@ -91,9 +91,9 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", "");
 			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/LocalEntrega", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
@@ -114,9 +114,23 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
-
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoComissao", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoVerba", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampGlobal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", 0);
+			
 			this.byId("idTabelaPreco").setSelectedKey();
 			this.byId("idTipoTransporte").setSelectedKey();
 			this.byId("idTipoNegociacao").setSelectedKey();
@@ -141,36 +155,12 @@ sap.ui.define([
 			var Kunnr = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
 
 			//Inicialização de Variáveis. *modelDadosPedido
+			this.onResetaCamposPrePedido();
 
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "EM DIGITAÇÃO");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 1);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", data[0] + "-" + data[1]);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", data[0]);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
 
 			//CARREGA OS MATERIAIS
 			var transaction = db.transaction("Materiais", "readonly");
@@ -358,7 +348,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", oPrePedido.alTotPed);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", oPrePedido.valDescontoTotal);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", oPrePedido.valorTotalAcresPrazoMed);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", oPrePedido.valTotalExcedenteDescontos);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", oPrePedido.ValTotalExcedenteDesconto);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", oPrePedido.totalItensPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", oPrePedido.valCampEnxoval);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", oPrePedido.valCampBrinde);
@@ -1403,19 +1393,27 @@ sap.ui.define([
 		},
 
 		calculaTotalPedido: function () {
-			var Total = 0;
-			var TotalPedidoDesc = 0;
 			var Qnt = 0;
-			var QntProdutos = 0;
+			var that = this;
+			var Total = 0;
 			var Ntgew = 0;
-			var totalExcedenteDescontos = 0;
-			var totalComissaoGerada = 0;
-			var totalVerbaGerada = 0;
-			var valorTotalAcresPrazoMed = 0;
-			var percAcresPrazoMed = 0;
-			var valorCampEnxoval = 0;
+			var QntProdutos = 0;
+			var TotalPedidoDesc = 0;
 			var valorCampBrinde = 0;
 			var valorCampGlobal = 0;
+			var valorCampEnxoval = 0;
+			var totalVerbaGerada = 0;
+			var percAcresPrazoMed = 0;
+			var totalComissaoGerada = 0;
+			var totalVerbaUtilizada = 0;
+			var totalComissaoUtilizada = 0;
+			var totalExcedenteDescontos = 0;
+			var valorTotalAcresPrazoMed = 0;
+			var verbaUtilizadaDesconto = 0;
+			var comissaoUtilizadaDesconto = 0;
+			var comissaoUtilizadaPrazoMed = 0;
+			var valorNaoDirecionadoDesconto = 0;
+			var valorNaoDirecionadoPrazoMed = 0;
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (objItensPedidoTemplate[i].tipoItem !== "Diluicao") {
@@ -1445,6 +1443,7 @@ sap.ui.define([
 
 				}
 			}
+			console.log("CALCULO DADOS GERAIS");
 
 			//Calculo do acréscimo de prazo médio .
 			percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
@@ -1455,13 +1454,12 @@ sap.ui.define([
 
 			var descontoTotal = Total - TotalPedidoDesc;
 			descontoTotal = Math.round(parseFloat(descontoTotal * 100)) / 100;
-			
-			//Balanço de verbas totais
 
 			console.log(totalExcedenteDescontos);
+			totalExcedenteDescontos = Math.abs(totalExcedenteDescontos);
 
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", valorTotalAcresPrazoMed);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", Math.abs(totalExcedenteDescontos));
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedentePrazoMed", valorTotalAcresPrazoMed);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", totalExcedenteDescontos);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", totalVerbaGerada);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", totalComissaoGerada);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", QntProdutos);
@@ -1472,7 +1470,67 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", valorCampBrinde);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", valorCampGlobal);
 
-			console.log("Dados Totais atualizados para itens Normais. (Diluição não entra na soma)");
+			// TODO: Precisa ser feito a comparação da verba que o kra tem pra ver se ele ele excedeu o tanto de verba que ele tem.
+			// TODO: A comissão precisa ser travada apenas se o total do valor gerado de comissão no proprio pedido for menor que o valor destiando para descontar.
+
+			//Valores utilizados para abater de verbas e comissões.
+			verbaUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
+			comissaoUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto");
+			comissaoUtilizadaPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
+			
+			console.log("Verba: " + verbaUtilizadaDesconto + ". Comissão: " + comissaoUtilizadaDesconto + ". Comissão PM: " + comissaoUtilizadaPrazoMed);
+			
+			//VALOR NAO DIRECIONADO NO BALANÇO DE VERBAS. UMA VEZ QUE GEROU UMA DIFERENÇA.. GERARÁ WORKFLOW DE APROVAÇÃO;
+			console.log("VALOR NÃO DIRECIONADO DESCONTOS.");
+			valorNaoDirecionadoDesconto = totalExcedenteDescontos - (verbaUtilizadaDesconto + comissaoUtilizadaDesconto);
+			
+			console.log("VALOR NÃO DIRECIONADO PRAZO MÉDIO.");
+			valorNaoDirecionadoPrazoMed = valorTotalAcresPrazoMed - comissaoUtilizadaPrazoMed;
+			
+			console.log("TOTAL VERBA UTILIZADA.");
+			//Será a propria verba destinada para descontos : verbaUtilizadaDesconto
+			totalVerbaUtilizada = verbaUtilizadaDesconto;
+			
+			console.log("TOTAL COMISSÃO UTILIZADA.");
+			totalComissaoUtilizada = comissaoUtilizadaDesconto + comissaoUtilizadaPrazoMed;
+			
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoComissao", totalComissaoUtilizada);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoVerba", totalVerbaUtilizada);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", valorNaoDirecionadoDesconto);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", valorNaoDirecionadoPrazoMed);
+			
+			console.log("VALORES UTILIZADOS CAMPANHA");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", 0);
+			
+			console.log("CALCULO PARCELAMENTO");
+			
+			
+			
+			console.log("INICIO DAS VALIDAÇÕES DO BALANÇO DE EXCEDENTES.");
+			//Tratativa se o kra excedeu o total de desconto direcionado na comissão do valor que ele gerou no pedido.
+			if ((comissaoUtilizadaDesconto + comissaoUtilizadaPrazoMed) > totalComissaoGerada) {
+
+				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+				that.byId("idComissaoUtilizadaDesconto").setValueState("Error");
+				that.byId("idComissaoUtilizadaDesconto").setValueStateText(
+					"Valor destinado para abater da comissão ultrapassou o valor gerado do pedido. Max permitido( " + totalComissaoGerada + " )");
+				that.byId("idComissaoUtilizadaPrazo").setValueState("Error");
+				that.byId("idComissaoUtilizadaPrazo").setValueStateText(
+					"Valor destinado para abater da comissão ultrapassou o valor gerado do pedido. Max permitido( " + totalComissaoGerada + " )");
+				that.byId("idComissaoUtilizadaDesconto").focus();
+
+			} else {
+
+				that.byId("idComissaoUtilizadaPrazo").setValueState("None");
+				that.byId("idComissaoUtilizadaPrazo").setValueStateText("");
+
+				that.byId("idComissaoUtilizadaDesconto").setValueState("None");
+				that.byId("idComissaoUtilizadaDesconto").setValueStateText("");
+			}
+			
 		},
 
 		onCalculaDiluicaoItem: function () {
@@ -2896,7 +2954,7 @@ sap.ui.define([
 							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
 							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
 							valorTotalAcresPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAcresPrazoMed"),
-							valTotalExcedenteDescontos: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDescontos"),
+							ValTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
 							totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
 							valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
 							valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
@@ -2913,7 +2971,7 @@ sap.ui.define([
 						request.onsuccess = function () {
 							// that.atualizaMovtoVerba(db);
 							that.setaCompleto(db, "Sim");
-							that.resetarCamposPrePedido();
+							that.onResetarCamposPrePedido();
 							oItemTemplate = [];
 							oItemTemplateTotal = [];
 							console.log("Pedido inserido");
@@ -3139,7 +3197,7 @@ sap.ui.define([
 							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
 							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
 							valorTotalAcresPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAcresPrazoMed"),
-							valTotalExcedenteDescontos: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDescontos"),
+							ValTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
 							totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
 							valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
 							valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
@@ -3277,48 +3335,17 @@ sap.ui.define([
 			}
 		},
 
-		resetarCamposPrePedido: function () {
+		onResetarCamposPrePedido: function () {
 
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "");
-
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", 0);
-
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDescontos", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "");
-
-			//Tela cabeçalho (2º aba)
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", "");
+			
+			this.onResetaCamposPrePedido();
 		},
 
 		onCancelarPedido: function () {
-			this.resetarCamposPrePedido();
+			this.onResetarCamposPrePedido();
 			oItemTemplate = [];
 			oItemTemplateTotal = [];
 
@@ -3353,6 +3380,52 @@ sap.ui.define([
 					console.log("Erro ao abrir o Pedido > " + that.getOwnerComponent().getModel("modelAux").getProperty("/nrPedCli"));
 				};
 			};
+		},
+
+		onValidaComissaoUtilizadaDesconto: function (evt) {
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor > 0 || valor == "") {
+				if (valor > 0) {
+					
+					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", parseFloat(valor));
+				} else {
+					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
+				}
+			} else {
+				oSource.setValue(0);
+			}
+		},
+
+		onValidaNumeroPositivo: function (evt) {
+
+			var oSource = evt.getSource();
+
+			var valor = oSource.getValue();
+
+			if (valor < 0) {
+
+				oSource.setValue(0);
+			}
+		},
+		
+		onValidaVerbaUtilizadaDesconto: function(evt){
+			
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor > 0 || valor == "") {
+				if (valor > 0) {
+					
+					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", parseFloat(valor));
+				} else {
+					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
+				}
+			} else {
+				oSource.setValue(0);
+			}
+			
 		},
 
 		onAddOV: function () {

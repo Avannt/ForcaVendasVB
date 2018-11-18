@@ -4,7 +4,7 @@
 		<pages>
 			<Page title="Digitação do Pedido" class="sapUiResponsivePadding" showNavButton="true" navButtonPress="onNavBack">
 				<content>
-					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true" enableTabReordering="true" 
+					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true" enableTabReordering="true"
 						select="onTablFilterEvent">
 						<items>
 							<IconTabFilter id="tabClienteStep" text="Dados Cliente" enabled="true" icon="sap-icon://hint" key="tab1">
@@ -33,7 +33,7 @@
 							<IconTabFilter id="tabPedidoWebStep" text="Pedido Web" enabled="true" icon="sap-icon://notes" key="tab2">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
-										columnsM="2"  layout="ResponsiveGridLayout" title="">
+										columnsM="2" layout="ResponsiveGridLayout" title="">
 										<f:content>
 											<Label text="Nº Pedido"/>
 											<Input id="idNumeroPedido" value="{modelAux>/NrPedCli}" enabled="false"/>
@@ -59,36 +59,37 @@
 												change="onChangeTipoTransporte">
 												<core:Item key="{tipoTransporte>idTransporte}" text="{tipoTransporte>idTransporte}"/>
 											</Select>
-										<!--	<Label text="Data entrega *"/>-->
-										<!--	<DatePicker id="idDataEntrega" class="readOnly" value="{modelDadosPedido>/DataEntrega}" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy"-->
-										<!--		change="onChangeDataEntrega" busyIndicatorDelay="0"/>-->
-										<!--	<Label text="Local entrega *"/>-->
-										<!--	<Input id="idLocalEntrega" value="{modelDadosPedido>/LocalEntrega}" enabled="false"/>-->
+											<!--	<Label text="Data entrega *"/>-->
+											<!--	<DatePicker id="idDataEntrega" class="readOnly" value="{modelDadosPedido>/DataEntrega}" displayFormat="dd/MM/yyyy" valueFormat="dd/MM/yyyy"-->
+											<!--		change="onChangeDataEntrega" busyIndicatorDelay="0"/>-->
+											<!--	<Label text="Local entrega *"/>-->
+											<!--	<Input id="idLocalEntrega" value="{modelDadosPedido>/LocalEntrega}" enabled="false"/>-->
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
-										columnsM="2"  layout="ResponsiveGridLayout" title="Parcelamento">
+										columnsM="2" layout="ResponsiveGridLayout" title="Parcelamento">
 										<f:content>
-											<Label text="Dias da primeira parcela *" />
-											<Input id="idPrimeiraParcela" type="Number" value="{modelDadosPedido>/DiasPrimeiraParcela}" />
-											<Label text="Quantidade de parcelas *" />
-											<Input id="idQuantParcelas" type="Number" value="{modelDadosPedido>/QuantParcelas}" />
-											<Label text="Dias de intervalo entre as parcelas *" />
-											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}" />
+											<Label text="Dias da primeira parcela *"/>
+											<Input id="idPrimeiraParcela" type="Number" value="{modelDadosPedido>/DiasPrimeiraParcela}"/>
+											<Label text="Quantidade de parcelas *"/>
+											<Input id="idQuantParcelas" type="Number" value="{modelDadosPedido>/QuantParcelas}"/>
+											<Label text="Dias de intervalo entre as parcelas *"/>
+											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}"/>
 											<Label text="Existe entrada"/>
-											<CheckBox id="idCheckEntrada" selected="{modelDadosPedido>/ExisteEntradaPedido}" select="onExisteEntrada" />
+											<CheckBox id="idCheckEntrada" selected="{modelDadosPedido>/ExisteEntradaPedido}" select="onExisteEntrada"/>
 											<Label text="Valor (R$)"/>
-											<Input id="idValorEntrada" type="Text" value="{modelDadosPedido>/ValorEntradaPedido}" liveChange="onBloqueiaPercEntrada" visible="false" />
+											<Input id="idValorEntrada" type="Text" value="{modelDadosPedido>/ValorEntradaPedido}" liveChange="onBloqueiaPercEntrada" visible="false"/>
 											<Label text="Perc. (%)"/>
-											<Input id="idPercEntrada" type="Text" value="{modelDadosPedido>/PercEntradaPedido}"  liveChange="onBloqueiaValorEntrada"  visible="false" />
+											<Input id="idPercEntrada" type="Text" value="{modelDadosPedido>/PercEntradaPedido}" liveChange="onBloqueiaValorEntrada" visible="false"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
 										columnsM="2" layout="ResponsiveGridLayout" title="Informações Adicionais">
 										<f:content>
-											<Label text="Observações para auditoria" />
-											<TextArea id="idObservacoesAuditoria" value="{modelDadosPedido>/ObservacaoAuditoriaPedido}" maxLength="100" change="onChangeAuditoriaObservacoes"/>
-											<Label text="Observações para equipe de logística" />
+											<Label text="Observações para auditoria"/>
+											<TextArea id="idObservacoesAuditoria" value="{modelDadosPedido>/ObservacaoAuditoriaPedido}" maxLength="100"
+												change="onChangeAuditoriaObservacoes"/>
+											<Label text="Observações para equipe de logística"/>
 											<TextArea id="idObservacoes" value="{modelDadosPedido>/ObservacaoPedido}" maxLength="100" change="onChangeObservacoes"/>
 										</f:content>
 									</f:SimpleForm>
@@ -99,7 +100,7 @@
 									</Toolbar>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" enabled="false" icon="sap-icon://add" key="tab3" >
+							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" enabled="false" icon="sap-icon://add" key="tab3">
 								<ScrollContainer height="100%" width="100%" horizontal="true" vertical="true">
 									<Toolbar id="lineItemsToolbar">
 										<!--<Title id="lineItemsHeader"/>-->
@@ -113,25 +114,25 @@
 										noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;"
 										busyIndicatorDelay="0" fixedLayout="false">
 										<columns>
-											<Column minScreenWidth="600px" visible="true" width="20px" hAlign="Left" >
+											<Column minScreenWidth="600px" visible="true" width="20px" hAlign="Left">
 												<Text text="Id"/>
 											</Column>
-											<Column minScreenWidth="320px" width="90px" hAlign="Left" >
+											<Column minScreenWidth="320px" width="90px" hAlign="Left">
 												<Text text="Item"/>
 											</Column>
-											<Column minScreenWidth="870px" demandPopin="false" width="auto" hAlign="Left" >
+											<Column minScreenWidth="870px" demandPopin="false" width="auto" hAlign="Left">
 												<Text text="Descrição"/>
 											</Column>
 											<!--<Column minScreenWidth="420px" demandPopin="false" hAlign="Left" vAlign="Left" width="80px">-->
 											<!--	<Text text="Preço"/>-->
 											<!--</Column>-->
-											<Column minScreenWidth="320px" width="50px" hAlign="Left" >
+											<Column minScreenWidth="320px" width="50px" hAlign="Left">
 												<Text text="Qnt"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="true" width="70px" hAlign="Left" >
+											<Column minScreenWidth="360px" demandPopin="true" width="70px" hAlign="Left">
 												<Text text="Desc"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left" >
+											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">
 												<Text text="Valor UN"/>
 											</Column>
 											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">
@@ -154,14 +155,14 @@
 												</customData>
 												<cells>
 													<Text text="{path : 'ItensPedidoGrid>index', type: 'sap.ui.model.type.Integer'}" visible="true"/>
-													<Text text="{ItensPedidoGrid>matnr}" />
-													<Text text="{path: 'ItensPedidoGrid>maktx'}" />
+													<Text text="{ItensPedidoGrid>matnr}"/>
+													<Text text="{path: 'ItensPedidoGrid>maktx'}"/>
 													<!--<Text text="R$: {ItensPedidoGrid>zzVprod}" />-->
-													<Text text="{ItensPedidoGrid>zzQnt}" />
+													<Text text="{ItensPedidoGrid>zzQnt}"/>
 													<!--<Text text="{ItensPedidoGrid>zzDesitem} %"/>-->
 													<Text text="{ItensPedidoGrid>zzPercDescTotal} %"/>
-													<Text text="R$: {ItensPedidoGrid>zzVprodDesc}" />
-													<Text text="R$: {ItensPedidoGrid>zzVprodDescTotal}" />
+													<Text text="R$: {ItensPedidoGrid>zzVprodDesc}"/>
+													<Text text="R$: {ItensPedidoGrid>zzVprodDescTotal}"/>
 													<!--<Text text="{ItensPedidoGrid>zzPercom} %" />-->
 													<!--<Text text="{ItensPedidoGrid>zzPervm} %" />-->
 												</cells>
@@ -176,49 +177,49 @@
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
 											<Label text="Valor excedente desconto" class="bold"/>
-											<Input id="idExcedenteDesconto" value="{modelDadosPedido>/ValTotalExcedenteDescontos}" enabled="false" class="desabilitado marginBottomInpu"/>
-											<Label text="Verba de Marketing"/>
-											<Input id="idVerbaDesconto" enabled="true" type="Number" />
-											<Label text="Comissão"/>
-											<Input id="idComissaoDesconto" enabled="true" type="Number" />
+											<Input id="idExcedenteDesconto" value="R$: {modelDadosPedido>/ValTotalExcedenteDesconto}" enabled="false" class="desabilitado marginBottomInpu"/>
+											<Label text="Verba de Marketing (R$)"/>
+											<Input id="idVerbaUtilizadaDesconto" value="{modelDadosPedido>/ValVerbaUtilizadaDesconto}" liveChange="onValidaVerbaUtilizadaDesconto" enabled="true" />
+											<Label text="Comissão (R$)"/>
+											<Input id="idComissaoUtilizadaDesconto" value="{modelDadosPedido>/ValComissaoUtilizadaDesconto}" liveChange="onValidaComissaoUtilizadaDesconto" enabled="true" />
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
 											<Label text="Valor excedente prazo médio" class="bold"/>
-											<Input id="idExcedentePrazo" value="{modelDadosPedido>/ValTotalAcresPrazoMed}" enabled="false" class="desabilitado"/>
+											<Input id="idExcedentePrazo" value="R$: {modelDadosPedido>/ValTotalExcedentePrazoMed}" enabled="false" class="desabilitado"/>
 											<!--<Label text="Verba de Marketing"/>-->
 											<!--<Input id="idVerbaPrazo" enabled="true" type="Number" />-->
-											<Label text="Comissão"/>
-											<Input id="idComissaoPrazo" enabled="true" type="Number" />
+											<Label text="Comissão (R$)"/>
+											<Input id="idComissaoUtilizadaPrazo" value="{modelDadosPedido>/ValUtilizadoComissaoPrazoMed}" enabled="true" />
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
 											<Label text="Valor campanha enxoval" class="bold"/>
-											<Input id="idValorTotalEnxoval" value="{modelDadosPedido>/ValorTotalAcresEnxoval}" enabled="false" class="desabilitado"/>
-											<Label text="Valor a ser utilizado"/>
-											<Input id="idVerbaEnxoval" enabled="true" type="Number" />
+											<Input id="idValorTotalEnxoval" value="R$: {modelDadosPedido>/ValTotalCampEnxoval}" enabled="false" class="desabilitado"/>
+											<Label text="Valor a ser utilizado (R$)"/>
+											<Input id="idVerbaEnxoval" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampEnxoval}" />
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
 											<Label text="Valor campanha produto acabado" class="bold"/>
-											<Input id="idValTotCampProdutoAcabado" value="{modelDadosPedido>/ValorTotalProdutoAcabado}" enabled="false" class="desabilitado"/>
-											<Label text="Valor a ser utilizado"/>
-											<Input id="idValCampProdAcabado" enabled="true" type="Number" />
+											<Input id="idValTotCampProdutoAcabado" value="R$: {modelDadosPedido>/ValTotalCampProdutoAcabado}" enabled="false" class="desabilitado"/>
+											<Label text="Valor a ser utilizado (R$)"/>
+											<Input id="idValCampProdAcabado" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampProdutoAcabado}"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
 											<Label text="Valor campanha global" class="bold"/>
-											<Input id="idValTotCampGlobal" value="{modelDadosPedido>/ValorTotalProdutoAcabado}" enabled="false" class="desabilitado"/>
-											<Label text="Valor a ser utilizado"/>
-											<Input id="idValCampGlobal" enabled="true" type="Number" />
+											<Input id="idValTotCampGlobal" value="R$: {modelDadosPedido>/ValTotalCampGlobal}" enabled="false" class="desabilitado"/>
+											<Label text="Valor a ser utilizado (R$)"/>
+											<Input id="idValCampGlobal" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampGlobal}"/>
 										</f:content>
 									</f:SimpleForm>
 									<Toolbar>
@@ -230,37 +231,53 @@
 							<IconTabFilter id="tabTotalStep" text="Total Pedido" enabled="false" icon="sap-icon://expense-report" key="tab6">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
-										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Dados Gerais">
 										<f:content>
 											<Label text="Total Pedido"/>
 											<Input id="idTotalPedidoAbaTotal" value="R$ {modelDadosPedido>/ValTotPed}" enabled="false" class="desabilitado"/>
-											
 											<Label text="Total Itens"/>
 											<Input id="idTotalItensAbaTotal" value="{modelDadosPedido>/TotalItensPedido}" enabled="false" class="desabilitado"/>
-											
 											<Label text="Peso Total dos Itens"/>
 											<Input id="idPesoPedidoAbaTotal" value="{modelDadosPedido>/Ntgew} KG" enabled="false" class="desabilitado"/>
-											
-											<Label text="Valor Excedente por Descontos"/>
-											<Input id="idExcedenteDescontoAbaTotal" value="R$ {modelDadosPedido>/ValTotalExcedenteDescontos}" enabled="false" class="desabilitado"/>
-											
-											<Label text="Valor Acrésc por Prazo"/>
-											<Input id="idExcedentePrazoAbaTotal" value="R$ {modelDadosPedido>/ValTotalAcresPrazoMed}" enabled="false" class="desabilitado"/>
-											
 											<Label text="Verba Pedido "/>
 											<Input id="idVerbaAbaTotal" value="R$ {modelDadosPedido>/ValVerbaPedido}" enabled="false" class="desabilitado"/>
-											
 											<Label text="Comissão "/>
 											<Input id="idComissaoAbaTotal" value="R$ {modelDadosPedido>/ValComissaoPedido}" enabled="false" class="desabilitado"/>
-											
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Valores Excedentes">
+										<f:content>
+											<Label text="Valor Excedente por Descontos"/>
+											<Input id="idExcedenteDescontoAbaTotal" value="R$ {modelDadosPedido>/ValTotalExcedenteDesconto}" enabled="false" class="desabilitado"/>
+											<Label text="Valor Excedente por Prazo"/>
+											<Input id="idExcedentePrazoAbaTotal" value="R$ {modelDadosPedido>/ValTotalExcedentePrazoMed}" enabled="false" class="desabilitado"/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Valores a Descontar">
+										<f:content>
+											<Label text="Valor abater verba "/>
+											<Input id="idAbaterVerba" value="R$ {modelDadosPedido>/ValTotalAbatidoVerba}" enabled="false" class="desabilitado"/>
+											<Label text="Valor abater comissão "/>
+											<Input id="idAbaterComissao" value="R$ {modelDadosPedido>/ValTotalAbatidoComissao}" enabled="false" class="desabilitado"/>
+											<Label text="Valor sem destinar Desconto"/>
+											<Input id="idAbaterNaoDestinadoDesconto" value="R$ {modelDadosPedido>/ValTotalExcedenteNaoDirecionadoDesconto}" enabled="false" class="desabilitado"/>
+											<Label text="Valor sem destinar Prazo Médio"/>
+											<Input id="idAbaterNaoDestinadoPrazoMed" value="R$ {modelDadosPedido>/ValTotalExcedenteNaoDirecionadoPrazoMed}" enabled="false" class="desabilitado"/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Valores a Descontar Campanha">
+										<f:content>
 											<Label text="Campanha Enxoval"/>
-											<Input id="idCampEnxovalAbaTotal" value="R$ {modelDadosPedido>/ValorCampEnxoval}" enabled="false" class="desabilitado"/>
-											
+											<Input id="idAbaterCampEnxoval" value="R$ {modelDadosPedido>/ValUtilizadoCampEnxoval}" enabled="false" class="desabilitado"/>
 											<Label text="Campanha Brindes"/>
-											<Input id="idCampBrindeAbaTotal" value="R$ {modelDadosPedido>/ValorCampBrinde}" enabled="false" class="desabilitado"/>
-											
+											<Input id="idAbaterCampBrinde" value="R$ {modelDadosPedido>/ValUtilizadoCampBrinde}" enabled="false" class="desabilitado"/>
+											<Label text="Campanha Produto Acabado"/>
+											<Input id="idAbaterProdutoAcabado" value="R$ {modelDadosPedido>/ValUtilizadoCampProdutoAcabado}" enabled="false" class="desabilitado"/>
 											<Label text="Campanha Global"/>
-											<Input id="idCampGlobalAbaTotal" value="R$ {modelDadosPedido>/ValorCampGlobal}" enabled="false" class="desabilitado"/>
+											<Input id="idAbaterCampGlobal" value="R$ {modelDadosPedido>/ValUtilizadoCampGlobal}" enabled="false" class="desabilitado"/>
 										</f:content>
 									</f:SimpleForm>
 									<Toolbar>
