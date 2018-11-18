@@ -365,7 +365,8 @@ sap.ui.define([
 					Stcd2: "",
 					Inco1: "",
 					Parvw: "",
-					Lifnr: ""
+					Lifnr: "",
+					efetuoucompra: ""
 				});
 				this.getOwnerComponent().setModel(oModelCliente, "modelCliente");
 
@@ -654,7 +655,8 @@ sap.ui.define([
 																		stcd2: retornoCliente.results[i].Stcd2,
 																		inco1: retornoCliente.results[i].Inco1,
 																		parvw: retornoCliente.results[i].Parvw,
-																		lifnr: retornoCliente.results[i].Lifnr
+																		lifnr: retornoCliente.results[i].Lifnr,
+																		efetuoucompra: retornoCliente.results[i].Efetuoucompra
 																	};
 
 																	var requestCliente = objCliente.add(objBancoCliente);
