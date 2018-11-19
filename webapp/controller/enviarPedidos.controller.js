@@ -213,53 +213,100 @@ sap.ui.define([
 		},
 
 		onEnviarPedido: function (oEvent) {
-			var objPedido = {
-				Nrpedcli: "1",
-				Idstatuspedido: "",
-				Kunnr: "",
-				Werks: "1",
-				Lifnr: "",
-				Auart: "",
-				Situacaopedido: "",
-				Ntgew: "1",
-				Brgew: "1",
-				Dataentrega: "16/11/2018",
-				Pltyp: "",
-				Completo: "",
-				Valminped: "",
-				Erdat: "",
-				Horaped: "",
-				Valorcomissao: "",
-				Obsped: "",
-				Obsaudped: "",
-				Existeentradapedido: "",
-				Percentradapedido: "",
-				Valorentradapedido: "",
-				Inco1: "",
-				Diasprimeiraparcela: "",
-				Quantparcelas: "",
-				Intervaloparcelas: "",
-				Tiponego: ""
-			};
-			var oModel = this.getView().getModel();
+			var that = this;
 
-			oModel.create("/InserirOV", objPedido, {
-				success: function (data) {
-					MessageBox.show("Pedido Enviado!", {
-						icon: MessageBox.Icon.SUCCESS,
-						title: "Pedido enviado!",
-						actions: [MessageBox.Action.OK],
-					});
-				},
-				error: function (data) {
-					MessageBox.show("Verificar sistema!", {
+			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
+			var sIdPedido = "";
+
+			for (var i = 0; i < oSelectedItems.length; i++) {
+				sIdPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
+				var open = indexedDB.open("VB_DataBase");
+
+				open.onerror = function () {
+					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
-						title: "Verificar sistema!",
-						actions: [MessageBox.Action.OK],
+						title: "Banco não encontrado!",
+						actions: [MessageBox.Action.OK]
 					});
+				};
 
-				}
-			});
+				open.onsuccess = function () {
+					var db = open.result;
+					var storePrePedidos = db.transaction("PrePedidos", "readwrite");
+					var objPrePedidos = storePrePedidos.objectStore("PrePedidos");
+
+					var requesPrePedidos = objPrePedidos.get(sIdPedido);
+
+					requesPrePedidos.onsuccess = function (e) {
+						var oPed = e.target.result;
+						var repres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+
+						var objPedido = {
+							Nrpedcli: oPed.nrPedCli,
+							Idstatuspedido: String(oPed.idStatusPedido),
+							Kunnr: oPed.kunnr,
+							Werks: oPed.werks,
+							Lifnr: repres,
+							Auart: null,
+							Situacaopedido: oPed.situacaoPedido,
+							Ntgew: oPed.ntgew,
+							Brgew: null,
+							Dataentrega: null,
+							Pltyp: null,
+							Completo: oPed.completo,
+							Valminped: oPed.valMinPedido,
+							Erdat: oPed.dataPedido,
+							Horaped: null,
+							Valorcomissao: oPed.valComissaoPedido,
+							Obsped: oPed.observacaoPedido,
+							Obsaudped: oPed.observacaoAuditoriaPedido,
+							Existeentradapedido: oPed.existeEntradaPedido,
+							Percentradapedido: oPed.percEntradaPedido,
+							Valorentradapedido: oPed.valorEntradaPedido,
+							Inco1: oPed.tipoTransporte,
+							Diasprimeiraparcela: oPed.diasPrimeiraParcela,
+							Quantparcelas: oPed.quantParcelas,
+							Intervaloparcelas: oPed.intervaloParcelas,
+							Tiponego: null
+						};
+
+						var oModel = that.getView().getModel();
+						oModel.create("/InserirOV", objPedido, {
+							success: function (data) {
+								MessageBox.show("Pedido Enviado!", {
+									icon: MessageBox.Icon.SUCCESS,
+									title: "Pedido enviado!",
+									actions: [MessageBox.Action.OK],
+								});
+							},
+							error: function (data) {
+								MessageBox.show("Verificar sistema!", {
+									icon: MessageBox.Icon.ERROR,
+									title: "Verificar sistema!",
+									actions: [MessageBox.Action.OK],
+								});
+							}
+						});
+					};
+
+					requesPrePedidos.onerror = function (e) {
+						MessageBox.show(open.error.mensage, {
+							icon: MessageBox.Icon.ERROR,
+							title: "Erro ao encontrar tabela!",
+							actions: [MessageBox.Action.OK]
+						});
+					};
+				};
+			}
+		},
+
+		onMontarCabecalho: function (that, idPedido, dadosPedidoCab) {
+
+		},
+
+		onMontarLinha: function () {
+
 		}
+
 	});
 });
