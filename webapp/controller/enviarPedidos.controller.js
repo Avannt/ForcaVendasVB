@@ -239,7 +239,7 @@ sap.ui.define([
 
 					requesPrePedidos.onsuccess = function (e) {
 						var oPed = e.target.result;
-						var repres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+						var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
 						var objPedido = {
 							Nrpedcli: oPed.nrPedCli,
@@ -249,24 +249,24 @@ sap.ui.define([
 							Lifnr: repres,
 							Auart: null,
 							Situacaopedido: oPed.situacaoPedido,
-							Ntgew: oPed.ntgew,
+							Ntgew: parseFloat(oPed.ntgew).toFixed(2),
 							Brgew: null,
 							Dataentrega: null,
 							Pltyp: null,
 							Completo: oPed.completo,
-							Valminped: oPed.valMinPedido,
-							Erdat: oPed.dataPedido,
+							Valminped: parseFloat(oPed.valMinPedido).toFixed(2),
+							Erdat: oPed.dataPedido.substr(6,4) + oPed.dataPedido.substr(3,2) + oPed.dataPedido.substr(0,2),
 							Horaped: null,
-							Valorcomissao: oPed.valComissaoPedido,
+							Valorcomissao: parseFloat(oPed.valComissaoPedido).toFixed(2),
 							Obsped: oPed.observacaoPedido,
 							Obsaudped: oPed.observacaoAuditoriaPedido,
-							Existeentradapedido: oPed.existeEntradaPedido,
-							Percentradapedido: oPed.percEntradaPedido,
-							Valorentradapedido: oPed.valorEntradaPedido,
+							Existeentradapedido: oPed.existeEntradaPedido.toString(),
+							Percentradapedido: parseFloat(oPed.percEntradaPedido).toFixed(2),
+							Valorentradapedido: parseFloat(oPed.valorEntradaPedido).toFixed(2),
 							Inco1: oPed.tipoTransporte,
-							Diasprimeiraparcela: oPed.diasPrimeiraParcela,
-							Quantparcelas: oPed.quantParcelas,
-							Intervaloparcelas: oPed.intervaloParcelas,
+							Diasprimeiraparcela: oPed.diasPrimeiraParcela.toString(),
+							Quantparcelas: oPed.quantParcelas.toString(),
+							Intervaloparcelas: oPed.intervaloParcelas.toString(),
 							Tiponego: null
 						};
 
