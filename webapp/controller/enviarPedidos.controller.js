@@ -212,51 +212,100 @@ sap.ui.define([
 		},
 
 		onEnviarPedido: function (oEvent) {
-			var objPedido = {
-				Nrpedcli: "1",
-				Iditempedido: "1",
-				Tindex: "",
-				Matnr: "",
-				Maktx: "",
-				Ntgew: "",
-				Knumh: "",
-				Knumhextra: "",
-				Konda: "",
-				Kondaextra: "",
-				Kondm: "",
-				Kondmextra: "",
-				Tipoitem: "",
-				Zzdesext: "",
-				Zzdesitem: "",
-				Zzpercdescdiluicao: "",
-				Zzpercdesctotal: "",
-				Zzpercom: "",
-				Zzpervm: "",
-				Zzqnt: "",
-				Zzvprod: "",
-				Zzvproddesc: "",
-				Zzvproddesctotal: "",
-				Length: "",
-			};
-			var oModel = this.getView().getModel();
+			var that = this;
 
-			oModel.create("/InserirOV", objPedido, {
-				success: function (data) {
-					MessageBox.show("Pedido Enviado!", {
-						icon: MessageBox.Icon.SUCCESS,
-						title: "Pedido enviado!",
-						actions: [MessageBox.Action.OK],
-					});
-				},
-				error: function (data) {
-					MessageBox.show("Verificar sistema!", {
+			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
+			var sIdPedido = "";
+
+			for (var i = 0; i < oSelectedItems.length; i++) {
+				sIdPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
+				var open = indexedDB.open("VB_DataBase");
+
+				open.onerror = function () {
+					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
-						title: "Verificar sistema!",
-						actions: [MessageBox.Action.OK],
+						title: "Banco não encontrado!",
+						actions: [MessageBox.Action.OK]
 					});
+				};
 
-				}
-			});
+				open.onsuccess = function () {
+					var db = open.result;
+					var storePrePedidos = db.transaction("PrePedidos", "readwrite");
+					var objPrePedidos = storePrePedidos.objectStore("PrePedidos");
+
+					var requesPrePedidos = objPrePedidos.get(sIdPedido);
+
+					requesPrePedidos.onsuccess = function (e) {
+						var oPed = e.target.result;
+						var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+
+						var objPedido = {
+							Nrpedcli: oPed.nrPedCli,
+							Idstatuspedido: String(oPed.idStatusPedido),
+							Kunnr: oPed.kunnr,
+							Werks: oPed.werks,
+							Lifnr: repres,
+							Auart: null,
+							Situacaopedido: oPed.situacaoPedido,
+							Ntgew: parseFloat(oPed.ntgew).toFixed(2),
+							Brgew: null,
+							Dataentrega: null,
+							Pltyp: null,
+							Completo: oPed.completo,
+							Valminped: parseFloat(oPed.valMinPedido).toFixed(2),
+							Erdat: oPed.dataPedido.substr(6,4) + oPed.dataPedido.substr(3,2) + oPed.dataPedido.substr(0,2),
+							Horaped: null,
+							Valorcomissao: parseFloat(oPed.valComissaoPedido).toFixed(2),
+							Obsped: oPed.observacaoPedido,
+							Obsaudped: oPed.observacaoAuditoriaPedido,
+							Existeentradapedido: oPed.existeEntradaPedido.toString(),
+							Percentradapedido: parseFloat(oPed.percEntradaPedido).toFixed(2),
+							Valorentradapedido: parseFloat(oPed.valorEntradaPedido).toFixed(2),
+							Inco1: oPed.tipoTransporte,
+							Diasprimeiraparcela: oPed.diasPrimeiraParcela.toString(),
+							Quantparcelas: oPed.quantParcelas.toString(),
+							Intervaloparcelas: oPed.intervaloParcelas.toString(),
+							Tiponego: null
+						};
+
+						var oModel = that.getView().getModel();
+						oModel.create("/InserirOV", objPedido, {
+							success: function (data) {
+								MessageBox.show("Pedido Enviado!", {
+									icon: MessageBox.Icon.SUCCESS,
+									title: "Pedido enviado!",
+									actions: [MessageBox.Action.OK],
+								});
+							},
+							error: function (data) {
+								MessageBox.show("Verificar sistema!", {
+									icon: MessageBox.Icon.ERROR,
+									title: "Verificar sistema!",
+									actions: [MessageBox.Action.OK],
+								});
+							}
+						});
+					};
+
+					requesPrePedidos.onerror = function (e) {
+						MessageBox.show(open.error.mensage, {
+							icon: MessageBox.Icon.ERROR,
+							title: "Erro ao encontrar tabela!",
+							actions: [MessageBox.Action.OK]
+						});
+					};
+				};
+			}
+		},
+
+		onMontarCabecalho: function (that, idPedido, dadosPedidoCab) {
+
+		},
+
+		onMontarLinha: function () {
+
 		}
+
 	});
 });
