@@ -172,8 +172,8 @@ sap.ui.define([
 
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("NrPedcli");
-			that.getOwnerComponent().getModel("modelAux").setProperty("/numeroPedido", nrPedCli);
+			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("NrPedCli");
+			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", nrPedCli);
 
 			var open = indexedDB.open("VB_DataBase");
 			open.onerror = function () {
@@ -186,13 +186,12 @@ sap.ui.define([
 
 			open.onsuccess = function () {
 				var db = open.result;
-				var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
 
 				var store = db.transaction("PrePedidos", "readwrite").objectStore("PrePedidos");
 				store.openCursor().onsuccess = function (event) {
 					var cursor = event.target.result;
 					if (cursor) {
-						if (cursor.value.IdBase == IdBase && cursor.value.idStatus == 2 && cursor.value.NrPedcli == nrPedCli) {
+						if (cursor.value.idStatus == 2 && cursor.value.NrPedCli == nrPedCli) {
 							oPedidosEnviar.push(cursor.value);
 						}
 						cursor.continue();
@@ -203,7 +202,7 @@ sap.ui.define([
 				store1.openCursor().onsuccess = function (event) {
 					var cursor = event.target.result;
 					if (cursor) {
-						if (cursor.value.IdBase == IdBase && cursor.value.NrPedcli == nrPedCli) {
+						if (cursor.value.NrPedCli == nrPedCli) {
 							oItensPedidoEnviar.push(cursor.value);
 						}
 						cursor.continue();
