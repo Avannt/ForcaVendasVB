@@ -3339,7 +3339,6 @@ sap.ui.define([
 
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
-			this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "");
 			
 			this.onResetaCamposPrePedido();
 		},

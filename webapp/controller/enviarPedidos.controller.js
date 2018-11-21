@@ -9,6 +9,7 @@ sap.ui.define([
 	var oItensPedidoGrid = [];
 	var oPedidoGrid = [];
 	var oItensPedidoEnviar = [];
+	var oItensPedidoGridEnviar = [];
 	var deletarMovimentos = [];
 	var ajaxCall;
 
@@ -110,6 +111,7 @@ sap.ui.define([
 			oItensPedidoGrid = [];
 			oPedidoGrid = [];
 			oItensPedidoEnviar = [];
+			oItensPedidoGridEnviar = [];
 
 			var oModel = new sap.ui.model.json.JSONModel();
 			this.getOwnerComponent().getModel("modelAux");
@@ -163,140 +165,98 @@ sap.ui.define([
 		},
 
 		onSelectionChange: function (oEvent) {
-			console.log(oItensPedidoGrid);
-			console.log(oPedidoGrid);
 			oPedidosEnviar = [];
-			oItensPedidoGrid = [];
+			oItensPedidoGridEnviar = [];
 			oItensPedidoEnviar = [];
 
 			var that = this;
-			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("NrPedcli");
-			that.getOwnerComponent().getModel("modelAux").setProperty("/numeroPedido", nrPedCli);
+			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
+			
+			for (var i = 0; i < oSelectedItems.length; i++) {
+				var nrPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
 
-			var open = indexedDB.open("VB_DataBase");
-			open.onerror = function () {
-				MessageBox.show(open.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
+				for (var j = 0; j < oPedidoGrid.length; j++) {
 
-			open.onsuccess = function () {
-				var db = open.result;
-				var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-
-				var store = db.transaction("PrePedidos", "readwrite").objectStore("PrePedidos");
-				store.openCursor().onsuccess = function (event) {
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.IdBase == IdBase && cursor.value.idStatus == 2 && cursor.value.NrPedcli == nrPedCli) {
-							oPedidosEnviar.push(cursor.value);
-						}
-						cursor.continue();
+					if (oPedidoGrid[j].nrPedCli == nrPedido) {
+						oPedidosEnviar.push(oPedidoGrid[j]);
 					}
-				};
-
-				var store1 = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
-				store1.openCursor().onsuccess = function (event) {
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.IdBase == IdBase && cursor.value.NrPedcli == nrPedCli) {
-							oItensPedidoEnviar.push(cursor.value);
-						}
-						cursor.continue();
+				}
+				for (var k = 0; k < oItensPedidoGrid.length; k++) {
+					if (oItensPedidoGrid[k].nrPedCli == nrPedido) {
+						oItensPedidoGridEnviar.push(oItensPedidoGrid[k]);
 					}
-				};
-			};
+				}
+			}
 		},
 
 		onEnviarPedido: function (oEvent) {
 			var that = this;
+			
+			var oModel = this.getView().getModel();
+			oModel.setUseBatch(true);
+			var repres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
-			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
-			var sIdPedido = "";
-
-			for (var i = 0; i < oSelectedItems.length; i++) {
-				sIdPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
-				var open = indexedDB.open("VB_DataBase");
-
-				open.onerror = function () {
-					MessageBox.show(open.error.mensage, {
-						icon: MessageBox.Icon.ERROR,
-						title: "Banco não encontrado!",
-						actions: [MessageBox.Action.OK]
-					});
+			for (var i = 0; i < oPedidosEnviar.length; i++) {
+				
+				var objPedido = {
+					Nrpedcli: oPedidosEnviar[i].nrPedCli,
+					Idstatuspedido: String(oPedidosEnviar[i].idStatusPedido),
+					Kunnr: oPedidosEnviar[i].kunnr,
+					Werks: oPedidosEnviar[i].werks,
+					Lifnr: repres,
+					Auart: oPedidosEnviar[i].tipoPedido,
+					Situacaopedido: oPedidosEnviar[i].situacaoPedido,
+					Ntgew: String(oPedidosEnviar[i].ntgew),
+					// Brgew: null, // Não usa
+					// Dataentrega: "20181116", //Não usa
+					Pltyp: String(oPedidosEnviar[i].tabPreco),
+					Completo: oPedidosEnviar[i].completo,
+					Valminped: String(oPedidosEnviar[i].valMinPedido),
+					Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl.substr(0, 2)),
+					Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl.substr(17, 2)),
+					Valorcomissao: String(oPedidosEnviar[i].valComissaoPedido),
+					Obsped: oPedidosEnviar[i].observacaoPedido,
+					Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
+					Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
+					Percentradapedido: String(oPedidosEnviar[i].percEntradaPedido),
+					Valorentradapedido: String(oPedidosEnviar[i].valorEntradaPedido),
+					Inco1: String(oPedidosEnviar[i].tipoTransporte),
+					Diasprimeiraparcela: String(oPedidosEnviar[i].diasPrimeiraParcela),
+					Quantparcelas: String(oPedidosEnviar[i].quantParcelas),
+					Intervaloparcelas: String(oPedidosEnviar[i].intervaloParcelas),
+					Tiponego: String(oPedidosEnviar[i].tipoNegociacao)
 				};
-
-				open.onsuccess = function () {
-					var db = open.result;
-					var storePrePedidos = db.transaction("PrePedidos", "readwrite");
-					var objPrePedidos = storePrePedidos.objectStore("PrePedidos");
-
-					var requesPrePedidos = objPrePedidos.get(sIdPedido);
-
-					requesPrePedidos.onsuccess = function (e) {
-						var oPed = e.target.result;
-						var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
-
-						var objPedido = {
-							Nrpedcli: oPed.nrPedCli,
-							Idstatuspedido: String(oPed.idStatusPedido),
-							Kunnr: oPed.kunnr,
-							Werks: oPed.werks,
-							Lifnr: repres,
-							Auart: null,
-							Situacaopedido: oPed.situacaoPedido,
-							Ntgew: parseFloat(oPed.ntgew).toFixed(2),
-							Brgew: null,
-							Dataentrega: null,
-							Pltyp: null,
-							Completo: oPed.completo,
-							Valminped: parseFloat(oPed.valMinPedido).toFixed(2),
-							Erdat: oPed.dataPedido.substr(6,4) + oPed.dataPedido.substr(3,2) + oPed.dataPedido.substr(0,2),
-							Horaped: null,
-							Valorcomissao: parseFloat(oPed.valComissaoPedido).toFixed(2),
-							Obsped: oPed.observacaoPedido,
-							Obsaudped: oPed.observacaoAuditoriaPedido,
-							Existeentradapedido: oPed.existeEntradaPedido.toString(),
-							Percentradapedido: parseFloat(oPed.percEntradaPedido).toFixed(2),
-							Valorentradapedido: parseFloat(oPed.valorEntradaPedido).toFixed(2),
-							Inco1: oPed.tipoTransporte,
-							Diasprimeiraparcela: oPed.diasPrimeiraParcela.toString(),
-							Quantparcelas: oPed.quantParcelas.toString(),
-							Intervaloparcelas: oPed.intervaloParcelas.toString(),
-							Tiponego: null
-						};
-
-						var oModel = that.getView().getModel();
-						oModel.create("/InserirOV", objPedido, {
-							success: function (data) {
-								MessageBox.show("Pedido Enviado!", {
-									icon: MessageBox.Icon.SUCCESS,
-									title: "Pedido enviado!",
-									actions: [MessageBox.Action.OK],
-								});
-							},
-							error: function (data) {
-								MessageBox.show("Verificar sistema!", {
-									icon: MessageBox.Icon.ERROR,
-									title: "Verificar sistema!",
-									actions: [MessageBox.Action.OK],
-								});
-							}
+				
+					
+				oModel.create("/InserirOV", objPedido, {
+					success: function (data) {
+						MessageBox.show("Pedido Enviado!", {
+							icon: MessageBox.Icon.SUCCESS,
+							title: "Pedido enviado!",
+							actions: [MessageBox.Action.OK],
 						});
-					};
-
-					requesPrePedidos.onerror = function (e) {
-						MessageBox.show(open.error.mensage, {
+					},
+					error: function (data) {
+						MessageBox.show("Verificar sistema!", {
 							icon: MessageBox.Icon.ERROR,
-							title: "Erro ao encontrar tabela!",
-							actions: [MessageBox.Action.OK]
+							title: "Verificar sistema!",
+							actions: [MessageBox.Action.OK],
 						});
-					};
-				};
+					}
+				});
 			}
+			
+			oModel.submitChanges({
+				success: function(data, response) {
+					console.log(data);
+					console.log(response);
+				},
+				error: function(e) {
+					console.log(e);
+				}
+			});	
+			
+			
 		},
 
 		onMontarCabecalho: function (that, idPedido, dadosPedidoCab) {
