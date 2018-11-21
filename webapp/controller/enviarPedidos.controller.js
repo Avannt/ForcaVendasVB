@@ -16,7 +16,6 @@ sap.ui.define([
 
 		onInit: function () {
 			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
-
 		},
 
 		onNavBack: function () {
