@@ -86,6 +86,9 @@ sap.ui.define([
 			this.getView().byId("objectHeader").setTitle();
 			this.getView().byId("objectHeader").setNumber();
 			this.getView().byId("objectAttribute_cnpj").setText();
+			
+			var oModel = new sap.ui.model.json.JSONModel();
+			that.getView().setModel(oModel, "pedidosCadastrados");
 
 			var open = indexedDB.open("VB_DataBase");
 
