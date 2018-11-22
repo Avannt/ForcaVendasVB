@@ -88,10 +88,13 @@ sap.ui.define([
 
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (DETALHE)>>>>>>>>>>>>>>>>>>>>>>>>>
 <<<<<<< HEAD
+<<<<<<< HEAD
 						if (!db.objectStoreNames.contains("PedEntFuturaL")) {
 							var objPVEntFutL = db.createObjectStore("PedEntFuturaL", {
 								keyPath: "idItemEntrega",
 =======
+=======
+>>>>>>> refs/heads/master
 						if (!db.objectStoreNames.contains("ItensPedEntFutura")) {
 							var objPVEntFutL = db.createObjectStore("ItensPedEntFutura", {
 								keyPath: "idItemPedido",
