@@ -56,8 +56,11 @@ sap.ui.define([
 		/* Fim onSearch*/
 
 		onExit: function () {
-
+			if (this._oDialog) {
+				this._oDialog.destroy();
+			}
 		},
+		/* Fim onExit*/
 
 		_onLoadFields: function () {
 			var that = this;
@@ -129,7 +132,7 @@ sap.ui.define([
 					var objectStorePedEF = transactionPedEF.objectStore("PedEntFutura");
 
 					objectStorePedEF.openCursor().onsuccess = function (event) {
-						// consulta resultado do event
+
 						var cursor = event.target.result;
 						if (cursor) {
 							if (cursor.value.kunnr == that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr")) {
@@ -140,6 +143,7 @@ sap.ui.define([
 
 						} else {
 							var oModel = new sap.ui.model.json.JSONModel(oPedEF);
+
 							that.getView().setModel(oModel, "pedidosCadastrados");
 						}
 					};
@@ -147,6 +151,14 @@ sap.ui.define([
 			};
 		},
 		/*Fim onSelectionChange */
+		
+		onDialogSearch: function(oEvent) {
+			var sValue = oEvent.getParameter("value");
+			var oFilter = new Filter("Name", sap.ui.model.FilterOperator.Contains, sValue);
+			var oBinding = oEvent.getSource().getBinding("items");
+			oBinding.filter([oFilter]);
+		},
+		/*Fim onDialogSearch */
 
 		getSplitContObj: function () {
 			var result = this.byId("SplitContDemo2");
@@ -193,7 +205,43 @@ sap.ui.define([
 					reject();
 				}
 			};
-		} /* Fim carregaModelCliente */
+		},
+		/* Fim carregaModelCliente */
+
+		onSelectDialogPress: function (oEvent) {
+			if (!this._oDialog) {
+				// var oModel = this.getView().getModel("pedidosCadastrados");
+				
+				this._oDialog = sap.ui.xmlfragment("testeui5.view.Dialog", this);
+
+				// this._oDialog.setModel(this.getView().getModel());
+			}
+
+			// Set do recurso Multi-select
+			var bMultiSelect = !!oEvent.getSource().data("multi");
+			this._oDialog.setMultiSelect(bMultiSelect);
+
+			// Ativa o recurso 'Lembrar seleções' se necessário
+			var bRemember = !!oEvent.getSource().data("remember");
+			this._oDialog.setRememberSelections(bRemember);
+
+			// Adiciona o botão Limpar se for necessário
+			var bShowClearButton = !!oEvent.getSource().data("showClearButton");
+			this._oDialog.setShowClearButton(bShowClearButton);
+
+			// Define a propriedade de crescimento
+			var bGrowing = oEvent.getSource().data("growing");
+			this._oDialog.setGrowing(bGrowing == "true");
+
+			// Limpa o filtro da pesquisa antigo
+			this._oDialog.getBinding("items").filter([]);
+			// sap.ui.getCore().byId("sliItens").getBinding("items").filter([]);
+
+			// Alternar o estilo compacto (toggle compact style)
+			jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._oDialog);
+			this._oDialog.open();
+		},
+		/* Fim onSelectDialogPress */
 
 	});
 });
