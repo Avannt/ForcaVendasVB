@@ -130,7 +130,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", 0);
-			
+
 			this.byId("idTabelaPreco").setSelectedKey();
 			this.byId("idTipoTransporte").setSelectedKey();
 			this.byId("idTipoNegociacao").setSelectedKey();
@@ -498,6 +498,13 @@ sap.ui.define([
 		onChangeTipoPedido: function (evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oSource.getSelectedKey());
+
+			if (oSource.getSelectedKey() == "03") {
+				this.byId("idFormParcelamento").setVisible(false);
+			} else {
+				this.byId("idFormParcelamento").setVisible(true);
+			}
+
 		},
 
 		onExisteEntrada: function (evt) {
@@ -1477,38 +1484,39 @@ sap.ui.define([
 			verbaUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
 			comissaoUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto");
 			comissaoUtilizadaPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
-			
-			console.log("Verba: " + verbaUtilizadaDesconto + ". Comissão: " + comissaoUtilizadaDesconto + ". Comissão PM: " + comissaoUtilizadaPrazoMed);
-			
+
+			console.log("Verba: " + verbaUtilizadaDesconto + ". Comissão: " + comissaoUtilizadaDesconto + ". Comissão PM: " +
+				comissaoUtilizadaPrazoMed);
+
 			//VALOR NAO DIRECIONADO NO BALANÇO DE VERBAS. UMA VEZ QUE GEROU UMA DIFERENÇA.. GERARÁ WORKFLOW DE APROVAÇÃO;
 			console.log("VALOR NÃO DIRECIONADO DESCONTOS.");
 			valorNaoDirecionadoDesconto = totalExcedenteDescontos - (verbaUtilizadaDesconto + comissaoUtilizadaDesconto);
-			
+
 			console.log("VALOR NÃO DIRECIONADO PRAZO MÉDIO.");
 			valorNaoDirecionadoPrazoMed = valorTotalAcresPrazoMed - comissaoUtilizadaPrazoMed;
-			
+
 			console.log("TOTAL VERBA UTILIZADA.");
 			//Será a propria verba destinada para descontos : verbaUtilizadaDesconto
 			totalVerbaUtilizada = verbaUtilizadaDesconto;
-			
+
 			console.log("TOTAL COMISSÃO UTILIZADA.");
 			totalComissaoUtilizada = comissaoUtilizadaDesconto + comissaoUtilizadaPrazoMed;
-			
+
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoComissao", totalComissaoUtilizada);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoVerba", totalVerbaUtilizada);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", valorNaoDirecionadoDesconto);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", valorNaoDirecionadoPrazoMed);
-			
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto",
+				valorNaoDirecionadoDesconto);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed",
+				valorNaoDirecionadoPrazoMed);
+
 			console.log("VALORES UTILIZADOS CAMPANHA");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", 0);
-			
+
 			console.log("CALCULO PARCELAMENTO");
-			
-			
-			
+
 			console.log("INICIO DAS VALIDAÇÕES DO BALANÇO DE EXCEDENTES.");
 			//Tratativa se o kra excedeu o total de desconto direcionado na comissão do valor que ele gerou no pedido.
 			if ((comissaoUtilizadaDesconto + comissaoUtilizadaPrazoMed) > totalComissaoGerada) {
@@ -1530,7 +1538,7 @@ sap.ui.define([
 				that.byId("idComissaoUtilizadaDesconto").setValueState("None");
 				that.byId("idComissaoUtilizadaDesconto").setValueStateText("");
 			}
-			
+
 		},
 
 		onCalculaDiluicaoItem: function () {
@@ -3339,7 +3347,7 @@ sap.ui.define([
 
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
-			
+
 			this.onResetaCamposPrePedido();
 		},
 
@@ -3387,7 +3395,7 @@ sap.ui.define([
 
 			if (valor > 0 || valor == "") {
 				if (valor > 0) {
-					
+
 					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", parseFloat(valor));
 				} else {
 					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
@@ -3408,15 +3416,15 @@ sap.ui.define([
 				oSource.setValue(0);
 			}
 		},
-		
-		onValidaVerbaUtilizadaDesconto: function(evt){
-			
+
+		onValidaVerbaUtilizadaDesconto: function (evt) {
+
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
 			if (valor > 0 || valor == "") {
 				if (valor > 0) {
-					
+
 					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", parseFloat(valor));
 				} else {
 					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
@@ -3424,7 +3432,7 @@ sap.ui.define([
 			} else {
 				oSource.setValue(0);
 			}
-			
+
 		},
 
 		onAddOV: function () {
