@@ -43,7 +43,7 @@
 						<items>
 							<ColumnListItem type="Active" >
 								<cells>
-									<Text text="{path : 'pedidosCadastrados>nrPedCli'}"/>
+									<Text text="{path : 'pedidosCadastrados>nrEntCli'}"/>
 									<Text text="{path : 'pedidosCadastrados>dataImpl', formatter:'.myFormatterDataImp'}"/>
 									<Text text="R$: {path : 'pedidosCadastrados>valTotPed'}"/>
 									<Text text="R$: {path : 'pedidosCadastrados>valLiqPed'}"/>

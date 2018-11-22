@@ -24,7 +24,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 25);
+					var open = indexedDB.open("VB_DataBase", 26);
 
 					// Create the Tables
 					open.onupgradeneeded = function (e) {
@@ -81,7 +81,7 @@ sap.ui.define([
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("PedEntFutura")) {
 							var objPVEntFut = db.createObjectStore("PedEntFutura", {
-								keyPath: "nrPedCli",
+								keyPath: "nrEntCli",
 								unique: true
 							});
 						}
@@ -89,7 +89,7 @@ sap.ui.define([
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (DETALHE)>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("PedEntFuturaL")) {
 							var objPVEntFutL = db.createObjectStore("PedEntFuturaL", {
-								keyPath: "idItemPedido",
+								keyPath: "idItemEntrega",
 								unique: true
 							});
 						}
@@ -588,7 +588,7 @@ sap.ui.define([
 										idStatusPedido: 2,
 										intervaloParcelas: 0,
 										kunnr: "100028",
-										nrPedCli: "100085.20181119.144711",
+										nrEntCli: "100085.20181119.144711",
 										observacaoAuditoriaPedido: "obsaudit",
 										observacaoPedido: "obslog",
 										percEntradaPedido: "",
@@ -626,7 +626,7 @@ sap.ui.define([
 									var objPVFuturaF = txPVFuturaF.objectStore("PedEntFuturaL");
 
 									var objBancoPVFuturaF = {
-										idItemPedido: "100085.20181119.144711/1",
+										idItemEntrega: "100085.20181119.144711/1",
 										index: 1,
 										knumh: "0000247753",
 										knumhExtra: 0,
