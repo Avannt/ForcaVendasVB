@@ -87,9 +87,15 @@ sap.ui.define([
 						}
 
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (DETALHE)>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<< HEAD
 						if (!db.objectStoreNames.contains("PedEntFuturaL")) {
 							var objPVEntFutL = db.createObjectStore("PedEntFuturaL", {
 								keyPath: "idItemEntrega",
+=======
+						if (!db.objectStoreNames.contains("ItensPedEntFutura")) {
+							var objPVEntFutL = db.createObjectStore("ItensPedEntFutura", {
+								keyPath: "idItemPedido",
+>>>>>>> refs/heads/master
 								unique: true
 							});
 						}
@@ -97,7 +103,7 @@ sap.ui.define([
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PEDIDOS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("PrePedidos")) {
 							var objPedido = db.createObjectStore("PrePedidos", {
-								keyPath: "idItemPedido",
+								keyPath: "nrPedCli",
 								unique: true
 							});
 							objPedido.createIndex("kunnr", "kunnr", {
@@ -622,8 +628,8 @@ sap.ui.define([
 									};
 
 									/*---------------------------------LINHAS---------------------------------*/
-									var txPVFuturaF = db.transaction("PedEntFuturaL", "readwrite");
-									var objPVFuturaF = txPVFuturaF.objectStore("PedEntFuturaL");
+									var txPVFuturaF = db.transaction("ItensPedEntFutura", "readwrite");
+									var objPVFuturaF = txPVFuturaF.objectStore("ItensPedEntFutura");
 
 									var objBancoPVFuturaF = {
 										idItemEntrega: "100085.20181119.144711/1",
