@@ -11,9 +11,16 @@
 							<ObjectAttribute id="objectAttribute_cnpj"/>
 						</attributes>
 					</ObjectHeader>
+					<Button id="btnPesquisaPedido" class="sapUiSmallMarginBottom" text="Procurar pedido" press="onSelectDialogPress">
+						<customData>
+							<core:CustomData key="multi" value="false"/>
+							<core:CustomData key="remember" value="true"/>
+							<core:CustomData key="growing" value="false"/>
+						</customData>
+					</Button>
 				</content>
 				<content>
-					<Table id="table_pedidos" width="100%" backgroundDesign="Translucent" items="{ path:'pedidosCadastrados&gt;/', sorter: { path: 'NrPedCli', descending: true}}" mode="Delete" delete="onExcluirPedido" itemPress="onItemPress"
+					<Table id="table_pedidos" width="100%" backgroundDesign="Translucent" items="{ path:'pedidosCadastrados>/', sorter: { path: 'NrPedCli', descending: true}}" mode="Delete" delete="onExcluirPedido" itemPress="onItemPress"
 						growingThreshold="3" growingTriggerText="Proximos Pedidos >>" growing="true" noDataText="Nenhum pedido cadastrado para o cliente" busyIndicatorDelay="0" fixedLayout="false">
 						<headerToolbar>
 							<Toolbar id="lineItemsToolbar">
@@ -43,7 +50,7 @@
 						<items>
 							<ColumnListItem type="Active" >
 								<cells>
-									<Text text="{path : 'pedidosCadastrados>nrPedCli'}"/>
+									<Text text="{path : 'pedidosCadastrados>nrEntCli'}"/>
 									<Text text="{path : 'pedidosCadastrados>dataImpl', formatter:'.myFormatterDataImp'}"/>
 									<Text text="R$: {path : 'pedidosCadastrados>valTotPed'}"/>
 									<Text text="R$: {path : 'pedidosCadastrados>valLiqPed'}"/>
