@@ -97,8 +97,8 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
@@ -139,6 +139,8 @@ sap.ui.define([
 			objItensPedidoTemplate = [];
 			var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 			this.getView().setModel(oModel, "ItensPedidoGrid");
+
+			this.onBloqueiaPrePedido();
 		},
 
 		//CARREGA OS CAMPOS, POPULANDO OS COMBO BOX
@@ -297,6 +299,7 @@ sap.ui.define([
 		onCarregaDadosPedido: function (db) {
 			var that = this;
 			objItensPedidoTemplate = [];
+			var vetorAux = [];
 
 			this.byId("tabItensPedidoStep").setProperty("enabled", true);
 			this.byId("tabBalancoVerbaStep").setProperty("enabled", true);
@@ -345,10 +348,10 @@ sap.ui.define([
 
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oPrePedido.tipoNegociacao);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", oPrePedido.ntgew);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", oPrePedido.alTotPed);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", oPrePedido.valTotPed);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", oPrePedido.valDescontoTotal);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAcresPrazoMed", oPrePedido.valorTotalAcresPrazoMed);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", oPrePedido.ValTotalExcedenteDesconto);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedentePrazoMed", oPrePedido.valTotalExcedentePrazoMed);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", oPrePedido.valTotalExcedenteDesconto);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", oPrePedido.totalItensPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", oPrePedido.valCampEnxoval);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", oPrePedido.valCampBrinde);
@@ -356,6 +359,22 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", oPrePedido.valVerbaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", oPrePedido.valComissaoPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", oPrePedido.completo);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissao", oPrePedido.valComissao);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", oPrePedido.valComissaoUtilizadaDesconto);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", oPrePedido.valVerbaUtilizadaDesconto);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", oPrePedido.valUtilizadoComissaoPrazoMed);
+
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", oPrePedido.valTotalExcedenteNaoDirecionadoDesconto);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", oPrePedido.valTotalExcedenteNaoDirecionadoPrazoMed);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoComissao", oPrePedido.valTotalAbatidoComissao);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoVerba", oPrePedido.valTotalAbatidoVerba);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampGlobal", oPrePedido.valTotalCampGlobal);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", oPrePedido.valUtilizadoCampBrinde);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", oPrePedido.valUtilizadoCampGlobal);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", oPrePedido.valTotalCampEnxoval);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", oPrePedido.valUtilizadoCampEnxoval);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", oPrePedido.valTotalCampProdutoAcabado);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", oPrePedido.valUtilizadoCampProdutoAcabado);
 
 					//Tela cabeçalho (2º aba)
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oPrePedido.tipoTransporte);
@@ -368,6 +387,33 @@ sap.ui.define([
 					that.byId("idTipoTransporte").setSelectedKey(oPrePedido.tipoTransporte);
 					that.byId("idTipoNegociacao").setSelectedKey(oPrePedido.tipoNegociacao);
 					that.byId("idTipoPedido").setSelectedKey(oPrePedido.tipoPedido);
+
+					//FILTRA ITENS PARA APARECER NO COMBO PARA SELECIONAR DE ACORDO COM O TIPO DE PEDIDO JÁ EXISTENTE.
+					//AMOSTRA
+					if (oPrePedido.tipoPedido == "06") {
+						for (var i = 0; i < oVetorMateriais.length; i++) {
+							if (oVetorMateriais[i].mtpos == "YAMO") {
+								vetorAux.push(oVetorMateriais[i]);
+							}
+						}
+
+						oVetorMateriais = vetorAux;
+
+					}
+					//BRINDES
+					if (oPrePedido.tipoPedido == "07") {
+						for (i = 0; i < oVetorMateriais.length; i++) {
+							if (oVetorMateriais[i].mtpos == "YBRI") {
+								vetorAux.push(oVetorMateriais[i]);
+							}
+						}
+
+						oVetorMateriais = vetorAux;
+
+					}
+					
+					var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+					that.getView().setModel(oModel, "materiaisCadastrados");
 
 					var storeItensPedido = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
 					storeItensPedido.openCursor().onsuccess = function (event) {
@@ -385,6 +431,7 @@ sap.ui.define([
 							var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
+							that.onBloqueiaPrePedido();
 							that.calculaTotalPedido();
 						}
 					};
@@ -496,14 +543,67 @@ sap.ui.define([
 		/// EVENTOS CAMPOS							<<<<<<<<<<<<
 
 		onChangeTipoPedido: function (evt) {
+			var that = this;
+			var tipoPedido = "";
+			var vetorAux = [];
+
 			var oSource = evt.getSource();
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oSource.getSelectedKey());
+			tipoPedido = oSource.getSelectedKey();
+
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", tipoPedido);
 
 			if (oSource.getSelectedKey() == "03") {
 				this.byId("idFormParcelamento").setVisible(false);
 			} else {
 				this.byId("idFormParcelamento").setVisible(true);
 			}
+
+			var open = indexedDB.open("VB_DataBase");
+
+			open.onerror = function () {
+				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function () {
+				var db = open.result;
+
+				var transaction = db.transaction("Materiais", "readonly");
+				var objectStore = transaction.objectStore("Materiais");
+
+				if ("getAll" in objectStore) {
+					objectStore.getAll().onsuccess = function (event) {
+
+						oVetorMateriais = event.target.result;
+						//AMOSTRA
+						if (tipoPedido == "06") {
+							for (var i = 0; i < oVetorMateriais.length; i++) {
+								if (oVetorMateriais[i].mtpos == "YAMO") {
+									vetorAux.push(oVetorMateriais[i]);
+								}
+							}
+							
+							oVetorMateriais = vetorAux;
+						}
+						
+						//BRINDES
+						if (tipoPedido == "07") {
+							for (i = 0; i < oVetorMateriais.length; i++) {
+								if (oVetorMateriais[i].mtpos == "YBRI") {
+									vetorAux.push(oVetorMateriais[i]);
+								}
+							}
+							oVetorMateriais = vetorAux;
+						}
+						
+						var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+						that.getView().setModel(oModel, "materiaisCadastrados");
+					};
+				}
+			};
 
 		},
 
@@ -1405,6 +1505,7 @@ sap.ui.define([
 			var Total = 0;
 			var Ntgew = 0;
 			var QntProdutos = 0;
+			var valorParcelas = 0;
 			var TotalPedidoDesc = 0;
 			var valorCampBrinde = 0;
 			var valorCampGlobal = 0;
@@ -1421,6 +1522,10 @@ sap.ui.define([
 			var comissaoUtilizadaPrazoMed = 0;
 			var valorNaoDirecionadoDesconto = 0;
 			var valorNaoDirecionadoPrazoMed = 0;
+			var existeParcelas = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido");
+			var valorEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido");
+			var percEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
+			var quantidadeParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"));
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (objItensPedidoTemplate[i].tipoItem !== "Diluicao") {
@@ -1490,7 +1595,8 @@ sap.ui.define([
 
 			//VALOR NAO DIRECIONADO NO BALANÇO DE VERBAS. UMA VEZ QUE GEROU UMA DIFERENÇA.. GERARÁ WORKFLOW DE APROVAÇÃO;
 			console.log("VALOR NÃO DIRECIONADO DESCONTOS.");
-			valorNaoDirecionadoDesconto = totalExcedenteDescontos - (verbaUtilizadaDesconto + comissaoUtilizadaDesconto);
+			valorNaoDirecionadoDesconto = Math.round((totalExcedenteDescontos - (verbaUtilizadaDesconto + comissaoUtilizadaDesconto)) * 100) /
+				100;
 
 			console.log("VALOR NÃO DIRECIONADO PRAZO MÉDIO.");
 			valorNaoDirecionadoPrazoMed = valorTotalAcresPrazoMed - comissaoUtilizadaPrazoMed;
@@ -1516,6 +1622,32 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", 0);
 
 			console.log("CALCULO PARCELAMENTO");
+
+			var valorEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido");
+			var percEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
+
+			if (existeParcelas == false) {
+
+				valorParcelas = TotalPedidoDesc / quantidadeParcelas;
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", quantidadeParcelas + "x " + valorParcelas);
+
+			} else if (existeParcelas == true) {
+
+				if (valorEntradaPedido == 0) {
+					var aux = TotalPedidoDesc - (percEntradaPedido * TotalPedidoDesc) / 100;
+					valorParcelas = aux / quantidadeParcelas;
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "Entrada: " + percEntradaPedido + "% + " +
+						quantidadeParcelas + "x " + valorParcelas);
+
+				} else if (percEntradaPedido == 0) {
+
+					aux = (TotalPedidoDesc - valorEntradaPedido);
+					valorParcelas = aux / quantidadeParcelas;
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "Entrada: R$: " + valorEntradaPedido +
+						" + " + quantidadeParcelas + "x " + valorParcelas);
+
+				}
+			}
 
 			console.log("INICIO DAS VALIDAÇÕES DO BALANÇO DE EXCEDENTES.");
 			//Tratativa se o kra excedeu o total de desconto direcionado na comissão do valor que ele gerou no pedido.
@@ -1749,6 +1881,8 @@ sap.ui.define([
 						objItensPedidoTemplate = vetorAux;
 						var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 						that.getView().setModel(oModel, "ItensPedidoGrid");
+
+						that.onBloqueiaPrePedido();
 
 						console.log("Resultado dos itens da regra de Diluição");
 						console.log(vetorAuxObjetos);
@@ -2407,6 +2541,7 @@ sap.ui.define([
 						var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 						that.getView().setModel(oModel, "ItensPedidoGrid");
 
+						that.onBloqueiaPrePedido();
 						that.calculaTotalPedido();
 
 						//Clicou no editar item .. mas cancelou .. dai tem que resetar a variavel que identifica que é um edit
@@ -2539,6 +2674,8 @@ sap.ui.define([
 										var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 										that.getView().setModel(oModel, "ItensPedidoGrid");
 
+										that.onBloqueiaPrePedido();
+
 										console.log("Item: " + oItemPedido.index + " adicionado com sucesso");
 
 										that.calculaTotalPedido();
@@ -2577,8 +2714,11 @@ sap.ui.define([
 										oButtonSalvar.setEnabled(true);
 
 										that.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
+
 										var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 										that.getView().setModel(oModel, "ItensPedidoGrid");
+
+										that.onBloqueiaPrePedido();
 
 										console.log("Item: " + oItemPedido.index + " foi Atualizado");
 
@@ -2692,6 +2832,8 @@ sap.ui.define([
 
 								var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 								that.getView().setModel(oModel, "ItensPedidoGrid");
+
+								that.onBloqueiaPrePedido();
 
 								that.byId("idDiluirItens").setEnabled(true);
 
@@ -2851,6 +2993,8 @@ sap.ui.define([
 							var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
+							that.onBloqueiaPrePedido();
+
 							var open = indexedDB.open("VB_DataBase");
 							open.onerror = function () {
 								MessageBox.show(open.error.mensage, {
@@ -2961,15 +3105,33 @@ sap.ui.define([
 							ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
 							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
 							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
-							valorTotalAcresPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAcresPrazoMed"),
-							ValTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
+							valTotalExcedentePrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedentePrazoMed"),
+							valTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
 							totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
 							valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
 							valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
 							valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
 							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
-							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido")
-
+							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
+							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValComissaoUtilizadaDesconto"),
+							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
+							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValUtilizadoComissaoPrazoMed"),
+							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValTotalExcedenteNaoDirecionadoDesconto"),
+							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValTotalExcedenteNaoDirecionadoPrazoMed"),
+							valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
+							valTotalAbatidoVerba: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoVerba"),
+							valTotalCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampGlobal"),
+							valUtilizadoCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampBrinde"),
+							valUtilizadoCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampGlobal"),
+							valTotalCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval"),
+							valUtilizadoCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval"),
+							valTotalCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado"),
+							valUtilizadoCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValUtilizadoCampProdutoAcabado")
 						};
 
 						var store1 = db.transaction("PrePedidos", "readwrite");
@@ -3164,55 +3326,36 @@ sap.ui.define([
 							quantParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"),
 							intervaloParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"),
 							tipoNegociacao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao"),
-							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
-							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
-							valDescontoDisp: 0,
-							valDescontoInform: 0,
-							ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
-							valLiqPed: 0,
-							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
-							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
-							valPctDescontoValor: 0,
-							valPctDescontoTotal: 0,
-							valCustoFixo: 0
-						};
-
-						var objBancoPrePedido = {
-							nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
-							kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
-							werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
-							codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
-							tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
-							idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
-							situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
-							tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
-							completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
-							valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
-							dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
-							dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
-							valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
-							observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
-							observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
-							existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),
-							percEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido"),
-							valorEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido"),
-							tipoTransporte: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoTransporte"),
-							diasPrimeiraParcela: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasPrimeiraParcela"),
-							quantParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"),
-							intervaloParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"),
-							tipoNegociacao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao"),
 							ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
 							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
 							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
-							valorTotalAcresPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAcresPrazoMed"),
-							ValTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
+							valTotalExcedentePrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedentePrazoMed"),
+							valTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
 							totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
 							valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
 							valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
 							valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
 							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
-							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido")
-
+							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
+							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValComissaoUtilizadaDesconto"),
+							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
+							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValUtilizadoComissaoPrazoMed"),
+							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValTotalExcedenteNaoDirecionadoDesconto"),
+							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValTotalExcedenteNaoDirecionadoPrazoMed"),
+							valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
+							valTotalAbatidoVerba: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoVerba"),
+							valTotalCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampGlobal"),
+							valUtilizadoCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampBrinde"),
+							valUtilizadoCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampGlobal"),
+							valTotalCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval"),
+							valUtilizadoCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval"),
+							valTotalCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado"),
+							valUtilizadoCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValUtilizadoCampProdutoAcabado")
 						};
 
 						//ADICIONAR O OBJ .. QND FOR UNDEFINED, POIS O OBJ NÃO FOI ENCONTRADO, ESTÁ VAZIO.
@@ -3244,17 +3387,31 @@ sap.ui.define([
 								quantParcelas: "",
 								intervaloParcelas: "",
 								tipoNegociacao: "",
+								ntgew: "",
 								valTotPed: "",
 								valDescontoTotal: "",
-								valDescontoDisp: "",
-								valDescontoInform: "",
-								ntgew: "",
-								valLiqPed: "",
+								valTotalExcedentePrazoMed: "",
+								valTotalExcedenteDesconto: "",
+								totalItensPedido: "",
+								valCampEnxoval: "",
+								valCampBrinde: "",
+								valCampGlobal: "",
 								valVerbaPedido: "",
 								valComissaoPedido: "",
-								valPctDescontoValor: "",
-								valPctDescontoTotal: "",
-								valCustoFixo: ""
+								valComissaoUtilizadaDesconto: "",
+								valVerbaUtilizadaDesconto: "",
+								valUtilizadoComissaoPrazoMed: "",
+								valTotalExcedenteNaoDirecionadoDesconto: "",
+								valTotalExcedenteNaoDirecionadoPrazoMed: "",
+								valTotalAbatidoComissao: "",
+								valTotalAbatidoVerba: "",
+								valTotalCampGlobal: "",
+								valUtilizadoCampBrinde: "",
+								valUtilizadoCampGlobal: "",
+								valTotalCampEnxoval: "",
+								valUtilizadoCampEnxoval: "",
+								valTotalCampProdutoAcabado: "",
+								valUtilizadoCampProdutoAcabado: ""
 							};
 
 							request1.onsuccess = function () {
@@ -3304,17 +3461,31 @@ sap.ui.define([
 								quantParcelas: "",
 								intervaloParcelas: "",
 								tipoNegociacao: "",
+								ntgew: "",
 								valTotPed: "",
 								valDescontoTotal: "",
-								valDescontoDisp: "",
-								valDescontoInform: "",
-								ntgew: "",
-								valLiqPed: "",
+								valTotalExcedentePrazoMed: "",
+								valTotalExcedenteDesconto: "",
+								totalItensPedido: "",
+								valCampEnxoval: "",
+								valCampBrinde: "",
+								valCampGlobal: "",
 								valVerbaPedido: "",
 								valComissaoPedido: "",
-								valPctDescontoValor: "",
-								valPctDescontoTotal: "",
-								valCustoFixo: ""
+								valComissaoUtilizadaDesconto: "",
+								valVerbaUtilizadaDesconto: "",
+								valUtilizadoComissaoPrazoMed: "",
+								valTotalExcedenteNaoDirecionadoDesconto: "",
+								valTotalExcedenteNaoDirecionadoPrazoMed: "",
+								valTotalAbatidoComissao: "",
+								valTotalAbatidoVerba: "",
+								valTotalCampGlobal: "",
+								valUtilizadoCampBrinde: "",
+								valUtilizadoCampGlobal: "",
+								valTotalCampEnxoval: "",
+								valUtilizadoCampEnxoval: "",
+								valTotalCampProdutoAcabado: "",
+								valUtilizadoCampProdutoAcabado: ""
 							};
 
 							request1.onsuccess = function () {
@@ -3357,6 +3528,24 @@ sap.ui.define([
 			oItemTemplateTotal = [];
 
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
+		},
+
+		onBloqueiaPrePedido: function () {
+
+			if (objItensPedidoTemplate.length > 0) {
+
+				this.byId("idTabelaPreco").setEnabled(false);
+				this.byId("idTipoTransporte").setEnabled(false);
+				this.byId("idTipoNegociacao").setEnabled(false);
+				this.byId("idTipoPedido").setEnabled(false);
+
+			} else {
+
+				this.byId("idTabelaPreco").setEnabled(true);
+				this.byId("idTipoTransporte").setEnabled(true);
+				this.byId("idTipoNegociacao").setEnabled(true);
+				this.byId("idTipoPedido").setEnabled(true);
+			}
 		},
 
 		// FIM EVENTOS DOS BOTÕES 					

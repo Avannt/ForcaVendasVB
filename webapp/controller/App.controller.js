@@ -265,8 +265,7 @@ sap.ui.define([
 							// sap.ui.getCore().byId("usuario").setValue("teste");
 							// sap.ui.getCore().byId("senha").getValue("teste");
 							sap.ui.core.UIComponent.getRouterFor(that).navTo("login");
-							that.resetModelos();
-							that.resetModeloShell();
+							that.onResetaCamposPrePedido();
 						}
 					}
 				});

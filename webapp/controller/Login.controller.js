@@ -565,6 +565,13 @@ sap.ui.define([
 								}
 
 								request.onsuccess = function (e1) {
+
+									var vTables = ["A960", "Clientes", "A969", "A965", "A963", "A966", "A964", "A962", "A961", "Materiais", "Konm",
+										"A968"
+									];
+
+									that.DropDBTables(vTables, db);
+
 									/*---------------------------------TOPO---------------------------------*/
 									var txPVFutura = db.transaction("PedEntFutura", "readwrite");
 									var objPVFutura = txPVFutura.objectStore("PedEntFutura");
@@ -1292,33 +1299,22 @@ sap.ui.define([
 
 			},
 
-			DropDBTables: function (vTables) {
-				var open = indexedDB.open("VB_DataBase");
+			DropDBTables: function (vTables, db) {
+				for (var i = 0; i <= vTables.length - 1; i++) {
+					var sTableName = vTables[i];
 
-				open.onerror = function (e) {
-					console.log("Erro ao abrir conexão.");
-					console.log(e.Message);
-				};
+					var transaction = db.transaction(sTableName, "readwrite");
+					var objectStore = transaction.objectStore(sTableName);
+					var objectStoreRequest = objectStore.clear();
 
-				open.onsuccess = function (e) {
-					var db = e.target.result;
+					objectStoreRequest.onsuccess = function (event) {
+						console.log("Dados da tabela " + sTableName + " removidos com sucesso");
+					};
+					objectStoreRequest.onerror = function (event) {
+						console.log("Erro ao limpar tabela " + sTableName);
+					};
 
-					for (var i = 0; i <= vTables.length - 1; i++) {
-						var sTableName = vTables[i];
-
-						var transaction = db.transaction(sTableName, "readwrite");
-						var objectStore = transaction.objectStore(sTableName);
-						var objectStoreRequest = objectStore.clear();
-
-						objectStoreRequest.onsuccess = function (event) {
-							console.log("Dados da tabela " + sTableName + " removidos com sucesso");
-						};
-						objectStoreRequest.onerror = function (event) {
-							console.log("Erro ao limpar tabela " + sTableName);
-						};
-
-					}
-				};
+				}
 			},
 
 			onBusyDialogClosed: function () {
@@ -1715,13 +1711,14 @@ sap.ui.define([
 								console.log(hxr.Message);
 							};
 							//Load tables
-							open.onsuccess = function () {
+							open.onsuccess = function (e) {
 								// Tabelas para serem limpadas
-								var vTables = ["A960", "Clientes", "A969", "Usuarios", "A965", "A963", "A966", "A964", "A962", "A961", "Materiais", "Konm",
-									"A968"
-								];
+								var db = e.target.result;
 
-								that.DropDBTables(vTables);
+
+								var vTables = ["A960", "Clientes", "A969", "Usuarios", "A965", "A963", "A966", "A964", "A962", "A961", "Materiais", "Konm", "A968"];
+
+								that.DropDBTables(vTables, db);
 
 								sap.ui.getCore().byId("idUsuario").setEnabled(true);
 								sap.ui.getCore().byId("idUsuario").setValue("");

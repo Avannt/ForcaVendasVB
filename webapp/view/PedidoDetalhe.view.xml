@@ -243,6 +243,8 @@
 											<Input id="idVerbaAbaTotal" value="R$ {modelDadosPedido>/ValVerbaPedido}" enabled="false" class="desabilitado"/>
 											<Label text="Comissão "/>
 											<Input id="idComissaoAbaTotal" value="R$ {modelDadosPedido>/ValComissaoPedido}" enabled="false" class="desabilitado"/>
+											<Label text="Parcela "/>
+											<Input id="idParcela" value="{modelDadosPedido>/ValParcelasPedido}" enabled="false" class="desabilitado"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
@@ -276,8 +278,8 @@
 											<Input id="idAbaterCampBrinde" value="R$ {modelDadosPedido>/ValUtilizadoCampBrinde}" enabled="false" class="desabilitado"/>
 											<Label text="Campanha Produto Acabado"/>
 											<Input id="idAbaterProdutoAcabado" value="R$ {modelDadosPedido>/ValUtilizadoCampProdutoAcabado}" enabled="false" class="desabilitado"/>
-											<Label text="Campanha Global"/>
-											<Input id="idAbaterCampGlobal" value="R$ {modelDadosPedido>/ValUtilizadoCampGlobal}" enabled="false" class="desabilitado"/>
+											<!--<Label text="Campanha Global"/>-->
+											<!--<Input id="idAbaterCampGlobal" value="R$ {modelDadosPedido>/ValUtilizadoCampGlobal}" enabled="false" class="desabilitado"/>-->
 										</f:content>
 									</f:SimpleForm>
 									<Toolbar>

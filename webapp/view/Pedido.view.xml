@@ -36,7 +36,7 @@
 							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
 								<Text text="Total Itens"/>
 							</Column>
-							<Column minScreenWidth="320px" hAlign="Left" width="70px" popinDisplay="Inline">
+							<Column minScreenWidth="320px" hAlign="Left" width="100px" popinDisplay="Inline">
 								<Text text="Status"/>
 							</Column>
 						</columns>
