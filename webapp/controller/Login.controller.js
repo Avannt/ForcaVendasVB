@@ -385,7 +385,7 @@ sap.ui.define([
 					Pstlz: "",
 					Stcd1: "",
 					Stcd2: "",
-					Inco1: "",
+					// Inco1: "",
 					Parvw: "",
 					Lifnr: "",
 					efetuoucompra: ""
@@ -770,7 +770,7 @@ sap.ui.define([
 																								pstlz: retornoCliente.results[i].Pstlz,
 																								stcd1: retornoCliente.results[i].Stcd1,
 																								stcd2: retornoCliente.results[i].Stcd2,
-																								inco1: retornoCliente.results[i].Inco1,
+																								// inco1: retornoCliente.results[i].Inco1,
 																								parvw: retornoCliente.results[i].Parvw,
 																								lifnr: retornoCliente.results[i].Lifnr,
 																								efetuoucompra: retornoCliente.results[i].Efetuoucompra
@@ -790,7 +790,7 @@ sap.ui.define([
 																								pstlz: "",
 																								stcd1: "",
 																								stcd2: "",
-																								inco1: "",
+																								// inco1: "",
 																								parvw: "",
 																								lifnr: ""
 																							};
@@ -847,7 +847,7 @@ sap.ui.define([
 																												kschl: retornoA960.results[i].Kschl,
 																												werks: retornoA960.results[i].Werks,
 																												pltyp: retornoA960.results[i].Pltyp,
-																												inco1: retornoA960.results[i].Inco1,
+																												// inco1: retornoA960.results[i].Inco1,
 																												matnr: retornoA960.results[i].Matnr,
 																												kfrst: retornoA960.results[i].Kfrst,
 																												datbi: retornoA960.results[i].Datbi,
