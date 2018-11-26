@@ -368,7 +368,8 @@ sap.ui.define([
 					NrPedCli: "",
 					EditarIndexItem: "",
 					IserirDiluicao: "",
-					bConectado: false
+					bConectado: false,
+					bEnviarPedido: true
 				});
 
 				this.getOwnerComponent().setModel(oModelAux, "modelAux");
