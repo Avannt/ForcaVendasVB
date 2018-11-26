@@ -128,8 +128,8 @@ sap.ui.define([
 				});
 
 				promise.then(function () {
-					var transactionPedEF = db.transaction("PedEntFutura", "readonly");
-					var objectStorePedEF = transactionPedEF.objectStore("PedEntFutura");
+					var transactionPedEF = db.transaction("EntregaFuturaTopo", "readonly");
+					var objectStorePedEF = transactionPedEF.objectStore("EntregaFuturaTopo");
 
 					objectStorePedEF.openCursor().onsuccess = function (event) {
 
@@ -151,14 +151,6 @@ sap.ui.define([
 			};
 		},
 		/*Fim onSelectionChange */
-		
-		onDialogSearch: function(oEvent) {
-			var sValue = oEvent.getParameter("value");
-			var oFilter = new Filter("Name", sap.ui.model.FilterOperator.Contains, sValue);
-			var oBinding = oEvent.getSource().getBinding("items");
-			oBinding.filter([oFilter]);
-		},
-		/*Fim onDialogSearch */
 
 		getSplitContObj: function () {
 			var result = this.byId("SplitContDemo2");
@@ -210,11 +202,10 @@ sap.ui.define([
 
 		onSelectDialogPress: function (oEvent) {
 			if (!this._oDialog) {
-				// var oModel = this.getView().getModel("pedidosCadastrados");
-				
-				this._oDialog = sap.ui.xmlfragment("testeui5.view.Dialog", this);
+				var oModel = this.getView().getModel("pedidosCadastrados");
 
-				// this._oDialog.setModel(this.getView().getModel());
+				this._oDialog = sap.ui.xmlfragment("testeui5.view.Dialog", this);
+				this._oDialog.setModel(oModel, "pedidosCadastrados");
 			}
 
 			// Set do recurso Multi-select
@@ -234,7 +225,7 @@ sap.ui.define([
 			this._oDialog.setGrowing(bGrowing == "true");
 
 			// Limpa o filtro da pesquisa antigo
-			this._oDialog.getBinding("items").filter([]);
+			 this._oDialog.getBinding("items").filter([]);
 			// sap.ui.getCore().byId("sliItens").getBinding("items").filter([]);
 
 			// Alternar o estilo compacto (toggle compact style)
@@ -242,6 +233,19 @@ sap.ui.define([
 			this._oDialog.open();
 		},
 		/* Fim onSelectDialogPress */
+
+		onDialogClose: function (oEvent) {
+
+		},
+		/* Fim onDialogClose */
+
+		onDialogSearch: function (oEvent) {
+				var sValue = oEvent.getParameter("value");
+				var oFilter = new Filter("Name", sap.ui.model.FilterOperator.Contains, sValue);
+				var oBinding = oEvent.getSource().getBinding("items");
+				oBinding.filter([oFilter]);
+			}
+			/* Fim onDialogSearch */
 
 	});
 });

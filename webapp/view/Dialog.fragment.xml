@@ -1,7 +1,14 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
 	<SelectDialog noDataText="Nenhum pedido para entrega futura encontrado" title="Escolha o pedido" search="onDialogSearch"
-		confirm="handleClose" cancel="handleClose" items="{ path: 'pedidosCadastrados>/' }">
-		<StandardListItem id="sliItens" title="{pedidosCadastrados>dataPedido}" description="{pedidosCadastrados>nrEntCli}" iconDensityAware="false"
-			iconInset="false" type="Active"/>
+		confirm="onDialogClose" cancel="onDialogClose" items="{ path: 'pedidosCadastrados>/' }">
+		<items>
+			<StandardListItem 
+				id="sliItens" 
+				title="{pedidosCadastrados>Vbeln}" 
+				description="{pedidosCadastrados>Vbeln}" 
+				iconDensityAware="false"
+				iconInset="false" type="Active"
+			/>
+		</items>
 	</SelectDialog>
 </core:FragmentDefinition>

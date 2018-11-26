@@ -16,8 +16,68 @@ sap.ui.define([
 	return BaseController.extend("testeui5.controller.enviarPedidos", {
 
 		onInit: function () {
-			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
+			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields(), this);
 		},
+
+		_onLoadFields: function () {
+			var that = this;
+			oPedidosEnviar = [];
+			oItensPedidoGrid = [];
+			oPedidoGrid = [];
+			oItensPedidoEnviar = [];
+			oItensPedidoGridEnviar = [];
+
+			var oModel = new sap.ui.model.json.JSONModel();
+			this.getOwnerComponent().getModel("modelAux");
+			this.getOwnerComponent().setModel(oModel, "modelCliente");
+
+			var open = indexedDB.open("VB_DataBase");
+
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function () {
+				var db = open.result;
+
+				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
+				store.openCursor().onsuccess = function (event) {
+					var cursor = event.target.result;
+
+					if (cursor) {
+						if (cursor.value.idStatusPedido == 2) {
+							oPedidoGrid.push(cursor.value);
+						}
+						cursor.continue();
+					} else {
+						oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+						that.getView().setModel(oModel, "PedidosEnviar");
+
+						// var tx = db.transaction("ItensPedido", "readwrite");
+						// var objItensPedido = tx.objectStore("ItensPedido");
+
+						var store1 = db.transaction("ItensPedido").objectStore("ItensPedido");
+						store1.openCursor().onsuccess = function (event1) {
+							cursor = event1.target.result;
+
+							if (cursor) {
+								for (var j = 0; j < oPedidoGrid.length; j++) {
+									if (cursor.value.nrPedCli == oPedidoGrid[j].nrPedCli) {
+										oItensPedidoGrid.push(cursor.value);
+									}
+								}
+								cursor.continue();
+							}
+						};
+					}
+				};
+			};
+		},
+		/*FIM _onLoadFields*/
 
 		onNavBack: function () {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
@@ -102,65 +162,6 @@ sap.ui.define([
 					console.log("ERRO!! Falha ao ler Clientes.");
 					reject();
 				}
-			};
-		},
-
-		_onLoadFields: function () {
-			var that = this;
-			oPedidosEnviar = [];
-			oItensPedidoGrid = [];
-			oPedidoGrid = [];
-			oItensPedidoEnviar = [];
-			oItensPedidoGridEnviar = [];
-
-			var oModel = new sap.ui.model.json.JSONModel();
-			this.getOwnerComponent().getModel("modelAux");
-			this.getOwnerComponent().setModel(oModel, "modelCliente");
-
-			var open = indexedDB.open("VB_DataBase");
-
-			open.onerror = function () {
-				MessageBox.show(open.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-
-			open.onsuccess = function () {
-				var db = open.result;
-
-				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
-				store.openCursor().onsuccess = function (event) {
-					var cursor = event.target.result;
-
-					if (cursor) {
-						if (cursor.value.idStatusPedido == 2) {
-							oPedidoGrid.push(cursor.value);
-						}
-						cursor.continue();
-					} else {
-						oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-						that.getView().setModel(oModel, "PedidosEnviar");
-
-						// var tx = db.transaction("ItensPedido", "readwrite");
-						// var objItensPedido = tx.objectStore("ItensPedido");
-
-						var store1 = db.transaction("ItensPedido").objectStore("ItensPedido");
-						store1.openCursor().onsuccess = function (event1) {
-							cursor = event1.target.result;
-
-							if (cursor) {
-								for (var j = 0; j < oPedidoGrid.length; j++) {
-									if (cursor.value.nrPedCli == oPedidoGrid[j].nrPedCli) {
-										oItensPedidoGrid.push(cursor.value);
-									}
-								}
-								cursor.continue();
-							}
-						};
-					}
-				};
 			};
 		},
 

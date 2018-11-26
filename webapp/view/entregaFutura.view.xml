@@ -11,7 +11,7 @@
 							<ObjectAttribute id="objectAttribute_cnpj"/>
 						</attributes>
 					</ObjectHeader>
-					<Button id="btnPesquisaPedido" class="sapUiSmallMarginBottom" text="Procurar pedido" press="onSelectDialogPress">
+					<Button id="btnPesquisaPedido" class="sapUiSmallMarginBottom" text="Procurar pedido" press="onSelectDialogPress" width="100%">
 						<customData>
 							<core:CustomData key="multi" value="false"/>
 							<core:CustomData key="remember" value="true"/>
@@ -51,7 +51,7 @@
 							<ColumnListItem type="Active" >
 								<cells>
 									<Text text="{path : 'pedidosCadastrados>nrEntCli'}"/>
-									<Text text="{path : 'pedidosCadastrados>dataImpl', formatter:'.myFormatterDataImp'}"/>
+									<Text text="{path : 'pedidosCadastrados>dataImpl'}"/>
 									<Text text="R$: {path : 'pedidosCadastrados>valTotPed'}"/>
 									<Text text="R$: {path : 'pedidosCadastrados>valLiqPed'}"/>
 									<Text text="{path :'pedidosCadastrados>statusPedido'}"/>
