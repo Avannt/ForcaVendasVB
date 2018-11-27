@@ -1535,30 +1535,30 @@ sap.ui.define([
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (objItensPedidoTemplate[i].tipoItem !== "Diluicao") {
-
+					
 					TotalPedidoDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
 					Total += objItensPedidoTemplate[i].zzVprod * objItensPedidoTemplate[i].zzQnt;
 					Qnt += objItensPedidoTemplate[i].zzQnt;
 					QntProdutos += 1;
-
+					
 					if (objItensPedidoTemplate[i].ntgew > 0) {
 						Ntgew += objItensPedidoTemplate[i].ntgew * objItensPedidoTemplate[i].zzQnt;
 					}
-
+					
 					//Calculando o valor total da excessão por bloco:
 					//VALOR EXCEDIDO DO PERCENTUAL DE DESCONTO.
 					if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
-
-						totalExcedenteDescontos += Math.round(objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt * 100) / 100;
-
+						
+						totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt;
+						
 					}
-
+					
 					//VALOR DE COMISSÃO GERADA NO PEDIDO
 					totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPercom / 100) * objItensPedidoTemplate[i].zzQnt;
-
+					
 					//VALOR DE VERBA GERADA NO PEDIDO
 					totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) * objItensPedidoTemplate[i].zzQnt;
-
+					
 				}
 			}
 			
@@ -1770,7 +1770,7 @@ sap.ui.define([
 										zzVprod: objItensPedidoTemplate[i].zzVprod,
 										zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
 										zzPercDescDiluicao: PercDescDiluicao,
-										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal + PercDescDiluicao,
+										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
 										zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt
 										
 									};
@@ -1809,7 +1809,7 @@ sap.ui.define([
 										zzVprod: objItensPedidoTemplate[i].zzVprod,
 										zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
 										zzPercDescDiluicao: PercDescDiluicao,
-										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal + PercDescDiluicao,
+										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
 										zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt
 									};
 									
@@ -1850,7 +1850,7 @@ sap.ui.define([
 										zzVprod: objItensPedidoTemplate[i].zzVprod,
 										zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
 										zzPercDescDiluicao: PercDescDiluicao,
-										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal + PercDescDiluicao,
+										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
 										zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt
 									};
 									
