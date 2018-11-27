@@ -16,7 +16,7 @@ sap.ui.define([
 	return BaseController.extend("testeui5.controller.enviarPedidos", {
 
 		onInit: function () {
-			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields(), this);
+			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
 		},
 
 		_onLoadFields: function () {
@@ -28,9 +28,6 @@ sap.ui.define([
 			oItensPedidoGridEnviar = [];
 
 			var oModel = new sap.ui.model.json.JSONModel();
-			this.getOwnerComponent().getModel("modelAux");
-			this.getOwnerComponent().setModel(oModel, "modelCliente");
-
 			var open = indexedDB.open("VB_DataBase");
 
 			open.onerror = function () {
@@ -55,7 +52,7 @@ sap.ui.define([
 						cursor.continue();
 					} else {
 						oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-						that.getView().setModel(oModel, "PedidosEnviar");
+						that.getOwnerComponent().setModel(oModel, "PedidosEnviar");
 
 						// var tx = db.transaction("ItensPedido", "readwrite");
 						// var objItensPedido = tx.objectStore("ItensPedido");
