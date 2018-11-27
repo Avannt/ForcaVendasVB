@@ -1480,10 +1480,14 @@ sap.ui.define([
 
 					oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
 
+				}else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02"){
+					
+					oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+					
 				}
 
 				//2º Aplicar o Desconto digitado na tela de digitação dos itens
-				oItemPedido.zzVprodDesc = Math.round(oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100)));
+				oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
 
 				// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
 				// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
@@ -1497,6 +1501,8 @@ sap.ui.define([
 			//calcula a multiplicação pela quantidade depois que o valor unitário está calculado.
 			oItemPedido.zzVprodDescTotal = oItemPedido.zzVprodDesc * oItemPedido.zzQnt;
 			oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
+			
+			oItemPedido.zzVprodDesc = Math.round(oItemPedido.zzVprodDesc * 100) / 100;
 		},
 
 		calculaTotalPedido: function () {
@@ -1529,33 +1535,39 @@ sap.ui.define([
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (objItensPedidoTemplate[i].tipoItem !== "Diluicao") {
-
+					
 					TotalPedidoDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
 					Total += objItensPedidoTemplate[i].zzVprod * objItensPedidoTemplate[i].zzQnt;
 					Qnt += objItensPedidoTemplate[i].zzQnt;
 					QntProdutos += 1;
-
+					
 					if (objItensPedidoTemplate[i].ntgew > 0) {
 						Ntgew += objItensPedidoTemplate[i].ntgew * objItensPedidoTemplate[i].zzQnt;
 					}
-
+					
 					//Calculando o valor total da excessão por bloco:
 					//VALOR EXCEDIDO DO PERCENTUAL DE DESCONTO.
 					if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
-
-						totalExcedenteDescontos += Math.round(objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt * 100) / 100;
-
+						
+						totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt;
+						
 					}
-
+					
 					//VALOR DE COMISSÃO GERADA NO PEDIDO
-					totalComissaoGerada += Math.round(objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPercom / 100) * 100) / 100;
-
+					totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPercom / 100) * objItensPedidoTemplate[i].zzQnt;
+					
 					//VALOR DE VERBA GERADA NO PEDIDO
-					totalVerbaGerada += Math.round(objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) * 100) / 100;
-
+					totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) * objItensPedidoTemplate[i].zzQnt;
+					
 				}
 			}
+			
+			
+			
 			console.log("CALCULO DADOS GERAIS");
+			
+			totalVerbaGerada = Math.round(totalVerbaGerada * 100) / 100;
+			totalComissaoGerada = Math.round(totalComissaoGerada * 100) / 100;
 
 			//Calculo do acréscimo de prazo médio .
 			percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
@@ -1629,13 +1641,16 @@ sap.ui.define([
 			if (existeParcelas == false) {
 
 				valorParcelas = TotalPedidoDesc / quantidadeParcelas;
+				valorParcelas = Math.round(valorParcelas * 100) / 100;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", quantidadeParcelas + "x " + valorParcelas);
 
 			} else if (existeParcelas == true) {
 
 				if (valorEntradaPedido == 0) {
+					
 					var aux = TotalPedidoDesc - (percEntradaPedido * TotalPedidoDesc) / 100;
 					valorParcelas = aux / quantidadeParcelas;
+					valorParcelas = Math.round(valorParcelas * 100) / 100;
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "Entrada: " + percEntradaPedido + "% + " +
 						quantidadeParcelas + "x " + valorParcelas);
 
@@ -1643,6 +1658,8 @@ sap.ui.define([
 
 					aux = (TotalPedidoDesc - valorEntradaPedido);
 					valorParcelas = aux / quantidadeParcelas;
+					valorParcelas = Math.round(valorParcelas * 100) / 100;
+					
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "Entrada: R$: " + valorEntradaPedido +
 						" + " + quantidadeParcelas + "x " + valorParcelas);
 
@@ -1753,23 +1770,23 @@ sap.ui.define([
 										zzVprod: objItensPedidoTemplate[i].zzVprod,
 										zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
 										zzPercDescDiluicao: PercDescDiluicao,
-										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal + PercDescDiluicao,
+										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
 										zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt
-
+										
 									};
-
+									
 									vetorAux.push(objAuxItem);
 								}
-
+								
 								for (var t = 0; t < vetorAux.length; t++) {
-
+									
 									if (vetorAux[t].matnr == objItensPedidoTemplate[i].matnr) {
 										inseridoAux = true;
 									}
 								}
-
+								
 								if (inseridoAux == false) {
-
+									
 									var objAuxItem1 = {
 										idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 										index: objItensPedidoTemplate[i].index,
@@ -1792,25 +1809,25 @@ sap.ui.define([
 										zzVprod: objItensPedidoTemplate[i].zzVprod,
 										zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
 										zzPercDescDiluicao: PercDescDiluicao,
-										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal + PercDescDiluicao,
+										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
 										zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt
 									};
-
+									
 									vetorAux.push(objAuxItem1);
 								}
-
+								
 							} else if (objItensPedidoTemplate[i].tipoItem === "Diluicao") {
 								TotalDiluicao += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
-
+								
 								for (t = 0; t < vetorAux.length; t++) {
-
+									
 									if (vetorAux[t].matnr == objItensPedidoTemplate[i].matnr) {
 										inseridoAuxDiluicao = true;
 									}
 								}
-
+								
 								if (inseridoAuxDiluicao == false) {
-
+									
 									var objAuxItem2 = {
 										idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 										index: objItensPedidoTemplate[i].index,
@@ -1833,20 +1850,20 @@ sap.ui.define([
 										zzVprod: objItensPedidoTemplate[i].zzVprod,
 										zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
 										zzPercDescDiluicao: PercDescDiluicao,
-										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal + PercDescDiluicao,
+										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
 										zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt
 									};
-
+									
 									vetorAux.push(objAuxItem2);
 								}
 							}
 						}
-
+						
 						PercDescDiluicao = TotalNormal / (TotalNormal + TotalDiluicao);
 						PercDescDiluicao = parseFloat((1 - PercDescDiluicao) * 100);
-
+						
 						console.log("Perc. de desconto para ser aplicado nos itens na regra de Diluição " + PercDescDiluicao);
-
+						
 						//APLICA O DESCONTO
 						// for (var j = 0; j < objItensPedidoTemplate.length; j++) {
 
@@ -1854,13 +1871,12 @@ sap.ui.define([
 						// 	oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
 
 						// }
-
+						
 						for (var j = 0; j < vetorAux.length; j++) {
-
 							vetorAux[j].zzVprodDesc = vetorAux[j].zzVprodDesc - ((vetorAux[j].zzVprodDesc) * (PercDescDiluicao / 100));
 							// vetorAux[j].zzVprodDesc = Math.round(parseFloat(vetorAux[j].zzVprodDesc * 100)) / 100;
-
 						}
+						
 						for (var l = 0; l < objItensPedidoTemplate.length; l++) {
 							for (var m = 0; m < vetorAux.length; m++) {
 								if (vetorAux[m].matnr === objItensPedidoTemplate[l].matnr) {
@@ -1870,54 +1886,56 @@ sap.ui.define([
 								}
 							}
 						}
-
+						
 						for (m = 0; m < vetorAux.length; m++) {
 							vetorAux[m].zzVprodDescTotal = Math.round(parseFloat((vetorAux[m].zzVprodDescTotal) * 100)) / 100;
 							vetorAux[m].zzVprodDesc = Math.round(parseFloat(vetorAux[m].zzVprodDesc * 100)) / 100;
-							vetorAux[m].zzPercDescTotal = Math.round(parseFloat(vetorAux[m].zzPercDescTotal + PercDescDiluicao) * 100) / 100;
+							//Calculo do percentual Desc Dado
+							vetorAux[m].zzPercDescTotal = Math.round((1 - (vetorAux[m].zzVprodDesc / vetorAux[m].zzVprod)) * 100);
 						}
-
+						
+						
 						objItensPedidoTemplate = [];
 						objItensPedidoTemplate = vetorAux;
 						var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 						that.getView().setModel(oModel, "ItensPedidoGrid");
-
+						
 						that.onBloqueiaPrePedido();
-
+						
 						console.log("Resultado dos itens da regra de Diluição");
-						console.log(vetorAuxObjetos);
-
+						console.log(vetorAux);
+						
 						var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 						var objItensPedido = storeItensPedido.objectStore("ItensPedido");
-
+						
 						for (var p = 0; p < objItensPedidoTemplate.length; p++) {
-
-							var requestADDItem = objItensPedido.add(objItensPedidoTemplate[p]);
-
+							
+							var requestADDItem = objItensPedido.put(objItensPedidoTemplate[p]);
+							
 							requestADDItem.onsuccess = function (e3) {
 								console.log("Item adicionado com sucesso");
-
+								
 							};
 							requestADDItem.onerror = function (e3) {
 								console.log("Falha ao adicionar o Item");
 							};
-
+							
 						}
-
+						
 						that.calculaTotalPedido();
 						that.setaCompleto(db, "Não");
-
+						
 						that.byId("idDiluirItens").setEnabled(false);
 						that.byId("idInserirItemDiluicao").setEnabled(false);
 						that.byId("idInserirItem").setEnabled(false);
-
+						
 						that.byId("idTipoNegociacao").setProperty("enabled", false);
 						that.byId("idTabelaPreco").setProperty("enabled", false);
 						that.byId("idTipoTransporte").setProperty("enabled", false);
 						that.byId("idPrimeiraParcela").setProperty("enabled", false);
 						that.byId("idQuantParcelas").setProperty("enabled", false);
 						that.byId("idIntervaloParcelas").setProperty("enabled", false);
-
+						
 						oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 						that.getView().setModel(oModel, "ItensPedidoGrid");
 					}
@@ -1937,7 +1955,7 @@ sap.ui.define([
 			var prazoMaxAprazo = 0;
 			var prazoMaxAprazo = 0;
 			var prazoMaxAprazo = 0;
-
+			
 			var open = indexedDB.open("VB_DataBase");
 			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
@@ -1946,59 +1964,59 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 			};
-
+			
 			open.onsuccess = function () {
 				var db = open.result;
 
 				var transaction = db.transaction("Konm", "readonly");
 				var objectStore = transaction.objectStore("Konm");
-
+				
 				if ("getAll" in objectStore) {
 					objectStore.getAll().onsuccess = function (event) {
-
+						
 						that.vetorRange = event.target.result;
-
+						
 						var transaction1 = db.transaction("A964", "readonly");
 						var objectStore1 = transaction1.objectStore("A964");
-
+						
 						if ("getAll" in objectStore1) {
 							objectStore1.getAll().onsuccess = function (event) {
-
+								
 								var vetorPerc = event.target.result;
-
+								
 								that.percJuros = parseFloat(vetorPerc[0].zzPerjur);
 								that.percJurosDia = that.percJuros / 30;
-
-								var transaction2 = db.transaction("A960", "readonly");
-								var objectStore2 = transaction2.objectStore("A960");
-
+								
+								var transaction2 = db.transaction("A959", "readonly");
+								var objectStore2 = transaction2.objectStore("A959");
+								
 								if ("getAll" in objectStore2) {
 									objectStore2.getAll().onsuccess = function (event) {
-
+										
 										var perc = event.target.result;
-
+										
 										that.prazoMaxAprazo = parseFloat(perc[0].zzPrzmaxap);
 										that.prazoMinAprazo = parseFloat(perc[0].zzPrzminap);
 										that.prazoMaxAvista = parseFloat(perc[0].zzPrzmaxav);
 										that.prazoMinAvista = parseFloat(perc[0].zzPrzminav);
 										that.valorPedMin = parseFloat(perc[0].zzVlrPedMin);
-
+										
 										var vetorParametros = [that.prazoMaxAvista, that.prazoMaxAprazo, that.prazoMinAprazo,
 											that.prazoMinAvista, that.valorPedMin, that.percJuros, that.percJurosDia
 										];
-
+										
 										//Quando termina de carregar as tabelas usadas .. chamar as funções
 										//usa apenas vetorRange
 										that.onDefineFamilias(that.vetorRange, "Normal");
 										that.onDefineFamilias(that.vetorRange, "Extra");
 										that.onCalculaPrazoMedio(vetorParametros);
-
+										
 										//Fazer o calculo do que foi excedido
 										//Neste momento tenho os percentuais do max permitido de cada item de acordo com as familias cadastradas
 										that.onCalculaExcedentes(objItensPedidoTemplate);
 										resolve();
 										console.log("resolve Perc Descontos");
-
+										
 									};
 								}
 							};
@@ -2012,6 +2030,7 @@ sap.ui.define([
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				var valorProdutoCheio = objItensPedidoTemplate[i].zzVprod;
+				
 				//VALOR DO PRODUTO INICIAL É DESCONTADO O PERCENTUAL DA TABELA AVISTA QUANDO TIVER
 				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 
@@ -2024,6 +2043,7 @@ sap.ui.define([
 
 				var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc - valorMaxPermitido) * 100) / 100;
 				objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
+				
 				//Negatvo .. excedeu o valor.
 				console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
 
@@ -2278,8 +2298,28 @@ sap.ui.define([
 
 			if (existeEntrada === false || existeEntrada == "") {
 				//Calculo prazo medio normal
-				var prazoMedio = Math.round((parseInt(intervaloParcelas) * parseInt(quantidadeParcelas) + parseInt(diasPrimeiraParcela)) /
-					parseInt(quantidadeParcelas) * 100) / 100;
+				var valorTot = 0;
+				var valorAux = 0;
+				
+				for(var i=1; i<=quantidadeParcelas; i++){
+					if(i==1){
+						var base = diasPrimeiraParcela;
+					}
+					valorTot += intervaloParcelas * i;
+				}
+			
+				var	prazoMedio = valorTot / quantidadeParcelas;
+				
+				if(diasPrimeiraParcela < intervaloParcelas){
+					valorAux = intervaloParcelas - diasPrimeiraParcela;
+					prazoMedio = prazoMedio - valorAux;
+				}else if(diasPrimeiraParcela > intervaloParcelas){
+					valorAux = diasPrimeiraParcela-intervaloParcelas;
+					prazoMedio = prazoMedio + valorAux;
+				}
+				
+				// var prazoMedio = Math.round((parseInt(intervaloParcelas) * parseInt(quantidadeParcelas) + parseInt(diasPrimeiraParcela)) /
+				// 	parseInt(quantidadeParcelas) * 100) / 100;
 				if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 					if (valTotPed < valorPedMin && prazoMedio >= prazoMinAvista) {
 

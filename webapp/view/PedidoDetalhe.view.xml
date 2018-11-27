@@ -110,7 +110,7 @@
 										<Button id="idInserirItem" icon="sap-icon://add" press="onNovoItem" text="Item Pedido" type="Emphasized"/>
 									</Toolbar>
 									<Table id="table_pedidos" width="100%" items="{ path:'ItensPedidoGrid>/', sorter: { path: 'index', ascending: true }}"
-										updateFinished="onListUpdateFinished" mode="Delete" delete="onDeletarItemPedido" class="margins" itemPress="onEditarItemPress"
+										updateFinished="onListUpdateFinished" mode="Delete" delete="onDeletarItemPedido" itemPress="onEditarItemPress"
 										noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;"
 										busyIndicatorDelay="0" fixedLayout="false">
 										<columns>
@@ -132,7 +132,7 @@
 											<Column minScreenWidth="360px" demandPopin="true" width="70px" hAlign="Left">
 												<Text text="Desc"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">
+											<Column minScreenWidth="450px" demandPopin="false" width="100px" hAlign="Left">
 												<Text text="Valor UN"/>
 											</Column>
 											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">
