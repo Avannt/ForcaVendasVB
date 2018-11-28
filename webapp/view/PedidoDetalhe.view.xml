@@ -177,7 +177,7 @@
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
 											<Label text="Valor excedente desconto" class="bold"/>
-											<Input id="idExcedenteDesconto" value="R$: {modelDadosPedido>/ValTotalExcedenteDesconto}" enabled="false" class="desabilitado marginBottomInpu"/>
+											<Input id="idExcedenteDesconto" value="R$: {modelDadosPedido>/ValTotalExcedenteDesconto}" class="desabilitado marginBottomInpu" enabled="false"/>
 											<Label text="Verba de Marketing (R$)"/>
 											<Input id="idVerbaUtilizadaDesconto" value="{modelDadosPedido>/ValVerbaUtilizadaDesconto}" liveChange="onValidaVerbaUtilizadaDesconto" enabled="true" />
 											<Label text="Comissão (R$)"/>
