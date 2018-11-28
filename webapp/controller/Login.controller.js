@@ -24,7 +24,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 27);
+					var open = indexedDB.open("VB_DataBase", 28);
 
 					// Create the Tables
 					open.onupgradeneeded = function (e) {
@@ -79,17 +79,17 @@ sap.ui.define([
 						}
 
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-						if (!db.objectStoreNames.contains("EntregaFuturaTopo")) {
-							var objEntregaFuturaTopo = db.createObjectStore("EntregaFuturaTopo", {
-								keyPath: "idEntregaFuturaTopo",
+						if (!db.objectStoreNames.contains("EntregaFutura")) {
+							var objEntregaFutura = db.createObjectStore("EntregaFutura", {
+								keyPath: "idEntregaFutura",
 								unique: true
 							});
 						}
 
-						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (DETALHE)>>>>>>>>>>>>>>>>>>>>>>>>>
-						if (!db.objectStoreNames.contains("EntregaFuturaDet")) {
-							var objEntregaFuturaDet = db.createObjectStore("EntregaFuturaDet", {
-								keyPath: "idEntregaFuturaDet"
+						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (HISTORICO) >>>>>>>>>>>>>>>>>>>>>>>>>
+						if (!db.objectStoreNames.contains("EntregaFuturaHist")) {
+							var objEntregaFuturaDet = db.createObjectStore("EntregaFuturaHist", {
+								keyPath: "idEntregaFuturaHist"
 							});
 						}
 
@@ -522,6 +522,7 @@ sap.ui.define([
 				var NumVersao = this.getOwnerComponent().getModel("modelAux").getProperty("/VersaoApp");
 				var repres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 				var oModel = that.getView().getModel();
+				oModel.setUseBatch(false);
 
 				MessageBox.show("Você deseja atualizar as tabelas?", {
 					icon: MessageBox.Icon.QUESTION,
@@ -562,73 +563,79 @@ sap.ui.define([
 
 									if (result1 !== null && result1 !== undefined) {
 
-										oModel.read("/EntregaFuturaDet", {
-											success: function (retornoEntregaFuturaDet) {
-												var txEntregaFuturaDet = db.transaction("EntregaFuturaDet", "readwrite");
-												var objEntregaFuturaDet = txEntregaFuturaDet.objectStore("EntregaFuturaDet");
+										oModel.read("/EntregaFuturaHist", {
+											urlParameters: {
+												"$filter": "IRepresentante eq '100085'"
+											},
+											success: function (retornoEntregaFuturaHist) {
+												var txEntregaFuturaHist = db.transaction("EntregaFuturaHist", "readwrite");
+												var objEntregaFuturaHist = txEntregaFuturaHist.objectStore("EntregaFuturaHist");
 
-												for (var i = 0; i < retornoEntregaFuturaDet.results.length; i++) {
+												for (var i = 0; i < retornoEntregaFuturaHist.results.length; i++) {
 
-													var objBancoEntregaFuturaDet = {
-														idEntregaFuturaDet: retornoEntregaFuturaDet.results[i].Vbeln + retornoEntregaFuturaDet.results[i].Vgbel,
-														IRepresentante: retornoEntregaFuturaDet.results[i].IRepresentante,
-														Vbeln: retornoEntregaFuturaDet.results[i].Vbeln,
-														Kunnr: retornoEntregaFuturaDet.results[i].Kunnr,
-														Bstkd: retornoEntregaFuturaDet.results[i].Bstkd,
-														Matnr: retornoEntregaFuturaDet.results[i].Matnr,
-														Arktx: retornoEntregaFuturaDet.results[i].Arktx,
-														Abgru: retornoEntregaFuturaDet.results[i].Abgru,
-														Kwmeng: retornoEntregaFuturaDet.results[i].Kwmeng,
-														Vgpos: retornoEntregaFuturaDet.results[i].Vgpos,
-														Vgbel: retornoEntregaFuturaDet.results[i].Vgbel,
-														Lifnr: retornoEntregaFuturaDet.results[i].Lifnr,
-														NameOrg1: retornoEntregaFuturaDet.results[i].NameOrg1,
-														NameOrg2: retornoEntregaFuturaDet.results[i].NameOrg2
+													var objBancoEntregaFuturaHist = {
+														idEntregaFuturaHist: retornoEntregaFuturaHist.results[i].Vbeln + retornoEntregaFuturaHist.results[i].Vgbel,
+														IRepresentante: retornoEntregaFuturaHist.results[i].IRepresentante,
+														Vbeln: retornoEntregaFuturaHist.results[i].Vbeln,
+														Kunnr: retornoEntregaFuturaHist.results[i].Kunnr,
+														Bstkd: retornoEntregaFuturaHist.results[i].Bstkd,
+														Matnr: retornoEntregaFuturaHist.results[i].Matnr,
+														Arktx: retornoEntregaFuturaHist.results[i].Arktx,
+														Abgru: retornoEntregaFuturaHist.results[i].Abgru,
+														Kwmeng: retornoEntregaFuturaHist.results[i].Kwmeng,
+														Vgpos: retornoEntregaFuturaHist.results[i].Vgpos,
+														Vgbel: retornoEntregaFuturaHist.results[i].Vgbel,
+														Lifnr: retornoEntregaFuturaHist.results[i].Lifnr,
+														NameOrg1: retornoEntregaFuturaHist.results[i].NameOrg1,
+														NameOrg2: retornoEntregaFuturaHist.results[i].NameOrg2
 													};
 
-													var requestEntregaFuturaDet = objEntregaFuturaDet.add(objBancoEntregaFuturaDet);
+													var requestEntregaFuturaDet = objEntregaFuturaHist.add(objBancoEntregaFuturaHist);
 
 													requestEntregaFuturaDet.onsuccess = function (event) {
-														console.log("Dados Entrega Futura Det inseridos. " + event);
+														console.log("Dados Entrega Futura Hist inseridos. " + event);
 													};
 
 													requestEntregaFuturaDet.onerror = function (event) {
-														console.log("Dados Entrega Futura Det não foram inseridos :" + event);
+														console.log("Dados Entrega Futura Hist não foram inseridos :" + event);
 													};
 												}
 
-												oModel.read("/EntregaFuturaTopo", {
-													success: function (retornoEntregaFuturaTopo) {
-														var txEntregaFuturaTopo = db.transaction("EntregaFuturaTopo", "readwrite");
-														var objEntregaFuturaTopo = txEntregaFuturaTopo.objectStore("EntregaFuturaTopo");
+												oModel.read("/EntregaFutura", {
+													urlParameters: {
+														"$filter": "IRepresentante eq '100085'"
+													},
+													success: function (retornoEntregaFutura) {
+														var txEntregaFutura = db.transaction("EntregaFutura", "readwrite");
+														var objEntregaFutura = txEntregaFutura.objectStore("EntregaFutura");
 
-														for (var i = 0; i < retornoEntregaFuturaTopo.results.length; i++) {
+														for (var i = 0; i < retornoEntregaFutura.results.length; i++) {
 
-															var objBancoEntregaFuturaTopo = {
-																idEntregaFuturaTopo: retornoEntregaFuturaTopo.results[i].Vbeln,
-																IRepresentante: retornoEntregaFuturaTopo.results[i].IRepresentante,
-																Vbeln: retornoEntregaFuturaTopo.results[i].Vbeln,
-																Kunrg: retornoEntregaFuturaTopo.results[i].Kunrg,
-																Aubel: retornoEntregaFuturaTopo.results[i].Aubel,
-																Aupos: retornoEntregaFuturaTopo.results[i].Aupos,
-																Bstkd: retornoEntregaFuturaTopo.results[i].Bstkd,
-																Matnr: retornoEntregaFuturaTopo.results[i].Matnr,
-																Arktx: retornoEntregaFuturaTopo.results[i].Arktx,
-																Fkimg: retornoEntregaFuturaTopo.results[i].Fkimg,
-																Lifnr: retornoEntregaFuturaTopo.results[i].Lifnr,
-																NameOrg1: retornoEntregaFuturaTopo.results[i].NameOrg1,
-																NameOrg2: retornoEntregaFuturaTopo.results[i].NameOrg2,
+															var objBancoEntregaFutura = {
+																idEntregaFutura: retornoEntregaFutura.results[i].Vbeln + retornoEntregaFutura.results[i].Aupos,
+																IRepresentante: retornoEntregaFutura.results[i].IRepresentante,
+																Vbeln: retornoEntregaFutura.results[i].Vbeln,
+																Kunrg: retornoEntregaFutura.results[i].Kunrg,
+																Aubel: retornoEntregaFutura.results[i].Aubel,
+																Aupos: retornoEntregaFutura.results[i].Aupos,
+																Bstkd: retornoEntregaFutura.results[i].Bstkd,
+																Matnr: retornoEntregaFutura.results[i].Matnr,
+																Arktx: retornoEntregaFutura.results[i].Arktx,
+																Fkimg: retornoEntregaFutura.results[i].Fkimg,
+																Lifnr: retornoEntregaFutura.results[i].Lifnr,
+																NameOrg1: retornoEntregaFutura.results[i].NameOrg1,
+																NameOrg2: retornoEntregaFutura.results[i].NameOrg2,
 
 															};
 
-															var requestEntregaFuturaTopo = objEntregaFuturaTopo.add(objBancoEntregaFuturaTopo);
+															var requestEntregaFutura = objEntregaFutura.add(objBancoEntregaFutura);
 
-															requestEntregaFuturaTopo.onsuccess = function (event) {
-																console.log("Dados Entrega Futura Topo inseridos. " + event);
+															requestEntregaFutura.onsuccess = function (event) {
+																console.log("Dados Entrega Futura inseridos. " + event);
 															};
 
-															requestEntregaFuturaTopo.onerror = function (event) {
-																console.log("Dados Entrega Futura Topo não foram inseridos :" + event);
+															requestEntregaFutura.onerror = function (event) {
+																console.log("Dados Entrega Futura não foram inseridos :" + event);
 															};
 														}
 

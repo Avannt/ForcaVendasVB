@@ -17,7 +17,7 @@ sap.ui.define([
 			case "pedido":
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
 				break;
-			case "entreg	aFutura":
+			case "entregaFutura":
 				sap.ui.core.UIComponent.getRouterFor(this).navTo("entregaFutura");
 				break;
 			case "aprovacoes":
