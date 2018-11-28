@@ -1,5 +1,6 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="testeui5.controller.entregaFutura"	xmlns:html="http://www.w3.org/1999/xhtml">
-<SplitContainer id="SplitContDemo2" initialDetail="detail" initialMaster="master" mode="ShowHideMode">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="testeui5.controller.entregaFutura"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<SplitContainer id="SplitContDemo2" initialDetail="detail" initialMaster="master" mode="ShowHideMode">
 		<detailPages>
 			<Page id="detail" title="Entrega futura" showNavButton="{device>/system/phone}" navButtonPress="onNavBack2" class="sapUiStdPage">
 				<content>
@@ -11,6 +12,7 @@
 							<ObjectAttribute id="objectAttribute_cnpj"/>
 						</attributes>
 					</ObjectHeader>
+
 					<Button id="btnPesquisaPedido" class="sapUiSmallMarginBottom" text="Procurar pedido" press="onSelectDialogPress" width="100%">
 						<customData>
 							<core:CustomData key="multi" value="false"/>
@@ -18,16 +20,61 @@
 							<core:CustomData key="growing" value="false"/>
 						</customData>
 					</Button>
+
+					<Input
+						id="ifVbeln"
+						width="100%" 
+						type="Number"
+						class="sapUiSmallMarginBottom"
+						enabled="true"
+						editable="false"
+						placeholder="Informe o documento ..." />
+					
+					<SearchField id="sfItem" 
+									width="100%" 
+									placeholder="Pesquisar item..." 
+									enableSuggestions="true" 
+									search="sfItemSearch" 
+									suggest="sfItemSuggest"
+									suggestionItems="{ path: 'ItensEF>/' }">
+						<suggestionItems>
+							<SuggestionItem text="{ItensEF>Matnr}" description="{ItensEF>Arktx} " key="{ItensEF>Matnr}"/>
+						</suggestionItems>
+					</SearchField>
+					
+					<Input
+						id="ifQtde"
+						width="100%" 
+						type="Number"
+						class="sapUiSmallMarginBottom"
+						placeholder="Informe a quantidade ..." />
+						
+					<Button id="btnInserirItem" 
+					class="sapUiSmallMarginBottom" 
+					text="Inserir Item" 
+					press="onInserirItemPress" 
+					width="100%" />
+						
 				</content>
 				<content>
-					<Table id="table_pedidos" width="100%" backgroundDesign="Translucent" items="{ path:'pedidosCadastrados>/', sorter: { path: 'NrPedCli', descending: true}}" mode="Delete" delete="onExcluirPedido" itemPress="onItemPress"
-						growingThreshold="3" growingTriggerText="Proximos Pedidos >>" growing="true" noDataText="Nenhum pedido cadastrado para o cliente" busyIndicatorDelay="0" fixedLayout="false">
+					<Table id="tEntregas" 
+						width="100%" 
+						backgroundDesign="Translucent"
+						items="{ path:'pedidosCadastrados>/', sorter: { path: 'NrPedCli', descending: true}}" 
+						mode="Delete" 
+						growingThreshold="3" 
+						growingTriggerText="Proximos Itens >>" 
+						growing="true"
+						noDataText="Nenhum item de entrega inserido ..." 
+						busyIndicatorDelay="0" 
+						fixedLayout="false"
+						itemPress="onItemPress" 
+						delete="onExcluirItem"
+						>
 						<headerToolbar>
 							<Toolbar id="lineItemsToolbar">
-								<Title id="lineItemsHeader" text="Pedidos"/>
+								<Title id="lineItemsHeader" text="Itens para entregar"/>
 								<ToolbarSpacer/>
-								<Label text="Digitar Pedido"/>
-								<Button id="idAddPedido" icon="sap-icon://add" press="onAddPedido"/>
 							</Toolbar>
 						</headerToolbar>
 						<columns>
@@ -48,7 +95,7 @@
 							</Column>
 						</columns>
 						<items>
-							<ColumnListItem type="Active" >
+							<ColumnListItem type="Active">
 								<cells>
 									<Text text="{path : 'pedidosCadastrados>nrEntCli'}"/>
 									<Text text="{path : 'pedidosCadastrados>dataImpl'}"/>
@@ -67,18 +114,20 @@
 				<headerContent/>
 				<subHeader>
 					<Toolbar id="searchBar">
-						<SearchField id="searchField" showRefreshButton="false" placeholder="Pesquisar Nome/Cod" tooltip="Pesquisar Clientes pelo Nome" width="100%" liveChange="onSearch" search="onSearch"/>
+						<SearchField id="searchField" showRefreshButton="false" placeholder="Pesquisar Nome/Cod" tooltip="Pesquisar Clientes pelo Nome" width="100%"
+							liveChange="onSearch" search="onSearch"/>
 					</Toolbar>
 				</subHeader>
 				<content>
-					<List id="listClientes" items="{ path: 'clientesCadastrados>/' }" busyIndicatorDelay="0" noDataText="Nenhum Cliente Encontrado!" mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
+					<List id="listClientes" items="{ path: 'clientesCadastrados>/' }" busyIndicatorDelay="0" noDataText="Nenhum Cliente Encontrado!"
+						mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
 						<items>
-							<ObjectListItem id="ObjListCliente" type="Active" press="onSelectionChange" title="{clientesCadastrados>name1}" number="{clientesCadastrados>kunnr}" intro="CPF: {clientesCadastrados>stcd1}">
-							
-							</ObjectListItem>
+							<ObjectListItem id="ObjListCliente" type="Active" press="onSelectionChange" title="{clientesCadastrados>name1}"
+								number="{clientesCadastrados>kunnr}" intro="CPF: {clientesCadastrados>stcd1}"></ObjectListItem>
 						</items>
 					</List>
 				</content>
 			</Page>
 		</masterPages>
-	</SplitContainer></mvc:View>
+	</SplitContainer>
+</mvc:View>

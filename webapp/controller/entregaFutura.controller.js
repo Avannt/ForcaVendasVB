@@ -9,8 +9,10 @@ sap.ui.define([
 ], function (jQuery, MessageToast, Fragment, BaseController, Filter, FilterOperator, MessageBox) {
 	"use strict";
 	var vetorCliente = [];
+	var oItensEF = [];
 	var oPedEF = [];
-
+	var oSF;
+	
 	return BaseController.extend("testeui5.controller.entregaFutura", {
 
 		onInit: function () {
@@ -64,7 +66,8 @@ sap.ui.define([
 
 		_onLoadFields: function () {
 			var that = this;
-
+			oSF = this.byId("sfItem");
+			
 			this.getView().byId("objectHeader").setTitle();
 			this.getView().byId("objectHeader").setNumber();
 			this.getView().byId("objectAttribute_cnpj").setText();
@@ -100,6 +103,7 @@ sap.ui.define([
 
 		onSelectionChange: function (oEvent) {
 			var that = this;
+			oItensEF = [];
 			oPedEF = [];
 
 			//filtra somente os pedidos do cliente e vai pra detail
@@ -128,25 +132,43 @@ sap.ui.define([
 				});
 
 				promise.then(function () {
-					var transactionPedEF = db.transaction("EntregaFuturaTopo", "readonly");
-					var objectStorePedEF = transactionPedEF.objectStore("EntregaFuturaTopo");
+					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
+					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
+					var iVbeln = objectStorePedEF.index("Vbeln");
 
-					objectStorePedEF.openCursor().onsuccess = function (event) {
+					/* Cursor para percorrer todos os registros de ENTREGA FUTURA */
+					// objectStorePedEF.openCursor().onsuccess = function (event) {
+					// 	var cursor = event.target.result;
 
+					// 	if (cursor) {
+					// 		if (cursor.value.kunnr == that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr")) {
+					// 			oItensEF.push(cursor.value);
+					// 		}
+
+					// 		cursor.continue();
+
+					// 	} else {
+					// 		var oModel = new sap.ui.model.json.JSONModel(oItensEF);
+
+					// 		that.getView().setModel(oModel, "pedidosCadastrados");
+					// 	}
+					// };/* Fim do cursor ENTREGA FUTURA */
+
+					/* Cursor para percorrer todos os PEDIDOS ÚNICOS EF */
+					iVbeln.openCursor(undefined, "nextunique").onsuccess = function (event) {
 						var cursor = event.target.result;
+
 						if (cursor) {
-							if (cursor.value.kunnr == that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr")) {
+							if (cursor.value.Kunrg === oItem.getNumber()) {
 								oPedEF.push(cursor.value);
 							}
-
 							cursor.continue();
-
 						} else {
 							var oModel = new sap.ui.model.json.JSONModel(oPedEF);
-
-							that.getView().setModel(oModel, "pedidosCadastrados");
+							that.getView().setModel(oModel, "PedidosEF");
 						}
-					};
+					}; /* Fim do cursor PEDIDOS ÚNICOS EF */
+
 				});
 			};
 		},
@@ -202,31 +224,19 @@ sap.ui.define([
 
 		onSelectDialogPress: function (oEvent) {
 			if (!this._oDialog) {
-				var oModel = this.getView().getModel("pedidosCadastrados");
-
 				this._oDialog = sap.ui.xmlfragment("testeui5.view.Dialog", this);
-				this._oDialog.setModel(oModel, "pedidosCadastrados");
 			}
+			
+			oSF.setValue('');
+			var oModel = this.getView().getModel("PedidosEF");
 
-			// Set do recurso Multi-select
-			var bMultiSelect = !!oEvent.getSource().data("multi");
-			this._oDialog.setMultiSelect(bMultiSelect);
-
-			// Ativa o recurso 'Lembrar seleções' se necessário
-			var bRemember = !!oEvent.getSource().data("remember");
-			this._oDialog.setRememberSelections(bRemember);
-
-			// Adiciona o botão Limpar se for necessário
-			var bShowClearButton = !!oEvent.getSource().data("showClearButton");
-			this._oDialog.setShowClearButton(bShowClearButton);
-
-			// Define a propriedade de crescimento
-			var bGrowing = oEvent.getSource().data("growing");
-			this._oDialog.setGrowing(bGrowing == "true");
+			this._oDialog.setModel(oModel, "PedidosEF");
+			this._oDialog.setMultiSelect(false);
+			this._oDialog.setShowClearButton(true);
+			this._oDialog.setGrowing(true);
 
 			// Limpa o filtro da pesquisa antigo
-			 this._oDialog.getBinding("items").filter([]);
-			// sap.ui.getCore().byId("sliItens").getBinding("items").filter([]);
+			this._oDialog.getBinding("items").filter([]);
 
 			// Alternar o estilo compacto (toggle compact style)
 			jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._oDialog);
@@ -235,17 +245,117 @@ sap.ui.define([
 		/* Fim onSelectDialogPress */
 
 		onDialogClose: function (oEvent) {
+			var that = this;
+			var aContexts = oEvent.getParameter("selectedContexts");
+			
+			oItensEF = [];
+			if (aContexts && aContexts.length) {
+				var iVbeln = aContexts[0].getObject().Vbeln;
+				
+				that.getView().byId("ifVbeln").setValue(iVbeln);
+				var open = indexedDB.open("VB_DataBase");
 
+				open.onerror = function () {
+					MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Banco não encontrado!",
+						actions: [MessageBox.Action.OK]
+					});
+				};
+
+				open.onsuccess = function () {
+					var db = open.result;
+					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
+					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
+					var keyRangeValue = IDBKeyRange.only(iVbeln);
+					var ixVbeln = objectStorePedEF.index("Vbeln");
+					
+					var request = ixVbeln.openCursor(keyRangeValue);
+					
+					request.onsuccess = function(event){
+						var cursor = event.target.result;
+						
+						if ( cursor ) {
+							oItensEF.push(cursor.value);
+							cursor.continue();
+						} else {
+							var oModel = new sap.ui.model.json.JSONModel(oItensEF);
+							that.getView().setModel(oModel, "ItensEF");
+						}
+					};
+					
+					request.onerror = function(event){
+						MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
+							icon: MessageBox.Icon.ERROR,
+							title: "Banco não encontrado!",
+							actions: [MessageBox.Action.OK]
+						});
+					};
+				};
+			} else {
+				oItensEF = [];
+				var oModel = new sap.ui.model.json.JSONModel(oItensEF);
+				that.getView().setModel(oModel, "ItensEF");
+				
+				MessageToast.show("Nenhum item foi selecionado.");
+			}
 		},
 		/* Fim onDialogClose */
 
 		onDialogSearch: function (oEvent) {
-				var sValue = oEvent.getParameter("value");
-				var oFilter = new Filter("Name", sap.ui.model.FilterOperator.Contains, sValue);
-				var oBinding = oEvent.getSource().getBinding("items");
-				oBinding.filter([oFilter]);
-			}
-			/* Fim onDialogSearch */
+			var aFilters = [];
+			var sValue = oEvent.getParameter("value");
+			var oFilter = [new Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue),
+				new Filter("NameOrg1", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+			aFilters.push(allFilters);
 
+			var oBinding = oEvent.getSource().getBinding("items");
+			oBinding.filter(aFilters, "Application");
+		},
+		/* Fim onDialogSearch */
+
+		sfItemSearch: function (oEvent) {
+			// var item = oEvent.getParameter("suggestionItem");
+			// if (item) {
+			// 	sap.m.MessageToast.show("Procurar por: " + item.getText());
+			// }
+		},
+		/* Fim sfItemSearch */
+
+		sfItemSuggest: function (oEvent) {
+			var value = oEvent.getParameter("suggestValue");
+			var filters = [];
+			if (value) {
+				filters = [
+					new sap.ui.model.Filter([
+						new sap.ui.model.Filter("Matnr", function(sText) {
+							return (sText || "").toUpperCase().indexOf(value.toUpperCase()) > -1;
+						}),
+						new sap.ui.model.Filter("Arktx", function(sDes) {
+							return (sDes || "").toUpperCase().indexOf(value.toUpperCase()) > -1;
+						})
+					], false)
+				];
+			}
+
+			oSF.getBinding("suggestionItems").filter(filters);
+			oSF.suggest();		
+		},
+		/* Fim sfItemSuggest */
+		
+		onInserirItemPress: function (oEvent){
+			var iVbeln = 0;
+			var iKunrg = 0;
+			var sMatnr = 0;
+			var iQuantidade = 0;
+			
+			iKunrg = this.getView().byId("objectHeader").getNumber();
+			iVbeln = this.getView().byId("ifVbeln").getValue();
+			sMatnr = this.getView().byId("sfItem").getValue();
+			iQuantidade = this.getView().byId("ifQtde").getValue(); 
+		}
+		/* Fim onInserirItemPress */
 	});
 });

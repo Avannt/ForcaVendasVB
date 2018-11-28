@@ -24,7 +24,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 28);
+					var open = indexedDB.open("VB_DataBase", 29);
 
 					// Create the Tables
 					open.onupgradeneeded = function (e) {
@@ -84,12 +84,21 @@ sap.ui.define([
 								keyPath: "idEntregaFutura",
 								unique: true
 							});
+
+							objEntregaFutura.createIndex("Vbeln", "Vbeln", {
+								unique: false
+							});
+
 						}
 
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (HISTORICO) >>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("EntregaFuturaHist")) {
 							var objEntregaFuturaDet = db.createObjectStore("EntregaFuturaHist", {
 								keyPath: "idEntregaFuturaHist"
+							});
+
+							objEntregaFuturaDet.createIndex("Vbeln", "Vbeln", {
+								unique: false
 							});
 						}
 
