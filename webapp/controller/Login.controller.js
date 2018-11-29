@@ -269,7 +269,7 @@ sap.ui.define([
 							objDescPorQuant.createIndex("werks", "werks", {
 								unique: false
 							});
-							objDescPorQuant.createIndex("kondm", "kondm", {
+							objDescPorQuant.createIndex("zz_grpmat", "zz_grpmat", {
 								unique: false
 							});
 						}
@@ -924,24 +924,23 @@ sap.ui.define([
 
 																															var objBancoA962 = {
 																																idA962: retornoA962.results[i].Werks + "." +
-																																	retornoA962.results[i].Kondm + "." + retornoA962.results[i].Matnr,
-																																kondm: retornoA962.results[i].Kondm,
+																																	retornoA962.results[i].Zz_grpmat + "." + retornoA962.results[i].Matnr,
+																																zz_grpmat: retornoA962.results[i].Zz_grpmat,
 																																werks: retornoA962.results[i].Werks,
-																																matnr: retornoA962.results[i].Matnr,
-																																zzTexto: retornoA962.results[i].Zz_texto
+																																matnr: retornoA962.results[i].Matnr
 																															};
-
+																															
 																															var requestA962 = objA962.add(objBancoA962);
-
+																															
 																															requestA962.onsuccess = function (event) {
 																																console.log("Dados A962 inseridos. " + event);
 																															};
-
+																															
 																															requestA962.onerror = function (event) {
 																																console.log("Dados A962 não foram inseridos :" + event);
 																															};
 																														}
-
+																														
 																														oModel.read("/A963 ", {
 																															success: function (retornoA963) {
 
@@ -1005,11 +1004,10 @@ sap.ui.define([
 
 																																					var objBancoA965 = {
 																																						idA965: retornoA965.results[i].Werks + "." +
-																																							retornoA965.results[i]
-																																							.Kondm +
-																																							"." + retornoA965.results[i].Matnr,
+																																							retornoA965.results[i].Zz_grpmat + "." + 
+																																							retornoA965.results[i].Matnr,
 																																						werks: retornoA965.results[i].Werks,
-																																						kondm: retornoA965.results[i].Kondm,
+																																						zz_grpmat: retornoA965.results[i].Zz_grpmat,
 																																						zzTexto: retornoA965.results[i].ZzTexto,
 																																						matnr: retornoA965.results[i].Matnr
 																																					};
@@ -1036,15 +1034,12 @@ sap.ui.define([
 
 																																							var objBancoA966 = {
 																																								idA966: retornoA966.results[i].Werks + "." +
-																																									retornoA966.results[
-																																										i]
-																																									.Konda +
-																																									"." + retornoA966.results[i].Kondm + "." +
-																																									retornoA966.results[
-																																										i].Pltyp,
+																																									retornoA966.results[i].Zz_regra + "." + 
+																																									retornoA966.results[i].Zz_grpmat + "." +
+																																									retornoA966.results[i].Pltyp,
 																																								werks: retornoA966.results[i].Werks,
-																																								konda: retornoA966.results[i].Konda,
-																																								kondm: retornoA966.results[i].Kondm,
+																																								zz_regra: retornoA966.results[i].Zz_regra,
+																																								zz_grpmat: retornoA966.results[i].Zz_grpmat,
 																																								pltyp: retornoA966.results[i].Pltyp,
 																																								zzTexto: retornoA966.results[i].ZzTexto
 																																							};
@@ -1073,24 +1068,21 @@ sap.ui.define([
 
 																																									var objBancoA967 = {
 																																										idA967: retornoA967.results[i].Werks + "." +
-																																											retornoA967.results[i].Konda + "." +
+																																											retornoA967.results[i].Zz_regra + "." +
 																																											retornoA967.results[i].Knumh,
 																																										werks: retornoA967.results[i].Werks,
-																																										konda: retornoA967.results[i].Konda,
+																																										zz_regra: retornoA967.results[i].Zz_regra,
 																																										knumh: retornoA967.results[i].Knumh
 																																									};
 
 																																									var requestA967 = objA967.add(objBancoA967);
 
 																																									requestA967.onsuccess = function (event) {
-																																										console.log("Dados A967 inseridos. " +
-																																											event);
+																																										console.log("Dados A967 inseridos. " + event);
 																																									};
 
 																																									requestA967.onerror = function (event) {
-																																										console.log(
-																																											"Dados A967 não foram inseridos :" +
-																																											event);
+																																										console.log("Dados A967 não foram inseridos :" + event);
 																																									};
 																																								}
 
@@ -1104,11 +1096,9 @@ sap.ui.define([
 																																										for (i = 0; i < retornoKonm.results.length; i++) {
 
 																																											var objBancoKonm = {
-																																												idKonm: retornoKonm.results[i].Knumh +
-																																													"." +
-																																													retornoKonm.results[
-																																														i].Kstbm + "." + retornoKonm.results[
-																																														i].Kbetr,
+																																												idKonm: retornoKonm.results[i].Knumh + "." +
+																																													retornoKonm.results[i].Kstbm + "." + 
+																																													retornoKonm.results[i].Kbetr,
 																																												knumh: retornoKonm.results[i].Knumh, //(Condição define qual valor de range pegar)
 																																												kstbm: retornoKonm.results[i].Kstbm, //Escala até
 																																												kbetr: retornoKonm.results[i].Kbetr //Percentual de desconto
@@ -1141,90 +1131,64 @@ sap.ui.define([
 																																													.length; i++) {
 
 																																													var objBancoA968 = {
-																																														idA968: retornoA968.results[i].Werks +
-																																															"." +
-																																															retornoA968.results[
-																																																i].Konda + "." + retornoA968.results[
-																																																i].Kondm +
-																																															"." +
+																																														idA968: retornoA968.results[i].Werks + "." +
+																																															retornoA968.results[i].Zz_regra + "." + 
+																																															retornoA968.results[i].Zz_grpmat + "." +
 																																															retornoA968.results[i].Pltyp,
 																																														werks: retornoA968.results[i].Werks,
-																																														konda: retornoA968.results[i].Konda,
-																																														kondm: retornoA968.results[i].Kondm,
+																																														zz_regra: retornoA968.results[i].Zz_regra,
+																																														zz_grpmat: retornoA968.results[i].Zz_grpmat,
 																																														pltyp: retornoA968.results[i].Pltyp,
 																																														zzTexto: retornoA968.results[i].ZzTexto
 																																													};
 																																													var requestA968 = objA968.add(
 																																														objBancoA968);
 
-																																													requestA968.onsuccess = function (
-																																														event) {
-																																														console.log(
-																																															"Dados A968 inseridos. " +
-																																															event);
+																																													requestA968.onsuccess = function (event) {
+																																														console.log("Dados A968 inseridos. " + event);
 																																													};
 
-																																													requestA968.onerror = function (
-																																														event) {
-																																														console.log(
-																																															"Dados A968 não foram inseridos :" +
-																																															event);
+																																													requestA968.onerror = function (event) {
+																																														console.log("Dados A968 não foram inseridos :" + event);
 																																													};
 																																												}
 
 																																												oModel.read("/A969", {
 																																													success: function (retornoA969) {
-
-																																														var txA969 = db.transaction(
-																																															"A969",
-																																															"readwrite");
-																																														var objA969 = txA969.objectStore(
-																																															"A969");
-
-																																														for (i = 0; i < retornoA969.results
-																																															.length; i++) {
-
+																																														var txA969 = db.transaction("A969", "readwrite");
+																																														var objA969 = txA969.objectStore("A969");
+																																														
+																																														for (i = 0; i < retornoA969.results.length; i++) {
+																																															
 																																															var objBancoA969 = {
-																																																idA969: retornoA969.results[
-																																																		i].Werks + "." +
-																																																	retornoA969.results[i].Konda +
-																																																	"." +
+																																																idA969: retornoA969.results[i].Werks + "." +
+																																																	retornoA969.results[i].Zz_regra + "." +
 																																																	retornoA969.results[i].Knumh,
-																																																werks: retornoA969.results[
-																																																	i].Werks,
-																																																konda: retornoA969.results[
-																																																	i].Konda,
-																																																knumh: retornoA969.results[
-																																																	i].Knumh
+																																																werks: retornoA969.results[i].Werks,
+																																																zz_regra: retornoA969.results[i].Zz_regra,
+																																																knumh: retornoA969.results[i].Knumh
 																																															};
-
-																																															var requestA969 = objA969.add(
-																																																objBancoA969);
-
+																																															
+																																															var requestA969 = objA969.add(objBancoA969);
+																																															
 																																															requestA969.onsuccess =
 																																																function (event) {
-																																																	console.log(
-																																																		"Dados A969 inseridos. " +
-																																																		event);
+																																																	console.log("Dados A969 inseridos. " + event);
 																																																};
-
+																																																
 																																															requestA969.onerror =
-																																																function (event) {
-																																																	console.log(
-																																																		"Dados A969 não foram inseridos :" +
-																																																		event);
-																																																};
+																																															function (event) {
+																																																console.log("Dados A969 não foram inseridos :" + event);
+																																															};
 																																														}
-
+																																														
 																																														MessageBox.show(
 																																															"Tabelas carregadas com sucesso!", {
 																																																icon: MessageBox.Icon.SUCCESS,
 																																																title: "Carregamento Completo",
-																																																actions: [MessageBox.Action
-																																																	.OK
-																																																],
+																																																actions: [MessageBox.Action.OK],
 																																																onClose: function () {
-
+																																																	
 																																																	if (that._ItemDialog) {
 																																																		that._ItemDialog.destroy(
 																																																			true);
@@ -1233,12 +1197,10 @@ sap.ui.define([
 																																																	that.onUpdateDateTime();
 																																																}
 																																															});
-
 																																													},
 																																													error: function (error) {
 																																														console.log(error);
-																																														that.onMensagemErroODATA(error
-																																															.statusCode);
+																																														that.onMensagemErroODATA(error.statusCode);
 																																													}
 																																												});
 																																											},

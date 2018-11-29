@@ -9,7 +9,7 @@
 					width="100%"/>
 			</Toolbar>
 		</subHeader>
-		<semantic:FullscreenPage id="page" width="100%">
+		<semantic:FullscreenPage id="page">
 			<semantic:content>
 				<Table id="table_clientes" busyIndicatorDelay="{worklistView>/tableBusyDelay}" growing="true" growingScrollToLoad="true"
 					noDataText="{worklistView>/tableNoDataText}" updateFinished="onUpdateFinished" width="100%" selectionChange="onSelectionChange"
