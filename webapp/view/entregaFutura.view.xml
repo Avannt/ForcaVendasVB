@@ -20,7 +20,8 @@
 							<core:CustomData key="growing" value="false"/>
 						</customData>
 					</Button>
-
+					
+					<Label text="Nro Documento" labelFor="ifVbeln"/>
 					<Input
 						id="ifVbeln"
 						width="100%" 
@@ -30,6 +31,7 @@
 						editable="false"
 						placeholder="Informe o documento ..." />
 					
+					<Label text="Material" labelFor="sfItem"/>
 					<SearchField id="sfItem" 
 									width="100%" 
 									placeholder="Pesquisar item..." 
@@ -42,6 +44,7 @@
 						</suggestionItems>
 					</SearchField>
 					
+					<Label text="Quantidade" labelFor="ifQtde"/>
 					<Input
 						id="ifQtde"
 						width="100%" 
