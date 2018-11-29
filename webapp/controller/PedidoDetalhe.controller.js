@@ -48,25 +48,22 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 			};
-
+			
 			open.onsuccess = function () {
 				var db = open.result;
-
+				
 				var promise = new Promise(function (resolve, reject) {
 					that.onCarregaCampos(db);
 					resolve();
 				});
 
 				promise.then(function (value) {
-
 					if (that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli") === "") {
 						console.log("Criando numero pedido");
 						that.onCriarNumeroPedido();
-
 					} else {
 						console.log("Carregando dados PrePedido");
 						that.onCarregaDadosPedido(db);
-
 					}
 				});
 			};
@@ -117,7 +114,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaPrazoMed", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", 0);
@@ -362,7 +359,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissao", oPrePedido.valComissao);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", oPrePedido.valComissaoUtilizadaDesconto);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", oPrePedido.valVerbaUtilizadaDesconto);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", oPrePedido.valUtilizadoComissaoPrazoMed);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaPrazoMed", oPrePedido.ValComissaoUtilizadaPrazoMed);
 
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", oPrePedido.valTotalExcedenteNaoDirecionadoDesconto);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", oPrePedido.valTotalExcedenteNaoDirecionadoPrazoMed);
@@ -796,6 +793,7 @@ sap.ui.define([
 							oItemPedido.kondaExtra = 0;
 							oItemPedido.kondmExtra = 0;
 							oItemPedido.tipoItem = "Normal";
+							oItemPedido.zzPercDescDiluicao = 0;
 
 							for (var j = 0; j < objItensPedidoTemplate.length; j++) {
 								if (oItemPedido.matnr == objItensPedidoTemplate[j].matnr && objItensPedidoTemplate[j].tipoItem == "Normal") {
@@ -1090,7 +1088,8 @@ sap.ui.define([
 							oItemPedido.knumhExtra = 0;
 							oItemPedido.kondaExtra = 0;
 							oItemPedido.kondmExtra = 0;
-
+							oItemPedido.zzPercDescDiluicao = 0;
+							
 							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 								if (objItensPedidoTemplate[i].matnr === codItem && objItensPedidoTemplate[i].tipoItem === "Normal") {
 
@@ -1613,7 +1612,7 @@ sap.ui.define([
 			//Valores utilizados para abater de verbas e comissões.
 			verbaUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
 			comissaoUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto");
-			comissaoUtilizadaPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
+			comissaoUtilizadaPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaPrazoMed");
 
 			console.log("Verba: " + verbaUtilizadaDesconto + ". Comissão: " + comissaoUtilizadaDesconto + ". Comissão PM: " +
 				comissaoUtilizadaPrazoMed);
@@ -3182,7 +3181,7 @@ sap.ui.define([
 							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
 							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto"),
 							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
-							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed"),
+							valComissaoUtilizadaPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaPrazoMed"),
 							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoDesconto"),
 							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed"),
 							valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
@@ -3402,8 +3401,8 @@ sap.ui.define([
 							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
 								"/ValComissaoUtilizadaDesconto"),
 							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
-							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
-								"/ValUtilizadoComissaoPrazoMed"),
+							valComissaoUtilizadaPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValComissaoUtilizadaPrazoMed"),
 							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
 								"/ValTotalExcedenteNaoDirecionadoDesconto"),
 							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
@@ -3462,7 +3461,7 @@ sap.ui.define([
 								valComissaoPedido: "",
 								valComissaoUtilizadaDesconto: "",
 								valVerbaUtilizadaDesconto: "",
-								valUtilizadoComissaoPrazoMed: "",
+								valComissaoUtilizadaPrazoMed: "",
 								valTotalExcedenteNaoDirecionadoDesconto: "",
 								valTotalExcedenteNaoDirecionadoPrazoMed: "",
 								valTotalAbatidoComissao: "",
@@ -3539,7 +3538,7 @@ sap.ui.define([
 								valComissaoPedido: "",
 								valComissaoUtilizadaDesconto: "",
 								valVerbaUtilizadaDesconto: "",
-								valUtilizadoComissaoPrazoMed: "",
+								valComissaoUtilizadaPrazoMed: "",
 								valTotalExcedenteNaoDirecionadoDesconto: "",
 								valTotalExcedenteNaoDirecionadoPrazoMed: "",
 								valTotalAbatidoComissao: "",

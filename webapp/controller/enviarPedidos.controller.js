@@ -221,9 +221,9 @@ sap.ui.define([
 				var db = open.result;
 
 				var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+				
 
 				for (var i = 0; i < oPedidosEnviar.length; i++) {
-
 					var objPedido = {
 						Nrpedcli: oPedidosEnviar[i].nrPedCli,
 						Idstatuspedido: String(oPedidosEnviar[i].idStatusPedido),
@@ -238,11 +238,8 @@ sap.ui.define([
 						Pltyp: String(oPedidosEnviar[i].tabPreco),
 						Completo: oPedidosEnviar[i].completo,
 						Valminped: String(oPedidosEnviar[i].valMinPedido),
-						Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl.substr(
-							0, 2)),
-						Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl
-							.substr(17, 2)),
-						Valorcomissao: String(oPedidosEnviar[i].valComissaoPedido),
+						Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl.substr(0, 2)),
+						Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl.substr(17, 2)),
 						Obsped: oPedidosEnviar[i].observacaoPedido,
 						Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
 						Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
@@ -252,9 +249,30 @@ sap.ui.define([
 						Diasprimeiraparcela: String(oPedidosEnviar[i].diasPrimeiraParcela),
 						Quantparcelas: String(oPedidosEnviar[i].quantParcelas),
 						Intervaloparcelas: String(oPedidosEnviar[i].intervaloParcelas),
-						Tiponego: String(oPedidosEnviar[i].tipoNegociacao)
+						Tiponego: String(oPedidosEnviar[i].tipoNegociacao),
+						// CodRepres: oPedidosEnviar[i].codRepres,
+						Totitens: oPedidosEnviar[i].totalItensPedido,
+						// ValCampBrinde: String(oPedidosEnviar[i].valCampBrinde),
+						// ValCampEnxoval: String(oPedidosEnviar[i].valCampEnxoval),
+						// ValCampGlobal: String(oPedidosEnviar[i].valCampGlobal),
+						Valorcomissao: String(oPedidosEnviar[i].valComissao),
+						Valcomutprazo: String(oPedidosEnviar[i].valComissaoUtilizadaPrazoMed),
+						// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
+						// ValMinPedido: oPedidosEnviar[i].valMinPedido,
+						Valtotpedido: String(oPedidosEnviar[i].valTotPed),
+						Valtotabcomissao: String(oPedidosEnviar[i].valTotalAbatidoComissao),
+						Valabverba: String(oPedidosEnviar[i].valTotalAbatidoVerba),
+						Valcomutdesc: String(oPedidosEnviar[i].valComissaoUtilizadaDesconto),
+						Valtotabcamppa: String(oPedidosEnviar[i].valUtilizadoCampProdutoAcabado),
+						Valtotabcampbrinde: String(oPedidosEnviar[i].valUtilizadoCampBrinde),
+						Valtotexcdesc: String(oPedidosEnviar[i].valTotalExcedenteDesconto),
+						Valtotexcndirdesc: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoDesconto),
+						Valtotexcndirprazo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoPrazoMed),
+						Valtotexcprazo: String(oPedidosEnviar[i].valTotalExcedentePrazoMed),
+						Valverbapedido: String(oPedidosEnviar[i].valVerbaPedido),
+						Valverbautdesc: String(oPedidosEnviar[i].valVerbaUtilizadaDesconto)
 					};
-
+					
 					oModel.create("/InserirOV", objPedido, {
 						method: "POST",
 						success: function (data) {
