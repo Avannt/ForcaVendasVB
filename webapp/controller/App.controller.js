@@ -8,7 +8,7 @@ sap.ui.define([
 
 	return BaseController.extend("testeui5.controller.App", {
 
-		onInit: function() {
+		onInit: function(evt) {
 
 			var oModel = new sap.ui.model.json.JSONModel({
 				modelUserNameShell: "",

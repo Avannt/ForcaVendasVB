@@ -3,34 +3,36 @@
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Aprovações">
 		<subHeader>
 			<Toolbar>
-				<ToolbarSpacer/>
-				<ToolbarSpacer/>
-				<ToolbarSpacer/>
+				<DatePicker id="DP6" valueFormat="dd/MM/yyyy" placeholder="Digite Data .." displayFormat="long" change="handleChange" width="50%"/>
+				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite cód/ Nome .." enableSuggestions="true" search="onItemChange"
+					suggest="_handleValueHelpSearch" width="50%"
+					suggestionItems="{ path: 'cliRelatorio>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'}}">
+					<suggestionItems>
+						<SuggestionItem text="{cliRelatorio>CodCliente}" description="{cliRelatorio>NomeEmit}" key="{cliRelatorio>CodCliente}"/>
+					</suggestionItems>
+				</SearchField>
 			</Toolbar>
 		</subHeader>
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
-				<Table id="idTableEnvioPedidos" busyIndicatorDelay="500" growing="true" growingScrollToLoad="true" mode="MultiSelect"
+				<Table id="idTableEnvioPedidos" busyIndicatorDelay="500" growing="true" growingScrollToLoad="true" mode="SingleSelect"
 					noDataText="Nenhum Pedido Pendente" updateFinished="onUpdateFinished" width="100%"
 					items="{ path: 'PedidosEnviar>/', sorter: { path: 'NomeEmit', descending: false, parameter: 'Codigo'}}">
 					<columns>
-						<Column minScreenWidth="320px" width="70px" demandPopin="false" hAlign="Left">
-							<Text text="Emp"/>
-						</Column>
 						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
 							<Text text="Cliente"/>
 						</Column>
 						<Column minScreenWidth="600px" demandPopin="false" hAlign="Left">
 							<Text text="Data"/>
 						</Column>
-						<Column minScreenWidth="380px" demandPopin="true" hAlign="Left">
+						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left">
 							<Text text="Verba"/>
 						</Column>
 						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left">
 							<Text text="V. Tot"/>
 						</Column>
-						<Column minScreenWidth="700px" visible="false" demandPopin="true">
-							<Text text="NumeroPedido"/>
+						<Column minScreenWidth="380px" visible="false" demandPopin="true">
+							<Text text="Exc Total"/>
 						</Column>
 						<!--<Column minScreenWidth="600px" demandPopin="true">-->
 						<!--	<Text text="Valor verba"/>-->
@@ -42,12 +44,11 @@
 					<items>
 						<ColumnListItem type="Active" press="detalharPedido">
 							<cells>
-								<Text text="{path : 'PedidosEnviar>CodEmpresa', formatter:'.myFormatterCodEmpresa'}" hAlign="Left"/>
-								<Text text="{PedidosEnviar>NomeAbrev}" hAlign="Left"/>
-								<Text text="{path : 'PedidosEnviar>DatImpl', formatter:'.myFormatterDataImp'}" hAlign="Left"/>
-								<Text text="R$: {path :'PedidosEnviar>ValVerbaPedido'}" hAlign="Left"/>
-								<Text text="R$: {PedidosEnviar>ValTotPed}" hAlign="Left"/>
-								<Text text="{PedidosEnviar>NrPedcli}" visible="false"/>
+								<Text text="{PedidosAprovar>NomeAbrev}" />
+								<Text text="{path : 'PedidosAprovar>DatImpl', formatter:'.myFormatterDataImp'}" />
+								<Text text="R$: {path :'PedidosAprovar>ValVerbaPedido'}" />
+								<Text text="R$: {PedidosAprovar>ValTotPed}" />
+								<Text text="{PedidosAprovar>NrPedcli}" visible="false"/>
 								<!--<Text text="{PedidosEnviar>ValVerbaPedido}"/>-->
 								<!--<Text text="{PedidosEnviar>Rentabilidade}"/>-->
 							</cells>
@@ -56,7 +57,7 @@
 				</Table>
 			</semantic:content>
 			<semantic:customFooterContent>
-				<Button text="Aprovar" press="onAprovarPedido" icon="sap-icon://accept" type="Accept"/>
+				<Button text="Aprovar" press="onOpenDialog" icon="sap-icon://accept" type="Accept"/>
 				<Button text="Reprovar" press="onReprovarPedido" icon="sap-icon://decline" type="Reject"/>
 			</semantic:customFooterContent>
 		</semantic:FullscreenPage>

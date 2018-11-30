@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
@@ -58,8 +59,8 @@ sap.ui.define([
 				var aux = value.split("/");
 				// var aux2 = aux[2].substring(2, aux[2].length);
 				// value = aux[0] + "/" + aux[1] + "/" + aux2;
-				value = aux[0] + "/" + aux[1];
-				return value;
+				aux = aux[0] + "/" + aux[1];
+				return aux;
 			}
 		},
 
@@ -77,7 +78,7 @@ sap.ui.define([
 		// },
 
 		handleChange: function(oEvent) {
-			var oDP = oEvent.oSource;
+			var oDP = oEvent.getSource();
 			var sValue = oEvent.getParameter("value");
 			var bValid = oEvent.getParameter("valid");
 			// this.byId("DP6").setValue(sValue);

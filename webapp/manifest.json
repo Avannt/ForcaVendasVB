@@ -280,8 +280,8 @@
 					"viewLevel": 1
 				},
 				"Aprovacoes": {
-					"viewType": "XML",
-					"viewName": "Aprovacoes"
+					"viewName": "Aprovacoes",
+					"viewLevel": 1
 				}
 			}
 		}
