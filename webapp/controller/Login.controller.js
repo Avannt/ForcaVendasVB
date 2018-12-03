@@ -25,7 +25,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 33);
+					var open = indexedDB.open("VB_DataBase", 35);
 
 					// Create the Tables
 					open.onupgradeneeded = function (e) {
@@ -135,6 +135,9 @@ sap.ui.define([
 							objPedido.createIndex("werks", "werks", {
 								unique: false
 							});
+							objPedido.createIndex("idStatusPedido", "idStatusPedido", {
+								unique: false
+							});
 						}
 
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE ITENSPEDIDO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -146,9 +149,10 @@ sap.ui.define([
 							objItensPedido.createIndex("nrPedcli", "nrPedcli", {
 								unique: false
 							});
-							objItensPedido.createIndex("nome", "nome", {
-								unique: false
-							});
+							//Chave composta
+							// objItensPedido.createIndex("idStatusPed",
+							//     {keyPath: ["nrPedcli", "idStatusPedido"]}
+							// );
 							objItensPedido.createIndex("matnr", "matnr", {
 								unique: false
 							});
