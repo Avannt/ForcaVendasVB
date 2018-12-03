@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/model/Filter",
@@ -21,6 +22,9 @@ sap.ui.define([
 
 		_onLoadFields: function () {
 			var that = this;
+			
+			var bPedido = this.getView().getModel().getProperty("/bEnviarPedido");
+			
 			oPedidosEnviar = [];
 			oItensPedidoGrid = [];
 			oPedidoGrid = [];
@@ -75,10 +79,16 @@ sap.ui.define([
 			};
 		},
 		/*FIM _onLoadFields*/
+		
+		onLoadPedidos: function () {
+			
+		},
+		/*FIM onLoadPedidos*/
 
 		onNavBack: function () {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
 		},
+		/*FIM onNavBack*/
 
 		myFormatterDataImp: function (value) {
 			var aux = value.split("/");
@@ -86,6 +96,7 @@ sap.ui.define([
 			value = aux[0] + "/" + aux[1] + "/" + aux2;
 			return value;
 		},
+		/*FIM myFormatterDataImp*/
 
 		onItemPress: function (oEvent) {
 			var that = this;
@@ -123,6 +134,7 @@ sap.ui.define([
 				}
 			});
 		},
+		/*FIM onItemPress*/
 
 		carregaModelCliente: function (db, resolve, reject) {
 			var that = this;
@@ -161,6 +173,7 @@ sap.ui.define([
 				}
 			};
 		},
+		/*FIM carregaModelCliente*/
 
 		onSelectionChange: function (oEvent) {
 			oPedidosEnviar = [];
@@ -186,6 +199,7 @@ sap.ui.define([
 				}
 			}
 		},
+		/*FIM onSelectionChange*/
 
 		onEnviarPedido: function (oEvent) {
 			var that = this;
@@ -364,14 +378,17 @@ sap.ui.define([
 			};
 
 		},
+		/*FIM onEnviarPedido*/
 
 		onMontarCabecalho: function (that, idPedido, dadosPedidoCab) {
 
 		},
+		/*FIM onMontarCabecalho*/
 
 		onMontarLinha: function () {
 
 		},
+		/*FIM onMontarLinha*/
 
 		onMensagemErroODATA: function (codigoErro) {
 
@@ -443,6 +460,7 @@ sap.ui.define([
 				);
 			}
 		}
+		/*FIM onMensagemErroODATA*/
 
 	});
 });

@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 		"sap/ui/core/mvc/Controller",
 		"sap/m/MessageBox",
@@ -1815,8 +1816,8 @@ sap.ui.define([
 							//Load tables
 							open.onsuccess = function () {
 								// Tabelas para serem limpadas
-								var vTables = ["A960", "Clientes", "A969", "Usuarios", "A965", "A963", "A966", "A964", "A962", "A961", "Materiais", "Konm",
-									"A968"
+								var vTables = ["A960", "Clientes", "A969", "Usuarios", "A959", "A965", "A963", "A966", "A967", "A964", "A962", "A961", "Materiais", 
+								"Konm", "A968", "EntregaFutura", "EntregaFuturaHist", "EntregaFutura2" 
 								];
 
 								that.DropDBTables(vTables);

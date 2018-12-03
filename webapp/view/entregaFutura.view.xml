@@ -1,64 +1,79 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="testeui5.controller.entregaFutura"
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="testeui5.controller.entregaFutura" xmlns:form="sap.ui.layout.form"
 	xmlns:html="http://www.w3.org/1999/xhtml">
 	<SplitContainer id="SplitContDemo2" initialDetail="detail" initialMaster="master" mode="ShowHideMode">
 		<detailPages>
 			<Page id="detail" title="Entrega futura" showNavButton="{device>/system/phone}" navButtonPress="onNavBack2" class="sapUiStdPage">
-				<content>
-					<ObjectHeader id="objectHeader" title="Nenhum cliente selecionado">
-						<statuses>
-							<ObjectStatus id="objectStatus_cidade"/>
-						</statuses>
-						<attributes>
-							<ObjectAttribute id="objectAttribute_cnpj"/>
-						</attributes>
-					</ObjectHeader>
-
-					<Button id="btnPesquisaPedido" class="sapUiSmallMarginBottom" text="Procurar pedido" press="onSelectDialogPress" width="100%">
-						<customData>
-							<core:CustomData key="multi" value="false"/>
-							<core:CustomData key="remember" value="true"/>
-							<core:CustomData key="growing" value="false"/>
-						</customData>
-					</Button>
-					
-					<Label text="Nro Documento" labelFor="ifVbeln"/>
-					<Input
-						id="ifVbeln"
-						width="100%" 
-						type="Number"
-						class="sapUiSmallMarginBottom"
-						enabled="true"
-						editable="false"
-						placeholder="Informe o documento ..." />
-					
-					<Label text="Material" labelFor="sfItem"/>
-					<SearchField id="sfItem" 
-									width="100%" 
-									placeholder="Pesquisar item..." 
-									enableSuggestions="true" 
-									search="sfItemSearch" 
-									suggest="sfItemSuggest"
-									suggestionItems="{ path: 'ItensEF>/' }">
-						<suggestionItems>
-							<SuggestionItem text="{ItensEF>Matnr}" description="{ItensEF>Arktx} " key="{ItensEF>Matnr}"/>
-						</suggestionItems>
-					</SearchField>
-					
-					<Label text="Quantidade" labelFor="ifQtde"/>
-					<Input
-						id="ifQtde"
-						width="100%" 
-						type="Number"
-						class="sapUiSmallMarginBottom"
-						placeholder="Informe a quantidade ..." />
+				<form:SimpleForm 	
+						minWidth="1024" 
+						maxContainerCols="2" 
+						editable="true" 
+						layout="ResponsiveGridLayout" 
+						labelSpanL="4" 
+						labelSpanM="4"
+						emptySpanL="2" 
+						emptySpanM="2" 
+						columnsL="2" 
+						columnsM="2"
+					>
+					<form:content>
+						<ObjectHeader id="objectHeader" title="Nenhum cliente selecionado">
+							<statuses>
+								<ObjectStatus id="objectStatus_cidade"/>
+							</statuses>
+							<attributes>
+								<ObjectAttribute id="objectAttribute_cnpj"/>
+							</attributes>
+						</ObjectHeader>
+	
+						<Label text="" labelFor="btnPesquisaPedido"/>
+						<Button id="btnPesquisaPedido" text="Procurar pedido" press="onSelectDialogPress" width="100%">
+							<customData>
+								<core:CustomData key="multi" value="false"/>
+								<core:CustomData key="remember" value="true"/>
+								<core:CustomData key="growing" value="false"/>
+							</customData>
+						</Button>
 						
-					<Button id="btnInserirItem" 
-					class="sapUiSmallMarginBottom" 
-					text="Inserir Item" 
-					press="onInserirItemPress" 
-					width="100%" />
+						<Label text="Nro Documento" labelFor="ifVbeln"/>
+						<Input
+							id="ifVbeln"
+							width="100%" 
+							type="Number"
+							class="sapUiSmallMarginBottom"
+							enabled="true"
+							editable="false"
+							placeholder="Informe o documento ..." />
 						
-				</content>
+						<Label text="Material" labelFor="sfItem"/>
+						<SearchField id="sfItem" 
+										width="100%" 
+										placeholder="Pesquisar item..." 
+										enableSuggestions="true" 
+										search="sfItemSearch" 
+										suggest="sfItemSuggest"
+										suggestionItems="{ path: 'ItensEF>/' }">
+							<suggestionItems>
+								<SuggestionItem text="{ItensEF>Matnr}" description="{ItensEF>Arktx} " key="{ItensEF>Matnr}"/>
+							</suggestionItems>
+						</SearchField>
+						
+						<Label text="Quantidade" labelFor="ifQtde"/>
+						<Input
+							id="ifQtde"
+							width="100%" 
+							type="Number"
+							class="sapUiSmallMarginBottom"
+							placeholder="Informe a quantidade ..." />
+							
+						<Button id="btnInserirItem" 
+						class="sapUiSmallMarginBottom" 
+						text="Inserir Item" 
+						press="onInserirItemPress" 
+						width="100%" />
+							
+					</form:content>			
+				</form:SimpleForm>
+				
 				<content>
 					<Table id="tEntregas" 
 						width="100%" 
@@ -81,7 +96,7 @@
 							</Toolbar>
 						</headerToolbar>
 						<columns>
-							<Column minScreenWidth="550px" demandPopin="true" hAlign="Left" popinDisplay="Inline" width="150px">
+							<Column minScreenWidth="2000px" demandPopin="true" hAlign="Left" popinDisplay="Inline" width="150px">
 								<Text text="Desc Item"/>
 							</Column>
 							<Column minScreenWidth="200px" hAlign="Left" width="auto" popinDisplay="Inline">
@@ -90,37 +105,37 @@
 							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
 								<Text text="Item"/>
 							</Column>
-							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
+							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
 								<Text text="Ref.cliente"/>
 							</Column>
 							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Qtde Faturada"/>
 							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Representante"/>
 							</Column>
 							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Cliente"/>
 							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Representante"/>
 							</Column>
 							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Material"/>
 							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
+							<Column minScreenWidth="2000px" demandPopin="true" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Nome Cliente"/>
 							</Column>
 							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Nome"/>
 							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
+							<Column minScreenWidth="2000px" demandPopin="true" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Nro Documento"/>
 							</Column>
 							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="idEntregaFutura"/>
 							</Column>
-							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Qtde Entregar"/>
 							</Column>
 						</columns>
@@ -129,13 +144,13 @@
 								<cells>
 									<Text text="{path : 'entregasEnviar>Arktx'}"/>
 									<Text text="{path : 'entregasEnviar>Vbeln'}"/>
-									<Text text="{path : 'entregasEnviar>Aupos'}"/>
+									<Text text="{path : 'entregasEnviar>Matnr'}"/>
 									<Text text="{path : 'entregasEnviar>Bstkd'}"/>
 									<Text text="{path : 'entregasEnviar>Fkimg'}"/>
 									<Text text="{path : 'entregasEnviar>IRepresentante'}"/>
 									<Text text="{path : 'entregasEnviar>Kunrg'}"/>
 									<Text text="{path : 'entregasEnviar>Lifnr'}"/>
-									<Text text="{path : 'entregasEnviar>Matnr'}"/>
+									<Text text="{path : 'entregasEnviar>Aupos'}"/>
 									<Text text="{path : 'entregasEnviar>NameOrg1'}"/>
 									<Text text="{path : 'entregasEnviar>NameOrg2'}"/>
 									<Text text="{path : 'entregasEnviar>Aubel'}"/>
