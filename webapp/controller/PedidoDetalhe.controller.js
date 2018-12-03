@@ -788,11 +788,11 @@ sap.ui.define([
 							oItemPedido.maktx = oMaterial.maktx;
 							oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
 							oItemPedido.knumh = 0;
-							oItemPedido.konda = 0;
-							oItemPedido.kondm = 0;
+							oItemPedido.zzRegra = 0;
+							oItemPedido.zzGrpmat = 0;
 							oItemPedido.knumhExtra = 0;
-							oItemPedido.kondaExtra = 0;
-							oItemPedido.kondmExtra = 0;
+							oItemPedido.zzRegraExtra = 0;
+							oItemPedido.zzGrpmatExtra = 0;
 							oItemPedido.tipoItem = "Normal";
 							oItemPedido.zzPercDescDiluicao = 0;
 
@@ -862,7 +862,7 @@ sap.ui.define([
 												if (cursor.value.matnr === oItemPedido.matnr && cursor.value.werks === werks) {
 
 													vetorAuxFamilias.push(cursor.value);
-													console.log("Familia: " + cursor.value.kondm + " para o Item: " + cursor.value.matnr);
+													console.log("Familia: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
 												}
 
 												cursor.continue();
@@ -876,11 +876,11 @@ sap.ui.define([
 													if (cursor2) {
 														for (var i = 0; i < vetorAuxFamilias.length; i++) {
 
-															if (cursor2.value.kondm === vetorAuxFamilias[i].kondm && cursor2.value.pltyp === tabPreco) {
+															if (cursor2.value.zzGrpmat === vetorAuxFamilias[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-																oItemPedido.kondm = cursor2.value.kondm; //Código Familia
-																oItemPedido.konda = cursor2.value.konda; //Grupo de preço 
-																console.log("Grupo de Preço:" + oItemPedido.konda + " do grupo da familia: " + cursor2.value.kondm);
+																oItemPedido.zzGrpmat = cursor2.value.zzGrpmat; //Código Familia
+																oItemPedido.zzRegra = cursor2.value.zzRegra; //Grupo de preço 
+																console.log("Grupo de Preço:" + oItemPedido.zzRegra + " do grupo da familia: " + cursor2.value.zzGrpmat);
 															}
 														}
 														cursor2.continue();
@@ -893,7 +893,7 @@ sap.ui.define([
 
 															if (cursorA967) {
 
-																if (cursorA967.value.konda === oItemPedido.konda) {
+																if (cursorA967.value.zzRegra === oItemPedido.zzRegra) {
 
 																	oItemPedido.knumh = cursorA967.value.knumh; // Registro de condição 
 
@@ -915,7 +915,7 @@ sap.ui.define([
 																		if (cursor.value.matnr === oItemPedido.matnr && cursor.value.werks === werks) {
 
 																			vetorAuxFamiliasExtra.push(cursor.value);
-																			console.log("Familia Extra: " + cursor.value.kondm + " para o Item: " + cursor.value.matnr);
+																			console.log("Familia Extra: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
 																		}
 
 																		cursor.continue();
@@ -929,12 +929,12 @@ sap.ui.define([
 																			if (cursor2) {
 																				for (i = 0; i < vetorAuxFamiliasExtra.length; i++) {
 
-																					if (cursor2.value.kondm === vetorAuxFamiliasExtra[i].kondm && cursor2.value.pltyp === tabPreco) {
+																					if (cursor2.value.zzGrpmat === vetorAuxFamiliasExtra[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-																						oItemPedido.kondmExtra = cursor2.value.kondm; //Código Familia Extra
-																						oItemPedido.kondaExtra = cursor2.value.konda; //Grupo de preço Extra
-																						console.log("Grupo de Preço Extra:" + oItemPedido.kondaExtra + " do grupo da familia Extra: " +
-																							oItemPedido.kondmExtra);
+																						oItemPedido.zzGrpmatExtra = cursor2.value.zzGrpmat; //Código Familia Extra
+																						oItemPedido.zzRegraExtra = cursor2.value.zzRegra; //Grupo de preço Extra
+																						console.log("Grupo de Preço Extra:" + oItemPedido.zzRegraExtra + " do grupo da familia Extra: " +
+																							oItemPedido.zzGrpmatExtra);
 																					}
 																				}
 																				cursor2.continue();
@@ -947,7 +947,7 @@ sap.ui.define([
 
 																					if (cursorA969) {
 
-																						if (cursorA969.value.konda === oItemPedido.kondaExtra) {
+																						if (cursorA969.value.zzRegra === oItemPedido.zzRegraExtra) {
 
 																							oItemPedido.knumhExtra = cursorA969.value.knumh; // Registro de condição 
 
@@ -1084,11 +1084,11 @@ sap.ui.define([
 							oItemPedido.maktx = oMaterial.maktx;
 							oItemPedido.ntgew = oMaterial.ntgew;
 							oItemPedido.knumh = 0;
-							oItemPedido.konda = 0;
-							oItemPedido.kondm = 0;
+							oItemPedido.zzRegra = 0;
+							oItemPedido.zzGrpmat = 0;
 							oItemPedido.knumhExtra = 0;
-							oItemPedido.kondaExtra = 0;
-							oItemPedido.kondmExtra = 0;
+							oItemPedido.zzRegraExtra = 0;
+							oItemPedido.zzGrpmatExtra = 0;
 							oItemPedido.zzPercDescDiluicao = 0;
 							
 							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
@@ -1098,11 +1098,11 @@ sap.ui.define([
 										idItemPedido: "",
 										index: "",
 										knumh: objItensPedidoTemplate[i].knumh,
-										kondm: objItensPedidoTemplate[i].kondm,
-										konda: objItensPedidoTemplate[i].konda,
+										zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
+										zzRegra: objItensPedidoTemplate[i].zzRegra,
 										knumhExtra: objItensPedidoTemplate[i].knumhExtra,
-										kondmExtra: objItensPedidoTemplate[i].kondmExtra,
-										kondaExtra: objItensPedidoTemplate[i].kondaExtra,
+										zzGrpmatExtra: objItensPedidoTemplate[i].zzGrpmatExtra,
+										zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
 										maktx: objItensPedidoTemplate[i].maktx,
 										matnr: objItensPedidoTemplate[i].matnr,
 										nrPedCli: objItensPedidoTemplate[i].nrPedCli,
@@ -1193,13 +1193,13 @@ sap.ui.define([
 										oItemPedido.zzPercom = oA960.zzPercom; //Comissão
 										oItemPedido.zzVprod = oA960.zzVprod;
 										oItemPedido.knumh = 0;
-										oItemPedido.konda = 0;
-										oItemPedido.kondm = 0;
+										oItemPedido.zzRegra = 0;
+										oItemPedido.zzGrpmat = 0;
 
 										oItemPedido.knumhExtra = 0;
-										oItemPedido.kondaExtra = 0;
-										oItemPedido.kondmExtra = 0;
-
+										oItemPedido.zzRegraExtra = 0;
+										oItemPedido.zzGrpmatExtra = 0;
+										
 										oItemPedido.zzDesitem = 0;
 										oItemPedido.zzPercDescTotal = 0;
 										oItemPedido.zzVprodMinPermitido = 0;
@@ -1218,7 +1218,7 @@ sap.ui.define([
 												if (cursor.value.matnr === oItemPedido.matnr && cursor.value.werks === werks) {
 
 													vetorAuxFamilias.push(cursor.value);
-													console.log("Familia: " + cursor.value.kondm + " para o Item: " + cursor.value.matnr);
+													console.log("Familia: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
 												}
 
 												cursor.continue();
@@ -1232,11 +1232,11 @@ sap.ui.define([
 													if (cursor2) {
 														for (var i = 0; i < vetorAuxFamilias.length; i++) {
 
-															if (cursor2.value.kondm === vetorAuxFamilias[i].kondm && cursor2.value.pltyp === tabPreco) {
+															if (cursor2.value.zzGrpmat === vetorAuxFamilias[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-																oItemPedido.kondm = cursor2.value.kondm; //Código Familia
-																oItemPedido.konda = cursor2.value.konda; //Grupo de preço 
-																console.log("Grupo de Preço:" + oItemPedido.konda + " do grupo da familia: " + cursor2.value.kondm);
+																oItemPedido.zzGrpmat = cursor2.value.zzGrpmat; //Código Familia
+																oItemPedido.zzRegra = cursor2.value.zzRegra; //Grupo de preço 
+																console.log("Grupo de Preço:" + oItemPedido.zzRegra + " do grupo da familia: " + cursor2.value.zzGrpmat);
 															}
 														}
 														cursor2.continue();
@@ -1249,7 +1249,7 @@ sap.ui.define([
 
 															if (cursorA967) {
 
-																if (cursorA967.value.konda === oItemPedido.konda) {
+																if (cursorA967.value.zzRegra === oItemPedido.zzRegra) {
 
 																	oItemPedido.knumh = cursorA967.value.knumh; // Registro de condição 
 
@@ -1291,7 +1291,7 @@ sap.ui.define([
 																				if (cursor.value.matnr === oItemPedido.matnr && cursor.value.werks === werks) {
 
 																					vetorAuxFamiliasExtra.push(cursor.value);
-																					console.log("Familia Extra: " + cursor.value.kondm + " para o Item: " + cursor.value.matnr);
+																					console.log("Familia Extra: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
 																				}
 
 																				cursor.continue();
@@ -1305,12 +1305,12 @@ sap.ui.define([
 																					if (cursor2) {
 																						for (i = 0; i < vetorAuxFamiliasExtra.length; i++) {
 
-																							if (cursor2.value.kondm === vetorAuxFamiliasExtra[i].kondm && cursor2.value.pltyp === tabPreco) {
+																							if (cursor2.value.zzGrpmat === vetorAuxFamiliasExtra[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-																								oItemPedido.kondmExtra = cursor2.value.kondm; //Código Familia Extra
-																								oItemPedido.kondaExtra = cursor2.value.konda; //Grupo de preço Extra
-																								console.log("Grupo de Preço Extra:" + oItemPedido.kondaExtra + " do grupo da familia Extra: " +
-																									oItemPedido.kondmExtra);
+																								oItemPedido.zzGrpmatExtra = cursor2.value.zzGrpmat; //Código Familia Extra
+																								oItemPedido.zzRegraExtra = cursor2.value.zzRegra; //Grupo de preço Extra
+																								console.log("Grupo de Preço Extra:" + oItemPedido.zzRegraExtra + " do grupo da familia Extra: " +
+																									oItemPedido.zzGrpmatExtra);
 																							}
 																						}
 																						cursor2.continue();
@@ -1323,7 +1323,7 @@ sap.ui.define([
 
 																							if (cursorA969) {
 
-																								if (cursorA969.value.konda === oItemPedido.kondaExtra) {
+																								if (cursorA969.value.zzRegra === oItemPedido.zzRegraExtra) {
 
 																									oItemPedido.knumhExtra = cursorA969.value.knumh; // Registro de condição 
 
@@ -1778,11 +1778,11 @@ sap.ui.define([
 										idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 										index: objItensPedidoTemplate[i].index,
 										knumh: objItensPedidoTemplate[i].knumh,
-										konda: objItensPedidoTemplate[i].konda,
-										kondm: objItensPedidoTemplate[i].kondm,
+										zzRegra: objItensPedidoTemplate[i].zzRegra,
+										zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
 										knumhExtra: objItensPedidoTemplate[i].knumhExtra,
-										kondaExtra: objItensPedidoTemplate[i].kondaExtra,
-										kondmExtra: objItensPedidoTemplate[i].kondmExtra,
+										zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
+										zzGrpmatExtra: objItensPedidoTemplate[i].zzGrpmatExtra,
 										maktx: objItensPedidoTemplate[i].maktx,
 										matnr: objItensPedidoTemplate[i].matnr,
 										nrPedCli: objItensPedidoTemplate[i].nrPedCli,
@@ -1817,11 +1817,11 @@ sap.ui.define([
 										idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 										index: objItensPedidoTemplate[i].index,
 										knumh: objItensPedidoTemplate[i].knumh,
-										konda: objItensPedidoTemplate[i].konda,
-										kondm: objItensPedidoTemplate[i].kondm,
+										zzRegra: objItensPedidoTemplate[i].zzRegra,
+										zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
 										knumhExtra: objItensPedidoTemplate[i].knumhExtra,
-										kondaExtra: objItensPedidoTemplate[i].kondaExtra,
-										kondmExtra: objItensPedidoTemplate[i].kondmExtra,
+										zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
+										zzGrpmatExtra: objItensPedidoTemplate[i].zzGrpmatExtra,
 										maktx: objItensPedidoTemplate[i].maktx,
 										matnr: objItensPedidoTemplate[i].matnr,
 										nrPedCli: objItensPedidoTemplate[i].nrPedCli,
@@ -1858,11 +1858,11 @@ sap.ui.define([
 										idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 										index: objItensPedidoTemplate[i].index,
 										knumh: objItensPedidoTemplate[i].knumh,
-										konda: objItensPedidoTemplate[i].konda,
-										kondm: objItensPedidoTemplate[i].kondm,
+										zzRegra: objItensPedidoTemplate[i].zzRegra,
+										zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
 										knumhExtra: objItensPedidoTemplate[i].knumhExtra,
-										kondaExtra: objItensPedidoTemplate[i].kondaExtra,
-										kondmExtra: objItensPedidoTemplate[i].kondmExtra,
+										zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
+										zzGrpmatExtra: objItensPedidoTemplate[i].zzGrpmatExtra,
 										maktx: objItensPedidoTemplate[i].maktx,
 										matnr: objItensPedidoTemplate[i].matnr,
 										nrPedCli: objItensPedidoTemplate[i].nrPedCli,
@@ -2104,7 +2104,7 @@ sap.ui.define([
 
 				//Ordenando para desconto Familia normal
 				vetorGeral.sort(function (a, b) {
-					return parseInt(a.kondm) - parseInt(b.kondm);
+					return parseInt(a.zzGrpmat) - parseInt(b.zzGrpmat);
 				});
 
 				for (var o = 0; o < vetorGeral.length; o++) {
@@ -2122,7 +2122,7 @@ sap.ui.define([
 
 					} else if (vetorGeral.length > 1 && (o + 1) < vetorGeral.length) {
 
-						if (vetorGeral[o].kondm == vetorGeral[o + 1].kondm) {
+						if (vetorGeral[o].zzGrpmat == vetorGeral[o + 1].zzGrpmat) {
 
 							proximoItemDiferente = false;
 							vetorFamilia.push(vetorGeral[o]);
@@ -2156,7 +2156,7 @@ sap.ui.define([
 
 				//Ordenando para desconto Familia normal
 				vetorGeralExtra.sort(function (a, b) {
-					return a.kondmExtra - b.kondmExtra;
+					return a.zzGrpmatExtra - b.zzGrpmatExtra;
 				});
 
 				for (o = 0; o < vetorGeralExtra.length; o++) {
@@ -2174,7 +2174,7 @@ sap.ui.define([
 
 					} else if (vetorGeralExtra.length > 1 && (o + 1) < vetorGeralExtra.length) {
 
-						if (vetorGeralExtra[o].kondm == vetorGeralExtra[o + 1].kondm) {
+						if (vetorGeralExtra[o].zzGrpmat == vetorGeralExtra[o + 1].zzGrpmat) {
 
 							proximoItemDiferente = false;
 							vetorFamilia.push(vetorGeralExtra[o]);
@@ -2231,7 +2231,7 @@ sap.ui.define([
 				}
 
 				vetorAuxFamilia.sort(function (a, b) {
-					return a.kondm - b.kondm;
+					return a.zzGrpmat - b.zzGrpmat;
 				});
 
 				//Vetor da familia ordenado pela quantidade (menor primeiro), se o kra for menor (break) e usa o desconto.
@@ -2270,7 +2270,7 @@ sap.ui.define([
 				}
 
 				vetorAuxFamilia.sort(function (a, b) {
-					return a.kondm - b.kondm;
+					return a.zzGrpmat - b.zzGrpmat;
 				});
 
 				//Vetor da familia ordenado pela quantidade (menor primeiro), se o kra for menor (break) e usa o desconto.

@@ -25,7 +25,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 35);
+					var open = indexedDB.open("VB_DataBase", 36);
 
 					// Create the Tables
 					open.onupgradeneeded = function (e) {
@@ -146,7 +146,7 @@ sap.ui.define([
 								keyPath: "idItemPedido",
 								unique: true
 							});
-							objItensPedido.createIndex("nrPedcli", "nrPedcli", {
+							objItensPedido.createIndex("nrPedCli", "nrPedCli", {
 								unique: false
 							});
 							//Chave composta

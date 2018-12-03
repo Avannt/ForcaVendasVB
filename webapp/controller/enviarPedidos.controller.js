@@ -16,64 +16,91 @@ sap.ui.define([
 
 	return BaseController.extend("testeui5.controller.enviarPedidos", {
 
-		onInit: function () {
-			
-			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
-			
-		},
+			onInit: function () {
 
-		_onLoadFields: function () {
-			var that = this;
-			oPedidosEnviar = [];
-			oItensPedidoGrid = [];
-			oPedidoGrid = [];
-			oItensPedidoEnviar = [];
-			oItensPedidoGridEnviar = [];
+				this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
 
-			var oModel = new sap.ui.model.json.JSONModel();
-			var open = indexedDB.open("VB_DataBase");
+			},
 
-			open.onerror = function () {
-				MessageBox.show(open.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
+			_onLoadFields: function () {
+				var that = this;
+				oPedidosEnviar = [];
+				oItensPedidoGrid = [];
+				oPedidoGrid = [];
+				oItensPedidoEnviar = [];
+				oItensPedidoGridEnviar = [];
 
-			open.onsuccess = function () {
-				var db = open.result;
+				var oModel = new sap.ui.model.json.JSONModel();
+				var open = indexedDB.open("VB_DataBase");
 
-				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
-				store.openCursor().onsuccess = function (event) {
-					var cursor = event.target.result;
+				open.onerror = function () {
+					MessageBox.show(open.error.mensage, {
+						icon: MessageBox.Icon.ERROR,
+						title: "Banco não encontrado!",
+						actions: [MessageBox.Action.OK]
+					});
+				};
 
-					if (cursor) {
-						if (cursor.value.idStatusPedido == 2) {
-							oPedidoGrid.push(cursor.value);
-						}
-						cursor.continue();
-					} else {
+				open.onsuccess = function () {
+					var db = open.result;
+
+					var store = db.transaction("PrePedidos").objectStore("PrePedidos");
+					var indiceStatusPed = store.index("idStatusPedido");
+
+					var request = indiceStatusPed.getAll(2);
+
+					request.onsuccess = function (event) {
+						oPedidoGrid = event.target.result;
+
 						oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
 						that.getOwnerComponent().setModel(oModel, "PedidosEnviar");
 
 						// var tx = db.transaction("ItensPedido", "readwrite");
 						// var objItensPedido = tx.objectStore("ItensPedido");
+						
+						var vetorPromise = [];
+						for (var j = 0; j < oPedidoGrid.length; j++) {
 
-						var store1 = db.transaction("ItensPedido").objectStore("ItensPedido");
-						store1.openCursor().onsuccess = function (event1) {
-							cursor = event1.target.result;
-
-							if (cursor) {
-								for (var j = 0; j < oPedidoGrid.length; j++) {
-									if (cursor.value.nrPedCli == oPedidoGrid[j].nrPedCli) {
-										oItensPedidoGrid.push(cursor.value);
+							vetorPromise.push( new Promise(function (resolve, reject) {
+								var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
+								var indiceNrPed = storeItensPed.index("nrPedCli");
+								
+								request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
+								
+								request.onsuccess = function (event) {
+									
+									for(var i=0; i<event.target.result.length; i++){
+										var aux = event.target.result[i];
+										oItensPedidoGrid.push(aux);
 									}
-								}
-								cursor.continue();
-							}
-						};
-					}
+									console.log(oItensPedidoGrid);
+									resolve();
+								};
+								
+								request.onerror = function (event) {
+									console.error(event.error.mensage);
+									reject();
+								};
+								
+							}));
+						}
+						Promise.all(vetorPromise).then(function (values) {
+							console.log(oItensPedidoGrid);
+						});
+						
+					// 	if (cursor.value.nrPedCli == oPedidoGrid[j].nrPedCli) {
+					// 		oItensPedidoGrid.push(cursor.value);
+					// 	}
+					// 	store1.openCursor().onsuccess = function (event1) {
+					// 		cursor = event1.target.result;
+
+					// 		if (cursor) {
+
+					// 			cursor.continue();
+					// 		}
+					// 	};
+					// }
+
 				};
 			};
 		},
@@ -224,7 +251,7 @@ sap.ui.define([
 				var db = open.result;
 
 				var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
-				
+
 				for (var j = 0; j < oItensPedidoGrid.length; j++) {
 
 					var objItensPedido = {
@@ -232,10 +259,10 @@ sap.ui.define([
 						Tindex: oItensPedidoGrid[j].index,
 						Knumh: String(oItensPedidoGrid[j].knumh),
 						Knumhextra: String(oItensPedidoGrid[j].knumhExtra),
-						Konda: String(oItensPedidoGrid[j].konda),
-						Kondmextra: String(oItensPedidoGrid[j].kondmExtra),
-						Kondm: String(oItensPedidoGrid[j].kondm),
-						Kondaextra: String(oItensPedidoGrid[j].kondaExtra),
+						Zzregra: String(oItensPedidoGrid[j].zzRegra),
+						Zzgrpmatextra: String(oItensPedidoGrid[j].zzGrpmatExtra),
+						Zzgrpmat: String(oItensPedidoGrid[j].zzGrpmat),
+						Zzregraextra: String(oItensPedidoGrid[j].zzRegraExtra),
 						Maktx: String(oItensPedidoGrid[j].maktx),
 						Matnr: String(oItensPedidoGrid[j].matnr),
 						Nrpedcli: String(oItensPedidoGrid[j].nrPedCli),
@@ -281,8 +308,10 @@ sap.ui.define([
 						Pltyp: String(oPedidosEnviar[i].tabPreco),
 						Completo: oPedidosEnviar[i].completo,
 						Valminped: String(oPedidosEnviar[i].valMinPedido),
-						Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl.substr(0, 2)),
-						Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl.substr(17, 2)),
+						Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl.substr(
+							0, 2)),
+						Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl
+							.substr(17, 2)),
 						Obsped: oPedidosEnviar[i].observacaoPedido,
 						Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
 						Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
@@ -315,7 +344,7 @@ sap.ui.define([
 						Valverbapedido: String(oPedidosEnviar[i].valVerbaPedido),
 						Valverbautdesc: String(oPedidosEnviar[i].valVerbaUtilizadaDesconto)
 					};
-					
+
 					oModel.create("/InserirOV", objPedido, {
 						method: "POST",
 						success: function (data) {
@@ -360,7 +389,6 @@ sap.ui.define([
 						}
 					});
 				}
-
 
 				oModel.submitChanges();
 

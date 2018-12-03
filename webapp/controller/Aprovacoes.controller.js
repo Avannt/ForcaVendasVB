@@ -146,10 +146,10 @@ sap.ui.define([
 							Valcomutprazo: retorno.results[i].Valcomutprazo,
 							Valtotabcomissao: retorno.results[i].Valtotabcomissao
 						};
-
+						
 						oItensAprovar.push(aux);
 					}
-
+					
 					var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
 					that.getView().setModel(oModelAprovacoes, "PedidosAprovar");
 				},
@@ -159,9 +159,9 @@ sap.ui.define([
 				}
 			});
 		},
-
+		
 		onExit: function () {
-
+			
 		},
 
 		onMensagemErroODATA: function (codigoErro) {
