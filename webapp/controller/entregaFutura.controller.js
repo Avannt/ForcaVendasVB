@@ -376,49 +376,72 @@ sap.ui.define([
 							actions: [MessageBox.Action.OK],
 						});
 					} else {
-						/*
-							INSERIR AQUI A REGRA DE VERIFICAÇÃO DE DISPONIBILIDADE DE ENTREGA DO ITEM EM QUESTÃO
-						*/
-						
-						oItemEF2.Arktx = oItemEF.Arktx;
-						oItemEF2.Aubel = oItemEF.Aubel;
-						oItemEF2.Aupos = oItemEF.Aupos;
-						oItemEF2.Bstkd = oItemEF.Bstkd;
-						oItemEF2.Fkimg = oItemEF.Fkimg;
-						oItemEF2.Fkimg2 = iQuantidade;
-						oItemEF2.IRepresentante = oItemEF.IRepresentante;
-						oItemEF2.Kunrg = oItemEF.Kunrg;
-						oItemEF2.Lifnr = oItemEF.Lifnr;
-						oItemEF2.Matnr = oItemEF.Matnr;
-						oItemEF2.NameOrg1 = oItemEF.NameOrg1;
-						oItemEF2.NameOrg2 = oItemEF.NameOrg2;
-						oItemEF2.Vbeln = oItemEF.Vbeln;
-						oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura;
-						
-						var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
-						var objEF2 = storeEF2.objectStore("EntregaFutura2");
+						/*INSERIR AQUI A REGRA DE VERIFICAÇÃO DE DISPONIBILIDADE DE ENTREGA DO ITEM EM QUESTÃO*/
 
-						var requestAdd = objEF2.add(oItemEF2);
-
-						requestAdd.onsuccess = function (e) {
-							sap.m.MessageBox.success("Material inserido com sucesso!", {
-								icon: MessageBox.Icon.SUCCESS,
-								title: "Material inserido.",
-								actions: [sap.m.MessageBox.Action.OK],
-								onClose: function(){
-									that.onGetDataFromEF2(iKunrg);
-									that.onClearView();
-								}
-							});
-						};
+						var p1 = new Promise(function (resolv, reject) {
+							that.onGetQtdeHistorico(idEntregaFutura, resolv, reject);
+						});
 						
-						requestAdd.onerror = function(e) {
-							MessageBox.error("Não existe o material: " + sMatnr, {
-								icon: MessageBox.Icon.ERROR,
-								title: "Material não encontrado.",
-								actions: [MessageBox.Action.YES],
-							});
-						};
+						p1.then(function(dQtdeHist) {
+							/* Se a quantidade digitada for maior que a quantidade a ser entregue + qtde do históico para o pedido 
+							e item correspondente, mando uma mensagem de erro para o usuário.*/
+							if (iQuantidade > (parseInt(oItemEF.Fkimg) + dQtdeHist)){
+								var sMsgErro = "Quantidade digitada é maior que a disponível para entrega.";
+								MessageBox.error(sMsgErro, {
+									icon: MessageBox.Icon.ERROR,
+									title: "Erro",
+									actions: [MessageBox.Action.OK],
+								});
+							} else {
+								oItemEF2.Arktx = oItemEF.Arktx;
+								oItemEF2.Aubel = oItemEF.Aubel;
+								oItemEF2.Aupos = oItemEF.Aupos;
+								oItemEF2.Bstkd = oItemEF.Bstkd;
+								oItemEF2.Fkimg = oItemEF.Fkimg;
+								oItemEF2.Fkimg2 = iQuantidade;
+								oItemEF2.IRepresentante = oItemEF.IRepresentante;
+								oItemEF2.Kunrg = oItemEF.Kunrg;
+								oItemEF2.Lifnr = oItemEF.Lifnr;
+								oItemEF2.Matnr = oItemEF.Matnr;
+								oItemEF2.NameOrg1 = oItemEF.NameOrg1;
+								oItemEF2.NameOrg2 = oItemEF.NameOrg2;
+								oItemEF2.Vbeln = oItemEF.Vbeln;
+								oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura;
+								
+								var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
+								var objEF2 = storeEF2.objectStore("EntregaFutura2");
+		
+								var requestAdd = objEF2.add(oItemEF2);
+		
+								requestAdd.onsuccess = function (e) {
+									sap.m.MessageBox.success("Material inserido com sucesso!", {
+										icon: MessageBox.Icon.SUCCESS,
+										title: "Material inserido.",
+										actions: [sap.m.MessageBox.Action.OK],
+										onClose: function(){
+											that.onGetDataFromEF2(iKunrg);
+											that.onClearView();
+										}
+									});
+								};
+								
+								requestAdd.onerror = function(e) {
+									var sMsgErro = "";
+									
+									if (e.srcElement.error.message.includes("Key already exists")){
+										sMsgErro = "Pedido e material já selecionado para entrega.";
+									} else {
+										sMsgErro = "Erro ao inserir material: " + e.srcElement.error;
+									}
+									
+									MessageBox.error(sMsgErro, {
+										icon: MessageBox.Icon.ERROR,
+										title: "Erro",
+										actions: [MessageBox.Action.OK],
+									});
+								};								
+							}
+						});/*Fim Promise*/
 					}
 				};
 			};
@@ -505,7 +528,51 @@ sap.ui.define([
 			this.getView().byId("ifQtde").setValue(1);
 			this.getView().byId("ifVbeln").setValue("");
 			this.getView().byId("sfItem").setValue("");
-		}
+		},
 		/* Fim onClearView */
+		
+		onGetQtdeHistorico: function(idEntregaFuturaH, resolv, reject) {
+			var dRetorno = 0;
+			
+			var open = indexedDB.open("VB_DataBase");
+			open.onsuccess = function () {
+				var db = open.result;
+	
+				var store = db.transaction("EntregaFuturaHist");
+				var objMaterial = store.objectStore("EntregaFuturaHist");
+	
+				var requestEFH = objMaterial.get(idEntregaFuturaH);
+				
+				requestEFH.onerror = function(e){
+					MessageBox.error("Erro ao localizar tabela de histórico de entrega futura.", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Erro",
+						actions: [MessageBox.Action.OK],
+					});
+				};
+				
+				requestEFH.onsuccess = function (e){
+					var oItemEFH = e.target.result;
+					var dRetorno = 0;
+					
+					if(oItemEFH !== undefined) {
+						
+					}
+					
+					resolv(dRetorno);
+				};
+			};
+			
+			open.onerror = function(e) {
+				MessageBox.error("Erro ao localizar o banco de dados.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Erro",
+					actions: [MessageBox.Action.OK],
+				});
+			};
+			
+			return dRetorno;
+		}
+		/* Fim onGetQtdeHistorico */
 	});
 });
