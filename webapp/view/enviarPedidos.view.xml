@@ -46,7 +46,7 @@
 								<cells>
 									<Text text="{path : 'PedidosEnviar>kunnr'}"/>
 									<Text text="{path : 'PedidosEnviar>nrPedCli'}"/>
-									<Text text="{path : 'PedidosEnviar>dataPedido'}"/>
+									<Text text="{path : 'PedidosEnviar>dataPedido', formatter:'.myFormatterDataImp'}"/>
 									<!--', formatter:'.myFormatterDataImp'-->
 									<Text text="{path : 'PedidosEnviar>totalItensPedido'}"/>
 									<Text text="R$: {path : 'PedidosEnviar>valTotPed'}"/>

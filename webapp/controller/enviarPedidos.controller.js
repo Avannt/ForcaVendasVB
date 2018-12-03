@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/model/Filter",
@@ -16,7 +17,9 @@ sap.ui.define([
 	return BaseController.extend("testeui5.controller.enviarPedidos", {
 
 		onInit: function () {
+			
 			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
+			
 		},
 
 		_onLoadFields: function () {
@@ -222,6 +225,46 @@ sap.ui.define([
 
 				var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 				
+				for (var j = 0; j < oItensPedidoGrid.length; j++) {
+
+					var objItensPedido = {
+						Iditempedido: String(oItensPedidoGrid[j].idItemPedido),
+						Tindex: oItensPedidoGrid[j].index,
+						Knumh: String(oItensPedidoGrid[j].knumh),
+						Knumhextra: String(oItensPedidoGrid[j].knumhExtra),
+						Konda: String(oItensPedidoGrid[j].konda),
+						Kondmextra: String(oItensPedidoGrid[j].kondmExtra),
+						Kondm: String(oItensPedidoGrid[j].kondm),
+						Kondaextra: String(oItensPedidoGrid[j].kondaExtra),
+						Maktx: String(oItensPedidoGrid[j].maktx),
+						Matnr: String(oItensPedidoGrid[j].matnr),
+						Nrpedcli: String(oItensPedidoGrid[j].nrPedCli),
+						Ntgew: String(oItensPedidoGrid[j].ntgew),
+						Tipoitem: String(oItensPedidoGrid[j].tipoItem),
+						Zzdesext: String(oItensPedidoGrid[j].zzDesext),
+						Zzdesitem: String(oItensPedidoGrid[j].zzDesitem),
+						Zzpercdescdiluicao: String(oItensPedidoGrid[j].zzPercDescDiluicao),
+						Zzpercdesctotal: String(oItensPedidoGrid[j].zzPercDescTotal),
+						Zzpercom: String(oItensPedidoGrid[j].zzPercom),
+						Zzpervm: String(oItensPedidoGrid[j].zzPervm),
+						Zzqnt: String(oItensPedidoGrid[j].zzQnt),
+						Zzvprod: String(oItensPedidoGrid[j].zzVprod),
+						Zzvproddesc: String(oItensPedidoGrid[j].zzVprodDesc),
+						Zzvproddesctotal: String(oItensPedidoGrid[j].zzVprodDescTotal),
+						Length: String(oItensPedidoGrid[j].length)
+					};
+
+					oModel.create("/InserirLinhaOV", objItensPedido, {
+						method: "POST",
+						success: function (data) {
+							console.info("Itens Inserido");
+
+						},
+						error: function (error) {
+							that.onMensagemErroODATA(error.statusCode);
+						}
+					});
+				}
 
 				for (var i = 0; i < oPedidosEnviar.length; i++) {
 					var objPedido = {
@@ -256,7 +299,7 @@ sap.ui.define([
 						// ValCampEnxoval: String(oPedidosEnviar[i].valCampEnxoval),
 						// ValCampGlobal: String(oPedidosEnviar[i].valCampGlobal),
 						Valorcomissao: String(oPedidosEnviar[i].valComissao),
-						Valcomutprazo: String(oPedidosEnviar[i].valComissaoUtilizadaPrazoMed),
+						Valcomutprazo: String(oPedidosEnviar[i].valUtilizadoComissaoPrazoMed),
 						// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
 						// ValMinPedido: oPedidosEnviar[i].valMinPedido,
 						Valtotpedido: String(oPedidosEnviar[i].valTotPed),
@@ -318,46 +361,6 @@ sap.ui.define([
 					});
 				}
 
-				for (var j = 0; j < oItensPedidoGrid.length; j++) {
-
-					var objItensPedido = {
-						Iditempedido: String(oItensPedidoGrid[j].idItemPedido),
-						Tindex: oItensPedidoGrid[j].index,
-						Knumh: String(oItensPedidoGrid[j].knumh),
-						Knumhextra: String(oItensPedidoGrid[j].knumhExtra),
-						Konda: String(oItensPedidoGrid[j].konda),
-						Kondmextra: String(oItensPedidoGrid[j].kondmExtra),
-						Kondm: String(oItensPedidoGrid[j].kondm),
-						Kondaextra: String(oItensPedidoGrid[j].kondaExtra),
-						Maktx: String(oItensPedidoGrid[j].maktx),
-						Matnr: String(oItensPedidoGrid[j].matnr),
-						Nrpedcli: String(oItensPedidoGrid[j].nrPedCli),
-						Ntgew: String(oItensPedidoGrid[j].ntgew),
-						Tipoitem: String(oItensPedidoGrid[j].tipoItem),
-						Zzdesext: String(oItensPedidoGrid[j].zzDesext),
-						Zzdesitem: String(oItensPedidoGrid[j].zzDesitem),
-						Zzpercdescdiluicao: String(oItensPedidoGrid[j].zzPercDescDiluicao),
-						Zzpercdesctotal: String(oItensPedidoGrid[j].zzPercDescTotal),
-						Zzpercom: String(oItensPedidoGrid[j].zzPercom),
-						Zzpervm: String(oItensPedidoGrid[j].zzPervm),
-						Zzqnt: String(oItensPedidoGrid[j].zzQnt),
-						Zzvprod: String(oItensPedidoGrid[j].zzVprod),
-						Zzvproddesc: String(oItensPedidoGrid[j].zzVprodDesc),
-						Zzvproddesctotal: String(oItensPedidoGrid[j].zzVprodDescTotal),
-						Length: String(oItensPedidoGrid[j].length)
-					};
-
-					oModel.create("/InserirLinhaOV", objItensPedido, {
-						method: "POST",
-						success: function (data) {
-							console.info("Itens Inserido");
-
-						},
-						error: function (error) {
-							that.onMensagemErroODATA(error.statusCode);
-						}
-					});
-				}
 
 				oModel.submitChanges();
 

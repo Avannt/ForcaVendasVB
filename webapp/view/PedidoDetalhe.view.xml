@@ -55,7 +55,7 @@
 												<core:Item key="{tabPreco>pltyp}" text="{tabPreco>pltyp} - {tabPreco>ptext}"/>
 											</Select>
 											<Label text="Tipo transporte *"/>
-											<Select id="idTipoTransporte" forceSelection="false" items="{ path: 'tipoTransporte>/' }" showSecondaryValues="true"
+											<Select id="idTipoTransporte" forceSelection="false" visible="false" items="{ path: 'tipoTransporte>/' }" showSecondaryValues="true"
 												change="onChangeTipoTransporte">
 												<core:Item key="{tipoTransporte>idTransporte}" text="{tipoTransporte>idTransporte}"/>
 											</Select>
@@ -192,7 +192,7 @@
 											<!--<Label text="Verba de Marketing"/>-->
 											<!--<Input id="idVerbaPrazo" enabled="true" type="Number" />-->
 											<Label text="Comissão (R$)"/>
-											<Input id="idComissaoUtilizadaPrazo" value="{modelDadosPedido>/ValUtilizadoComissaoPrazoMed}" enabled="true" />
+											<Input id="idComissaoUtilizadaPrazo" value="{modelDadosPedido>/ValUtilizadoComissaoPrazoMed}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"

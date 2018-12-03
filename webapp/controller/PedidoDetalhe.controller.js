@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
@@ -97,7 +98,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", "CIF");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "");
@@ -114,7 +115,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaPrazoMed", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", 0);
@@ -359,7 +360,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissao", oPrePedido.valComissao);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", oPrePedido.valComissaoUtilizadaDesconto);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", oPrePedido.valVerbaUtilizadaDesconto);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaPrazoMed", oPrePedido.ValComissaoUtilizadaPrazoMed);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", oPrePedido.valUtilizadoComissaoPrazoMed);
 
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", oPrePedido.valTotalExcedenteNaoDirecionadoDesconto);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", oPrePedido.valTotalExcedenteNaoDirecionadoPrazoMed);
@@ -1612,8 +1613,8 @@ sap.ui.define([
 			//Valores utilizados para abater de verbas e comissões.
 			verbaUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
 			comissaoUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto");
-			comissaoUtilizadaPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaPrazoMed");
-
+			comissaoUtilizadaPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
+																											
 			console.log("Verba: " + verbaUtilizadaDesconto + ". Comissão: " + comissaoUtilizadaDesconto + ". Comissão PM: " +
 				comissaoUtilizadaPrazoMed);
 
@@ -3181,7 +3182,7 @@ sap.ui.define([
 							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
 							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto"),
 							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
-							valComissaoUtilizadaPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaPrazoMed"),
+							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed"),
 							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoDesconto"),
 							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed"),
 							valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
@@ -3271,13 +3272,15 @@ sap.ui.define([
 					title: "Corrigir o campo!",
 					actions: [MessageBox.Action.OK]
 				});
-			} else if (this.byId("idTipoTransporte").getSelectedKey() == "" || this.byId("idTipoTransporte").getSelectedKey() == undefined) {
-				MessageBox.show("Preencher o tipo de transporte!", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Corrigir o campo!",
-					actions: [MessageBox.Action.OK]
-				});
-			} else if (this.byId("idQuantParcelas").getValue() <= 0) {
+			} 
+			// else if (this.byId("idTipoTransporte").getSelectedKey() == "" || this.byId("idTipoTransporte").getSelectedKey() == undefined) {
+			// 	MessageBox.show("Preencher o tipo de transporte!", {
+			// 		icon: MessageBox.Icon.ERROR,
+			// 		title: "Corrigir o campo!",
+			// 		actions: [MessageBox.Action.OK]
+			// 	});
+			// } 
+			else if (this.byId("idQuantParcelas").getValue() <= 0) {
 				MessageBox.show("Quantidade de parcelas deve ser maior que 0.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Corrigir o campo!",
@@ -3401,8 +3404,8 @@ sap.ui.define([
 							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
 								"/ValComissaoUtilizadaDesconto"),
 							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
-							valComissaoUtilizadaPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
-								"/ValComissaoUtilizadaPrazoMed"),
+							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
+								"/ValUtilizadoComissaoPrazoMed"),
 							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
 								"/ValTotalExcedenteNaoDirecionadoDesconto"),
 							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
@@ -3461,7 +3464,7 @@ sap.ui.define([
 								valComissaoPedido: "",
 								valComissaoUtilizadaDesconto: "",
 								valVerbaUtilizadaDesconto: "",
-								valComissaoUtilizadaPrazoMed: "",
+								valUtilizadoComissaoPrazoMed: "",
 								valTotalExcedenteNaoDirecionadoDesconto: "",
 								valTotalExcedenteNaoDirecionadoPrazoMed: "",
 								valTotalAbatidoComissao: "",
@@ -3538,7 +3541,7 @@ sap.ui.define([
 								valComissaoPedido: "",
 								valComissaoUtilizadaDesconto: "",
 								valVerbaUtilizadaDesconto: "",
-								valComissaoUtilizadaPrazoMed: "",
+								valUtilizadoComissaoPrazoMed: "",
 								valTotalExcedenteNaoDirecionadoDesconto: "",
 								valTotalExcedenteNaoDirecionadoPrazoMed: "",
 								valTotalAbatidoComissao: "",
@@ -3653,6 +3656,22 @@ sap.ui.define([
 					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", parseFloat(valor));
 				} else {
 					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
+				}
+			} else {
+				oSource.setValue(0);
+			}
+		},
+		
+		onValidaComissaoUtilizadaPrazoMedio: function (evt) {
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor > 0 || valor == "") {
+				if (valor > 0) {
+
+					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", parseFloat(valor));
+				} else {
+					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", 0);
 				}
 			} else {
 				oSource.setValue(0);
