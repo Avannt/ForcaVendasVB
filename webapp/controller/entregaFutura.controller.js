@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"jquery.sap.global",
 	"sap/m/MessageToast",
@@ -10,7 +11,9 @@ sap.ui.define([
 	"use strict";
 	var vetorCliente = [];
 	var oItensEF = [];
+	var oItemEF2 = [];
 	var oPedEF = [];
+	
 	var oSF;
 	
 	return BaseController.extend("testeui5.controller.entregaFutura", {
@@ -114,9 +117,12 @@ sap.ui.define([
 			this.getView().byId("objectAttribute_cnpj").setText(oItem.getIntro());
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", oItem.getNumber());
 			this.getSplitContObj().toDetail(this.createId("detail"));
+			
+			this.onGetDataFromEF2(oItem.getNumber());
+			
+			this.onClearView();
 
 			var open = indexedDB.open("VB_DataBase");
-
 			open.onerror = function () {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 					icon: MessageBox.Icon.ERROR,
@@ -135,24 +141,6 @@ sap.ui.define([
 					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
 					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
 					var iVbeln = objectStorePedEF.index("Vbeln");
-
-					/* Cursor para percorrer todos os registros de ENTREGA FUTURA */
-					// objectStorePedEF.openCursor().onsuccess = function (event) {
-					// 	var cursor = event.target.result;
-
-					// 	if (cursor) {
-					// 		if (cursor.value.kunnr == that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr")) {
-					// 			oItensEF.push(cursor.value);
-					// 		}
-
-					// 		cursor.continue();
-
-					// 	} else {
-					// 		var oModel = new sap.ui.model.json.JSONModel(oItensEF);
-
-					// 		that.getView().setModel(oModel, "pedidosCadastrados");
-					// 	}
-					// };/* Fim do cursor ENTREGA FUTURA */
 
 					/* Cursor para percorrer todos os PEDIDOS ÚNICOS EF */
 					iVbeln.openCursor(undefined, "nextunique").onsuccess = function (event) {
@@ -350,12 +338,174 @@ sap.ui.define([
 			var iKunrg = 0;
 			var sMatnr = 0;
 			var iQuantidade = 0;
+			var idEntregaFutura = 0;
 			
+			var that = this;
+
 			iKunrg = this.getView().byId("objectHeader").getNumber();
 			iVbeln = this.getView().byId("ifVbeln").getValue();
 			sMatnr = this.getView().byId("sfItem").getValue();
 			iQuantidade = this.getView().byId("ifQtde").getValue(); 
-		}
+
+			idEntregaFutura = iVbeln.toString() + sMatnr;
+			
+			var open = indexedDB.open("VB_DataBase");
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+			
+			open.onsuccess = function () {
+				var db = open.result;
+
+				var store = db.transaction("EntregaFutura", "readwrite");
+				var objMaterial = store.objectStore("EntregaFutura");
+
+				var requestEF = objMaterial.get(idEntregaFutura);
+
+				requestEF.onsuccess = function (e) {
+					var oItemEF = e.target.result;
+				
+					if (oItemEF == undefined) {
+						MessageBox.show("Não existe o material: " + sMatnr, {
+							icon: MessageBox.Icon.ERROR,
+							title: "Material não encontrado.",
+							actions: [MessageBox.Action.OK],
+						});
+					} else {
+						/*
+							INSERIR AQUI A REGRA DE VERIFICAÇÃO DE DISPONIBILIDADE DE ENTREGA DO ITEM EM QUESTÃO
+						*/
+						
+						oItemEF2.Arktx = oItemEF.Arktx;
+						oItemEF2.Aubel = oItemEF.Aubel;
+						oItemEF2.Aupos = oItemEF.Aupos;
+						oItemEF2.Bstkd = oItemEF.Bstkd;
+						oItemEF2.Fkimg = oItemEF.Fkimg;
+						oItemEF2.Fkimg2 = iQuantidade;
+						oItemEF2.IRepresentante = oItemEF.IRepresentante;
+						oItemEF2.Kunrg = oItemEF.Kunrg;
+						oItemEF2.Lifnr = oItemEF.Lifnr;
+						oItemEF2.Matnr = oItemEF.Matnr;
+						oItemEF2.NameOrg1 = oItemEF.NameOrg1;
+						oItemEF2.NameOrg2 = oItemEF.NameOrg2;
+						oItemEF2.Vbeln = oItemEF.Vbeln;
+						oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura;
+						
+						var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
+						var objEF2 = storeEF2.objectStore("EntregaFutura2");
+
+						var requestAdd = objEF2.add(oItemEF2);
+
+						requestAdd.onsuccess = function (e) {
+							sap.m.MessageBox.success("Material inserido com sucesso!", {
+								icon: MessageBox.Icon.SUCCESS,
+								title: "Material inserido.",
+								actions: [sap.m.MessageBox.Action.OK],
+								onClose: function(){
+									that.onGetDataFromEF2(iKunrg);
+									that.onClearView();
+								}
+							});
+						};
+						
+						requestAdd.onerror = function(e) {
+							MessageBox.error("Não existe o material: " + sMatnr, {
+								icon: MessageBox.Icon.ERROR,
+								title: "Material não encontrado.",
+								actions: [MessageBox.Action.YES],
+							});
+						};
+					}
+				};
+			};
+		},
 		/* Fim onInserirItemPress */
+		
+		onGetDataFromEF2: function(iKunrg) {
+			var that = this;
+			var open = indexedDB.open("VB_DataBase");
+			
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+			
+			open.onsuccess = function () {
+				var db = open.result;
+				var store = db.transaction("EntregaFutura2", "readwrite");
+				var objEF2 = store.objectStore("EntregaFutura2");
+				var ixKunrg = objEF2.index("Kunrg");
+				
+				var request = ixKunrg.getAll(iKunrg);
+
+				request.onsuccess = function (event) {
+					var oVetorEF2 = event.target.result;
+
+					var oModel = new sap.ui.model.json.JSONModel(oVetorEF2);
+					that.getView().setModel(oModel, "entregasEnviar");
+				};
+			};
+		},
+		/* Fim onGetDataFromEF2 */
+		
+		onExcluirItem: function(e){
+			var idItem = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Matnr");
+			var idKunrg = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Kunrg");
+			var idBanco = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("idEntregaFutura");
+			var that = this;
+			
+			MessageBox.show("Deseja excluir a entrega do item " + idItem + "?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Exclusão de Item",
+				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+				onClose: function (oAction) {
+					if (oAction === sap.m.MessageBox.Action.YES) {
+						
+						var open = indexedDB.open("VB_DataBase");
+						open.onerror = function () {
+							MessageBox.show(open.error.mensage, {
+								icon: MessageBox.Icon.ERROR,
+								title: "Banco não encontrado!",
+								actions: [MessageBox.Action.OK]
+							});
+						};
+
+						open.onsuccess = function () {
+							var db = open.result;
+
+							var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
+							var objEF2 = storeEF2.objectStore("EntregaFutura2");
+
+							var request = objEF2.delete(idBanco);
+							request.onsuccess = function () {
+								console.log("Item com ID: " + idItem + " foi excluído!");
+								
+								/* Após exluir o item, faço o get dos dados do banco para o modelo novamente. */
+								that.onGetDataFromEF2(idKunrg);
+								that.onClearView();
+							};
+							request.onerror = function () {
+								console.log("ERRO!! Item: " + idItem + " não foi excluído!");
+							};
+						};
+					}
+				}
+			});	
+		},
+		/* Fim onExcluirItem */
+		
+		onClearView: function(){
+			this.getView().byId("ifQtde").setValue(1);
+			this.getView().byId("ifVbeln").setValue("");
+			this.getView().byId("sfItem").setValue("");
+		}
+		/* Fim onClearView */
 	});
 });

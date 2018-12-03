@@ -24,7 +24,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 29);
+					var open = indexedDB.open("VB_DataBase", 33);
 
 					// Create the Tables
 					open.onupgradeneeded = function (e) {
@@ -89,6 +89,26 @@ sap.ui.define([
 								unique: false
 							});
 
+							objEntregaFutura.createIndex("Kunrg", "Kunrg", {
+								unique: false
+							});
+
+						}
+
+						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (RETORNO) >>>>>>>>>>>>>>>>>>>>>>>>>
+						if (!db.objectStoreNames.contains("EntregaFutura2")) {
+							var objEntregaFutura2 = db.createObjectStore("EntregaFutura2", {
+								keyPath: "idEntregaFutura",
+								unique: true
+							});
+
+							objEntregaFutura2.createIndex("Vbeln", "Vbeln", {
+								unique: false
+							});
+							
+							objEntregaFutura2.createIndex("Kunrg", "Kunrg", {
+								unique: false
+							});
 						}
 
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (HISTORICO) >>>>>>>>>>>>>>>>>>>>>>>>>
@@ -621,7 +641,7 @@ sap.ui.define([
 														for (var i = 0; i < retornoEntregaFutura.results.length; i++) {
 
 															var objBancoEntregaFutura = {
-																idEntregaFutura: retornoEntregaFutura.results[i].Vbeln + retornoEntregaFutura.results[i].Aupos,
+																idEntregaFutura: retornoEntregaFutura.results[i].Vbeln + retornoEntregaFutura.results[i].Matnr,
 																IRepresentante: retornoEntregaFutura.results[i].IRepresentante,
 																Vbeln: retornoEntregaFutura.results[i].Vbeln,
 																Kunrg: retornoEntregaFutura.results[i].Kunrg,
