@@ -20,8 +20,7 @@
 							<core:CustomData key="growing" value="false"/>
 						</customData>
 					</Button>
-					
-					<Label text="Nro Documento" labelFor="ifVbeln"/>
+
 					<Input
 						id="ifVbeln"
 						width="100%" 
@@ -31,7 +30,6 @@
 						editable="false"
 						placeholder="Informe o documento ..." />
 					
-					<Label text="Material" labelFor="sfItem"/>
 					<SearchField id="sfItem" 
 									width="100%" 
 									placeholder="Pesquisar item..." 
@@ -44,7 +42,6 @@
 						</suggestionItems>
 					</SearchField>
 					
-					<Label text="Quantidade" labelFor="ifQtde"/>
 					<Input
 						id="ifQtde"
 						width="100%" 
@@ -63,7 +60,7 @@
 					<Table id="tEntregas" 
 						width="100%" 
 						backgroundDesign="Translucent"
-						items="{ path:'entregasEnviar>/' }" 
+						items="{ path:'pedidosCadastrados>/', sorter: { path: 'NrPedCli', descending: true}}" 
 						mode="Delete" 
 						growingThreshold="3" 
 						growingTriggerText="Proximos Itens >>" 
@@ -81,66 +78,30 @@
 							</Toolbar>
 						</headerToolbar>
 						<columns>
-							<Column minScreenWidth="550px" demandPopin="true" hAlign="Left" popinDisplay="Inline" width="150px">
-								<Text text="Desc Item"/>
+							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left" width="150px">
+								<Text text="N°Ped"/>
 							</Column>
-							<Column minScreenWidth="200px" hAlign="Left" width="auto" popinDisplay="Inline">
-								<Text text="Doc Vendas"/>
-							</Column>
-							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Item"/>
+							<Column minScreenWidth="320px" hAlign="Left" width="70px" popinDisplay="Inline">
+								<Text text="Data"/>
 							</Column>
 							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Ref.cliente"/>
+								<Text text="Valor total"/>
 							</Column>
-							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Qtde Faturada"/>
+							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Valor líq."/>
 							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Representante"/>
-							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Cliente"/>
-							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Representante"/>
-							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Material"/>
-							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Nome Cliente"/>
-							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Nome"/>
-							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Nro Documento"/>
-							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="idEntregaFutura"/>
-							</Column>
-							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Qtde Entregar"/>
+							<Column minScreenWidth="320px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Status"/>
 							</Column>
 						</columns>
 						<items>
 							<ColumnListItem type="Active">
 								<cells>
-									<Text text="{path : 'entregasEnviar>Arktx'}"/>
-									<Text text="{path : 'entregasEnviar>Vbeln'}"/>
-									<Text text="{path : 'entregasEnviar>Aupos'}"/>
-									<Text text="{path : 'entregasEnviar>Bstkd'}"/>
-									<Text text="{path : 'entregasEnviar>Fkimg'}"/>
-									<Text text="{path : 'entregasEnviar>IRepresentante'}"/>
-									<Text text="{path : 'entregasEnviar>Kunrg'}"/>
-									<Text text="{path : 'entregasEnviar>Lifnr'}"/>
-									<Text text="{path : 'entregasEnviar>Matnr'}"/>
-									<Text text="{path : 'entregasEnviar>NameOrg1'}"/>
-									<Text text="{path : 'entregasEnviar>NameOrg2'}"/>
-									<Text text="{path : 'entregasEnviar>Aubel'}"/>
-									<Text text="{path : 'entregasEnviar>idEntregaFutura'}"/>
-									<Text text="{path : 'entregasEnviar>Fkimg2'}"/>
+									<Text text="{path : 'pedidosCadastrados>nrEntCli'}"/>
+									<Text text="{path : 'pedidosCadastrados>dataImpl'}"/>
+									<Text text="R$: {path : 'pedidosCadastrados>valTotPed'}"/>
+									<Text text="R$: {path : 'pedidosCadastrados>valLiqPed'}"/>
+									<Text text="{path :'pedidosCadastrados>statusPedido'}"/>
 								</cells>
 							</ColumnListItem>
 						</items>
