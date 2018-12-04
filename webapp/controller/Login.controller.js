@@ -957,7 +957,8 @@ sap.ui.define([
 																																	
 																																	var objBancoA963 = {
 																																		idA963: retornoA963.results[i].Werks + "." +
-																																			retornoA963.results[i].Lifnr + "." + retornoA962.results[i].Pltyp,
+																																				retornoA963.results[i].Lifnr + "." + 
+																																				retornoA962.results[i].Pltyp,
 																																		lifnr: retornoA963.results[i].Lifnr,
 																																		werks: retornoA963.results[i].Werks,
 																																		pltyp: retornoA963.results[i].Pltyp
@@ -983,8 +984,8 @@ sap.ui.define([
 																																		for (i = 0; i < retornoA964.results.length; i++) {
 																																			
 																																			var objBancoA964 = {
-																																				idA964: retornoA964.results[i].Werks + "." + retornoA964.results[
-																																					i].ZzPerjur,
+																																				idA964: retornoA964.results[i].Werks + "." + 
+																																						retornoA964.results[i].ZzPerjur,
 																																				werks: retornoA964.results[i].Werks,
 																																				zzPerjur: retornoA964.results[i].ZzPerjur
 																																			};
@@ -1024,8 +1025,7 @@ sap.ui.define([
 																																					};
 																																					
 																																					requestA965.onerror = function (event) {
-																																						console.log("Dados A965 não foram inseridos :" +
-																																							event);
+																																						console.log("Dados A965 não foram inseridos :" + event);
 																																					};
 																																				}
 																																				
@@ -1056,8 +1056,7 @@ sap.ui.define([
 																																							};
 																																							
 																																							requestA966.onerror = function (event) {
-																																								console.log("Dados A966 não foram inseridos :" +
-																																									event);
+																																								console.log("Dados A966 não foram inseridos :" + event);
 																																							};
 																																							
 																																						}
@@ -1065,8 +1064,7 @@ sap.ui.define([
 																																						oModel.read("/A967", {
 																																							success: function (retornoA967) {
 
-																																								var txA967 = db.transaction("A967",
-																																									"readwrite");
+																																								var txA967 = db.transaction("A967", "readwrite");
 																																								var objA967 = txA967.objectStore("A967");
 																																								
 																																								for (i = 0; i < retornoA967.results.length; i++) {
@@ -1112,14 +1110,12 @@ sap.ui.define([
 																																												objBancoKonm);
 																																												
 																																											requestKonm.onsuccess = function (event) {
-																																												console.log("Dados Konm inseridos. " +
-																																													event);
+																																												console.log("Dados Konm inseridos. " + event);
 																																											};
 																																											
 																																											requestKonm.onerror = function (event) {
 																																												console.log(
-																																													"Dados Konm não foram inseridos :" +
-																																													event);
+																																													"Dados Konm não foram inseridos :" + event);
 																																											};
 																																										}
 																																										
@@ -1661,7 +1657,21 @@ sap.ui.define([
 												codRepres: codRepres,
 												senha: senha,
 												imei: imeiCelular,
-												numVersao: numVersao
+												numVersao: numVersao,
+												utilcampAmo: retorno.UtilcampAmo,
+												utilcampBri: retorno.UtilcampBri,
+												utilcampDesc: retorno.UtilcampDesc,
+												utilcampPrz: retorno.UtilcampPrz,
+												utilcomAmo: retorno.UtilcomAmo,
+												utilcomBon: retorno.UtilcomBon,
+												utilcomBri: retorno.UtilcomBri,
+												utilcomDesc: retorno.UtilcomDesc,
+												utilcomPrz: retorno.UtilcomPrz,
+												utilverbAmo: retorno.UtilverbAmo,
+												utilverbBon: retorno.UtilverbBon,
+												utilverbBri: retorno.UtilverbBri,
+												utilverbDesc: retorno.UtilverbDesc, 
+												utilverbPrz: retorno.UtilverbPrz
 											};
 
 											if (result == null || result == undefined) {
