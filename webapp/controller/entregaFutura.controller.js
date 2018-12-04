@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"jquery.sap.global",
 	"sap/m/MessageToast",
@@ -10,7 +11,9 @@ sap.ui.define([
 	"use strict";
 	var vetorCliente = [];
 	var oItensEF = [];
+	var oItemEF2 = [];
 	var oPedEF = [];
+	
 	var oSF;
 	
 	return BaseController.extend("testeui5.controller.entregaFutura", {
@@ -114,9 +117,12 @@ sap.ui.define([
 			this.getView().byId("objectAttribute_cnpj").setText(oItem.getIntro());
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", oItem.getNumber());
 			this.getSplitContObj().toDetail(this.createId("detail"));
+			
+			this.onGetDataFromEF2(oItem.getNumber());
+			
+			this.onClearView();
 
 			var open = indexedDB.open("VB_DataBase");
-
 			open.onerror = function () {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 					icon: MessageBox.Icon.ERROR,
@@ -135,24 +141,6 @@ sap.ui.define([
 					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
 					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
 					var iVbeln = objectStorePedEF.index("Vbeln");
-
-					/* Cursor para percorrer todos os registros de ENTREGA FUTURA */
-					// objectStorePedEF.openCursor().onsuccess = function (event) {
-					// 	var cursor = event.target.result;
-
-					// 	if (cursor) {
-					// 		if (cursor.value.kunnr == that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr")) {
-					// 			oItensEF.push(cursor.value);
-					// 		}
-
-					// 		cursor.continue();
-
-					// 	} else {
-					// 		var oModel = new sap.ui.model.json.JSONModel(oItensEF);
-
-					// 		that.getView().setModel(oModel, "pedidosCadastrados");
-					// 	}
-					// };/* Fim do cursor ENTREGA FUTURA */
 
 					/* Cursor para percorrer todos os PEDIDOS ÚNICOS EF */
 					iVbeln.openCursor(undefined, "nextunique").onsuccess = function (event) {
@@ -350,12 +338,14 @@ sap.ui.define([
 			var iKunrg = 0;
 			var sMatnr = 0;
 			var iQuantidade = 0;
+			var idEntregaFutura = 0;
 			
+			var that = this;
+
 			iKunrg = this.getView().byId("objectHeader").getNumber();
 			iVbeln = this.getView().byId("ifVbeln").getValue();
 			sMatnr = this.getView().byId("sfItem").getValue();
 			iQuantidade = this.getView().byId("ifQtde").getValue(); 
-<<<<<<< master
 
 			idEntregaFutura = iVbeln.toString() + sMatnr;
 			
@@ -584,9 +574,5 @@ sap.ui.define([
 			return dRetorno;
 		}
 		/* Fim onGetQtdeHistorico */
-=======
-		}
-		/* Fim onInserirItemPress */
->>>>>>> 6fe6055 Entrega Futura - Diego Djeri
 	});
 });
