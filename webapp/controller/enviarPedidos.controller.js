@@ -17,22 +17,7 @@ sap.ui.define([
 	return BaseController.extend("testeui5.controller.enviarPedidos", {
 
 			onInit: function () {
-
-<<<<<<< HEAD
 				this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
-=======
-		_onLoadFields: function () {
-			var that = this;
-			
-			var bPedido = this.getView().getModel().getProperty("/bEnviarPedido");
-			
-			oPedidosEnviar = [];
-			oItensPedidoGrid = [];
-			oPedidoGrid = [];
-			oItensPedidoEnviar = [];
-			oItensPedidoGridEnviar = [];
->>>>>>> refs/heads/master
-
 			},
 
 			_onLoadFields: function () {
@@ -42,6 +27,8 @@ sap.ui.define([
 				oPedidoGrid = [];
 				oItensPedidoEnviar = [];
 				oItensPedidoGridEnviar = [];
+				//Se for true mostrar a grid de envio de pedidos, senão mostrar a grid de entrega futura.
+				var envioPedidos = that.getOwnerComponent().getModel("modelAux").getProperty("/bEnviarPedido");
 
 				var oModel = new sap.ui.model.json.JSONModel();
 				var open = indexedDB.open("VB_DataBase");
@@ -67,6 +54,15 @@ sap.ui.define([
 
 						oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
 						that.getOwnerComponent().setModel(oModel, "PedidosEnviar");
+						
+						
+						if(envioPedidos == true){
+							that.byId("table_pedidos").setVisible(true);
+							that.byId("table_entregas").setVisible(false);
+						} else{
+							that.byId("table_pedidos").setVisible(false);
+							that.byId("table_entregas").setVisible(true);
+						}
 
 						// var tx = db.transaction("ItensPedido", "readwrite");
 						// var objItensPedido = tx.objectStore("ItensPedido");
