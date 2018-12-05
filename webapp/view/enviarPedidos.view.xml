@@ -6,7 +6,7 @@
 			<semantic:content>
 				
 				<Table id="table_entregas" width="100%" backgroundDesign="Translucent" visible="false"
-					items="{ path:'EntregasEnviar>/' }" mode="MultiSelect" selectionChange="onSelectionChange"
+					items="{ path:'EntregasEnviar>/' }" mode="MultiSelect" selectionChange="onSelectionChange2"
 					itemPress="onItemPress2" growingThreshold="3" growingTriggerText="Proximas entregas >>" growing="true"
 					noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
 					<headerToolbar>
@@ -87,7 +87,7 @@
 				</Table>
 				
 				<Table id="table_pedidos" width="100%" backgroundDesign="Translucent"
-					items="{ path:'PedidosEnviar>/', sorter: { path: 'NrPedCli', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange2"
+					items="{ path:'PedidosEnviar>/', sorter: { path: 'NrPedCli', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange"
 					itemPress="onItemPress" growingThreshold="3" growingTriggerText="Proximos Pedidos >>" growing="true"
 					noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
 					<headerToolbar>
