@@ -4,13 +4,95 @@
 		<!--<subHeader></subHeader>-->
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
+				
 				<Table id="table_entregas" width="100%" backgroundDesign="Translucent" visible="false"
-					items="{ path:'EntregasEnviar>/', sorter: { path: 'NrPedCli', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange"
+					items="{ path:'EntregasEnviar>/' }" mode="MultiSelect" selectionChange="onSelectionChange"
 					itemPress="onItemPress2" growingThreshold="3" growingTriggerText="Proximas entregas >>" growing="true"
 					noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
 					<headerToolbar>
 						<Toolbar>
 							<Title text="Pedidos Entrega Futura"/>
+							<ToolbarSpacer/>
+							<Button text="Enviar" press="onEnviarEntrega" icon="sap-icon://upload" type="Accept" />
+						</Toolbar>
+					</headerToolbar>
+						<columns>
+							<Column minScreenWidth="2000px" demandPopin="true" hAlign="Left" popinDisplay="Inline" width="150px">
+								<Text text="Desc Item"/>
+							</Column>
+							<Column minScreenWidth="200px" hAlign="Left" width="auto" popinDisplay="Inline">
+								<Text text="Doc Vendas"/>
+							</Column>
+							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Item"/>
+							</Column>
+							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Ref.cliente"/>
+							</Column>
+							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Qtde Faturada"/>
+							</Column>
+							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Saldo"/>
+							</Column>
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Representante"/>
+							</Column>
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Cliente"/>
+							</Column>
+							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Representante"/>
+							</Column>
+							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Material"/>
+							</Column>
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Nome Cliente"/>
+							</Column>
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Nome"/>
+							</Column>
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Nro Documento"/>
+							</Column>
+							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="idEntregaFutura"/>
+							</Column>
+							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
+								<Text text="Qtde Entregar"/>
+							</Column>					
+						</columns>
+					<items>
+						<ColumnListItem type="Active">
+							<cells>
+								<Text text="{path : 'EntregasEnviar>Arktx'}"/>
+								<Text text="{path : 'EntregasEnviar>Vbeln'}"/>
+								<Text text="{path : 'EntregasEnviar>Matnr'}"/>
+								<Text text="{path : 'EntregasEnviar>Bstkd'}"/>
+								<Text text="{path : 'EntregasEnviar>Fkimg'}"/>
+								<Text text="{path : 'EntregasEnviar>Sldfut'}"/>
+								<Text text="{path : 'EntregasEnviar>IRepresentante'}"/>
+								<Text text="{path : 'EntregasEnviar>Kunrg'}"/>
+								<Text text="{path : 'EntregasEnviar>Lifnr'}"/>
+								<Text text="{path : 'EntregasEnviar>Aupos'}"/>
+								<Text text="{path : 'EntregasEnviar>NameOrg1'}"/>
+								<Text text="{path : 'EntregasEnviar>NameOrg2'}"/>
+								<Text text="{path : 'EntregasEnviar>Aubel'}"/>
+								<Text text="{path : 'EntregasEnviar>idEntregaFutura'}"/>
+								<Text text="{path : 'EntregasEnviar>Fkimg2'}"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				
+				<Table id="table_pedidos" width="100%" backgroundDesign="Translucent"
+					items="{ path:'PedidosEnviar>/', sorter: { path: 'NrPedCli', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange2"
+					itemPress="onItemPress" growingThreshold="3" growingTriggerText="Proximos Pedidos >>" growing="true"
+					noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
+					<headerToolbar>
+						<Toolbar>
+							<Title text="Pedidos de Venda"/>
 							<ToolbarSpacer/>
 							<Button text="Enviar" press="onEnviarPedido" icon="sap-icon://upload" type="Accept" />
 						</Toolbar>
@@ -38,61 +120,18 @@
 					<items>
 						<ColumnListItem type="Active">
 							<cells>
-								<Text text="{path : 'EntregasEnviar>kunnr'}"/>
-								<Text text="{path : 'EntregasEnviar>nrPedCli'}"/>
-								<Text text="{path : 'EntregasEnviar>dataPedido'}"/>
-								<Text text="{path : 'EntregasEnviar>totalItensPedido'}"/>
-								<Text text="R$: {path : 'EntregasEnviar>valTotPed'}"/>
-								<Text text="{path :'EntregasEnviar>situacaoPedido'}"/>
+								<Text text="{path : 'PedidosEnviar>kunnr'}"/>
+								<Text text="{path : 'PedidosEnviar>nrPedCli'}"/>
+								<Text text="{path : 'PedidosEnviar>dataPedido', formatter:'.myFormatterDataImp'}"/>
+								<Text text="{path : 'PedidosEnviar>totalItensPedido'}"/>
+								<Text text="R$: {path : 'PedidosEnviar>valTotPed'}"/>
+								<Text text="{path :'PedidosEnviar>situacaoPedido'}"/>
 							</cells>
 						</ColumnListItem>
 					</items>
 				</Table>
+				
 			</semantic:content>
-			<Table id="table_pedidos" width="100%" backgroundDesign="Translucent"
-				items="{ path:'PedidosEnviar>/', sorter: { path: 'NrPedCli', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange"
-				itemPress="onItemPress" growingThreshold="3" growingTriggerText="Proximos Pedidos >>" growing="true"
-				noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
-				<headerToolbar>
-					<Toolbar>
-						<Title text="Pedidos de Entrega"/>
-						<ToolbarSpacer/>
-						<Button text="Enviar" press="onEnviarPedido" icon="sap-icon://upload" type="Accept" />
-					</Toolbar>
-				</headerToolbar>
-				<columns>
-					<Column minScreenWidth="320px" demandPopin="false" popinDisplay="Inline" hAlign="Left" width="100px">
-						<Text text="Cliente"/>
-					</Column>
-					<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Left" popinDisplay="Inline">
-						<Text text="N°Ped"/>
-					</Column>
-					<Column minScreenWidth="320px" hAlign="Left" width="70px" popinDisplay="Inline">
-						<Text text="Data"/>
-					</Column>
-					<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
-						<Text text="Total Itens"/>
-					</Column>
-					<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
-						<Text text="Valor total"/>
-					</Column>
-					<Column minScreenWidth="320px" hAlign="Left" width="60px" popinDisplay="Inline">
-						<Text text="Status"/>
-					</Column>
-				</columns>
-				<items>
-					<ColumnListItem type="Active">
-						<cells>
-							<Text text="{path : 'PedidosEnviar>kunnr'}"/>
-							<Text text="{path : 'PedidosEnviar>nrPedCli'}"/>
-							<Text text="{path : 'PedidosEnviar>dataPedido', formatter:'.myFormatterDataImp'}"/>
-							<Text text="{path : 'PedidosEnviar>totalItensPedido'}"/>
-							<Text text="R$: {path : 'PedidosEnviar>valTotPed'}"/>
-							<Text text="{path :'PedidosEnviar>situacaoPedido'}"/>
-						</cells>
-					</ColumnListItem>
-				</items>
-			</Table>
 		</semantic:FullscreenPage>
 	</Page>
 </mvc:View>

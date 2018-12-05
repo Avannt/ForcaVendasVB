@@ -13,9 +13,9 @@ sap.ui.define([
 	var oItensEF = [];
 	var oItemEF2 = [];
 	var oPedEF = [];
-	
+
 	var oSF;
-	
+
 	return BaseController.extend("testeui5.controller.entregaFutura", {
 
 		onInit: function () {
@@ -70,7 +70,7 @@ sap.ui.define([
 		_onLoadFields: function () {
 			var that = this;
 			oSF = this.byId("sfItem");
-			
+
 			this.getView().byId("objectHeader").setTitle();
 			this.getView().byId("objectHeader").setNumber();
 			this.getView().byId("objectAttribute_cnpj").setText();
@@ -117,9 +117,9 @@ sap.ui.define([
 			this.getView().byId("objectAttribute_cnpj").setText(oItem.getIntro());
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", oItem.getNumber());
 			this.getSplitContObj().toDetail(this.createId("detail"));
-			
+
 			this.onGetDataFromEF2(oItem.getNumber());
-			
+
 			this.onClearView();
 
 			var open = indexedDB.open("VB_DataBase");
@@ -214,7 +214,7 @@ sap.ui.define([
 			if (!this._oDialog) {
 				this._oDialog = sap.ui.xmlfragment("testeui5.view.Dialog", this);
 			}
-			
+
 			oSF.setValue('');
 			var oModel = this.getView().getModel("PedidosEF");
 
@@ -235,11 +235,11 @@ sap.ui.define([
 		onDialogClose: function (oEvent) {
 			var that = this;
 			var aContexts = oEvent.getParameter("selectedContexts");
-			
+
 			oItensEF = [];
 			if (aContexts && aContexts.length) {
 				var iVbeln = aContexts[0].getObject().Vbeln;
-				
+
 				that.getView().byId("ifVbeln").setValue(iVbeln);
 				var open = indexedDB.open("VB_DataBase");
 
@@ -257,13 +257,13 @@ sap.ui.define([
 					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
 					var keyRangeValue = IDBKeyRange.only(iVbeln);
 					var ixVbeln = objectStorePedEF.index("Vbeln");
-					
+
 					var request = ixVbeln.openCursor(keyRangeValue);
-					
-					request.onsuccess = function(event){
+
+					request.onsuccess = function (event) {
 						var cursor = event.target.result;
-						
-						if ( cursor ) {
+
+						if (cursor) {
 							oItensEF.push(cursor.value);
 							cursor.continue();
 						} else {
@@ -271,8 +271,8 @@ sap.ui.define([
 							that.getView().setModel(oModel, "ItensEF");
 						}
 					};
-					
-					request.onerror = function(event){
+
+					request.onerror = function (event) {
 						MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 							icon: MessageBox.Icon.ERROR,
 							title: "Banco não encontrado!",
@@ -284,7 +284,7 @@ sap.ui.define([
 				oItensEF = [];
 				var oModel = new sap.ui.model.json.JSONModel(oItensEF);
 				that.getView().setModel(oModel, "ItensEF");
-				
+
 				MessageToast.show("Nenhum item foi selecionado.");
 			}
 		},
@@ -305,10 +305,33 @@ sap.ui.define([
 		/* Fim onDialogSearch */
 
 		sfItemSearch: function (oEvent) {
-			// var item = oEvent.getParameter("suggestionItem");
-			// if (item) {
-			// 	sap.m.MessageToast.show("Procurar por: " + item.getText());
-			// }
+			var that = this;
+			var sMatnr = oEvent.getParameter("query");
+			// var sMatnr = oEvent.getParameter("suggestionItem");
+			var oModel = this.getView().getModel("ItensEF").getData();
+			var sVbeln = this.getView().byId("ifVbeln").getValue();
+			var iQtdeFaturada = 0;
+			var iQtdeDia = 0;
+			var iSaldoSap = 0;
+
+			if (sMatnr) {
+
+				for (var i = 0; i < oModel.length; i++) {
+					if (oModel[i].Matnr == sMatnr) {
+						iQtdeFaturada = parseInt(oModel[i].Fkimg);
+						iSaldoSap = parseInt(oModel[i].Sldfut);
+						iQtdeDia = parseInt(oModel[i].Slddia);
+					}
+				}
+
+				var saldo = 0;
+
+				saldo = iSaldoSap - iQtdeDia;
+
+				that.byId("ifSaldo").setValue(saldo);
+			} else {
+				this.getView().byId("ifSaldo").setValue("");
+			}
 		},
 		/* Fim sfItemSearch */
 
@@ -318,10 +341,10 @@ sap.ui.define([
 			if (value) {
 				filters = [
 					new sap.ui.model.Filter([
-						new sap.ui.model.Filter("Matnr", function(sText) {
+						new sap.ui.model.Filter("Matnr", function (sText) {
 							return (sText || "").toUpperCase().indexOf(value.toUpperCase()) > -1;
 						}),
-						new sap.ui.model.Filter("Arktx", function(sDes) {
+						new sap.ui.model.Filter("Arktx", function (sDes) {
 							return (sDes || "").toUpperCase().indexOf(value.toUpperCase()) > -1;
 						})
 					], false)
@@ -329,26 +352,26 @@ sap.ui.define([
 			}
 
 			oSF.getBinding("suggestionItems").filter(filters);
-			oSF.suggest();		
+			oSF.suggest();
 		},
 		/* Fim sfItemSuggest */
-		
-		onInserirItemPress: function (oEvent){
+
+		onInserirItemPress: function (oEvent) {
 			var iVbeln = 0;
 			var iKunrg = 0;
 			var sMatnr = 0;
 			var iQuantidade = 0;
 			var idEntregaFutura = 0;
-			
+
 			var that = this;
 
 			iKunrg = this.getView().byId("objectHeader").getNumber();
 			iVbeln = this.getView().byId("ifVbeln").getValue();
 			sMatnr = this.getView().byId("sfItem").getValue();
-			iQuantidade = this.getView().byId("ifQtde").getValue(); 
+			iQuantidade = this.getView().byId("ifQtde").getValue();
 
 			idEntregaFutura = iVbeln.toString() + sMatnr;
-			
+
 			var open = indexedDB.open("VB_DataBase");
 			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
@@ -357,7 +380,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 			};
-			
+
 			open.onsuccess = function () {
 				var db = open.result;
 
@@ -368,7 +391,7 @@ sap.ui.define([
 
 				requestEF.onsuccess = function (e) {
 					var oItemEF = e.target.result;
-				
+
 					if (oItemEF == undefined) {
 						MessageBox.show("Não existe o material: " + sMatnr, {
 							icon: MessageBox.Icon.ERROR,
@@ -379,13 +402,13 @@ sap.ui.define([
 						/*INSERIR AQUI A REGRA DE VERIFICAÇÃO DE DISPONIBILIDADE DE ENTREGA DO ITEM EM QUESTÃO*/
 
 						var p1 = new Promise(function (resolv, reject) {
-							that.onGetQtdeHistorico(idEntregaFutura, resolv, reject);
+							that.onGetQtdeHistoricoP(idEntregaFutura, resolv, reject);
 						});
-						
-						p1.then(function(dQtdeHist) {
+
+						p1.then(function (dQtdeHist) {
 							/* Se a quantidade digitada for maior que a quantidade a ser entregue + qtde do históico para o pedido 
 							e item correspondente, mando uma mensagem de erro para o usuário.*/
-							if (iQuantidade > (parseInt(oItemEF.Fkimg) + dQtdeHist)){
+							if (iQuantidade > (parseInt(oItemEF.Fkimg) + dQtdeHist)) {
 								var sMsgErro = "Quantidade digitada é maior que a disponível para entrega.";
 								MessageBox.error(sMsgErro, {
 									icon: MessageBox.Icon.ERROR,
@@ -406,52 +429,54 @@ sap.ui.define([
 								oItemEF2.NameOrg1 = oItemEF.NameOrg1;
 								oItemEF2.NameOrg2 = oItemEF.NameOrg2;
 								oItemEF2.Vbeln = oItemEF.Vbeln;
+								oItemEF2.Sldfut = oItemEF.Sldfut;
+								oItemEF2.Slddia = oItemEF.Slddia;
 								oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura;
-								
+
 								var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
 								var objEF2 = storeEF2.objectStore("EntregaFutura2");
-		
+
 								var requestAdd = objEF2.add(oItemEF2);
-		
+
 								requestAdd.onsuccess = function (e) {
 									sap.m.MessageBox.success("Material inserido com sucesso!", {
 										icon: MessageBox.Icon.SUCCESS,
 										title: "Material inserido.",
 										actions: [sap.m.MessageBox.Action.OK],
-										onClose: function(){
+										onClose: function () {
 											that.onGetDataFromEF2(iKunrg);
 											that.onClearView();
 										}
 									});
 								};
-								
-								requestAdd.onerror = function(e) {
+
+								requestAdd.onerror = function (e) {
 									var sMsgErro = "";
-									
-									if (e.srcElement.error.message.includes("Key already exists")){
+
+									if (e.srcElement.error.message.includes("Key already exists")) {
 										sMsgErro = "Pedido e material já selecionado para entrega.";
 									} else {
 										sMsgErro = "Erro ao inserir material: " + e.srcElement.error;
 									}
-									
+
 									MessageBox.error(sMsgErro, {
 										icon: MessageBox.Icon.ERROR,
 										title: "Erro",
 										actions: [MessageBox.Action.OK],
 									});
-								};								
+								};
 							}
-						});/*Fim Promise*/
+						}); /*Fim Promise*/
 					}
 				};
 			};
 		},
 		/* Fim onInserirItemPress */
-		
-		onGetDataFromEF2: function(iKunrg) {
+
+		onGetDataFromEF2: function (iKunrg) {
 			var that = this;
 			var open = indexedDB.open("VB_DataBase");
-			
+
 			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
@@ -459,13 +484,13 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 			};
-			
+
 			open.onsuccess = function () {
 				var db = open.result;
 				var store = db.transaction("EntregaFutura2", "readwrite");
 				var objEF2 = store.objectStore("EntregaFutura2");
 				var ixKunrg = objEF2.index("Kunrg");
-				
+
 				var request = ixKunrg.getAll(iKunrg);
 
 				request.onsuccess = function (event) {
@@ -477,20 +502,20 @@ sap.ui.define([
 			};
 		},
 		/* Fim onGetDataFromEF2 */
-		
-		onExcluirItem: function(e){
+
+		onExcluirItem: function (e) {
 			var idItem = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Matnr");
 			var idKunrg = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Kunrg");
 			var idBanco = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("idEntregaFutura");
 			var that = this;
-			
+
 			MessageBox.show("Deseja excluir a entrega do item " + idItem + "?", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Exclusão de Item",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
 				onClose: function (oAction) {
 					if (oAction === sap.m.MessageBox.Action.YES) {
-						
+
 						var open = indexedDB.open("VB_DataBase");
 						open.onerror = function () {
 							MessageBox.show(open.error.mensage, {
@@ -509,7 +534,7 @@ sap.ui.define([
 							var request = objEF2.delete(idBanco);
 							request.onsuccess = function () {
 								console.log("Item com ID: " + idItem + " foi excluído!");
-								
+
 								/* Após exluir o item, faço o get dos dados do banco para o modelo novamente. */
 								that.onGetDataFromEF2(idKunrg);
 								that.onClearView();
@@ -520,59 +545,61 @@ sap.ui.define([
 						};
 					}
 				}
-			});	
+			});
 		},
 		/* Fim onExcluirItem */
-		
-		onClearView: function(){
+
+		onClearView: function () {
 			this.getView().byId("ifQtde").setValue(1);
+			this.getView().byId("ifSaldo").setValue("");
 			this.getView().byId("ifVbeln").setValue("");
 			this.getView().byId("sfItem").setValue("");
 		},
 		/* Fim onClearView */
-		
-		onGetQtdeHistorico: function(idEntregaFuturaH, resolv, reject) {
+
+		onGetQtdeHistoricoP: function (idEntregaFuturaH, resolv, reject) {
 			var dRetorno = 0;
-			
+
 			var open = indexedDB.open("VB_DataBase");
 			open.onsuccess = function () {
 				var db = open.result;
-	
+
 				var store = db.transaction("EntregaFuturaHist");
 				var objMaterial = store.objectStore("EntregaFuturaHist");
-	
+
 				var requestEFH = objMaterial.get(idEntregaFuturaH);
-				
-				requestEFH.onerror = function(e){
+
+				requestEFH.onerror = function (e) {
 					MessageBox.error("Erro ao localizar tabela de histórico de entrega futura.", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Erro",
 						actions: [MessageBox.Action.OK],
 					});
 				};
-				
-				requestEFH.onsuccess = function (e){
+
+				requestEFH.onsuccess = function (e) {
 					var oItemEFH = e.target.result;
 					var dRetorno = 0;
-					
-					if(oItemEFH !== undefined) {
-						
+
+					if (oItemEFH !== undefined) {
+
 					}
-					
+
 					resolv(dRetorno);
 				};
 			};
-			
-			open.onerror = function(e) {
+
+			open.onerror = function (e) {
 				MessageBox.error("Erro ao localizar o banco de dados.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Erro",
 					actions: [MessageBox.Action.OK],
 				});
 			};
-			
+
 			return dRetorno;
-		}
-		/* Fim onGetQtdeHistorico */
+		},
+		/* Fim onGetQtdeHistoricoP */
+
 	});
 });

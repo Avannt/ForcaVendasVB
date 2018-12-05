@@ -13,112 +13,128 @@ sap.ui.define([
 	var oItensPedidoGridEnviar = [];
 	var deletarMovimentos = [];
 	var ajaxCall;
+	var envioPedidos;
 
 	return BaseController.extend("testeui5.controller.enviarPedidos", {
 
-			onInit: function () {
-				this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
-			},
+		onInit: function () {
+			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
+		},
 
-			_onLoadFields: function () {
+		_onLoadFields: function () {
+			var that = this;
+			oPedidosEnviar = [];
+			oItensPedidoGrid = [];
+			oPedidoGrid = [];
+			oItensPedidoEnviar = [];
+			oItensPedidoGridEnviar = [];
+			//Se for true mostrar a grid de envio de pedidos, senão mostrar a grid de entrega futura.
+			envioPedidos = that.getOwnerComponent().getModel("modelAux").getProperty("/bEnviarPedido");
+
+			that.byId("table_pedidos").setVisible(envioPedidos);
+			that.byId("table_entregas").setVisible(!envioPedidos);
+
+			if (envioPedidos) {
+				this.onLoadPedidos();
+			} else {
+				this.onLoadEntregas();
+			}
+
+		},
+		/*FIM _onLoadFields*/
+
+		onLoadPedidos: function () {
+			var oModel = new sap.ui.model.json.JSONModel();
+			var open = indexedDB.open("VB_DataBase");
+
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function () {
+				var db = open.result;
 				var that = this;
-				oPedidosEnviar = [];
-				oItensPedidoGrid = [];
-				oPedidoGrid = [];
-				oItensPedidoEnviar = [];
-				oItensPedidoGridEnviar = [];
-				//Se for true mostrar a grid de envio de pedidos, senão mostrar a grid de entrega futura.
-				var envioPedidos = that.getOwnerComponent().getModel("modelAux").getProperty("/bEnviarPedido");
 
-				var oModel = new sap.ui.model.json.JSONModel();
-				var open = indexedDB.open("VB_DataBase");
+				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
+				var indiceStatusPed = store.index("idStatusPedido");
 
-				open.onerror = function () {
-					MessageBox.show(open.error.mensage, {
-						icon: MessageBox.Icon.ERROR,
-						title: "Banco não encontrado!",
-						actions: [MessageBox.Action.OK]
+				var request = indiceStatusPed.getAll(2);
+
+				request.onsuccess = function (event) {
+					oPedidoGrid = event.target.result;
+
+					oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+					that.getOwnerComponent().setModel(oModel, "PedidosEnviar");
+
+					var vetorPromise = [];
+
+					for (var j = 0; j < oPedidoGrid.length; j++) {
+
+						vetorPromise.push(new Promise(function (resolve, reject) {
+							var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
+							var indiceNrPed = storeItensPed.index("nrPedCli");
+
+							request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
+
+							request.onsuccess = function (event) {
+
+								for (var i = 0; i < event.target.result.length; i++) {
+									var aux = event.target.result[i];
+									oItensPedidoGrid.push(aux);
+								}
+								console.log(oItensPedidoGrid);
+								resolve();
+							};
+
+							request.onerror = function (event) {
+								console.error(event.error.mensage);
+								reject();
+							};
+
+						}));
+					}
+					Promise.all(vetorPromise).then(function (values) {
+						console.log(oItensPedidoGrid);
 					});
-				};
-
-				open.onsuccess = function () {
-					var db = open.result;
-
-					var store = db.transaction("PrePedidos").objectStore("PrePedidos");
-					var indiceStatusPed = store.index("idStatusPedido");
-
-					var request = indiceStatusPed.getAll(2);
-
-					request.onsuccess = function (event) {
-						oPedidoGrid = event.target.result;
-
-						oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-						that.getOwnerComponent().setModel(oModel, "PedidosEnviar");
-						
-						
-						if(envioPedidos == true){
-							that.byId("table_pedidos").setVisible(true);
-							that.byId("table_entregas").setVisible(false);
-						} else{
-							that.byId("table_pedidos").setVisible(false);
-							that.byId("table_entregas").setVisible(true);
-						}
-
-						// var tx = db.transaction("ItensPedido", "readwrite");
-						// var objItensPedido = tx.objectStore("ItensPedido");
-						
-						var vetorPromise = [];
-						for (var j = 0; j < oPedidoGrid.length; j++) {
-
-							vetorPromise.push( new Promise(function (resolve, reject) {
-								var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
-								var indiceNrPed = storeItensPed.index("nrPedCli");
-								
-								request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
-								
-								request.onsuccess = function (event) {
-									
-									for(var i=0; i<event.target.result.length; i++){
-										var aux = event.target.result[i];
-										oItensPedidoGrid.push(aux);
-									}
-									console.log(oItensPedidoGrid);
-									resolve();
-								};
-								
-								request.onerror = function (event) {
-									console.error(event.error.mensage);
-									reject();
-								};
-								
-							}));
-						}
-						Promise.all(vetorPromise).then(function (values) {
-							console.log(oItensPedidoGrid);
-						});
-						
-					// 	if (cursor.value.nrPedCli == oPedidoGrid[j].nrPedCli) {
-					// 		oItensPedidoGrid.push(cursor.value);
-					// 	}
-					// 	store1.openCursor().onsuccess = function (event1) {
-					// 		cursor = event1.target.result;
-
-					// 		if (cursor) {
-
-					// 			cursor.continue();
-					// 		}
-					// 	};
-					// }
 
 				};
 			};
-		},
-		/*FIM _onLoadFields*/
-		
-		onLoadPedidos: function () {
-			
+
 		},
 		/*FIM onLoadPedidos*/
+
+		onLoadEntregas: function () {
+			var that = this;
+			var oModel = new sap.ui.model.json.JSONModel();
+			var open = indexedDB.open("VB_DataBase");
+
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function () {
+				var db = open.result;
+
+				var store = db.transaction("EntregaFutura2").objectStore("EntregaFutura2");
+				var request = store.getAll();
+
+				request.onsuccess = function (event) {
+					oPedidoGrid = event.target.result;
+
+					oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+					that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
+				};
+			};
+		},
+		/*FIM onLoadEntregas*/
 
 		onNavBack: function () {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
@@ -243,19 +259,6 @@ sap.ui.define([
 			oModel.setUseBatch(true);
 			oModel.refreshSecurityToken();
 
-			// oModel.attachRequestSent(function(e){
-			//      console.error(e);
-			//   });
-			//  oModel.attachRequestCompleted(function(e){
-			//      MessageBox.show("Pedido Enviado!", {
-			// 		icon: MessageBox.Icon.SUCCESS,
-			// 		title: "Pedido enviado!",
-			// 		actions: [MessageBox.Action.OK],
-			// 	});
-			// });
-			// oModel.attachRequestFailed(function(e){
-			//      console.error(e);
-			// });
 			var open = indexedDB.open("VB_DataBase");
 
 			open.onerror = function () {
@@ -416,6 +419,118 @@ sap.ui.define([
 		},
 		/*FIM onEnviarPedido*/
 
+		onEnviarEntrega: function (oEvent) {
+			var that = this;
+			var aIndices = this.byId("table_entregas").getSelectedContextPaths();
+
+			if (aIndices.length === 0) {
+				MessageBox.show("Nenhuma linha foi selecionada.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Erro",
+					actions: [MessageBox.Action.OK]
+				});
+
+				return;
+			}
+
+			MessageBox.show("Deseja enviar os itens selecionados?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Envio de itens",
+				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+				onClose: function (oAction) {
+
+					if (oAction == sap.m.MessageBox.Action.YES) {
+						var oModel = that.getView().getModel();
+						oModel.setUseBatch(true);
+						oModel.refreshSecurityToken();
+
+						var open = indexedDB.open("VB_DataBase");
+
+						open.onerror = function () {
+							MessageBox.show(open.error.mensage, {
+								icon: MessageBox.Icon.ERROR,
+								title: "Banco não encontrado!",
+								actions: [MessageBox.Action.OK]
+							});
+						};
+
+						open.onsuccess = function () {
+							var db = open.result;
+
+							var oModelEntregas = that.getView().getModel("EntregasEnviar").getData();
+
+							var tx = db.transaction("EntregaFutura", "readwrite");
+							var objItensEntrega = tx.objectStore("EntregaFutura");
+
+							for (var i = 0; i < aIndices.length; i++) {
+								var iIndex = aIndices[i].substring(1, 2);
+
+								var oItemEntregar = oModelEntregas[iIndex];
+
+								// oModel.create("/InserirEntregas", oItemEntregar, {
+								// 	method: "POST",
+								// 	success: function (data) {
+								// 		console.info("Itens Inserido");
+
+								// 	},
+								// 	error: function (error) {
+								// 		that.onMensagemErroODATA(error.statusCode);
+								// 	}
+								// });
+
+								var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
+
+								requestGetEntrega.onsuccess = function (e) {
+									var oEntrega = e.target.result;
+
+									oEntrega.Slddia = oItemEntregar.Fkimg2;
+
+									var requestPutEntrega = objItensEntrega.put(oEntrega);
+
+									requestPutEntrega.onsuccess = function (e) {
+										sap.m.MessageBox.show(
+											"Pedido enviado com sucesso.", {
+												icon: sap.m.MessageBox.Icon.SUCCESS,
+												title: "Sucesso",
+												actions: [sap.m.MessageBox.Action.OK]
+											}
+										);
+
+										var txEF2 = db.transaction("EntregaFutura2", "readwrite");
+										var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+
+										var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
+
+										requestDelEntrega2.onsuccess = function (e) {
+											console.info("item ef excluido");
+											that.onLoadEntregas();
+										};
+
+										requestDelEntrega2.onerror = function (e) {
+											console.info(e);
+										};
+									};
+
+									requestPutEntrega.onerror = function (e) {
+										sap.m.MessageBox.show(
+											"Erro ao enviar pedido.", {
+												icon: sap.m.MessageBox.Icon.ERROR,
+												title: "Erro no programa Fiori!",
+												actions: [sap.m.MessageBox.Action.OK],
+											}
+										);
+									};
+								};
+							}
+						};
+
+					}
+				}
+			});
+
+		},
+		/*FIM onEnviarEntrega*/
+
 		onMontarCabecalho: function (that, idPedido, dadosPedidoCab) {
 
 		},
@@ -428,75 +543,75 @@ sap.ui.define([
 
 		onMensagemErroODATA: function (codigoErro) {
 
-			if (codigoErro == 0) {
-				sap.m.MessageBox.show(
-					"Verifique a conexão com a internet!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Falha na Conexão!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+				if (codigoErro == 0) {
+					sap.m.MessageBox.show(
+						"Verifique a conexão com a internet!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Falha na Conexão!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
 
+							}
 						}
-					}
-				);
-			} else if (codigoErro == 400) {
-				sap.m.MessageBox.show(
-					"Url mal formada! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Fiori!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					);
+				} else if (codigoErro == 400) {
+					sap.m.MessageBox.show(
+						"Url mal formada! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Fiori!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
 
+							}
 						}
-					}
-				);
-			} else if (codigoErro == 403) {
-				sap.m.MessageBox.show(
-					"Usuário sem autorização para executar a função (403)! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Abap!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					);
+				} else if (codigoErro == 403) {
+					sap.m.MessageBox.show(
+						"Usuário sem autorização para executar a função (403)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
 
+							}
 						}
-					}
-				);
-			} else if (codigoErro == 404) {
-				sap.m.MessageBox.show(
-					"Função não encontrada e/ou Parâmentros inválidos  (404)! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Abap!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					);
+				} else if (codigoErro == 404) {
+					sap.m.MessageBox.show(
+						"Função não encontrada e/ou Parâmentros inválidos  (404)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
 
+							}
 						}
-					}
-				);
-			} else if (codigoErro == 500) {
-				sap.m.MessageBox.show(
-					"Ocorreu um Erro (500)! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Abap!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					);
+				} else if (codigoErro == 500) {
+					sap.m.MessageBox.show(
+						"Ocorreu um Erro (500)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
 
+							}
 						}
-					}
-				);
-			} else if (codigoErro == 501) {
-				sap.m.MessageBox.show(
-					"Função não implementada (501)! Contate a consultoria!", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Erro no programa Abap!",
-						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+					);
+				} else if (codigoErro == 501) {
+					sap.m.MessageBox.show(
+						"Função não implementada (501)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
 
+							}
 						}
-					}
-				);
+					);
+				}
 			}
-		}
-		/*FIM onMensagemErroODATA*/
+			/*FIM onMensagemErroODATA*/
 
 	});
 });
