@@ -174,7 +174,7 @@
 							<IconTabFilter id="tabBalancoVerbaStep" text="Balanço Verbas" enabled="false" icon="sap-icon://waiver" key="tab5">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
-										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Balanço dos Excedentes">
 										<f:content>
 											<Label text="Valor excedente desconto" class="bold"/>
 											<Input id="idExcedenteDesconto" value="R$: {modelDadosPedido>/ValTotalExcedenteDesconto}" class="desabilitado marginBottomInpu" enabled="false"/>
@@ -184,6 +184,7 @@
 											<Input id="idComissaoUtilizadaDesconto" value="{modelDadosPedido>/ValComissaoUtilizadaDesconto}" liveChange="onValidaComissaoUtilizadaDesconto" enabled="true" />
 										</f:content>
 									</f:SimpleForm>
+									
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" >
 										<f:content>
@@ -195,8 +196,45 @@
 											<Input id="idComissaoUtilizadaPrazo" value="{modelDadosPedido>/ValUtilizadoComissaoPrazoMed}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 										</f:content>
 									</f:SimpleForm>
+									
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
+											<Label text="Valor excedente brinde" class="bold"/>
+											<Input id="idExcedenteBrinde" value="R$: {modelDadosPedido>/ValTotalExcedenteBrinde}" enabled="false" class="desabilitado"/>
+											<Label text="Verba de Marketing (R$)"/>
+											<Input id="idVerbaUtilizadaBrinde" value="{modelDadosPedido>/ValUtilizadoVerbaBrinde}" enabled="true" type="Number" />
+											<Label text="Comissão (R$)"/>
+											<Input id="idComissaoUtilizadaBrinde" value="{modelDadosPedido>/ValUtilizadoComissaoBrinde}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+										</f:content>
+									</f:SimpleForm>
+									
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
+											<Label text="Valor excedente amostra" class="bold"/>
+											<Input id="idExcedenteAmostra" value="R$: {modelDadosPedido>/ValTotalExcedenteAmostra}" enabled="false" class="desabilitado"/>
+											<Label text="Verba de Marketing (R$)"/>
+											<Input id="idVerbaUtilizadaAmostra" value="{modelDadosPedido>/ValUtilizadoVerbaAmostra}" enabled="true" type="Number" />
+											<Label text="Comissão (R$)"/>
+											<Input id="idComissaoUtilizadaAmostra" value="{modelDadosPedido>/ValUtilizadoComissaoAmostra}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+										</f:content>
+									</f:SimpleForm>
+									
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
+											<Label text="Valor excedente bonificação" class="bold"/>
+											<Input id="idExcedenteBonif" value="R$: {modelDadosPedido>/ValTotalExcedenteBonif}" enabled="false" class="desabilitado"/>
+											<Label text="Verba de Marketing (R$)"/>
+											<Input id="idVerbaUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoVerbaBonif}" enabled="true" type="Number" />
+											<Label text="Comissão (R$)"/>
+											<Input id="idComissaoUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoComissaoBonif}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+										</f:content>
+									</f:SimpleForm>
+									
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Campanhas">
 										<f:content>
 											<Label text="Valor campanha enxoval" class="bold"/>
 											<Input id="idValorTotalEnxoval" value="R$: {modelDadosPedido>/ValTotalCampEnxoval}" enabled="false" class="desabilitado"/>
@@ -204,6 +242,7 @@
 											<Input id="idVerbaEnxoval" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampEnxoval}" />
 										</f:content>
 									</f:SimpleForm>
+									
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
@@ -269,6 +308,7 @@
 											<Input id="idAbaterNaoDestinadoPrazoMed" value="R$ {modelDadosPedido>/ValTotalExcedenteNaoDirecionadoPrazoMed}" enabled="false" class="desabilitado"/>
 										</f:content>
 									</f:SimpleForm>
+								
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Valores a Descontar Campanha">
 										<f:content>

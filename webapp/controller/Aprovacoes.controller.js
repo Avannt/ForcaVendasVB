@@ -44,6 +44,17 @@ sap.ui.define([
 		},
 
 		onOpenDialog: function () {
+			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
+			
+			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
+			
+			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1,2)];
+			
+			console.log(itemAprovar);
+			
+			var oModelAprovacoes = new sap.ui.model.json.JSONModel(itemAprovar);
+			this.getView().setModel(oModelAprovacoes, "ItemAprovar");
+			
 			
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
@@ -84,6 +95,7 @@ sap.ui.define([
 
 		onBuscaPedidos: function () {
 			var that = this;
+			this.byId("idTableEnvioPedidos").setBusy(true);
 
 			var oModel = that.getView().getModel();
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
@@ -93,9 +105,15 @@ sap.ui.define([
 					"$filter": "IAprovador eq '" + codRepres + "'"
 				},
 				success: function (retorno) {
+					oItensAprovar = [];
 
 					for (var i = 0; i < retorno.results.length; i++) {
-
+						var data = retorno.results[i].Erdat;
+						data = data.substring(6,8) + "/" + data.substring(4,6) + "/" + data.substring(0,4);
+						
+						var hora = retorno.results[i].Horaped;
+						hora = hora.substring(0,2) + ":" + hora.substring(2,4);
+						
 						var aux = {
 							IAprovador: retorno.results[i].IAprovador,
 							Nivel: retorno.results[i].Nivel,
@@ -111,8 +129,8 @@ sap.ui.define([
 							Pltyp: retorno.results[i].Pltyp,
 							Completo: retorno.results[i].Completo,
 							Valminped: retorno.results[i].Valminped,
-							Erdat: retorno.results[i].Erdat,
-							Horaped: retorno.results[i].Horaped,
+							Erdat: data,
+							Horaped: hora,
 							Valorcomissao: retorno.results[i].Valorcomissao,
 							Obsped: retorno.results[i].Obsped,
 							Obsaudped: retorno.results[i].Obsaudped,
@@ -124,27 +142,27 @@ sap.ui.define([
 							Quantparcelas: retorno.results[i].Quantparcelas,
 							Intervaloparcelas: retorno.results[i].Intervaloparcelas,
 							Tiponego: retorno.results[i].Tiponego,
-							Vlrexc: retorno.results[i].Vlrexc,
+							Vlrexc: parseFloat(retorno.results[i].Vlrexc),
 							Aprov: retorno.results[i].Aprov,
 							Provg: retorno.results[i].Provg,
 							Totitens: retorno.results[i].Totitens,
-							Valcomdesc: retorno.results[i].Valcomdesc,
-							Valcampbrinde: retorno.results[i].Valcampbrinde,
-							Valcomutdesc: retorno.results[i].Valcomutdesc,
-							Valverbautdesc: retorno.results[i].Valverbautdesc,
-							Valtotpedido: retorno.results[i].Valtotpedido,
-							Valtotabcampenx: retorno.results[i].Valtotabcampenx,
-							Valtotabcampglob: retorno.results[i].Valtotabcampglob,
-							Valtotabcamppa: retorno.results[i].Valtotabcamppa,
-							Valtotabcampbrinde: retorno.results[i].Valtotabcampbrinde,
-							Valtotexcdesc: retorno.results[i].Valtotexcdesc,
-							Valtotexcndirdesc: retorno.results[i].Valtotexcndirdesc,
-							Valtotexcndirprazo: retorno.results[i].Valtotexcndirprazo,
-							Valtotexcprazo: retorno.results[i].Valtotexcprazo,
-							Valverbapedido: retorno.results[i].Valverbapedido,
-							Valabverba: retorno.results[i].Valabverba,
-							Valcomutprazo: retorno.results[i].Valcomutprazo,
-							Valtotabcomissao: retorno.results[i].Valtotabcomissao
+							Valcomdesc: parseFloat(retorno.results[i].Valcomdesc),
+							Valcampbrinde: parseFloat(retorno.results[i].Valcampbrinde),
+							Valcomutdesc: parseFloat(retorno.results[i].Valcomutdesc),
+							Valverbautdesc: parseFloat(retorno.results[i].Valverbautdesc),
+							Valtotpedido: parseFloat(retorno.results[i].Valtotpedido),
+							Valtotabcampenx: parseFloat(retorno.results[i].Valtotabcampenx),
+							Valtotabcampglob: parseFloat(retorno.results[i].Valtotabcampglob),
+							Valtotabcamppa: parseFloat(retorno.results[i].Valtotabcamppa),
+							Valtotabcampbrinde: parseFloat(retorno.results[i].Valtotabcampbrinde),
+							Valtotexcdesc: parseFloat(retorno.results[i].Valtotexcdesc),
+							Valtotexcndirdesc: parseFloat(retorno.results[i].Valtotexcndirdesc),
+							Valtotexcndirprazo: parseFloat(retorno.results[i].Valtotexcndirprazo),
+							Valtotexcprazo: parseFloat(retorno.results[i].Valtotexcprazo),
+							Valverbapedido: parseFloat(retorno.results[i].Valverbapedido),
+							Valabverba: parseFloat(retorno.results[i].Valabverba),
+							Valcomutprazo: parseFloat(retorno.results[i].Valcomutprazo),
+							Valtotabcomissao: parseFloat(retorno.results[i].Valtotabcomissao)
 						};
 						
 						oItensAprovar.push(aux);
@@ -152,12 +170,31 @@ sap.ui.define([
 					
 					var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
 					that.getView().setModel(oModelAprovacoes, "PedidosAprovar");
+					that.byId("idTableEnvioPedidos").setBusy(false);
 				},
 				error: function (error) {
 					console.log(error);
+					that.byId("idTableEnvioPedidos").setBusy(false);
 					that.onMensagemErroODATA(error.statusCode);
 				}
 			});
+		},
+		
+		onAprovar: function(){
+			
+			var teste = this.getView().getModel("ItemAprovar");
+			
+			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
+			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
+			
+			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1,2)];
+			
+		},
+		
+		onCancelar: function(){
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
 		},
 		
 		onExit: function () {

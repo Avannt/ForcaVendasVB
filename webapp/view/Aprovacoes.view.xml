@@ -16,24 +16,27 @@
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
 				<Table id="idTableEnvioPedidos" busyIndicatorDelay="500" growing="true" growingScrollToLoad="true" mode="SingleSelect"
-					noDataText="Nenhum Pedido Pendente" updateFinished="onUpdateFinished" width="100%"
-					items="{ path: 'PedidosEnviar>/', sorter: { path: 'NomeEmit', descending: false, parameter: 'Codigo'}}">
+					noDataText="Nenhum Pedido Pendente" updateFinished="onUpdateFinished" width="100%" alternateRowColors="true"
+					items="{ path: 'PedidosAprovar>/', sorter: { path: 'Cliente', descending: false, parameter: 'Codigo'}}">
 					<columns>
 						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
 							<Text text="Cliente"/>
 						</Column>
-						<Column minScreenWidth="600px" demandPopin="false" hAlign="Left">
+						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
+							<Text text="Repres"/>
+						</Column>
+						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left" popinDisplay="Inline">
+							<Text text="Tot Exc"/>
+						</Column>
+						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
 							<Text text="Data"/>
 						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left">
-							<Text text="Verba"/>
-						</Column>
-						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left">
+						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left" popinDisplay="Inline">
 							<Text text="V. Tot"/>
 						</Column>
-						<Column minScreenWidth="380px" visible="false" demandPopin="true">
-							<Text text="Exc Total"/>
-						</Column>
+						<!--<Column minScreenWidth="380px" visible="false" demandPopin="true">-->
+						<!--	<Text text="Exc Total"/>-->
+						<!--</Column>-->
 						<!--<Column minScreenWidth="600px" demandPopin="true">-->
 						<!--	<Text text="Valor verba"/>-->
 						<!--</Column>-->
@@ -42,12 +45,13 @@
 						<!--</Column>-->
 					</columns>
 					<items>
-						<ColumnListItem type="Active" press="detalharPedido">
+						<ColumnListItem type="Inactive">
 							<cells>
-								<Text text="{PedidosAprovar>NomeAbrev}" />
-								<Text text="{path : 'PedidosAprovar>DatImpl', formatter:'.myFormatterDataImp'}" />
-								<Text text="R$: {path :'PedidosAprovar>ValVerbaPedido'}" />
-								<Text text="R$: {PedidosAprovar>ValTotPed}" />
+								<Text text="{PedidosAprovar>Kunnr}" />
+								<Text text="{PedidosAprovar>Lifnr}" />
+								<Text text="R$: {path :'PedidosAprovar>Vlrexc'}" />
+								<Text text="{path : 'PedidosAprovar>Erdat', formatter:'.myFormatterDataImp'} - {PedidosAprovar>Horaped}" />
+								<Text text="R$: {PedidosAprovar>Valtotpedido}" />
 								<Text text="{PedidosAprovar>NrPedcli}" visible="false"/>
 								<!--<Text text="{PedidosEnviar>ValVerbaPedido}"/>-->
 								<!--<Text text="{PedidosEnviar>Rentabilidade}"/>-->
