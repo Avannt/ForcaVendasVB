@@ -13,6 +13,7 @@
 						class="desabilitado"/>
 				</form:content>
 			</form:SimpleForm>
+			
 			<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
@@ -26,6 +27,7 @@
 						enabled="true"/>
 				</form:content>
 			</form:SimpleForm>
+			
 			<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
@@ -37,31 +39,40 @@
 					<Input id="idComissaoUtilizadaPrazo" type="Number" value="{ItemAprovar>/Valcomutprazo}" enabled="true"/>
 				</form:content>
 			</form:SimpleForm>
+			
 			<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
-					<Label text="Valor campanha enxoval" class="bold"/>
-					<Input id="idValorTotalEnxoval" value="R$: {ItemAprovar>/ValTotalCampEnxoval}" enabled="false" class="desabilitado"/>
-					<Label text="Valor a ser utilizado (R$)"/>
-					<Input id="idVerbaEnxoval" enabled="true" type="Number" value="{ItemAprovar>/ValUtilizadoCampEnxoval}"/>
+					<Label text="Valor excedente brinde" class="bold"/>
+					<Input id="idExcedenteBrinde" value="R$: {modelDadosPedido>/ValTotalExcedenteBrinde}" enabled="false" class="desabilitado"/>
+					<Label text="Verba de Marketing (R$)"/>
+					<Input id="idVerbaUtilizadaBrinde" value="{modelDadosPedido>/ValUtilizadoVerbaBrinde}" enabled="true" type="Number" />
+					<Label text="Comissão (R$)"/>
+					<Input id="idComissaoUtilizadaBrinde" value="{modelDadosPedido>/ValUtilizadoComissaoBrinde}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 				</form:content>
 			</form:SimpleForm>
+			
 			<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
-					<Label text="Valor campanha produto acabado" class="bold"/>
-					<Input id="idValTotCampProdutoAcabado" value="R$: {ItemAprovar>/ValTotalCampProdutoAcabado}" enabled="false" class="desabilitado"/>
-					<Label text="Valor a ser utilizado (R$)"/>
-					<Input id="idValCampProdAcabado" enabled="true" type="Number" value="{ItemAprovar>/Valtotabcamppa}"/>
+					<Label text="Valor excedente amostra" class="bold"/>
+					<Input id="idExcedenteAmostra" value="R$: {modelDadosPedido>/ValTotalExcedenteAmostra}" enabled="false" class="desabilitado"/>
+					<Label text="Verba de Marketing (R$)"/>
+					<Input id="idVerbaUtilizadaAmostra" value="{modelDadosPedido>/ValUtilizadoVerbaAmostra}" enabled="true" type="Number" />
+					<Label text="Comissão (R$)"/>
+					<Input id="idComissaoUtilizadaAmostra" value="{modelDadosPedido>/ValUtilizadoComissaoAmostra}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 				</form:content>
 			</form:SimpleForm>
+			
 			<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
-					<Label text="Valor campanha global" class="bold"/>
-					<Input id="idValTotCampGlobal" value="R$: {ItemAprovar>/ValTotalCampGlobal}" enabled="false" class="desabilitado"/>
-					<Label text="Valor a ser utilizado (R$)"/>
-					<Input id="idValCampGlobal" enabled="true" type="Number" value="{ItemAprovar>/ValUtilizadoCampGlobal}"/>
+					<Label text="Valor excedente bonificação" class="bold"/>
+					<Input id="idExcedenteBonif" value="R$: {modelDadosPedido>/ValTotalExcedenteBonif}" enabled="false" class="desabilitado"/>
+					<Label text="Verba de Marketing (R$)"/>
+					<Input id="idVerbaUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoVerbaBonif}" enabled="true" type="Number" />
+					<Label text="Comissão (R$)"/>
+					<Input id="idComissaoUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoComissaoBonif}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 				</form:content>
 			</form:SimpleForm>
 		</content>

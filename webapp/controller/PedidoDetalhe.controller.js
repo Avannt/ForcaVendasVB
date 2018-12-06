@@ -1488,7 +1488,7 @@ sap.ui.define([
 
 			if (oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr > 0) {
 
-				oItemPedido.zzVprodDesc = Math.round(oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100));
+				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
 				oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
 
 			} else {
@@ -1570,14 +1570,12 @@ sap.ui.define([
 						objItensPedidoTemplate[i].zzQnt;
 
 					//VALOR DE VERBA GERADA NO PEDIDO
-					totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) * objItensPedidoTemplate[i]
-						.zzQnt;
+					totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) * objItensPedidoTemplate[i].zzQnt;
 
 					//Calculando o valor total da excessão por bloco:
 					//VALOR EXCEDIDO DO PERCENTUAL DE DESCONTO.
 					if (objItensPedidoTemplate[i].tipoItem == "Normal") {
-						var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc - objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) /
-							100;
+						var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc - objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) /	100;
 						objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
 
 						if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
@@ -1589,7 +1587,12 @@ sap.ui.define([
 					} else if (objItensPedidoTemplate[i].tipoItem == "Diluido") {
 
 						//zzVprodMinPermitido = Valor minimo que o produto pode ser vendido 
-						difProdDiluicao = objItensPedidoTemplate[i].zzVprodMinPermitido - objItensPedidoTemplate[i].zzVprodDesc;
+						difProdDiluicao =  objItensPedidoTemplate[i].zzVprodDesc - objItensPedidoTemplate[i].zzVprodMinPermitido;
+						
+						if (difProdDiluicao > 0){
+							difProdDiluicao = 0;
+						}
+						
 						console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + difProdDiluicao);
 						totalExcedenteDescontos += difProdDiluicao * objItensPedidoTemplate[i].zzQnt;
 

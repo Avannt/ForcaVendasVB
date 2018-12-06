@@ -2,7 +2,7 @@
 	displayBlock="true" controllerName="testeui5.controller.PedidoDetalhe">
 	<App>
 		<pages>
-			<Page title="Digitação do Pedido" class="sapUiResponsivePadding" showNavButton="true" navButtonPress="onNavBack">
+			<Page title="Digitação do Pedido" showNavButton="true" navButtonPress="onNavBack">
 				<content>
 					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true" enableTabReordering="true"
 						select="onTablFilterEvent">

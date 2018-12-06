@@ -253,9 +253,9 @@ sap.ui.define([
 
 		onEnviarPedido: function (oEvent) {
 			var that = this;
-
+			
 			var open = indexedDB.open("VB_DataBase");
-
+			
 			open.onerror = function () {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
@@ -263,222 +263,222 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 			};
-
+			
 			open.onsuccess = function () {
 				var db = open.result;
 
 				MessageBox.show("Deseja enviar os itens selecionados?", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Envio de itens",
-					actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+					actions: ["Enviar", "Cancelar"],
 					onClose: function (oAction) {
-
-						var oModel = that.getView().getModel();
-						oModel.setUseBatch(true);
-						oModel.refreshSecurityToken();
-						that.byId("table_pedidos").setBusy(true);
-
-						var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
-
-						for (var j = 0; j < oItensPedidoGrid.length; j++) {
-
-							var objItensPedido = {
-								Iditempedido: String(oItensPedidoGrid[j].idItemPedido),
-								Tindex: oItensPedidoGrid[j].index,
-								Knumh: String(oItensPedidoGrid[j].knumh),
-								Knumhextra: String(oItensPedidoGrid[j].knumhExtra),
-								Zzregra: String(oItensPedidoGrid[j].zzRegra),
-								Zzgrpmatextra: String(oItensPedidoGrid[j].zzGrpmatExtra),
-								Zzgrpmat: String(oItensPedidoGrid[j].zzGrpmat),
-								Zzregraextra: String(oItensPedidoGrid[j].zzRegraExtra),
-								Maktx: String(oItensPedidoGrid[j].maktx),
-								Matnr: String(oItensPedidoGrid[j].matnr),
-								Nrpedcli: String(oItensPedidoGrid[j].nrPedCli),
-								Ntgew: String(oItensPedidoGrid[j].ntgew),
-								Tipoitem: String(oItensPedidoGrid[j].tipoItem),
-								Zzdesext: String(oItensPedidoGrid[j].zzDesext),
-								Zzdesitem: String(oItensPedidoGrid[j].zzDesitem),
-								Zzpercdescdiluicao: String(oItensPedidoGrid[j].zzPercDescDiluicao),
-								Zzpercdesctotal: String(oItensPedidoGrid[j].zzPercDescTotal),
-								Zzpercom: String(oItensPedidoGrid[j].zzPercom),
-								Zzpervm: String(oItensPedidoGrid[j].zzPervm),
-								Zzqnt: String(oItensPedidoGrid[j].zzQnt),
-								Zzvprod: String(oItensPedidoGrid[j].zzVprod),
-								Zzvproddesc: String(oItensPedidoGrid[j].zzVprodDesc),
-								Zzvproddesctotal: String(oItensPedidoGrid[j].zzVprodDescTotal),
-								Length: String(oItensPedidoGrid[j].length)
-							};
-
-							oModel.create("/InserirLinhaOV", objItensPedido, {
-								method: "POST",
-								success: function (data) {
-									console.info("Itens Inserido");
-									that.byId("table_pedidos").setBusy(false);
-
-								},
-								error: function (error) {
-									that.byId("table_pedidos").setBusy(false);
-									that.onMensagemErroODATA(error.statusCode);
-								}
-							});
+						
+						if(oAction == "Enviar"){
+							
+							var oModel = that.getView().getModel();
+							oModel.setUseBatch(true);
+							oModel.refreshSecurityToken();
+							that.byId("table_pedidos").setBusy(true);
+							
+							var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+							
+							for (var j = 0; j < oItensPedidoGrid.length; j++) {
+	
+								var objItensPedido = {
+									Iditempedido: String(oItensPedidoGrid[j].idItemPedido),
+									Tindex: oItensPedidoGrid[j].index,
+									Knumh: String(oItensPedidoGrid[j].knumh),
+									Knumhextra: String(oItensPedidoGrid[j].knumhExtra),
+									Zzregra: String(oItensPedidoGrid[j].zzRegra),
+									Zzgrpmatextra: String(oItensPedidoGrid[j].zzGrpmatExtra),
+									Zzgrpmat: String(oItensPedidoGrid[j].zzGrpmat),
+									Zzregraextra: String(oItensPedidoGrid[j].zzRegraExtra),
+									Maktx: String(oItensPedidoGrid[j].maktx),
+									Matnr: String(oItensPedidoGrid[j].matnr),
+									Nrpedcli: String(oItensPedidoGrid[j].nrPedCli),
+									Ntgew: String(oItensPedidoGrid[j].ntgew),
+									Tipoitem: String(oItensPedidoGrid[j].tipoItem),
+									Zzdesext: String(oItensPedidoGrid[j].zzDesext),
+									Zzdesitem: String(oItensPedidoGrid[j].zzDesitem),
+									Zzpercdescdiluicao: String(oItensPedidoGrid[j].zzPercDescDiluicao),
+									Zzpercdesctotal: String(oItensPedidoGrid[j].zzPercDescTotal),
+									Zzpercom: String(oItensPedidoGrid[j].zzPercom),
+									Zzpervm: String(oItensPedidoGrid[j].zzPervm),
+									Zzqnt: String(oItensPedidoGrid[j].zzQnt),
+									Zzvprod: String(oItensPedidoGrid[j].zzVprod),
+									Zzvproddesc: String(oItensPedidoGrid[j].zzVprodDesc),
+									Zzvproddesctotal: String(oItensPedidoGrid[j].zzVprodDescTotal),
+									Length: String(oItensPedidoGrid[j].length)
+								};
+	
+								oModel.create("/InserirLinhaOV", objItensPedido, {
+									method: "POST",
+									success: function (data) {
+										console.info("Itens Inserido");
+										that.byId("table_pedidos").setBusy(false);
+	
+									},
+									error: function (error) {
+										that.byId("table_pedidos").setBusy(false);
+										that.onMensagemErroODATA(error.statusCode);
+									}
+								});
 						}
-
-						for (var i = 0; i < oPedidosEnviar.length; i++) {
-
-							var objPedido = {
-								Nrpedcli: oPedidosEnviar[i].nrPedCli,
-								Idstatuspedido: String(oPedidosEnviar[i].idStatusPedido),
-								Kunnr: oPedidosEnviar[i].kunnr,
-								Werks: oPedidosEnviar[i].werks,
-								Lifnr: repres,
-								Auart: oPedidosEnviar[i].tipoPedido,
-								Situacaopedido: oPedidosEnviar[i].situacaoPedido,
-								Ntgew: String(oPedidosEnviar[i].ntgew),
-								// Brgew: null, // Não usa
-								// Dataentrega: "20181116", //Não usa
-								Pltyp: String(oPedidosEnviar[i].tabPreco),
-								Completo: oPedidosEnviar[i].completo,
-								Valminped: String(oPedidosEnviar[i].valMinPedido),
-								Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl
-									.substr(0, 2)),
-								Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl
-									.substr(17, 2)),
-								Obsped: oPedidosEnviar[i].observacaoPedido,
-								Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
-								Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
-								Percentradapedido: String(oPedidosEnviar[i].percEntradaPedido),
-								Valorentradapedido: String(oPedidosEnviar[i].valorEntradaPedido),
-								Inco1: String(oPedidosEnviar[i].tipoTransporte),
-								Diasprimeiraparcela: String(oPedidosEnviar[i].diasPrimeiraParcela),
-								Quantparcelas: String(oPedidosEnviar[i].quantParcelas),
-								Intervaloparcelas: String(oPedidosEnviar[i].intervaloParcelas),
-								Tiponego: String(oPedidosEnviar[i].tipoNegociacao),
-								// CodRepres: oPedidosEnviar[i].codRepres,
-								Totitens: oPedidosEnviar[i].totalItensPedido,
-								// ValCampBrinde: String(oPedidosEnviar[i].valCampBrinde),
-								// ValCampEnxoval: String(oPedidosEnviar[i].valCampEnxoval),
-								// ValCampGlobal: String(oPedidosEnviar[i].valCampGlobal),
-								Valorcomissao: String(oPedidosEnviar[i].valComissao),
-								// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
-								// ValMinPedido: oPedidosEnviar[i].valMinPedido,
-								Valtotpedido: String(oPedidosEnviar[i].valTotPed),
-								Valtotabcomissao: String(oPedidosEnviar[i].valTotalAbatidoComissao),
-								Valabverba: String(oPedidosEnviar[i].valTotalAbatidoVerba),
-								Vlrprz: String(oPedidosEnviar[i].valTotalExcedentePrazoMed),
-								VlrprzCom: String(oPedidosEnviar[i].valUtilizadoComissaoPrazoMed),
-								VlrprzVm: String(0), //NÃO UTILIZA VERBA PARA PRAZO 
-								VlrprzDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-								VlrprzVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-								Vlrdsc: String(oPedidosEnviar[i].valTotalExcedenteDesconto),
-								VlrdscCom: String(oPedidosEnviar[i].valComissaoUtilizadaDesconto),
-								VlrdscVm: String(oPedidosEnviar[i].valVerbaUtilizadaDesconto),
-								VlrdscDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-								VlrdscVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-								Vlramo: String(oPedidosEnviar[i].valTotalExcedenteAmostra),
-								VlramoCom: String(oPedidosEnviar[i].valUtilizadoComissaoAmostra),
-								VlramoVm: String(oPedidosEnviar[i].valUtilizadoVerbaAmostra),
-								VlramoDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-								VlramoVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-								Vlrbri: String(oPedidosEnviar[i].valTotalExcedenteBrinde),
-								VlrbriCom: String(oPedidosEnviar[i].valUtilizadoComissaoBrinde),
-								VlrbriVm: String(oPedidosEnviar[i].valUtilizadoVerbaBrinde),
-								VlrbriDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-								VlrbriVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
-								Vlrbon: String(oPedidosEnviar[i].valTotalExcedenteBonif),
-								VlrbonCom: String(oPedidosEnviar[i].valUtilizadoComissaoBonif),
-								VlrbonVm: String(oPedidosEnviar[i].valUtilizadoVerbaBonif),
-								VlrbonDd: String(0),
-								VlrbonVvb: String(0),
-								Valtotabcamppa: String(oPedidosEnviar[i].valUtilizadoCampProdutoAcabado),
-								Valtotabcampbrinde: String(oPedidosEnviar[i].valUtilizadoCampBrinde),
-								Valtotexcndirdesc: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoDesconto),
-								Valtotexcndirprazo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoPrazoMed),
-								Valverbapedido: String(oPedidosEnviar[i].valVerbaPedido),
-							};
-
-							oModel.create("/InserirOV", objPedido, {
-								method: "POST",
-								success: function (data) {
-
-									var tx = db.transaction("PrePedidos", "readwrite");
-									var objPedido = tx.objectStore("PrePedidos");
-
-									var requestPrePedidos = objPedido.get(data.Nrpedcli);
-
-									requestPrePedidos.onsuccess = function (e) {
-										var oPrePedido = e.target.result;
-
-										oPrePedido.idStatusPedido = 3;
-										oPrePedido.situacaoPedido = "FIN";
-
-										var requestPutItens = objPedido.put(oPrePedido);
-
-										requestPutItens.onsuccess = function () {
-											MessageBox.show("Pedido: " + data.Nrpedcli + " Enviado!", {
-												icon: MessageBox.Icon.SUCCESS,
-												title: "Pedido enviado!",
-												actions: [MessageBox.Action.OK],
-												onClose: function () {
-
-													for (var o = 0; o < oPedidoGrid.length; o++) {
-														if (oPedidoGrid[o].nrPedCli == data.Nrpedcli) {
-															oPedidoGrid.splice(o, 1);
+						
+							for (var i = 0; i < oPedidosEnviar.length; i++) {
+	
+								var objPedido = {
+									Nrpedcli: oPedidosEnviar[i].nrPedCli,
+									Idstatuspedido: String(oPedidosEnviar[i].idStatusPedido),
+									Kunnr: oPedidosEnviar[i].kunnr,
+									Werks: oPedidosEnviar[i].werks,
+									Lifnr: repres,
+									Auart: oPedidosEnviar[i].tipoPedido,
+									Situacaopedido: oPedidosEnviar[i].situacaoPedido,
+									Ntgew: String(oPedidosEnviar[i].ntgew),
+									// Brgew: null, // Não usa
+									// Dataentrega: "20181116", //Não usa
+									Pltyp: String(oPedidosEnviar[i].tabPreco),
+									Completo: oPedidosEnviar[i].completo,
+									Valminped: String(oPedidosEnviar[i].valMinPedido),
+									Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl.substr(0, 2)),
+									Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl.substr(17, 2)),
+									Obsped: oPedidosEnviar[i].observacaoPedido,
+									Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
+									Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
+									Percentradapedido: String(oPedidosEnviar[i].percEntradaPedido),
+									Valorentradapedido: String(oPedidosEnviar[i].valorEntradaPedido),
+									Inco1: String(oPedidosEnviar[i].tipoTransporte),
+									Diasprimeiraparcela: String(oPedidosEnviar[i].diasPrimeiraParcela),
+									Quantparcelas: String(oPedidosEnviar[i].quantParcelas),
+									Intervaloparcelas: String(oPedidosEnviar[i].intervaloParcelas),
+									Tiponego: String(oPedidosEnviar[i].tipoNegociacao),
+									// CodRepres: oPedidosEnviar[i].codRepres,
+									Totitens: oPedidosEnviar[i].totalItensPedido,
+									// ValCampBrinde: String(oPedidosEnviar[i].valCampBrinde),
+									// ValCampEnxoval: String(oPedidosEnviar[i].valCampEnxoval),
+									// ValCampGlobal: String(oPedidosEnviar[i].valCampGlobal),
+									Valorcomissao: String(oPedidosEnviar[i].valComissao),
+									// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
+									// ValMinPedido: oPedidosEnviar[i].valMinPedido,
+									Valtotpedido: String(oPedidosEnviar[i].valTotPed),
+									Valtotabcomissao: String(oPedidosEnviar[i].valTotalAbatidoComissao),
+									Valabverba: String(oPedidosEnviar[i].valTotalAbatidoVerba),
+									Vlrprz: String(oPedidosEnviar[i].valTotalExcedentePrazoMed),
+									VlrprzCom: String(oPedidosEnviar[i].valUtilizadoComissaoPrazoMed),
+									VlrprzVm: String(0), //NÃO UTILIZA VERBA PARA PRAZO 
+									VlrprzDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+									VlrprzVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+									Vlrdsc: String(oPedidosEnviar[i].valTotalExcedenteDesconto),
+									VlrdscCom: String(oPedidosEnviar[i].valComissaoUtilizadaDesconto),
+									VlrdscVm: String(oPedidosEnviar[i].valVerbaUtilizadaDesconto),
+									VlrdscDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+									VlrdscVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+									Vlramo: String(oPedidosEnviar[i].valTotalExcedenteAmostra),
+									VlramoCom: String(oPedidosEnviar[i].valUtilizadoComissaoAmostra),
+									VlramoVm: String(oPedidosEnviar[i].valUtilizadoVerbaAmostra),
+									VlramoDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+									VlramoVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+									Vlrbri: String(oPedidosEnviar[i].valTotalExcedenteBrinde),
+									VlrbriCom: String(oPedidosEnviar[i].valUtilizadoComissaoBrinde),
+									VlrbriVm: String(oPedidosEnviar[i].valUtilizadoVerbaBrinde),
+									VlrbriDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+									VlrbriVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+									Vlrbon: String(oPedidosEnviar[i].valTotalExcedenteBonif),
+									VlrbonCom: String(oPedidosEnviar[i].valUtilizadoComissaoBonif),
+									VlrbonVm: String(oPedidosEnviar[i].valUtilizadoVerbaBonif),
+									VlrbonDd: String(0),
+									VlrbonVvb: String(0),
+									Valtotabcamppa: String(oPedidosEnviar[i].valUtilizadoCampProdutoAcabado),
+									Valtotabcampbrinde: String(oPedidosEnviar[i].valUtilizadoCampBrinde),
+									Valtotexcndirdesc: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoDesconto),
+									Valtotexcndirprazo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoPrazoMed),
+									Valverbapedido: String(oPedidosEnviar[i].valVerbaPedido),
+									BuGruop: ""
+								};
+	
+								oModel.create("/InserirOV", objPedido, {
+									method: "POST",
+									success: function (data) {
+	
+										var tx = db.transaction("PrePedidos", "readwrite");
+										var objPedido = tx.objectStore("PrePedidos");
+	
+										var requestPrePedidos = objPedido.get(data.Nrpedcli);
+	
+										requestPrePedidos.onsuccess = function (e) {
+											var oPrePedido = e.target.result;
+	
+											oPrePedido.idStatusPedido = 3;
+											oPrePedido.situacaoPedido = "FIN";
+	
+											var requestPutItens = objPedido.put(oPrePedido);
+	
+											requestPutItens.onsuccess = function () {
+												MessageBox.show("Pedido: " + data.Nrpedcli + " Enviado!", {
+													icon: MessageBox.Icon.SUCCESS,
+													title: "Pedido enviado!",
+													actions: [MessageBox.Action.OK],
+													onClose: function () {
+	
+														for (var o = 0; o < oPedidoGrid.length; o++) {
+															if (oPedidoGrid[o].nrPedCli == data.Nrpedcli) {
+																oPedidoGrid.splice(o, 1);
+															}
 														}
+														// oModel = new sap.ui.model.json.JSONModel();
+														// that.getView().setModel(oModel, "PedidosEnviar");
+	
+														oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+														that.getView().setModel(oModel, "PedidosEnviar");
+														that.byId("table_pedidos").setBusy(false);
 													}
-													// oModel = new sap.ui.model.json.JSONModel();
-													// that.getView().setModel(oModel, "PedidosEnviar");
-
-													oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-													that.getView().setModel(oModel, "PedidosEnviar");
-													that.byId("table_pedidos").setBusy(false);
-												}
-											});
+												});
+											};
 										};
-									};
-								},
-								error: function (error) {
-									that.byId("table_pedidos").setBusy(false);
-									that.onMensagemErroODATA(error.statusCode);
-								}
-							});
+									},
+									error: function (error) {
+										that.byId("table_pedidos").setBusy(false);
+										that.onMensagemErroODATA(error.statusCode);
+									}
+								});
 						}
-
-						oModel.submitChanges();
+						
+							oModel.submitChanges();
+						}
 					}
 				});
-
 			};
-
 		},
 		/*FIM onEnviarPedido*/
 
 		onEnviarEntrega: function (oEvent) {
 			var that = this;
 			var aIndices = this.byId("table_entregas").getSelectedContextPaths();
-
+			
 			if (aIndices.length === 0) {
 				MessageBox.show("Nenhuma linha foi selecionada.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Erro",
 					actions: [MessageBox.Action.OK]
 				});
-
+				
 				return;
 			}
-
+			
 			MessageBox.show("Deseja enviar os itens selecionados?", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Envio de itens",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
 				onClose: function (oAction) {
-
+					
 					if (oAction == sap.m.MessageBox.Action.YES) {
 						var oModel = that.getView().getModel();
 						oModel.setUseBatch(true);
 						oModel.refreshSecurityToken();
-
+						
 						var open = indexedDB.open("VB_DataBase");
-
+						
 						open.onerror = function () {
 							MessageBox.show(open.error.mensage, {
 								icon: MessageBox.Icon.ERROR,
@@ -486,40 +486,40 @@ sap.ui.define([
 								actions: [MessageBox.Action.OK]
 							});
 						};
-
+						
 						open.onsuccess = function () {
 							var db = open.result;
-
+							
 							var oModelEntregas = that.getView().getModel("EntregasEnviar").getData();
-
+							
 							var tx = db.transaction("EntregaFutura", "readwrite");
 							var objItensEntrega = tx.objectStore("EntregaFutura");
-
+							
 							for (var i = 0; i < aIndices.length; i++) {
 								var iIndex = aIndices[i].substring(1, 2);
-
+								
 								var oItemEntregar = oModelEntregas[iIndex];
-
+								
 								// oModel.create("/InserirEntregas", oItemEntregar, {
 								// 	method: "POST",
 								// 	success: function (data) {
 								// 		console.info("Itens Inserido");
-
+								
 								// 	},
 								// 	error: function (error) {
 								// 		that.onMensagemErroODATA(error.statusCode);
 								// 	}
 								// });
-
+								
 								var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
-
+								
 								requestGetEntrega.onsuccess = function (e) {
 									var oEntrega = e.target.result;
-
+									
 									oEntrega.Slddia = oItemEntregar.Fkimg2;
-
+									
 									var requestPutEntrega = objItensEntrega.put(oEntrega);
-
+									
 									requestPutEntrega.onsuccess = function (e) {
 										sap.m.MessageBox.show(
 											"Pedido enviado com sucesso.", {
@@ -528,22 +528,22 @@ sap.ui.define([
 												actions: [sap.m.MessageBox.Action.OK]
 											}
 										);
-
+										
 										var txEF2 = db.transaction("EntregaFutura2", "readwrite");
 										var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
-
+										
 										var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
-
+										
 										requestDelEntrega2.onsuccess = function (e) {
 											console.info("item ef excluido");
 											that.onLoadEntregas();
 										};
-
+										
 										requestDelEntrega2.onerror = function (e) {
 											console.info(e);
 										};
 									};
-
+									
 									requestPutEntrega.onerror = function (e) {
 										sap.m.MessageBox.show(
 											"Erro ao enviar pedido.", {
@@ -556,11 +556,9 @@ sap.ui.define([
 								};
 							}
 						};
-
 					}
 				}
 			});
-
 		},
 		/*FIM onEnviarEntrega*/
 
