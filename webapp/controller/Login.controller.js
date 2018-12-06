@@ -553,7 +553,12 @@ sap.ui.define([
 					actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
 					onClose: function (oAction) {
 						if (oAction === sap.m.MessageBox.Action.YES) {
-							//that.resetarObjStories();
+							var vTables = ["A960", "Clientes", "A969", "A959", "A965", "A963", "A966", "A967", "A964", "A962", "A961",
+								"Materiais",
+								"Konm", "A968", "EntregaFutura", "EntregaFutura2"
+							];
+
+							that.DropDBTables(vTables);
 
 							if (!that._CreateMaterialFragment) {
 
