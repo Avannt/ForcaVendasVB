@@ -1,175 +1,190 @@
 /*eslint-disable no-console, no-alert */
 sap.ui.define([
-	"jquery.sap.global",
-	"sap/m/MessageToast",
-	"sap/ui/core/Fragment",
 	"testeui5/controller/BaseController",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/m/MessageBox"
-], function (jQuery, MessageToast, Fragment, BaseController, Filter, FilterOperator, MessageBox) {
+], function (BaseController, Filter, FilterOperator, MessageBox) {
 	"use strict";
-	var vetorCliente = [];
-	var oItensEF = [];
-	var oItemEF2 = [];
-	var oPedEF = [];
+	var oPedidosEnviar = [];
+	var oItensPedidoGrid = [];
+	var oPedidoGrid = [];
+	var oItensPedidoEnviar = [];
+	var oItensPedidoGridEnviar = [];
+	var deletarMovimentos = [];
+	var ajaxCall;
+	var envioPedidos;
 
-	var oSF;
-
-	return BaseController.extend("testeui5.controller.entregaFutura", {
+	return BaseController.extend("testeui5.controller.enviarPedidos", {
 
 		onInit: function () {
-			this.getRouter().getRoute("entregaFutura").attachPatternMatched(this._onLoadFields, this);
+			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
 		},
+
+		_onLoadFields: function () {
+			var that = this;
+			oPedidosEnviar = [];
+			oItensPedidoGrid = [];
+			oPedidoGrid = [];
+			oItensPedidoEnviar = [];
+			oItensPedidoGridEnviar = [];
+			//Se for true mostrar a grid de envio de pedidos, senão mostrar a grid de entrega futura.
+			envioPedidos = that.getOwnerComponent().getModel("modelAux").getProperty("/bEnviarPedido");
+
+			that.byId("table_pedidos").setVisible(envioPedidos);
+			that.byId("table_entregas").setVisible(!envioPedidos);
+
+			if (envioPedidos) {
+				this.onLoadPedidos();
+			} else {
+				this.onLoadEntregas();
+			}
+
+		},
+		/*FIM _onLoadFields*/
+
+		onLoadPedidos: function () {
+			var open = indexedDB.open("VB_DataBase");
+			var that = this;
+
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function () {
+				var db = open.result;
+
+				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
+				var indiceStatusPed = store.index("idStatusPedido");
+
+				var request = indiceStatusPed.getAll(2);
+
+				request.onsuccess = function (event) {
+					oPedidoGrid = event.target.result;
+
+					var oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+					that.getView().setModel(oModel, "PedidosEnviar");
+
+					var vetorPromise = [];
+
+					for (var j = 0; j < oPedidoGrid.length; j++) {
+
+						vetorPromise.push(new Promise(function (resolve, reject) {
+							var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
+							var indiceNrPed = storeItensPed.index("nrPedCli");
+
+							request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
+
+							request.onsuccess = function (event) {
+
+								for (var i = 0; i < event.target.result.length; i++) {
+									var aux = event.target.result[i];
+									oItensPedidoGrid.push(aux);
+								}
+								console.log(oItensPedidoGrid);
+								resolve();
+							};
+
+							request.onerror = function (event) {
+								console.error(event.error.mensage);
+								reject();
+							};
+
+						}));
+					}
+					Promise.all(vetorPromise).then(function (values) {
+						console.log(oItensPedidoGrid);
+					});
+
+				};
+			};
+
+		},
+		/*FIM onLoadPedidos*/
+
+		onLoadEntregas: function () {
+			var that = this;
+			var oModel = new sap.ui.model.json.JSONModel();
+			var open = indexedDB.open("VB_DataBase");
+
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function () {
+				var db = open.result;
+
+				var store = db.transaction("EntregaFutura2").objectStore("EntregaFutura2");
+				var request = store.getAll();
+
+				request.onsuccess = function (event) {
+					oPedidoGrid = event.target.result;
+
+					oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+					that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
+				};
+			};
+		},
+		/*FIM onLoadEntregas*/
 
 		onNavBack: function () {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
 		},
+		/*FIM onNavBack*/
 
-		onNavBack2: function () {
-			var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
-
-			if (isTablet == true) {
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
-			} else {
-				// this.byId("table_pedidos").clearSelection();
-				this.byId("listClientes").removeSelections(true);
-				this.onPressDetailBack();
-			}
+		myFormatterDataImp: function (value) {
+			var aux = value.split("/");
+			var aux2 = aux[2].substring(2, aux[2].length);
+			value = aux[0] + "/" + aux[1] + "/" + aux2;
+			return value;
 		},
-		/* Fim navBack2*/
+		/*FIM myFormatterDataImp*/
 
-		onPressDetailBack: function () {
-			this.getSplitContObj().backDetail();
-			// this.getView().byId("ObjListCliente").removeSelections(true);
-			// this.byId("ObjListCliente").setProperty("/selected", false);
-		},
-		/* Fim onPressDetailBack*/
-
-		onSearch: function (oEvent) {
-			var sValue = oEvent.getSource().getValue();
-			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-			aFilters.push(allFilters);
-			//oEvent.getSource().getBinding("items").filter(aFilters, "Application");
-			this.byId("listClientes").getBinding("items").filter(aFilters, "Application");
-		},
-		/* Fim onSearch*/
-
-		onExit: function () {
-			if (this._oDialog) {
-				this._oDialog.destroy();
-			}
-		},
-		/* Fim onExit*/
-
-		_onLoadFields: function () {
+		onItemPress: function (oEvent) {
 			var that = this;
-			oSF = this.byId("sfItem");
-
-			this.getView().byId("objectHeader").setTitle();
-			this.getView().byId("objectHeader").setNumber();
-			this.getView().byId("objectAttribute_cnpj").setText();
-
-			var open = indexedDB.open("VB_DataBase");
-
-			open.onerror = function () {
-				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-
-			open.onsuccess = function () {
-				var db = open.result;
-
-				var transaction = db.transaction("Clientes", "readonly");
-				var objectStore = transaction.objectStore("Clientes");
-
-				if ("getAll" in objectStore) {
-					objectStore.getAll().onsuccess = function (event) {
-						vetorCliente = event.target.result;
-
-						var oModel = new sap.ui.model.json.JSONModel(vetorCliente);
-						that.getView().setModel(oModel, "clientesCadastrados");
-					};
-
-				}
-			};
-		},
-		/*Fim _onLoadFields */
-
-		onSelectionChange: function (oEvent) {
-			var that = this;
-			oItensEF = [];
-			oPedEF = [];
-
-			//filtra somente os pedidos do cliente e vai pra detail
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-			//seta os dados da objectHeader
-			this.getView().byId("objectHeader").setTitle(oItem.getTitle());
-			this.getView().byId("objectHeader").setNumber(oItem.getNumber());
-			this.getView().byId("objectAttribute_cnpj").setText(oItem.getIntro());
-			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", oItem.getNumber());
-			this.getSplitContObj().toDetail(this.createId("detail"));
+			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("nrPedCli");
+			var variavelCodigoCliente = oItem.getBindingContext("PedidosEnviar").getProperty("kunnr");
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", variavelCodigoCliente);
+			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", nrPedCli);
 
-			this.onGetDataFromEF2(oItem.getNumber());
+			MessageBox.show("Deseja mesmo detalhar o Pedido?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Detalhamento Solicitado",
+				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+				onClose: function (oAction) {
+					if (oAction == sap.m.MessageBox.Action.YES) {
 
-			this.onClearView();
+						var open = indexedDB.open("VB_DataBase");
 
-			var open = indexedDB.open("VB_DataBase");
-			open.onerror = function () {
-				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
+						open.onerror = function () {
+							console.log("não foi possivel encontrar e/ou carregar a base de clientes");
+						};
 
-			open.onsuccess = function () {
-				var db = open.result;
-				var promise = new Promise(function (resolve, reject) {
-					that.carregaModelCliente(db, resolve, reject);
-				});
+						open.onsuccess = function (e) {
+							var db = e.target.result;
 
-				promise.then(function () {
-					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
-					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
-					var iVbeln = objectStorePedEF.index("Vbeln");
+							var promise = new Promise(function (resolve, reject) {
+								that.carregaModelCliente(db, resolve, reject);
+							});
 
-					/* Cursor para percorrer todos os PEDIDOS ÚNICOS EF */
-					iVbeln.openCursor(undefined, "nextunique").onsuccess = function (event) {
-						var cursor = event.target.result;
-
-						if (cursor) {
-							if (cursor.value.Kunrg === oItem.getNumber()) {
-								oPedEF.push(cursor.value);
-							}
-							cursor.continue();
-						} else {
-							var oModel = new sap.ui.model.json.JSONModel(oPedEF);
-							that.getView().setModel(oModel, "PedidosEF");
-						}
-					}; /* Fim do cursor PEDIDOS ÚNICOS EF */
-
-				});
-			};
+							promise.then(function () {
+								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+							});
+						};
+					}
+				}
+			});
 		},
-		/*Fim onSelectionChange */
-
-		getSplitContObj: function () {
-			var result = this.byId("SplitContDemo2");
-			if (!result) {
-				jQuery.sap.log.error("SplitApp object can't be found");
-			}
-			return result;
-		},
-		/*Fim getSplitContObj*/
+		/*FIM onItemPress*/
 
 		carregaModelCliente: function (db, resolve, reject) {
 			var that = this;
@@ -177,9 +192,9 @@ sap.ui.define([
 			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
 
 			var tx = db.transaction("Clientes", "readwrite");
-			var objClientes = tx.objectStore("Clientes");
+			var objUsuarios = tx.objectStore("Clientes");
 
-			var request = objClientes.get(codCliente);
+			var request = objUsuarios.get(codCliente);
 
 			request.onsuccess = function (e1) {
 
@@ -208,273 +223,37 @@ sap.ui.define([
 				}
 			};
 		},
-		/* Fim carregaModelCliente */
+		/*FIM carregaModelCliente*/
 
-		onSelectDialogPress: function (oEvent) {
-			if (!this._oDialog) {
-				this._oDialog = sap.ui.xmlfragment("testeui5.view.Dialog", this);
-			}
+		onSelectionChange: function (oEvent) {
+			oPedidosEnviar = [];
+			oItensPedidoGridEnviar = [];
+			oItensPedidoEnviar = [];
 
-			oSF.setValue('');
-			var oModel = this.getView().getModel("PedidosEF");
-
-			this._oDialog.setModel(oModel, "PedidosEF");
-			this._oDialog.setMultiSelect(false);
-			this._oDialog.setShowClearButton(true);
-			this._oDialog.setGrowing(true);
-
-			// Limpa o filtro da pesquisa antigo
-			this._oDialog.getBinding("items").filter([]);
-
-			// Alternar o estilo compacto (toggle compact style)
-			jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._oDialog);
-			this._oDialog.open();
-		},
-		/* Fim onSelectDialogPress */
-
-		onDialogClose: function (oEvent) {
 			var that = this;
-			var aContexts = oEvent.getParameter("selectedContexts");
+			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
 
-			oItensEF = [];
-			if (aContexts && aContexts.length) {
-				var iVbeln = aContexts[0].getObject().Vbeln;
+			for (var i = 0; i < oSelectedItems.length; i++) {
+				var nrPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
 
-				that.getView().byId("ifVbeln").setValue(iVbeln);
-				var open = indexedDB.open("VB_DataBase");
+				for (var j = 0; j < oPedidoGrid.length; j++) {
 
-				open.onerror = function () {
-					MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
-						icon: MessageBox.Icon.ERROR,
-						title: "Banco não encontrado!",
-						actions: [MessageBox.Action.OK]
-					});
-				};
-
-				open.onsuccess = function () {
-					var db = open.result;
-					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
-					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
-					var keyRangeValue = IDBKeyRange.only(iVbeln);
-					var ixVbeln = objectStorePedEF.index("Vbeln");
-
-					var request = ixVbeln.openCursor(keyRangeValue);
-
-					request.onsuccess = function (event) {
-						var cursor = event.target.result;
-
-						if (cursor) {
-							oItensEF.push(cursor.value);
-							cursor.continue();
-						} else {
-							var oModel = new sap.ui.model.json.JSONModel(oItensEF);
-							that.getView().setModel(oModel, "ItensEF");
-						}
-					};
-
-					request.onerror = function (event) {
-						MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
-							icon: MessageBox.Icon.ERROR,
-							title: "Banco não encontrado!",
-							actions: [MessageBox.Action.OK]
-						});
-					};
-				};
-			} else {
-				oItensEF = [];
-				var oModel = new sap.ui.model.json.JSONModel(oItensEF);
-				that.getView().setModel(oModel, "ItensEF");
-
-				MessageToast.show("Nenhum item foi selecionado.");
-			}
-		},
-		/* Fim onDialogClose */
-
-		onDialogSearch: function (oEvent) {
-			var aFilters = [];
-			var sValue = oEvent.getParameter("value");
-			var oFilter = [new Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue),
-				new Filter("NameOrg1", sap.ui.model.FilterOperator.Contains, sValue)
-			];
-			var allFilters = new sap.ui.model.Filter(oFilter, false);
-			aFilters.push(allFilters);
-
-			var oBinding = oEvent.getSource().getBinding("items");
-			oBinding.filter(aFilters, "Application");
-		},
-		/* Fim onDialogSearch */
-
-		sfItemSearch: function (oEvent) {
-			var that = this;
-			var sMatnr = oEvent.getParameter("query");
-			// var sMatnr = oEvent.getParameter("suggestionItem");
-			var oModel = this.getView().getModel("ItensEF").getData();
-			var sVbeln = this.getView().byId("ifVbeln").getValue();
-			var iQtdeFaturada = 0;
-			var iQtdeDia = 0;
-			var iSaldoSap = 0;
-
-			if (sMatnr) {
-
-				for (var i = 0; i < oModel.length; i++) {
-					if (oModel[i].Matnr == sMatnr) {
-						iQtdeFaturada = parseInt(oModel[i].Fkimg);
-						iSaldoSap = parseInt(oModel[i].Sldfut);
-						iQtdeDia = parseInt(oModel[i].Slddia);
+					if (oPedidoGrid[j].nrPedCli == nrPedido) {
+						oPedidosEnviar.push(oPedidoGrid[j]);
 					}
 				}
-
-				var saldo = 0;
-
-				saldo = iSaldoSap - iQtdeDia;
-
-				that.byId("ifSaldo").setValue(saldo);
-			} else {
-				this.getView().byId("ifSaldo").setValue("");
-			}
-		},
-		/* Fim sfItemSearch */
-
-		sfItemSuggest: function (oEvent) {
-			var value = oEvent.getParameter("suggestValue");
-			var filters = [];
-			if (value) {
-				filters = [
-					new sap.ui.model.Filter([
-						new sap.ui.model.Filter("Matnr", function (sText) {
-							return (sText || "").toUpperCase().indexOf(value.toUpperCase()) > -1;
-						}),
-						new sap.ui.model.Filter("Arktx", function (sDes) {
-							return (sDes || "").toUpperCase().indexOf(value.toUpperCase()) > -1;
-						})
-					], false)
-				];
-			}
-
-			oSF.getBinding("suggestionItems").filter(filters);
-			oSF.suggest();
-		},
-		/* Fim sfItemSuggest */
-
-		onInserirItemPress: function (oEvent) {
-			var iVbeln = 0;
-			var iKunrg = 0;
-			var sMatnr = 0;
-			var iQuantidade = 0;
-			var idEntregaFutura = 0;
-
-			var that = this;
-
-			iKunrg = this.getView().byId("objectHeader").getNumber();
-			iVbeln = this.getView().byId("ifVbeln").getValue();
-			sMatnr = this.getView().byId("sfItem").getValue();
-			iQuantidade = this.getView().byId("ifQtde").getValue();
-
-			idEntregaFutura = iVbeln.toString() + sMatnr;
-
-			var open = indexedDB.open("VB_DataBase");
-			open.onerror = function () {
-				MessageBox.show(open.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-
-			open.onsuccess = function () {
-				var db = open.result;
-
-				var store = db.transaction("EntregaFutura", "readwrite");
-				var objMaterial = store.objectStore("EntregaFutura");
-
-				var requestEF = objMaterial.get(idEntregaFutura);
-
-				requestEF.onsuccess = function (e) {
-					var oItemEF = e.target.result;
-
-					if (oItemEF == undefined) {
-						MessageBox.show("Não existe o material: " + sMatnr, {
-							icon: MessageBox.Icon.ERROR,
-							title: "Material não encontrado.",
-							actions: [MessageBox.Action.OK],
-						});
-					} else {
-						/*INSERIR AQUI A REGRA DE VERIFICAÇÃO DE DISPONIBILIDADE DE ENTREGA DO ITEM EM QUESTÃO*/
-
-						var p1 = new Promise(function (resolv, reject) {
-							that.onGetQtdeHistoricoP(idEntregaFutura, resolv, reject);
-						});
-
-						p1.then(function (dQtdeHist) {
-							/* Se a quantidade digitada for maior que a quantidade a ser entregue + qtde do históico para o pedido 
-							e item correspondente, mando uma mensagem de erro para o usuário.*/
-							if (iQuantidade > (parseInt(oItemEF.Fkimg) + dQtdeHist)) {
-								var sMsgErro = "Quantidade digitada é maior que a disponível para entrega.";
-								MessageBox.error(sMsgErro, {
-									icon: MessageBox.Icon.ERROR,
-									title: "Erro",
-									actions: [MessageBox.Action.OK],
-								});
-							} else {
-								oItemEF2.Arktx = oItemEF.Arktx;
-								oItemEF2.Aubel = oItemEF.Aubel;
-								oItemEF2.Aupos = oItemEF.Aupos;
-								oItemEF2.Bstkd = oItemEF.Bstkd;
-								oItemEF2.Fkimg = oItemEF.Fkimg;
-								oItemEF2.Fkimg2 = iQuantidade;
-								oItemEF2.IRepresentante = oItemEF.IRepresentante;
-								oItemEF2.Kunrg = oItemEF.Kunrg;
-								oItemEF2.Lifnr = oItemEF.Lifnr;
-								oItemEF2.Matnr = oItemEF.Matnr;
-								oItemEF2.NameOrg1 = oItemEF.NameOrg1;
-								oItemEF2.NameOrg2 = oItemEF.NameOrg2;
-								oItemEF2.Vbeln = oItemEF.Vbeln;
-								oItemEF2.Sldfut = oItemEF.Sldfut;
-								oItemEF2.Slddia = oItemEF.Slddia;
-								oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura;
-
-								var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
-								var objEF2 = storeEF2.objectStore("EntregaFutura2");
-
-								var requestAdd = objEF2.add(oItemEF2);
-
-								requestAdd.onsuccess = function (e) {
-									sap.m.MessageBox.success("Material inserido com sucesso!", {
-										icon: MessageBox.Icon.SUCCESS,
-										title: "Material inserido.",
-										actions: [sap.m.MessageBox.Action.OK],
-										onClose: function () {
-											that.onGetDataFromEF2(iKunrg);
-											that.onClearView();
-										}
-									});
-								};
-
-								requestAdd.onerror = function (e) {
-									var sMsgErro = "";
-
-									if (e.srcElement.error.message.includes("Key already exists")) {
-										sMsgErro = "Pedido e material já selecionado para entrega.";
-									} else {
-										sMsgErro = "Erro ao inserir material: " + e.srcElement.error;
-									}
-
-									MessageBox.error(sMsgErro, {
-										icon: MessageBox.Icon.ERROR,
-										title: "Erro",
-										actions: [MessageBox.Action.OK],
-									});
-								};
-							}
-						}); /*Fim Promise*/
+				for (var k = 0; k < oItensPedidoGrid.length; k++) {
+					if (oItensPedidoGrid[k].nrPedCli == nrPedido) {
+						oItensPedidoGridEnviar.push(oItensPedidoGrid[k]);
 					}
-				};
-			};
+				}
+			}
 		},
-		/* Fim onInserirItemPress */
+		/*FIM onSelectionChange*/
 
-		onGetDataFromEF2: function (iKunrg) {
+		onEnviarPedido: function (oEvent) {
 			var that = this;
+
 			var open = indexedDB.open("VB_DataBase");
 
 			open.onerror = function () {
@@ -487,36 +266,229 @@ sap.ui.define([
 
 			open.onsuccess = function () {
 				var db = open.result;
-				var store = db.transaction("EntregaFutura2", "readwrite");
-				var objEF2 = store.objectStore("EntregaFutura2");
-				var ixKunrg = objEF2.index("Kunrg");
 
-				var request = ixKunrg.getAll(iKunrg);
+				MessageBox.show("Deseja enviar os itens selecionados?", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Envio de itens",
+					actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+					onClose: function (oAction) {
 
-				request.onsuccess = function (event) {
-					var oVetorEF2 = event.target.result;
+						var oModel = that.getView().getModel();
+						oModel.setUseBatch(true);
+						oModel.refreshSecurityToken();
+						that.byId("table_pedidos").setBusy(true);
 
-					var oModel = new sap.ui.model.json.JSONModel(oVetorEF2);
-					that.getView().setModel(oModel, "entregasEnviar");
-				};
+						var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+
+						for (var j = 0; j < oItensPedidoGrid.length; j++) {
+
+							var objItensPedido = {
+								Iditempedido: String(oItensPedidoGrid[j].idItemPedido),
+								Tindex: oItensPedidoGrid[j].index,
+								Knumh: String(oItensPedidoGrid[j].knumh),
+								Knumhextra: String(oItensPedidoGrid[j].knumhExtra),
+								Zzregra: String(oItensPedidoGrid[j].zzRegra),
+								Zzgrpmatextra: String(oItensPedidoGrid[j].zzGrpmatExtra),
+								Zzgrpmat: String(oItensPedidoGrid[j].zzGrpmat),
+								Zzregraextra: String(oItensPedidoGrid[j].zzRegraExtra),
+								Maktx: String(oItensPedidoGrid[j].maktx),
+								Matnr: String(oItensPedidoGrid[j].matnr),
+								Nrpedcli: String(oItensPedidoGrid[j].nrPedCli),
+								Ntgew: String(oItensPedidoGrid[j].ntgew),
+								Tipoitem: String(oItensPedidoGrid[j].tipoItem),
+								Zzdesext: String(oItensPedidoGrid[j].zzDesext),
+								Zzdesitem: String(oItensPedidoGrid[j].zzDesitem),
+								Zzpercdescdiluicao: String(oItensPedidoGrid[j].zzPercDescDiluicao),
+								Zzpercdesctotal: String(oItensPedidoGrid[j].zzPercDescTotal),
+								Zzpercom: String(oItensPedidoGrid[j].zzPercom),
+								Zzpervm: String(oItensPedidoGrid[j].zzPervm),
+								Zzqnt: String(oItensPedidoGrid[j].zzQnt),
+								Zzvprod: String(oItensPedidoGrid[j].zzVprod),
+								Zzvproddesc: String(oItensPedidoGrid[j].zzVprodDesc),
+								Zzvproddesctotal: String(oItensPedidoGrid[j].zzVprodDescTotal),
+								Length: String(oItensPedidoGrid[j].length)
+							};
+
+							oModel.create("/InserirLinhaOV", objItensPedido, {
+								method: "POST",
+								success: function (data) {
+									console.info("Itens Inserido");
+									that.byId("table_pedidos").setBusy(false);
+
+								},
+								error: function (error) {
+									that.byId("table_pedidos").setBusy(false);
+									that.onMensagemErroODATA(error.statusCode);
+								}
+							});
+						}
+
+						for (var i = 0; i < oPedidosEnviar.length; i++) {
+
+							var objPedido = {
+								Nrpedcli: oPedidosEnviar[i].nrPedCli,
+								Idstatuspedido: String(oPedidosEnviar[i].idStatusPedido),
+								Kunnr: oPedidosEnviar[i].kunnr,
+								Werks: oPedidosEnviar[i].werks,
+								Lifnr: repres,
+								Auart: oPedidosEnviar[i].tipoPedido,
+								Situacaopedido: oPedidosEnviar[i].situacaoPedido,
+								Ntgew: String(oPedidosEnviar[i].ntgew),
+								// Brgew: null, // Não usa
+								// Dataentrega: "20181116", //Não usa
+								Pltyp: String(oPedidosEnviar[i].tabPreco),
+								Completo: oPedidosEnviar[i].completo,
+								Valminped: String(oPedidosEnviar[i].valMinPedido),
+								Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl
+									.substr(0, 2)),
+								Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl
+									.substr(17, 2)),
+								Obsped: oPedidosEnviar[i].observacaoPedido,
+								Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
+								Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
+								Percentradapedido: String(oPedidosEnviar[i].percEntradaPedido),
+								Valorentradapedido: String(oPedidosEnviar[i].valorEntradaPedido),
+								Inco1: String(oPedidosEnviar[i].tipoTransporte),
+								Diasprimeiraparcela: String(oPedidosEnviar[i].diasPrimeiraParcela),
+								Quantparcelas: String(oPedidosEnviar[i].quantParcelas),
+								Intervaloparcelas: String(oPedidosEnviar[i].intervaloParcelas),
+								Tiponego: String(oPedidosEnviar[i].tipoNegociacao),
+								// CodRepres: oPedidosEnviar[i].codRepres,
+								Totitens: oPedidosEnviar[i].totalItensPedido,
+								// ValCampBrinde: String(oPedidosEnviar[i].valCampBrinde),
+								// ValCampEnxoval: String(oPedidosEnviar[i].valCampEnxoval),
+								// ValCampGlobal: String(oPedidosEnviar[i].valCampGlobal),
+								Valorcomissao: String(oPedidosEnviar[i].valComissao),
+								// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
+								// ValMinPedido: oPedidosEnviar[i].valMinPedido,
+								Valtotpedido: String(oPedidosEnviar[i].valTotPed),
+								Valtotabcomissao: String(oPedidosEnviar[i].valTotalAbatidoComissao),
+								Valabverba: String(oPedidosEnviar[i].valTotalAbatidoVerba),
+								Vlrprz: String(oPedidosEnviar[i].valTotalExcedentePrazoMed),
+								VlrprzCom: String(oPedidosEnviar[i].valUtilizadoComissaoPrazoMed),
+								VlrprzVm: String(0), //NÃO UTILIZA VERBA PARA PRAZO 
+								VlrprzDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								VlrprzVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								Vlrdsc: String(oPedidosEnviar[i].valTotalExcedenteDesconto),
+								VlrdscCom: String(oPedidosEnviar[i].valComissaoUtilizadaDesconto),
+								VlrdscVm: String(oPedidosEnviar[i].valVerbaUtilizadaDesconto),
+								VlrdscDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								VlrdscVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								Vlramo: String(oPedidosEnviar[i].valTotalExcedenteAmostra),
+								VlramoCom: String(oPedidosEnviar[i].valUtilizadoComissaoAmostra),
+								VlramoVm: String(oPedidosEnviar[i].valUtilizadoVerbaAmostra),
+								VlramoDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								VlramoVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								Vlrbri: String(oPedidosEnviar[i].valTotalExcedenteBrinde),
+								VlrbriCom: String(oPedidosEnviar[i].valUtilizadoComissaoBrinde),
+								VlrbriVm: String(oPedidosEnviar[i].valUtilizadoVerbaBrinde),
+								VlrbriDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								VlrbriVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								Vlrbon: String(oPedidosEnviar[i].valTotalExcedenteBonif),
+								VlrbonCom: String(oPedidosEnviar[i].valUtilizadoComissaoBonif),
+								VlrbonVm: String(oPedidosEnviar[i].valUtilizadoVerbaBonif),
+								VlrbonDd: String(0),
+								VlrbonVvb: String(0),
+								Valtotabcamppa: String(oPedidosEnviar[i].valUtilizadoCampProdutoAcabado),
+								Valtotabcampbrinde: String(oPedidosEnviar[i].valUtilizadoCampBrinde),
+								Valtotexcndirdesc: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoDesconto),
+								Valtotexcndirprazo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoPrazoMed),
+								Valverbapedido: String(oPedidosEnviar[i].valVerbaPedido),
+							};
+
+							oModel.create("/InserirOV", objPedido, {
+								method: "POST",
+								success: function (data) {
+
+									var tx = db.transaction("PrePedidos", "readwrite");
+									var objPedido = tx.objectStore("PrePedidos");
+
+									var requestPrePedidos = objPedido.get(data.Nrpedcli);
+
+									requestPrePedidos.onsuccess = function (e) {
+										var oPrePedido = e.target.result;
+
+										oPrePedido.idStatusPedido = 3;
+										oPrePedido.situacaoPedido = "FIN";
+
+										var requestPutItens = objPedido.put(oPrePedido);
+
+										requestPutItens.onsuccess = function () {
+											MessageBox.show("Pedido: " + data.Nrpedcli + " Enviado!", {
+												icon: MessageBox.Icon.SUCCESS,
+												title: "Pedido enviado!",
+												actions: [MessageBox.Action.OK],
+												onClose: function () {
+
+													for (var o = 0; o < oPedidoGrid.length; o++) {
+														if (oPedidoGrid[o].nrPedCli == data.Nrpedcli) {
+															oPedidoGrid.splice(o, 1);
+														}
+													}
+													// oModel = new sap.ui.model.json.JSONModel();
+													// that.getView().setModel(oModel, "PedidosEnviar");
+
+													oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+													that.getView().setModel(oModel, "PedidosEnviar");
+													that.byId("table_pedidos").setBusy(false);
+												}
+											});
+										};
+									};
+								},
+								error: function (error) {
+									that.byId("table_pedidos").setBusy(false);
+									that.onMensagemErroODATA(error.statusCode);
+								}
+							});
+						}
+
+						oModel.submitChanges();
+					}
+				});
+
 			};
+
 		},
-		/* Fim onGetDataFromEF2 */
+		/*FIM onEnviarPedido*/
 
-		onExcluirItem: function (e) {
-			var idItem = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Matnr");
-			var idKunrg = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Kunrg");
-			var idBanco = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("idEntregaFutura");
+		onEnviarEntrega: function (oEvent) {
 			var that = this;
+			var aIndices = this.byId("table_entregas").getSelectedContextPaths();
 
-			MessageBox.show("Deseja excluir a entrega do item " + idItem + "?", {
+			if (aIndices.length === 0) {
+				MessageBox.show("Nenhuma linha foi selecionada.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Erro",
+					actions: [MessageBox.Action.OK]
+				});
+
+				return;
+			}
+
+			if (aIndices.length > 1) {
+				MessageBox.show("Envio múltiplo em construção, por favor selecione um item por vez.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Erro",
+					actions: [MessageBox.Action.OK]
+				});
+
+				return;
+			}
+
+			MessageBox.show("Deseja enviar os itens selecionados?", {
 				icon: MessageBox.Icon.WARNING,
-				title: "Exclusão de Item",
+				title: "Envio de itens",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
 				onClose: function (oAction) {
-					if (oAction === sap.m.MessageBox.Action.YES) {
+
+					if (oAction == sap.m.MessageBox.Action.YES) {
+						var oModel = that.getView().getModel();
+						oModel.setUseBatch(true);
+						oModel.refreshSecurityToken();
 
 						var open = indexedDB.open("VB_DataBase");
+
 						open.onerror = function () {
 							MessageBox.show(open.error.mensage, {
 								icon: MessageBox.Icon.ERROR,
@@ -528,78 +500,816 @@ sap.ui.define([
 						open.onsuccess = function () {
 							var db = open.result;
 
-							var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
-							var objEF2 = storeEF2.objectStore("EntregaFutura2");
+							var oModelEntregas = that.getView().getModel("EntregasEnviar").getData();
 
-							var request = objEF2.delete(idBanco);
-							request.onsuccess = function () {
-								console.log("Item com ID: " + idItem + " foi excluído!");
+							var tx = db.transaction("EntregaFutura", "readwrite");
+							var objItensEntrega = tx.objectStore("EntregaFutura");
 
-								/* Após exluir o item, faço o get dos dados do banco para o modelo novamente. */
-								that.onGetDataFromEF2(idKunrg);
-								that.onClearView();
+							for (var i = 0; i < aIndices.length; i++) {
+								var iIndex = aIndices[i].substring(1, 2);
+
+								var oItemEntregar = oModelEntregas[iIndex];
+
+								// oModel.create("/InserirEntregas", oItemEntregar, {
+								// 	method: "POST",
+								// 	success: function (data) {
+								// 		console.info("Itens Inserido");
+
+								// 	},
+								// 	error: function (error) {
+								// 		that.onMensagemErroODATA(error.statusCode);
+								// 	}
+								// });
+
+								var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
+
+								requestGetEntrega.onsuccess = function (e) {
+									var oEntrega = e.target.result;
+
+									oEntrega.Slddia = parseInt(oEntrega.Slddia) + parseInt(oItemEntregar.Fkimg2);
+
+									var requestPutEntrega = objItensEntrega.put(oEntrega);
+
+									requestPutEntrega.onsuccess = function (e) {
+										sap.m.MessageBox.show(
+											"Pedido enviado com sucesso.", {
+												icon: sap.m.MessageBox.Icon.SUCCESS,
+												title: "Sucesso",
+												actions: [sap.m.MessageBox.Action.OK]
+											}
+										);
+
+										var txEF2 = db.transaction("EntregaFutura2", "readwrite");
+										var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+
+										var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
+
+										requestDelEntrega2.onsuccess = function (e) {
+											console.info("item ef excluido");
+											that.onLoadEntregas();
+										};
+
+										requestDelEntrega2.onerror = function (e) {
+											console.info(e);
+										};
+									};
+
+									requestPutEntrega.onerror = function (e) {
+										sap.m.MessageBox.show(
+											"Erro ao enviar pedido.", {
+												icon: sap.m.MessageBox.Icon.ERROR,
+												title: "Erro no programa Fiori!",
+												actions: [sap.m.MessageBox.Action.OK],
+											}
+										);
+									};
+								};
+							}
+						};
+					}
+				}
+			});
+
+		},
+		/*FIM onEnviarEntrega*/
+
+		onMontarCabecalho: function (that, idPedido, dadosPedidoCab) {
+
+		},
+		/*FIM onMontarCabecalho*/
+
+		onMontarLinha: function () {
+
+		},
+		/*FIM onMontarLinha*/
+
+		onMensagemErroODATA: function (codigoErro) {
+
+				if (codigoErro == 0) {
+					sap.m.MessageBox.show(
+						"Verifique a conexão com a internet!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Falha na Conexão!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 400) {
+					sap.m.MessageBox.show(
+						"Url mal formada! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Fiori!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 403) {
+					sap.m.MessageBox.show(
+						"Usuário sem autorização para executar a função (403)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 404) {
+					sap.m.MessageBox.show(
+						"Função não encontrada e/ou Parâmentros inválidos  (404)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 500) {
+					sap.m.MessageBox.show(
+						"Ocorreu um Erro (500)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 501) {
+					sap.m.MessageBox.show(
+						"Função não implementada (501)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				}
+			}
+			/*FIM onMensagemErroODATA*/
+	});
+});/*eslint-disable no-console, no-alert */
+sap.ui.define([
+	"testeui5/controller/BaseController",
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator",
+	"sap/m/MessageBox"
+], function (BaseController, Filter, FilterOperator, MessageBox) {
+	"use strict";
+	var oPedidosEnviar = [];
+	var oItensPedidoGrid = [];
+	var oPedidoGrid = [];
+	var oItensPedidoEnviar = [];
+	var oItensPedidoGridEnviar = [];
+	var deletarMovimentos = [];
+	var ajaxCall;
+	var envioPedidos;
+
+	return BaseController.extend("testeui5.controller.enviarPedidos", {
+
+		onInit: function () {
+			this.getRouter().getRoute("enviarPedidos").attachPatternMatched(this._onLoadFields, this);
+		},
+
+		_onLoadFields: function () {
+			var that = this;
+			oPedidosEnviar = [];
+			oItensPedidoGrid = [];
+			oPedidoGrid = [];
+			oItensPedidoEnviar = [];
+			oItensPedidoGridEnviar = [];
+			//Se for true mostrar a grid de envio de pedidos, senão mostrar a grid de entrega futura.
+			envioPedidos = that.getOwnerComponent().getModel("modelAux").getProperty("/bEnviarPedido");
+
+			that.byId("table_pedidos").setVisible(envioPedidos);
+			that.byId("table_entregas").setVisible(!envioPedidos);
+
+			if (envioPedidos) {
+				this.onLoadPedidos();
+			} else {
+				this.onLoadEntregas();
+			}
+
+		},
+		/*FIM _onLoadFields*/
+
+		onLoadPedidos: function () {
+			var open = indexedDB.open("VB_DataBase");
+			var that = this;
+
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function () {
+				var db = open.result;
+
+				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
+				var indiceStatusPed = store.index("idStatusPedido");
+
+				var request = indiceStatusPed.getAll(2);
+
+				request.onsuccess = function (event) {
+					oPedidoGrid = event.target.result;
+
+					var oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+					that.getView().setModel(oModel, "PedidosEnviar");
+
+					var vetorPromise = [];
+
+					for (var j = 0; j < oPedidoGrid.length; j++) {
+
+						vetorPromise.push(new Promise(function (resolve, reject) {
+							var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
+							var indiceNrPed = storeItensPed.index("nrPedCli");
+
+							request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
+
+							request.onsuccess = function (event) {
+
+								for (var i = 0; i < event.target.result.length; i++) {
+									var aux = event.target.result[i];
+									oItensPedidoGrid.push(aux);
+								}
+								console.log(oItensPedidoGrid);
+								resolve();
 							};
-							request.onerror = function () {
-								console.log("ERRO!! Item: " + idItem + " não foi excluído!");
+
+							request.onerror = function (event) {
+								console.error(event.error.mensage);
+								reject();
 							};
+
+						}));
+					}
+					Promise.all(vetorPromise).then(function (values) {
+						console.log(oItensPedidoGrid);
+					});
+
+				};
+			};
+
+		},
+		/*FIM onLoadPedidos*/
+
+		onLoadEntregas: function () {
+			var that = this;
+			var oModel = new sap.ui.model.json.JSONModel();
+			var open = indexedDB.open("VB_DataBase");
+
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function () {
+				var db = open.result;
+
+				var store = db.transaction("EntregaFutura2").objectStore("EntregaFutura2");
+				var request = store.getAll();
+
+				request.onsuccess = function (event) {
+					oPedidoGrid = event.target.result;
+
+					oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+					that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
+				};
+			};
+		},
+		/*FIM onLoadEntregas*/
+
+		onNavBack: function () {
+			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
+		},
+		/*FIM onNavBack*/
+
+		myFormatterDataImp: function (value) {
+			var aux = value.split("/");
+			var aux2 = aux[2].substring(2, aux[2].length);
+			value = aux[0] + "/" + aux[1] + "/" + aux2;
+			return value;
+		},
+		/*FIM myFormatterDataImp*/
+
+		onItemPress: function (oEvent) {
+			var that = this;
+			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
+			var nrPedCli = oItem.getBindingContext("PedidosEnviar").getProperty("nrPedCli");
+			var variavelCodigoCliente = oItem.getBindingContext("PedidosEnviar").getProperty("kunnr");
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", variavelCodigoCliente);
+			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", nrPedCli);
+
+			MessageBox.show("Deseja mesmo detalhar o Pedido?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Detalhamento Solicitado",
+				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+				onClose: function (oAction) {
+					if (oAction == sap.m.MessageBox.Action.YES) {
+
+						var open = indexedDB.open("VB_DataBase");
+
+						open.onerror = function () {
+							console.log("não foi possivel encontrar e/ou carregar a base de clientes");
+						};
+
+						open.onsuccess = function (e) {
+							var db = e.target.result;
+
+							var promise = new Promise(function (resolve, reject) {
+								that.carregaModelCliente(db, resolve, reject);
+							});
+
+							promise.then(function () {
+								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+							});
 						};
 					}
 				}
 			});
 		},
-		/* Fim onExcluirItem */
+		/*FIM onItemPress*/
 
-		onClearView: function () {
-			this.getView().byId("ifQtde").setValue(1);
-			this.getView().byId("ifSaldo").setValue("");
-			this.getView().byId("ifVbeln").setValue("");
-			this.getView().byId("sfItem").setValue("");
+		carregaModelCliente: function (db, resolve, reject) {
+			var that = this;
+
+			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+
+			var tx = db.transaction("Clientes", "readwrite");
+			var objUsuarios = tx.objectStore("Clientes");
+
+			var request = objUsuarios.get(codCliente);
+
+			request.onsuccess = function (e1) {
+
+				var result = e1.target.result;
+
+				if (result !== null && result !== undefined) {
+
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Kunnr", result.kunnr);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Land1", result.land1);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Name1", result.name1);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Name2", result.name2);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Ort01", result.ort01);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Ort02", result.ort02);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Regio", result.regio);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Stras", result.stras);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Pstlz", result.pstlz);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Stcd1", result.stcd1);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Stcd2", result.stcd2);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Inco1", result.inco1);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Parvw", result.parvw);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Lifnr", result.lifnr);
+					resolve();
+				} else {
+					console.log("ERRO!! Falha ao ler Clientes.");
+					reject();
+				}
+			};
 		},
-		/* Fim onClearView */
+		/*FIM carregaModelCliente*/
 
-		onGetQtdeHistoricoP: function (idEntregaFuturaH, resolv, reject) {
-			var dRetorno = 0;
+		onSelectionChange: function (oEvent) {
+			oPedidosEnviar = [];
+			oItensPedidoGridEnviar = [];
+			oItensPedidoEnviar = [];
+
+			var that = this;
+			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
+
+			for (var i = 0; i < oSelectedItems.length; i++) {
+				var nrPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
+
+				for (var j = 0; j < oPedidoGrid.length; j++) {
+
+					if (oPedidoGrid[j].nrPedCli == nrPedido) {
+						oPedidosEnviar.push(oPedidoGrid[j]);
+					}
+				}
+				for (var k = 0; k < oItensPedidoGrid.length; k++) {
+					if (oItensPedidoGrid[k].nrPedCli == nrPedido) {
+						oItensPedidoGridEnviar.push(oItensPedidoGrid[k]);
+					}
+				}
+			}
+		},
+		/*FIM onSelectionChange*/
+
+		onEnviarPedido: function (oEvent) {
+			var that = this;
 
 			var open = indexedDB.open("VB_DataBase");
-			open.onsuccess = function () {
-				var db = open.result;
 
-				var store = db.transaction("EntregaFuturaHist");
-				var objMaterial = store.objectStore("EntregaFuturaHist");
-
-				var requestEFH = objMaterial.get(idEntregaFuturaH);
-
-				requestEFH.onerror = function (e) {
-					MessageBox.error("Erro ao localizar tabela de histórico de entrega futura.", {
-						icon: MessageBox.Icon.ERROR,
-						title: "Erro",
-						actions: [MessageBox.Action.OK],
-					});
-				};
-
-				requestEFH.onsuccess = function (e) {
-					var oItemEFH = e.target.result;
-					var dRetorno = 0;
-
-					if (oItemEFH !== undefined) {
-
-					}
-
-					resolv(dRetorno);
-				};
-			};
-
-			open.onerror = function (e) {
-				MessageBox.error("Erro ao localizar o banco de dados.", {
+			open.onerror = function () {
+				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
-					title: "Erro",
-					actions: [MessageBox.Action.OK],
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
 				});
 			};
 
-			return dRetorno;
-		},
-		/* Fim onGetQtdeHistoricoP */
+			open.onsuccess = function () {
+				var db = open.result;
 
+				MessageBox.show("Deseja enviar os itens selecionados?", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Envio de itens",
+					actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+					onClose: function (oAction) {
+
+						var oModel = that.getView().getModel();
+						oModel.setUseBatch(true);
+						oModel.refreshSecurityToken();
+						that.byId("table_pedidos").setBusy(true);
+
+						var repres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+
+						for (var j = 0; j < oItensPedidoGrid.length; j++) {
+
+							var objItensPedido = {
+								Iditempedido: String(oItensPedidoGrid[j].idItemPedido),
+								Tindex: oItensPedidoGrid[j].index,
+								Knumh: String(oItensPedidoGrid[j].knumh),
+								Knumhextra: String(oItensPedidoGrid[j].knumhExtra),
+								Zzregra: String(oItensPedidoGrid[j].zzRegra),
+								Zzgrpmatextra: String(oItensPedidoGrid[j].zzGrpmatExtra),
+								Zzgrpmat: String(oItensPedidoGrid[j].zzGrpmat),
+								Zzregraextra: String(oItensPedidoGrid[j].zzRegraExtra),
+								Maktx: String(oItensPedidoGrid[j].maktx),
+								Matnr: String(oItensPedidoGrid[j].matnr),
+								Nrpedcli: String(oItensPedidoGrid[j].nrPedCli),
+								Ntgew: String(oItensPedidoGrid[j].ntgew),
+								Tipoitem: String(oItensPedidoGrid[j].tipoItem),
+								Zzdesext: String(oItensPedidoGrid[j].zzDesext),
+								Zzdesitem: String(oItensPedidoGrid[j].zzDesitem),
+								Zzpercdescdiluicao: String(oItensPedidoGrid[j].zzPercDescDiluicao),
+								Zzpercdesctotal: String(oItensPedidoGrid[j].zzPercDescTotal),
+								Zzpercom: String(oItensPedidoGrid[j].zzPercom),
+								Zzpervm: String(oItensPedidoGrid[j].zzPervm),
+								Zzqnt: String(oItensPedidoGrid[j].zzQnt),
+								Zzvprod: String(oItensPedidoGrid[j].zzVprod),
+								Zzvproddesc: String(oItensPedidoGrid[j].zzVprodDesc),
+								Zzvproddesctotal: String(oItensPedidoGrid[j].zzVprodDescTotal),
+								Length: String(oItensPedidoGrid[j].length)
+							};
+
+							oModel.create("/InserirLinhaOV", objItensPedido, {
+								method: "POST",
+								success: function (data) {
+									console.info("Itens Inserido");
+									that.byId("table_pedidos").setBusy(false);
+
+								},
+								error: function (error) {
+									that.byId("table_pedidos").setBusy(false);
+									that.onMensagemErroODATA(error.statusCode);
+								}
+							});
+						}
+
+						for (var i = 0; i < oPedidosEnviar.length; i++) {
+
+							var objPedido = {
+								Nrpedcli: oPedidosEnviar[i].nrPedCli,
+								Idstatuspedido: String(oPedidosEnviar[i].idStatusPedido),
+								Kunnr: oPedidosEnviar[i].kunnr,
+								Werks: oPedidosEnviar[i].werks,
+								Lifnr: repres,
+								Auart: oPedidosEnviar[i].tipoPedido,
+								Situacaopedido: oPedidosEnviar[i].situacaoPedido,
+								Ntgew: String(oPedidosEnviar[i].ntgew),
+								// Brgew: null, // Não usa
+								// Dataentrega: "20181116", //Não usa
+								Pltyp: String(oPedidosEnviar[i].tabPreco),
+								Completo: oPedidosEnviar[i].completo,
+								Valminped: String(oPedidosEnviar[i].valMinPedido),
+								Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl
+									.substr(0, 2)),
+								Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl
+									.substr(17, 2)),
+								Obsped: oPedidosEnviar[i].observacaoPedido,
+								Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
+								Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
+								Percentradapedido: String(oPedidosEnviar[i].percEntradaPedido),
+								Valorentradapedido: String(oPedidosEnviar[i].valorEntradaPedido),
+								Inco1: String(oPedidosEnviar[i].tipoTransporte),
+								Diasprimeiraparcela: String(oPedidosEnviar[i].diasPrimeiraParcela),
+								Quantparcelas: String(oPedidosEnviar[i].quantParcelas),
+								Intervaloparcelas: String(oPedidosEnviar[i].intervaloParcelas),
+								Tiponego: String(oPedidosEnviar[i].tipoNegociacao),
+								// CodRepres: oPedidosEnviar[i].codRepres,
+								Totitens: oPedidosEnviar[i].totalItensPedido,
+								// ValCampBrinde: String(oPedidosEnviar[i].valCampBrinde),
+								// ValCampEnxoval: String(oPedidosEnviar[i].valCampEnxoval),
+								// ValCampGlobal: String(oPedidosEnviar[i].valCampGlobal),
+								Valorcomissao: String(oPedidosEnviar[i].valComissao),
+								// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
+								// ValMinPedido: oPedidosEnviar[i].valMinPedido,
+								Valtotpedido: String(oPedidosEnviar[i].valTotPed),
+								Valtotabcomissao: String(oPedidosEnviar[i].valTotalAbatidoComissao),
+								Valabverba: String(oPedidosEnviar[i].valTotalAbatidoVerba),
+								Vlrprz: String(oPedidosEnviar[i].valTotalExcedentePrazoMed),
+								VlrprzCom: String(oPedidosEnviar[i].valUtilizadoComissaoPrazoMed),
+								VlrprzVm: String(0), //NÃO UTILIZA VERBA PARA PRAZO 
+								VlrprzDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								VlrprzVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								Vlrdsc: String(oPedidosEnviar[i].valTotalExcedenteDesconto),
+								VlrdscCom: String(oPedidosEnviar[i].valComissaoUtilizadaDesconto),
+								VlrdscVm: String(oPedidosEnviar[i].valVerbaUtilizadaDesconto),
+								VlrdscDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								VlrdscVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								Vlramo: String(oPedidosEnviar[i].valTotalExcedenteAmostra),
+								VlramoCom: String(oPedidosEnviar[i].valUtilizadoComissaoAmostra),
+								VlramoVm: String(oPedidosEnviar[i].valUtilizadoVerbaAmostra),
+								VlramoDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								VlramoVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								Vlrbri: String(oPedidosEnviar[i].valTotalExcedenteBrinde),
+								VlrbriCom: String(oPedidosEnviar[i].valUtilizadoComissaoBrinde),
+								VlrbriVm: String(oPedidosEnviar[i].valUtilizadoVerbaBrinde),
+								VlrbriDd: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								VlrbriVvb: String(0), //CAMPO UTILIZADO APENAS NA APROVAÇÃO
+								Vlrbon: String(oPedidosEnviar[i].valTotalExcedenteBonif),
+								VlrbonCom: String(oPedidosEnviar[i].valUtilizadoComissaoBonif),
+								VlrbonVm: String(oPedidosEnviar[i].valUtilizadoVerbaBonif),
+								VlrbonDd: String(0),
+								VlrbonVvb: String(0),
+								Valtotabcamppa: String(oPedidosEnviar[i].valUtilizadoCampProdutoAcabado),
+								Valtotabcampbrinde: String(oPedidosEnviar[i].valUtilizadoCampBrinde),
+								Valtotexcndirdesc: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoDesconto),
+								Valtotexcndirprazo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoPrazoMed),
+								Valverbapedido: String(oPedidosEnviar[i].valVerbaPedido),
+							};
+
+							oModel.create("/InserirOV", objPedido, {
+								method: "POST",
+								success: function (data) {
+
+									var tx = db.transaction("PrePedidos", "readwrite");
+									var objPedido = tx.objectStore("PrePedidos");
+
+									var requestPrePedidos = objPedido.get(data.Nrpedcli);
+
+									requestPrePedidos.onsuccess = function (e) {
+										var oPrePedido = e.target.result;
+
+										oPrePedido.idStatusPedido = 3;
+										oPrePedido.situacaoPedido = "FIN";
+
+										var requestPutItens = objPedido.put(oPrePedido);
+
+										requestPutItens.onsuccess = function () {
+											MessageBox.show("Pedido: " + data.Nrpedcli + " Enviado!", {
+												icon: MessageBox.Icon.SUCCESS,
+												title: "Pedido enviado!",
+												actions: [MessageBox.Action.OK],
+												onClose: function () {
+
+													for (var o = 0; o < oPedidoGrid.length; o++) {
+														if (oPedidoGrid[o].nrPedCli == data.Nrpedcli) {
+															oPedidoGrid.splice(o, 1);
+														}
+													}
+													// oModel = new sap.ui.model.json.JSONModel();
+													// that.getView().setModel(oModel, "PedidosEnviar");
+
+													oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+													that.getView().setModel(oModel, "PedidosEnviar");
+													that.byId("table_pedidos").setBusy(false);
+												}
+											});
+										};
+									};
+								},
+								error: function (error) {
+									that.byId("table_pedidos").setBusy(false);
+									that.onMensagemErroODATA(error.statusCode);
+								}
+							});
+						}
+
+						oModel.submitChanges();
+					}
+				});
+
+			};
+
+		},
+		/*FIM onEnviarPedido*/
+
+		onEnviarEntrega: function (oEvent) {
+			var that = this;
+			var aIndices = this.byId("table_entregas").getSelectedContextPaths();
+
+			if (aIndices.length === 0) {
+				MessageBox.show("Nenhuma linha foi selecionada.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Erro",
+					actions: [MessageBox.Action.OK]
+				});
+
+				return;
+			}
+
+			if (aIndices.length > 1) {
+				MessageBox.show("Envio múltiplo em construção, por favor selecione um item por vez.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Erro",
+					actions: [MessageBox.Action.OK]
+				});
+
+				return;
+			}
+
+			MessageBox.show("Deseja enviar os itens selecionados?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Envio de itens",
+				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+				onClose: function (oAction) {
+
+					if (oAction == sap.m.MessageBox.Action.YES) {
+						var oModel = that.getView().getModel();
+						oModel.setUseBatch(true);
+						oModel.refreshSecurityToken();
+
+						var open = indexedDB.open("VB_DataBase");
+
+						open.onerror = function () {
+							MessageBox.show(open.error.mensage, {
+								icon: MessageBox.Icon.ERROR,
+								title: "Banco não encontrado!",
+								actions: [MessageBox.Action.OK]
+							});
+						};
+
+						open.onsuccess = function () {
+							var db = open.result;
+
+							var oModelEntregas = that.getView().getModel("EntregasEnviar").getData();
+
+							var tx = db.transaction("EntregaFutura", "readwrite");
+							var objItensEntrega = tx.objectStore("EntregaFutura");
+
+							for (var i = 0; i < aIndices.length; i++) {
+								var iIndex = aIndices[i].substring(1, 2);
+
+								var oItemEntregar = oModelEntregas[iIndex];
+
+								// oModel.create("/InserirEntregas", oItemEntregar, {
+								// 	method: "POST",
+								// 	success: function (data) {
+								// 		console.info("Itens Inserido");
+
+								// 	},
+								// 	error: function (error) {
+								// 		that.onMensagemErroODATA(error.statusCode);
+								// 	}
+								// });
+
+								var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
+
+								requestGetEntrega.onsuccess = function (e) {
+									var oEntrega = e.target.result;
+
+									oEntrega.Slddia = parseInt(oEntrega.Slddia) + parseInt(oItemEntregar.Fkimg2);
+
+									var requestPutEntrega = objItensEntrega.put(oEntrega);
+
+									requestPutEntrega.onsuccess = function (e) {
+										sap.m.MessageBox.show(
+											"Pedido enviado com sucesso.", {
+												icon: sap.m.MessageBox.Icon.SUCCESS,
+												title: "Sucesso",
+												actions: [sap.m.MessageBox.Action.OK]
+											}
+										);
+
+										var txEF2 = db.transaction("EntregaFutura2", "readwrite");
+										var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+
+										var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
+
+										requestDelEntrega2.onsuccess = function (e) {
+											console.info("item ef excluido");
+											that.onLoadEntregas();
+										};
+
+										requestDelEntrega2.onerror = function (e) {
+											console.info(e);
+										};
+									};
+
+									requestPutEntrega.onerror = function (e) {
+										sap.m.MessageBox.show(
+											"Erro ao enviar pedido.", {
+												icon: sap.m.MessageBox.Icon.ERROR,
+												title: "Erro no programa Fiori!",
+												actions: [sap.m.MessageBox.Action.OK],
+											}
+										);
+									};
+								};
+							}
+						};
+					}
+				}
+			});
+
+		},
+		/*FIM onEnviarEntrega*/
+
+		onMontarCabecalho: function (that, idPedido, dadosPedidoCab) {
+
+		},
+		/*FIM onMontarCabecalho*/
+
+		onMontarLinha: function () {
+
+		},
+		/*FIM onMontarLinha*/
+
+		onMensagemErroODATA: function (codigoErro) {
+
+				if (codigoErro == 0) {
+					sap.m.MessageBox.show(
+						"Verifique a conexão com a internet!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Falha na Conexão!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 400) {
+					sap.m.MessageBox.show(
+						"Url mal formada! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Fiori!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 403) {
+					sap.m.MessageBox.show(
+						"Usuário sem autorização para executar a função (403)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 404) {
+					sap.m.MessageBox.show(
+						"Função não encontrada e/ou Parâmentros inválidos  (404)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 500) {
+					sap.m.MessageBox.show(
+						"Ocorreu um Erro (500)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				} else if (codigoErro == 501) {
+					sap.m.MessageBox.show(
+						"Função não implementada (501)! Contate a consultoria!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Erro no programa Abap!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function (oAction) {
+
+							}
+						}
+					);
+				}
+			}
+			/*FIM onMensagemErroODATA*/
 	});
 });
