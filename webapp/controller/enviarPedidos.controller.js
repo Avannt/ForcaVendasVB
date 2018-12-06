@@ -522,7 +522,7 @@ sap.ui.define([
 									
 									requestPutEntrega.onsuccess = function (e) {
 										sap.m.MessageBox.show(
-											"Pedido enviado com sucesso.", {
+											"Entrega enviado com sucesso.", {
 												icon: sap.m.MessageBox.Icon.SUCCESS,
 												title: "Sucesso",
 												actions: [sap.m.MessageBox.Action.OK]

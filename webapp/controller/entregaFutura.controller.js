@@ -431,6 +431,7 @@ sap.ui.define([
 								oItemEF2.NameOrg1 = oItemEF.NameOrg1;
 								oItemEF2.NameOrg2 = oItemEF.NameOrg2;
 								oItemEF2.Vbeln = oItemEF.Vbeln;
+								oItemEF2.Posnr = oItemEF.Posnr;
 								oItemEF2.Sldfut = iSaldo;
 								// oItemEF2.Sldfut = oItemEF.Sldfut;
 								oItemEF2.Slddia = oItemEF.Slddia;

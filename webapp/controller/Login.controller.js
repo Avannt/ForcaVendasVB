@@ -600,6 +600,7 @@ sap.ui.define([
 														idEntregaFutura: retornoEntregaFutura.results[i].Vbeln + retornoEntregaFutura.results[i].Matnr,
 														IRepresentante: retornoEntregaFutura.results[i].IRepresentante,
 														Vbeln: retornoEntregaFutura.results[i].Vbeln,
+														Posnr: retornoEntregaFutura.results[i].Posnr,
 														Kunrg: retornoEntregaFutura.results[i].Kunrg,
 														Aubel: retornoEntregaFutura.results[i].Aubel,
 														Aupos: retornoEntregaFutura.results[i].Aupos,
