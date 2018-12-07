@@ -1457,6 +1457,7 @@ sap.ui.define([
 							var numVersao = that.getOwnerComponent().getModel("modelAux").getProperty("/versaoApp");
 							that.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", true);
 
+							that.getOwnerComponent().getModel("modelAux").setProperty("/homeVisible", true);
 							sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
 						} else {
 							MessageBox.show(
@@ -1471,6 +1472,10 @@ sap.ui.define([
 						}
 					};
 				};
+			},
+			
+			onEnviarDocs: function() {
+				sap.ui.core.UIComponent.getRouterFor(this).navTo("enviarPedidos");
 			},
 
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DIALOG CREDENCIAIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

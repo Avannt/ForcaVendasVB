@@ -9,6 +9,9 @@ sap.ui.define([
 	return BaseController.extend("testeui5.controller.App", {
 
 		onInit: function(evt) {
+			// this.getView().byId("label").setVisible(false);
+			//this.getView().byId("shellHeadUser").setVisible(false);
+			//this.getView().byId("idLogoff").setVisible(false);
 
 			var oModel = new sap.ui.model.json.JSONModel({
 				modelUserNameShell: "",
@@ -23,8 +26,9 @@ sap.ui.define([
 
 		},
 
-		handlePressHome: function() {
+		handlePressHome: function(e) {
 			var that = this;
+
 			sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
 			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 			this.onResetaCamposPrePedido();
@@ -264,6 +268,7 @@ sap.ui.define([
 						if (oAction == sap.m.MessageBox.Action.YES) {
 							// sap.ui.getCore().byId("usuario").setValue("teste");
 							// sap.ui.getCore().byId("senha").getValue("teste");
+							that.getOwnerComponent().getModel("modelAux").setProperty("/homeVisible", false);
 							sap.ui.core.UIComponent.getRouterFor(that).navTo("login");
 							that.onResetaCamposPrePedido();
 						}
