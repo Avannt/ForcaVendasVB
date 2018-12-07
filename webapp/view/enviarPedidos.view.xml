@@ -4,7 +4,6 @@
 		<!--<subHeader></subHeader>-->
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
-				
 				<Table id="table_entregas" width="100%" backgroundDesign="Translucent" visible="false"
 					items="{ path:'EntregasEnviar>/' }" mode="MultiSelect" selectionChange="onSelectionChange2"
 					itemPress="onItemPress2" growingThreshold="3" growingTriggerText="Proximas entregas >>" growing="true"

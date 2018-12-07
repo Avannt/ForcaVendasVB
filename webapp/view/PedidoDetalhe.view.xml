@@ -76,7 +76,8 @@
 											<Label text="Dias de intervalo entre as parcelas *"/>
 											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}"/>
 											<Label text="Existe entrada"/>
-											<CheckBox id="idCheckEntrada" selected="{modelDadosPedido>/ExisteEntradaPedido}" select="onExisteEntrada"/>
+											<CheckBox id="idCheckEntrada"  select="onExisteEntrada"/>
+											<!--selected="{modelDadosPedido>/ExisteEntradaPedido}"-->
 											<Label text="Valor (R$)"/>
 											<Input id="idValorEntrada" type="Text" value="{modelDadosPedido>/ValorEntradaPedido}" liveChange="onBloqueiaPercEntrada" visible="false"/>
 											<Label text="Perc. (%)"/>

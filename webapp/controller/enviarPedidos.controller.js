@@ -308,7 +308,7 @@ sap.ui.define([
 									Zzvprod: String(oItensPedidoGrid[j].zzVprod),
 									Zzvproddesc: String(oItensPedidoGrid[j].zzVprodDesc),
 									Zzvproddesctotal: String(oItensPedidoGrid[j].zzVprodDescTotal),
-									Length: String(oItensPedidoGrid[j].length)
+									Length: String(oItensPedidoGrid.length)
 								};
 	
 								oModel.create("/InserirLinhaOV", objItensPedido, {
