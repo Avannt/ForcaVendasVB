@@ -26,6 +26,9 @@
 								<Text text="Item"/>
 							</Column>
 							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Linha"/>
+							</Column>
+							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
 								<Text text="Ref.cliente"/>
 							</Column>
 							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
@@ -67,6 +70,7 @@
 							<cells>
 								<Text text="{path : 'EntregasEnviar>Arktx'}"/>
 								<Text text="{path : 'EntregasEnviar>Vbeln'}"/>
+								<Text text="{path : 'EntregasEnviar>Posnr'}"/>
 								<Text text="{path : 'EntregasEnviar>Matnr'}"/>
 								<Text text="{path : 'EntregasEnviar>Bstkd'}"/>
 								<Text text="{path : 'EntregasEnviar>Fkimg'}"/>

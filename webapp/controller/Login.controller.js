@@ -112,17 +112,6 @@ sap.ui.define([
 							});
 						}
 
-						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (HISTORICO) >>>>>>>>>>>>>>>>>>>>>>>>>
-						if (!db.objectStoreNames.contains("EntregaFuturaHist")) {
-							var objEntregaFuturaDet = db.createObjectStore("EntregaFuturaHist", {
-								keyPath: "idEntregaFuturaHist"
-							});
-
-							objEntregaFuturaDet.createIndex("Vbeln", "Vbeln", {
-								unique: false
-							});
-						}
-
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PEDIDOS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("PrePedidos")) {
 							var objPedido = db.createObjectStore("PrePedidos", {
@@ -564,7 +553,12 @@ sap.ui.define([
 					actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
 					onClose: function (oAction) {
 						if (oAction === sap.m.MessageBox.Action.YES) {
-							//that.resetarObjStories();
+							var vTables = ["A960", "Clientes", "A969", "A959", "A965", "A963", "A966", "A967", "A964", "A962", "A961",
+								"Materiais",
+								"Konm", "A968", "EntregaFutura", "EntregaFutura2"
+							];
+
+							that.DropDBTables(vTables);
 
 							if (!that._CreateMaterialFragment) {
 
@@ -611,6 +605,7 @@ sap.ui.define([
 														idEntregaFutura: retornoEntregaFutura.results[i].Vbeln + retornoEntregaFutura.results[i].Matnr,
 														IRepresentante: retornoEntregaFutura.results[i].IRepresentante,
 														Vbeln: retornoEntregaFutura.results[i].Vbeln,
+														Posnr: retornoEntregaFutura.results[i].Posnr,
 														Kunrg: retornoEntregaFutura.results[i].Kunrg,
 														Aubel: retornoEntregaFutura.results[i].Aubel,
 														Aupos: retornoEntregaFutura.results[i].Aupos,
@@ -1462,6 +1457,7 @@ sap.ui.define([
 							var numVersao = that.getOwnerComponent().getModel("modelAux").getProperty("/versaoApp");
 							that.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", true);
 
+							that.getOwnerComponent().getModel("modelAux").setProperty("/homeVisible", true);
 							sap.ui.core.UIComponent.getRouterFor(that).navTo("menu");
 						} else {
 							MessageBox.show(
@@ -1476,6 +1472,10 @@ sap.ui.define([
 						}
 					};
 				};
+			},
+			
+			onEnviarDocs: function() {
+				sap.ui.core.UIComponent.getRouterFor(this).navTo("enviarPedidos");
 			},
 
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DIALOG CREDENCIAIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

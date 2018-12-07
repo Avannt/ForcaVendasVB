@@ -10,11 +10,6 @@
 		"title": "Entrega Futura",
 		"info": "Entrega Futura"
 	},{
-		"id": "envioPedidos",
-		"icon": "upload",
-		"title": "Enviar",
-		"info": "Envio de Pedidos"
-	},{
 		"id": "aprovacoes",
 		"icon": "approvals",
 		"title": "Aprovações",
