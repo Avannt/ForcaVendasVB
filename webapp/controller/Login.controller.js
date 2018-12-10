@@ -336,8 +336,10 @@ sap.ui.define([
 							if (result != null || result != undefined) {
 								//var sData = that.retornaDataAtualizacao(result.dataAtualizacao);
 
-								that.getOwnerComponent().getModel("modelAux").setProperty("/CodUsr", result.codUsr);
 								that.getOwnerComponent().getModel("modelAux").setProperty("/CodRepres", result.codRepres);
+								that.getOwnerComponent().getModel("modelAux").setProperty("/CodUsr", result.codUsr);
+								that.getOwnerComponent().getModel("modelAux").setProperty("/Tipousuario", result.tipousuario);
+
 								that.getOwnerComponent().getModel("modelAux").setProperty("/DataAtualizacao", result.dataAtualizacao);
 							}
 						};
