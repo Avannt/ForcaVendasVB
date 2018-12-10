@@ -18,12 +18,18 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente desconto" class="bold" busyIndicatorSize="Large"/>
-					<Input id="idExcedenteDesconto" value="R$: {ItemAprovar>/Valtotexcdesc}" class="desabilitado marginBottomInpu" enabled="false"/>
+					<Input id="idExcedenteDesconto" value="R$: {ItemAprovar>/Vlrdsc}" class="desabilitado marginBottomInpu" enabled="false"/>
 					<Label text="Verba de Marketing (R$)"/>
-					<Input id="idVerbaUtilizadaDesconto" value="{ItemAprovar>/Valverbautdesc}" type="Number" liveChange="onValidaVerbaUtilizadaDesconto"
+					<Input id="idVerbaUtilizadaDesconto" value="{ItemAprovar>/Vlrdscvm}" type="Number" liveChange="onValidaVerbaUtilizadaDesconto"
 						enabled="true"/>
 					<Label text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaDesconto" value="{ItemAprovar>/Valcomutdesc}" type="Number" liveChange="onValidaComissaoUtilizadaDesconto"
+					<Input id="idComissaoUtilizadaDesconto" value="{ItemAprovar>/Vlrdsccom}" type="Number" liveChange="onValidaComissaoUtilizadaDesconto"
+						enabled="true"/>
+					<Label text="Verba D + D (R$)" />
+					<Input id="idVerbaDiaDiaUtilizadaDesconto" value="{ItemAprovar>/Vlrdscdd}" type="Number" liveChange="onValidaVerbaUtilizadaDesconto"
+						enabled="true"/>
+					<Label text="Comissão (R$)"/>
+					<Input id="idVerbaVBUtilizadaDesconto" value="{ItemAprovar>/Vlrdscvvb}" type="Number" liveChange="onValidaComissaoUtilizadaDesconto"
 						enabled="true"/>
 				</form:content>
 			</form:SimpleForm>
@@ -32,11 +38,15 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente prazo médio" class="bold"/>
-					<Input id="idExcedentePrazo" value="R$: {ItemAprovar>/Valtotexcprazo}" enabled="false" class="desabilitado"/>
+					<Input id="idExcedentePrazo" value="R$: {ItemAprovar>/Vlrprz}" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing"/>
-					<Input id="idVerbaPrazo" enabled="true" type="Number" value="{ItemAprovar>/Valcomutprazo}"/>
+					<Input id="idVerbaPrazo" enabled="true" type="Number" value="{ItemAprovar>/Vlrprzvm}"/>
 					<Label text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaPrazo" type="Number" value="{ItemAprovar>/Valcomutprazo}" enabled="true"/>
+					<Input id="idComissaoUtilizadaPrazo" type="Number" value="{ItemAprovar>/Vlrprzcom}" enabled="true"/>
+					<Label text="Verba D + D (R$)"/>
+					<Input id="idVerbaDiaDiaUtilizadaPrazo" type="Number" value="{ItemAprovar>/Vlrprzdd}" enabled="true"/>
+					<Label text="Verba VB (R$)"/>
+					<Input id="idVerbaVBUtilizadaPrazo" type="Number" value="{ItemAprovar>/Vlrprzvvb}" enabled="true"/>
 				</form:content>
 			</form:SimpleForm>
 			
@@ -44,11 +54,15 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente brinde" class="bold"/>
-					<Input id="idExcedenteBrinde" value="R$: {modelDadosPedido>/ValTotalExcedenteBrinde}" enabled="false" class="desabilitado"/>
+					<Input id="idExcedenteBrinde" value="R$: {ItemAprovar>/Vlrbri}" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
-					<Input id="idVerbaUtilizadaBrinde" value="{modelDadosPedido>/ValUtilizadoVerbaBrinde}" enabled="true" type="Number" />
+					<Input id="idVerbaUtilizadaBrinde" value="{ItemAprovar>/Vlrbrivm}" enabled="true" type="Number" />
 					<Label text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaBrinde" value="{modelDadosPedido>/ValUtilizadoComissaoBrinde}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+					<Input id="idComissaoUtilizadaBrinde" value="{ItemAprovar>/Vlrbricom}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+					<Label text="Verba D + D (R$)"/>
+					<Input id="idVerbaDiaDiaUtilizadaBrinde" value="{ItemAprovar>/Vlrbridd}" enabled="true" type="Number" />
+					<Label text="Verba VB (R$)"/>
+					<Input id="idVerbaVBUtilizadaBrinde" value="{ItemAprovar>/Vlrbrivvb}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 				</form:content>
 			</form:SimpleForm>
 			
@@ -56,11 +70,15 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente amostra" class="bold"/>
-					<Input id="idExcedenteAmostra" value="R$: {modelDadosPedido>/ValTotalExcedenteAmostra}" enabled="false" class="desabilitado"/>
+					<Input id="idExcedenteAmostra" value="R$: {ItemAprovar>/Vlramo}" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
-					<Input id="idVerbaUtilizadaAmostra" value="{modelDadosPedido>/ValUtilizadoVerbaAmostra}" enabled="true" type="Number" />
+					<Input id="idVerbaUtilizadaAmostra" value="{ItemAprovar>/Vlramovm}" enabled="true" type="Number" />
 					<Label text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaAmostra" value="{modelDadosPedido>/Vlramocom}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+					<Input id="idComissaoUtilizadaAmostra" value="{ItemAprovar>/Vlramocom}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+					<Label text="Verba D + D (R$)"/>
+					<Input id="idVerbaDiaDiaUtilizadaAmostra" value="{ItemAprovar>/Vlramodd}" enabled="true" type="Number" />
+					<Label text="Verba VB (R$)"/>
+					<Input id="idVerbaVBUtilizadaAmostra" value="{ItemAprovar>/Vlramovvb}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 				</form:content>
 			</form:SimpleForm>
 			
@@ -68,11 +86,15 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente bonificação" class="bold"/>
-					<Input id="idExcedenteBonif" value="R$: {modelDadosPedido>/ValTotalExcedenteBonif}" enabled="false" class="desabilitado"/>
+					<Input id="idExcedenteBonif" value="R$: {ItemAprovar>/Vlrbon}" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
-					<Input id="idVerbaUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoVerbaBonif}" enabled="true" type="Number" />
+					<Input id="idVerbaUtilizadaBonif" value="{ItemAprovar>/Vlrbrivm}" enabled="true" type="Number" />
 					<Label text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoComissaoBonif}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+					<Input id="idComissaoUtilizadaBonif" value="{ItemAprovar>/Vlrboncom}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+					<Label text="Verba D + D (R$)"/>
+					<Input id="idVerbaDiaDiaUtilizadaBonif" value="{ItemAprovar>/Vlrbondd}" enabled="true" type="Number" />
+					<Label text="Verba VB (R$)"/>
+					<Input id="idVerbaVBUtilizadaBonf" value="{ItemAprovar>/Vlrbrivvb}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 				</form:content>
 			</form:SimpleForm>
 		</content>
