@@ -33,8 +33,8 @@
 				<form:content>
 					<Label text="Valor excedente prazo médio" class="bold"/>
 					<Input id="idExcedentePrazo" value="R$: {ItemAprovar>/Valtotexcprazo}" enabled="false" class="desabilitado"/>
-					<!--<Label text="Verba de Marketing"/>-->
-					<!--<Input id="idVerbaPrazo" enabled="true" type="Number" />-->
+					<Label text="Verba de Marketing"/>
+					<Input id="idVerbaPrazo" enabled="true" type="Number" value="{ItemAprovar>/Valcomutprazo}"/>
 					<Label text="Comissão (R$)"/>
 					<Input id="idComissaoUtilizadaPrazo" type="Number" value="{ItemAprovar>/Valcomutprazo}" enabled="true"/>
 				</form:content>
@@ -60,7 +60,7 @@
 					<Label text="Verba de Marketing (R$)"/>
 					<Input id="idVerbaUtilizadaAmostra" value="{modelDadosPedido>/ValUtilizadoVerbaAmostra}" enabled="true" type="Number" />
 					<Label text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaAmostra" value="{modelDadosPedido>/ValUtilizadoComissaoAmostra}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+					<Input id="idComissaoUtilizadaAmostra" value="{modelDadosPedido>/Vlramocom}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 				</form:content>
 			</form:SimpleForm>
 			
