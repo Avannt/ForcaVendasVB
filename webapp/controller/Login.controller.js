@@ -740,12 +740,14 @@ sap.ui.define([
 																			};
 
 																			var requestTitulosAbertos = objTitulosAbertos.add(objBancoTitulosAbertos);
-
+																			
 																			requestTitulosAbertos.onsuccess = function (event) {
+																				event.stopPropagation();
 																				console.log("Dados TitulosAbertos inseridos");
 																			};
 																			requestTitulosAbertos.onerror = function (event) {
-																				console.log("Dados TitulosAbertos não foram inseridos :" + event);
+																				event.stopPropagation();
+																				console.log("Dados TitulosAbertos não foram inseridos :" + event.srcElement.error);
 																			};
 																		}
 
@@ -1473,9 +1475,64 @@ sap.ui.define([
 					};
 				};
 			},
-			
-			onEnviarDocs: function() {
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("enviarPedidos");
+
+			onEnviarDocs: function () {
+				var that = this;
+
+				var open = indexedDB.open("VB_DataBase");
+
+				open.onerror = function (hxr) {
+					console.log("Erro ao abrir tabelas.");
+					console.log(hxr.Message);
+				};
+
+				open.onsuccess = function (e) {
+					var db = e.target.result;
+					var tx = db.transaction("Usuarios", "readwrite");
+					var objUsuarios = tx.objectStore("Usuarios");
+					var Werks = that.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
+
+					var request = objUsuarios.get(Werks);
+
+					/* Verifico se existe a tabela de Usuários.*/
+					request.onsuccess = function (e1) {
+						var result1 = e1.target.result;
+
+						if (result1 == undefined) {
+							MessageBox.show(
+								"Por Favor atualize o banco de dados para conectar no sistema.", {
+									icon: MessageBox.Icon.ERROR,
+									title: "Banco de dados desatualizado",
+									actions: [MessageBox.Action.OK],
+									onClose: function () {
+										return;
+									}
+								});
+
+						} else {
+							sap.m.MessageBox.warning(
+								"Escolha o documento que gostaria de enviar.", {
+									title: "Envio de documentos",
+									actions: ["Pedido", "Entrega", sap.m.MessageBox.Action.CANCEL],
+									onClose: function (sAction) {
+										switch (sAction) {
+										case "Pedido":
+											that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
+											sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
+											break;
+										case "Entrega":
+											that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", false);
+											sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
+											break;
+										case "CANCEL":
+											return;
+										}
+									}
+								}
+							);
+						}
+					};
+				};
 			},
 
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DIALOG CREDENCIAIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
