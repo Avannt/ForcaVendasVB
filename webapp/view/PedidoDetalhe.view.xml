@@ -191,8 +191,8 @@
 										<f:content>
 											<Label text="Valor excedente prazo médio" class="bold"/>
 											<Input id="idExcedentePrazo" value="R$: {modelDadosPedido>/ValTotalExcedentePrazoMed}" enabled="false" class="desabilitado"/>
-											<!--<Label text="Verba de Marketing"/>-->
-											<!--<Input id="idVerbaPrazo" enabled="true" type="Number" />-->
+											<Label text="Verba de Marketing"/>
+											<Input id="idVerbaPrazo" value="{modelDadosPedido>/ValUtilizadoVerbaPrazoMed}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 											<Label text="Comissão (R$)"/>
 											<Input id="idComissaoUtilizadaPrazo" value="{modelDadosPedido>/ValUtilizadoComissaoPrazoMed}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
 										</f:content>
@@ -230,7 +230,7 @@
 											<Label text="Verba de Marketing (R$)"/>
 											<Input id="idVerbaUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoVerbaBonif}" enabled="true" type="Number" />
 											<Label text="Comissão (R$)"/>
-											<Input id="idComissaoUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoComissaoBonif}" liveChange="onValidaComissaoUtilizadaPrazoMedio" enabled="true" />
+											<Input id="idComissaoUtilizadaBonif" value="{modelDadosPedido>/ValUtilizadoComissaoBonif}" liveChange="onValidaComissaoUtilizadaBonif" enabled="true" />
 										</f:content>
 									</f:SimpleForm>
 									
@@ -264,7 +264,7 @@
 									</f:SimpleForm>
 									<Toolbar>
 										<ToolbarSpacer/>
-										<Button id="idTransferirVerbas" text="Aplicar Balanço" type="Accept" press="onInicioBalancoVerbas"/>
+										<!--<Button id="idTransferirVerbas" text="Aplicar Balanço" type="Accept" press="onInicioBalancoVerbas"/>-->
 									</Toolbar>
 								</ScrollContainer>
 							</IconTabFilter>
@@ -307,6 +307,12 @@
 											<Input id="idAbaterNaoDestinadoDesconto" value="R$ {modelDadosPedido>/ValTotalExcedenteNaoDirecionadoDesconto}" enabled="false" class="desabilitado"/>
 											<Label text="Valor sem destinar Prazo Médio"/>
 											<Input id="idAbaterNaoDestinadoPrazoMed" value="R$ {modelDadosPedido>/ValTotalExcedenteNaoDirecionadoPrazoMed}" enabled="false" class="desabilitado"/>
+											<Label text="Valor sem destinar Brinde"/>
+											<Input id="idAbaterNaoDestinadoBrinde" value="R$ {modelDadosPedido>/ValTotalExcedenteNaoDirecionadoBrinde}" enabled="false" class="desabilitado"/>
+											<Label text="Valor sem destinar Amostra"/>
+											<Input id="idAbaterNaoDestinadoAmostra" value="R$ {modelDadosPedido>/ValTotalExcedenteNaoDirecionadoAmostra}" enabled="false" class="desabilitado"/>
+											<Label text="Valor sem destinar Bonificação"/>
+											<Input id="idAbaterNaoDestinadoBonif" value="R$ {modelDadosPedido>/ValTotalExcedenteNaoDirecionadoBonif}" enabled="false" class="desabilitado"/>
 										</f:content>
 									</f:SimpleForm>
 								
