@@ -16,7 +16,7 @@
 											<Input id="idCodCliente" value="" enabled="false"/>
 											<Label text="Nome"/>
 											<Input id="idNome" value="" enabled="false"/>
-											<Label text="CNPJ"/>
+											<Label text="CPF/CNPJ"/>
 											<Input id="idCNPJ" value="" enabled="false"/>
 											<Label text="Endereço"/>
 											<Input id="idEndereco" value="" enabled="false"/>

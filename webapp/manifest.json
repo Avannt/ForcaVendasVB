@@ -67,12 +67,11 @@
 			"": {
 				"type": "sap.ui.model.odata.v2.ODataModel",
 				"settings": {
-					"defaultOperationMode": "Server",
+					"defaultOperationMode": "Auto",
 					"defaultBindingMode": "TwoWay",
-					"defaultCountMode": "Request"
+					"defaultCountMode": "Both"
 				},
-				"dataSource": "ZFORCA_VENDAS_VB_SRV",
-				"preload": false
+				"dataSource": "ZFORCA_VENDAS_VB_SRV"
 			}
 		},
 		"resources": {
