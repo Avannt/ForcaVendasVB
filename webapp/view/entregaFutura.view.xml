@@ -29,7 +29,7 @@
 						<SearchField id="sfItem" width="100%" placeholder="Pesquisar item..." enableSuggestions="true" search="sfItemSearch" suggest="sfItemSuggest"
 							suggestionItems="{ path: 'ItensEF>/' }">
 							<suggestionItems>
-								<SuggestionItem text="{ItensEF>Matnr}" description="{ItensEF>Arktx} (Saldo: {path: 'ItensEF>Sldfut', type: 'sap.ui.model.type.Integer'})" key="{ItensEF>Matnr}" > 
+								<SuggestionItem text="{ItensEF>Matnr}" description="{ItensEF>Arktx}" key="{ItensEF>Matnr}" > 
 								</SuggestionItem>
 							</suggestionItems>
 						</SearchField>

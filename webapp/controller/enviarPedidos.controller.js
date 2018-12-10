@@ -533,82 +533,95 @@ sap.ui.define([
 								}
 							}
 
+							var vetorPromise = [];
+
 							/* Percorro o vetor para enviar ao Sap */
 							for (var i = 0; i < vItensEntregar.length; i++) {
-								var oItemEntregar = vItensEntregar[i];
-								var tmpItem = {
-									Arktx: oItemEntregar.Arktx,
-									Aubel: oItemEntregar.Aubel,
-									Aupos: oItemEntregar.Aupos,
-									Bstkd: oItemEntregar.Bstkd,
-									Fkimg: String(oItemEntregar.Fkimg),
-									Fkimg2: String(oItemEntregar.Fkimg2),
-									Kunrg: oItemEntregar.Kunrg,
-									Lifnr: oItemEntregar.Lifnr,
-									Matnr: oItemEntregar.Matnr,
-									NameOrg1: oItemEntregar.NameOrg1,
-									NameOrg2: oItemEntregar.NameOrg2,
-									Posnr: oItemEntregar.Posnr,
-									Sldfut: String(oItemEntregar.Sldfut),
-									Ultitm: oItemEntregar.Ultitm,
-									Vbeln: oItemEntregar.Vbeln,
-								};
+								vetorPromise.push(new Promise(function (resolve, reject) {
 
-								oModel.create("/EntregaFuturaRetorno", tmpItem, {
-									method: "POST",
-									success: function (data) {
-										var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
+									var oItemEntregar = vItensEntregar[i];
+									var tmpItem = {
+										Arktx: oItemEntregar.Arktx,
+										Aubel: oItemEntregar.Aubel,
+										Aupos: oItemEntregar.Aupos,
+										Bstkd: oItemEntregar.Bstkd,
+										Fkimg: String(oItemEntregar.Fkimg),
+										Fkimg2: String(oItemEntregar.Fkimg2),
+										Kunrg: oItemEntregar.Kunrg,
+										Lifnr: oItemEntregar.Lifnr,
+										Matnr: oItemEntregar.Matnr,
+										NameOrg1: oItemEntregar.NameOrg1,
+										NameOrg2: oItemEntregar.NameOrg2,
+										Posnr: oItemEntregar.Posnr,
+										Sldfut: String(oItemEntregar.Sldfut),
+										Ultitm: oItemEntregar.Ultitm,
+										Vbeln: oItemEntregar.Vbeln,
+									};
 
-										requestGetEntrega.onsuccess = function (e) {
-											var oEntrega = e.target.result;
+									oModel.create("/EntregaFuturaRetorno", tmpItem, {
+										method: "POST",
+										success: function (data) {
+											tx = db.transaction("EntregaFutura", "readwrite");
+											objItensEntrega = tx.objectStore("EntregaFutura");
 
-											oEntrega.Slddia = oItemEntregar.Fkimg2;
+											var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
 
-											var requestPutEntrega = objItensEntrega.put(oEntrega);
+											requestGetEntrega.onsuccess = function (e) {
+												var oEntrega = e.target.result;
 
-											requestPutEntrega.onsuccess = function (e) {
-												sap.m.MessageBox.show(
-													"Entrega enviado com sucesso.", {
-														icon: sap.m.MessageBox.Icon.SUCCESS,
-														title: "Sucesso",
-														actions: [sap.m.MessageBox.Action.OK]
-													}
-												);
+												oEntrega.Slddia = parseInt(oEntrega.Slddia) + parseInt(oItemEntregar.Fkimg2);
 
-												var txEF2 = db.transaction("EntregaFutura2", "readwrite");
-												var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+												tx = db.transaction("EntregaFutura", "readwrite");
+												objItensEntrega = tx.objectStore("EntregaFutura");
+												var requestPutEntrega = objItensEntrega.put(oEntrega);
 
-												var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
+												requestPutEntrega.onsuccess = function (e) {
+													var sMensagem = "Item " + oItemEntregar.Matnr + " da Entrega " + oItemEntregar.Vbeln +
+														" enviado com sucesso.";
+													sap.m.MessageBox.show(
+														sMensagem, {
+															icon: sap.m.MessageBox.Icon.SUCCESS,
+															title: "Sucesso",
+															actions: [sap.m.MessageBox.Action.OK]
+														}
+													);
 
-												requestDelEntrega2.onsuccess = function (e) {
-													console.info("item ef excluido");
-													that.onLoadEntregas();
+													var txEF2 = db.transaction("EntregaFutura2", "readwrite");
+													var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+													var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
+
+													requestDelEntrega2.onsuccess = function (e) {
+														console.info("item ef excluido");
+														resolve();
+													};
+
+													requestDelEntrega2.onerror = function (e) {
+														console.info(e);
+														reject();
+													};
 												};
 
-												requestDelEntrega2.onerror = function (e) {
-													console.info(e);
+												requestPutEntrega.onerror = function (e) {
+													sap.m.MessageBox.show(
+														"Erro ao enviar pedido.", {
+															icon: sap.m.MessageBox.Icon.ERROR,
+															title: "Erro no programa Fiori!",
+															actions: [sap.m.MessageBox.Action.OK],
+														}
+													);
 												};
-											};
-
-											requestPutEntrega.onerror = function (e) {
-												sap.m.MessageBox.show(
-													"Erro ao enviar pedido.", {
-														icon: sap.m.MessageBox.Icon.ERROR,
-														title: "Erro no programa Fiori!",
-														actions: [sap.m.MessageBox.Action.OK],
-													}
-												);
-											};
-										}; /*requestGetEntrega*/
-									},
-									error: function (error) {
-										that.onMensagemErroODATA(error.statusCode);
-									}
-								});
-
-								var a = 0;
-
+											}; /*requestGetEntrega*/
+										},
+										error: function (error) {
+											that.onMensagemErroODATA(error.statusCode);
+										}
+									});
+								})); /*vetorPromise*/
 							}
+							
+							Promise.all(vetorPromise).then(function (values) {
+								that.onLoadEntregas();
+							});							
 						};
 					}
 				}
