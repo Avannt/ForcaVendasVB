@@ -814,6 +814,9 @@ sap.ui.define([
 							oItemPedido.zzRegraExtra = 0;
 							oItemPedido.zzGrpmatExtra = 0;
 							oItemPedido.tipoItem = "Normal";
+							oItemPedido.tipoItem2 = "Normal";
+							oItemPedido.zzQntDiluicao = 0;
+							oItemPedido.zzValorDiluido = 0;
 							oItemPedido.zzPercDescDiluicao = 0;
 							
 							//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
@@ -1146,8 +1149,9 @@ sap.ui.define([
 										ntgew: objItensPedidoTemplate[i].ntgew,
 										//Desconto normal. *****
 										zzVprodDesc2: objItensPedidoTemplate[i].zzVprodDesc,
+										tipoItem2: "Diluicao",
+										zzQntDiluicao: 0,
 										zzValorDiluido: 0
-										
 									};
 									
 									itemEncontradoDiluicao = true;
@@ -1239,6 +1243,9 @@ sap.ui.define([
 										
 										//Desconto normal. *****
 										oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+										
+										oItemPedido.tipoItem2 = "Diluicao";
+										oItemPedido.zzQntDiluicao = 0;
 										oItemPedido.zzValorDiluido = 0;
 
 										var vetorAuxFamilias = [];
@@ -1506,9 +1513,14 @@ sap.ui.define([
 				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
 				oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
 
-				//Desconto normal. *****
 				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-				oItemPedido.zzValorDiluido = 0;
+				oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
+				oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+				
+			} else if(oItemPedido.tipoItem === "Diluicao"){
+				
+				oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
+				oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
 				
 			} else {
 
@@ -1544,6 +1556,8 @@ sap.ui.define([
 
 				//SOMA TODOS OS DESCONTOS APLICADO NOS ITENS.
 				oItemPedido.zzPercDescTotal += oItemPedido.zzDesitem;
+				oItemPedido.zzQntDiluicao = 0;
+				oItemPedido.zzValorDiluido = 0;
 			}
 
 			//calcula a multiplicação pela quantidade depois que o valor unitário está calculado.
@@ -1604,7 +1618,7 @@ sap.ui.define([
 					//VALOR DE VERBA GERADA NO PEDIDO
 					totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) * objItensPedidoTemplate[i].zzQnt;
 					
-					var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) /	100;
+					var valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
 					objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
 
 					if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
@@ -1644,16 +1658,16 @@ sap.ui.define([
 			//Calculo do acréscimo de prazo médio .
 			percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
 			valorTotalAcresPrazoMed = Math.round(parseFloat(TotalPedidoDesc * (percAcresPrazoMed / 100) * 100)) / 100;
-
+			
 			//Calculando total de desconto dado.
 			TotalPedidoDesc = Math.round(parseFloat(TotalPedidoDesc * 100)) / 100;
-
+			
 			var descontoTotal = Total - TotalPedidoDesc;
 			descontoTotal = Math.round(parseFloat(descontoTotal * 100)) / 100;
 			
 			console.log(totalExcedenteDescontosDiluicao);
 			console.log(totalExcedenteDescontos);
-			totalExcedenteDescontos = Math.abs(Math.round(totalExcedenteDescontos * 100) / 100);
+			totalExcedenteDescontos = Math.abs(Math.round(totalExcedenteDescontos * 10000) / 10000);
 			
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", totalExcedenteDescontosDiluicao);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedentePrazoMed", valorTotalAcresPrazoMed);
@@ -1744,12 +1758,10 @@ sap.ui.define([
 
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 				that.byId("idComissaoUtilizadaDesconto").setValueState("Error");
-				that.byId("idComissaoUtilizadaDesconto").setValueStateText(
-					"Valor destinado para abater o excedente de descontos ultrapassou o valor total necessário. Desconto Excedente (" +
+				that.byId("idComissaoUtilizadaDesconto").setValueStateText("Valor destinado para abater o excedente de descontos ultrapassou o valor total necessário. Desconto Excedente (" +
 					totalExcedenteDescontos + ")");
 				that.byId("idVerbaUtilizadaDesconto").setValueState("Error");
-				that.byId("idVerbaUtilizadaDesconto").setValueStateText(
-					"Valor destinado para abater o excedente de descontos ultrapassou o valor total necessário. Desconto Excedente (" +
+				that.byId("idVerbaUtilizadaDesconto").setValueStateText("Valor destinado para abater o excedente de descontos ultrapassou o valor total necessário. Desconto Excedente (" +
 					totalExcedenteDescontos + ")");
 				that.byId("idVerbaUtilizadaDesconto").focus();
 
@@ -1807,10 +1819,11 @@ sap.ui.define([
 					}
 				}
 				
-				totalPercentualDiluicaoDado = Math.round((TotalDiluicao / TotalNormal) * 100);
+				totalPercentualDiluicaoDado = Math.round((TotalDiluicao / TotalNormal) * 10000);
+				totalPercentualDiluicaoDado = totalPercentualDiluicaoDado / 10000;
 				
 				if(totalPercentualDiluicaoDado > 0.30){
-					MessageBox.show("Quantidade de descontos ultrapassa o máximo permitido (30%) - máximo dado (" + totalPercentualDiluicaoDado + "%)", {
+					MessageBox.show("Quantidade de descontos ultrapassa o máximo permitido (30%) - máximo dado (" + Math.round(totalPercentualDiluicaoDado * 100) + "%)", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Corrigir o itens a ser diluidos!",
 						actions: [MessageBox.Action.OK]
@@ -1888,6 +1901,8 @@ sap.ui.define([
 											//Desconto normal. *****
 											zzVprodDesc2: objItensPedidoTemplate[i].zzVprodDesc,
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
+											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
+											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
 											zzValorDiluido: 0
 										};
 										
@@ -1930,7 +1945,9 @@ sap.ui.define([
 											zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt,
 											zzVprodDesc2: objItensPedidoTemplate[i].zzVprodDesc,
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
-											zzValorDiluido: 0
+											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
+											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
+											zzValorDiluido: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQntDiluicao
 										};
 										
 										vetorAux.push(objAuxItem1);
@@ -1975,7 +1992,9 @@ sap.ui.define([
 											zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt,
 											zzVprodDesc2: objItensPedidoTemplate[i].zzVprodDesc,
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
-											zzValorDiluido: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt
+											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
+											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
+											zzValorDiluido: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQntDiluicao,
 										};
 										
 										vetorAux.push(objAuxItem2);
@@ -2007,6 +2026,8 @@ sap.ui.define([
 										vetorAux[m].zzQnt += objItensPedidoTemplate[l].zzQnt;
 										vetorAux[m].zzVprodDescTotal = vetorAux[m].zzVprodDesc * vetorAux[m].zzQnt;
 										vetorAux[m].zzVprodDesc = vetorAux[m].zzVprodDesc;
+										vetorAux[m].zzQntDiluicao = vetorAux[m].zzQntDiluicao;
+										vetorAux[m].zzValorDiluido = vetorAux[m].zzQntDiluicao * vetorAux[m].zzVprodDesc;
 									}
 								}
 							}
@@ -2203,7 +2224,7 @@ sap.ui.define([
 
 				//Ordenando para desconto Familia normal
 				vetorGeral.sort(function (a, b) {
-					return parseInt(a.zzGrpmat) - parseInt(b.zzGrpmat);
+					return parseInt(a.kstbm) - parseInt(b.kstbm);
 				});
 
 				for (var o = 0; o < vetorGeral.length; o++) {
@@ -2330,7 +2351,7 @@ sap.ui.define([
 				}
 
 				vetorAuxFamilia.sort(function (a, b) {
-					return a.zzGrpmat - b.zzGrpmat;
+					return a.kstbm - b.kstbm;
 				});
 
 				//Vetor da familia ordenado pela quantidade (menor primeiro), se o kra for menor (break) e usa o desconto.
@@ -2369,7 +2390,7 @@ sap.ui.define([
 				}
 
 				vetorAuxFamilia.sort(function (a, b) {
-					return a.zzGrpmat - b.zzGrpmat;
+					return a.kstbm - b.kstbm;
 				});
 
 				//Vetor da familia ordenado pela quantidade (menor primeiro), se o kra for menor (break) e usa o desconto.
@@ -3103,6 +3124,8 @@ sap.ui.define([
 			if (that._ItemDialog) {
 				that._ItemDialog.destroy(true);
 			}
+			
+			
 
 			that._ItemDialog = sap.ui.xmlfragment(
 				"testeui5.view.ItemDialog",
@@ -3112,6 +3135,14 @@ sap.ui.define([
 
 			that._ItemDialog.open();
 			that.popularCamposItemPedido();
+			
+			if(oItemPedido.tipoItem == "Diluicao"){
+				sap.ui.getCore().byId("idDesconto").setEnabled(false);
+				
+			}else{
+				sap.ui.getCore().byId("idDesconto").setEnabled(true);
+				
+			}
 			sap.ui.getCore().byId("idItemPedido").setEnabled(false);
 		},
 
@@ -3131,9 +3162,9 @@ sap.ui.define([
 				MessageBox.show("Deseja excluir o item " + idItem + "?", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Exclusão de Item!",
-					actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+					actions: ["Excluir", "Cancelar"],
 					onClose: function (oAction) {
-						if (oAction === sap.m.MessageBox.Action.YES) {
+						if (oAction === "Excluir") {
 
 							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 								if (objItensPedidoTemplate[i].idItemPedido === idItemPedido) {
@@ -3738,6 +3769,15 @@ sap.ui.define([
 		},
 
 		onBloqueiaPrePedido: function () {
+			
+			for(var i=0; i<objItensPedidoTemplate.length; i++){
+				if(objItensPedidoTemplate[i].tipoItem == "Diluicao"){
+					this.byId("idDiluirItens").setEnabled(true);
+					break;
+				}else{
+					this.byId("idDiluirItens").setEnabled(false);
+				}
+			}
 
 			if (objItensPedidoTemplate.length > 0) {
 

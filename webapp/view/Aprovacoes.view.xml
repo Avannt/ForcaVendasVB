@@ -15,7 +15,7 @@
 		</subHeader>
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
-				<Table id="idTableEnvioPedidos" busyIndicatorDelay="500" growing="true" growingScrollToLoad="true" mode="SingleSelect"
+				<Table id="idTableEnvioPedidos" busyIndicatorDelay="0" growing="true" growingScrollToLoad="true" mode="SingleSelect"
 					noDataText="Nenhum Pedido Pendente" updateFinished="onUpdateFinished" width="100%" alternateRowColors="true"
 					items="{ path: 'PedidosAprovar>/', sorter: { path: 'Cliente', descending: false, parameter: 'Codigo'}}">
 					<columns>
