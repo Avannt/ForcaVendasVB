@@ -235,7 +235,7 @@ sap.ui.define([
 		},
 
 		showId: function() {
-			var id = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+			var id = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
 			if (id == 'undefined' || id == "" || id == null) {
 				sap.m.MessageToast.show("Selecione uma empresa e/ou faça login.", {
 					duration: 5000

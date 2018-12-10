@@ -336,6 +336,7 @@ sap.ui.define([
 							if (result != null || result != undefined) {
 								//var sData = that.retornaDataAtualizacao(result.dataAtualizacao);
 
+								that.getOwnerComponent().getModel("modelAux").setProperty("/CodUsr", result.codUsr);
 								that.getOwnerComponent().getModel("modelAux").setProperty("/CodRepres", result.codRepres);
 								that.getOwnerComponent().getModel("modelAux").setProperty("/DataAtualizacao", result.dataAtualizacao);
 							}
@@ -1657,7 +1658,7 @@ sap.ui.define([
 						var result = e.target.result;
 						if (result !== null && result !== undefined) {
 
-							sap.ui.getCore().byId("idUsuario").setValue(result.codRepres);
+							sap.ui.getCore().byId("idUsuario").setValue(result.codUsr);
 							sap.ui.getCore().byId("idUsuario").setEnabled(false);
 
 							sap.ui.getCore().byId("idSenha").setValue(result.senha);
@@ -1717,14 +1718,14 @@ sap.ui.define([
 
 				// this.getImei();
 				var dataAtualizacao = this.retornaDataAtualizacao();
-				var codRepres = sap.ui.getCore().byId("idUsuario").getValue();
+				var codUsr = sap.ui.getCore().byId("idUsuario").getValue();
 				var senha = sap.ui.getCore().byId("idSenha").getValue();
 				var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
 				var imeiCelular = this.getOwnerComponent().getModel("modelAux").getProperty("/Imei");
 				imeiCelular = "123456";
 				var numVersao = that.getOwnerComponent().getModel("modelAux").getProperty("/VersaoApp");
 
-				if (codRepres === "") {
+				if (codUsr === "") {
 					sap.m.MessageBox.show(
 						"Preencher o campo Usuário.", {
 							icon: sap.m.MessageBox.Icon.WARNING,
@@ -1755,7 +1756,7 @@ sap.ui.define([
 					oModel.setProperty("password", "sap123");
 					sap.ui.getCore().byId("idDialogLogin").setBusy(true);
 
-					oModel.read("/Login(IvCodRepres='" + codRepres + "',IvWerks='" + werks + "',IvSenha='" + senha +
+					oModel.read("/Login(IvCodRepres='" + codUsr + "',IvWerks='" + werks + "',IvSenha='" + senha +
 						"',IvImei='" + imeiCelular + "',IvVersaoapp='" + numVersao + "')", {
 							success: function (retorno) {
 								if (retorno.EvRettyp == "E") {
@@ -1792,17 +1793,20 @@ sap.ui.define([
 										var request = objectStoreUsuarios.get(werks);
 
 										request.onsuccess = function (e1) {
-
 											var result = e1.target.result;
+
+											var codRepres = retorno.CodRepres;
 
 											var entryUsuario = {
 												// idEmpresa: werks + "." + codRepres,
 												werks: werks,
 												dataAtualizacao: "", // Deixo em branco, essa info somente sera atualizada no clique do botao atualizar, caso ocorra tudo corretamente
-												codRepres: codRepres,
+												codUsr: codUsr,
 												senha: senha,
 												imei: imeiCelular,
 												numVersao: numVersao,
+												codRepres: codRepres,
+												tipousuario: retorno.Tipousuario,
 												utilcampAmo: retorno.UtilcampAmo,
 												utilcampBri: retorno.UtilcampBri,
 												utilcampDesc: retorno.UtilcampDesc,
@@ -1832,6 +1836,8 @@ sap.ui.define([
 														onClose: function () {
 
 															that.getOwnerComponent().getModel("modelAux").setProperty("/CodRepres", codRepres);
+															that.getOwnerComponent().getModel("modelAux").setProperty("/CodUsr", codUsr);
+															that.getOwnerComponent().getModel("modelAux").setProperty("/Tipousuario", retorno.Tipousuario);
 															sap.ui.getCore().byId("idUsuario").setProperty("enabled", false);
 															sap.ui.getCore().byId("idSenha").setProperty("enabled", false);
 
