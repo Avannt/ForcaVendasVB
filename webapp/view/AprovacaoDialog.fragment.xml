@@ -26,7 +26,7 @@
 					<Input id="idComissaoUtilizadaDesconto" value="{ItemAprovar>/Vlrdsccom}" type="Number" liveChange="onValidaComissaoUtilizadaDesconto"
 						enabled="true"/>
 					<Label text="Verba D + D (R$)" />
-					<Input id="idVerbaDiaDiaUtilizadaDesconto" value="{ItemAprovar>/Vlrdscdd}" type="Number" liveChange="onValidaVerbaUtilizadaDesconto"
+					<Input id="idVerbaDiaDiaUtilizadaDesconto" value="{ItemAprovar>/Vlrdscdd}" type="Number" textFormatter="teste" liveChange="onValidaVerbaUtilizadaDesconto"
 						enabled="true"/>
 					<Label text="Comissão (R$)"/>
 					<Input id="idVerbaVBUtilizadaDesconto" value="{ItemAprovar>/Vlrdscvvb}" type="Number" liveChange="onValidaComissaoUtilizadaDesconto"

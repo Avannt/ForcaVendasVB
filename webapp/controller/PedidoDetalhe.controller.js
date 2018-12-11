@@ -456,7 +456,8 @@ sap.ui.define([
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
 							that.onBloqueiaPrePedido();
-							that.calculaTotalPedido();
+							that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
+							// that.calculaTotalPedido();
 						}
 					};
 				}
@@ -1585,12 +1586,12 @@ sap.ui.define([
 			var percAcresPrazoMed = 0;
 			var totalComissaoGerada = 0;
 			var totalVerbaUtilizada = 0;
-			var verbaUtilizadaDesconto = 0;
 			var totalComissaoUtilizada = 0;
 			var totalExcedenteDescontos = 0;
 			var valorTotalAcresPrazoMed = 0;
-			var comissaoUtilizadaDesconto = 0;
-			var comissaoUtilizadaPrazoMed = 0;
+			var valorTotalAcresBonif= 0;
+			var valorTotalAcresAmostra = 0;
+			var valorTotalAcresBrinde = 0;
 			var valorNaoDirecionadoDesconto = 0;
 			var valorNaoDirecionadoPrazoMed = 0;
 			var valorNaoDirecionadoAmostra = 0;
@@ -1601,6 +1602,25 @@ sap.ui.define([
 			var percEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
 			var quantidadeParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"));
 			var totalExcedenteDescontosDiluicao = 0;
+			
+			//Valores utilizados para abater de verbas e comissões.
+			var verbaUtilizadaDesconto = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
+			var comissaoUtilizadaDesconto = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto");
+			
+			var comissaoUtilizadaPrazoMed = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
+			var valUtilizadoVerbaPrazoMed = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaPrazoMed");
+			
+			var valUtilizadoVerbaBrinde = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBrinde");
+			var valUtilizadoComissaoBrinde = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBrinde");
+			var valTotalExcedenteBrinde = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde");
+			
+			var valUtilizadoVerbaAmostra = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaAmostra");
+			var valUtilizadoComissaoAmostra = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoAmostra");
+			var valTotalExcedenteAmostra = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteAmostra");
+			
+			var valUtilizadoVerbaBonif = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif");
+			var valUtilizadoComissaoBonif = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif");
+			var valTotalExcedenteBonif = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif");
 			
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
@@ -1703,12 +1723,6 @@ sap.ui.define([
 			// TODO: Precisa ser feito a comparação da verba que o kra tem pra ver se ele ele excedeu o tanto de verba que ele tem.
 			// TODO: A comissão precisa ser travada apenas se o total do valor gerado de comissão no proprio pedido for menor que o valor destiando para descontar.
 			
-			//Valores utilizados para abater de verbas e comissões.
-			verbaUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
-			comissaoUtilizadaDesconto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto");
-			comissaoUtilizadaPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
-			
-			
 			console.log("Verba: " + verbaUtilizadaDesconto + ". Comissão: " + comissaoUtilizadaDesconto + ". Comissão PM: " + comissaoUtilizadaPrazoMed);
 				
 			//VALOR NAO DIRECIONADO NO BALANÇO DE VERBAS. UMA VEZ QUE GEROU UMA DIFERENÇA.. GERARÁ WORKFLOW DE APROVAÇÃO;
@@ -1716,37 +1730,35 @@ sap.ui.define([
 			valorNaoDirecionadoDesconto = Math.round((totalExcedenteDescontos - (verbaUtilizadaDesconto + comissaoUtilizadaDesconto)) * 100) / 100;
 				
 			console.log("VALOR NÃO DIRECIONADO PRAZO MÉDIO.");
-			valorNaoDirecionadoPrazoMed = Math.round((valorTotalAcresPrazoMed - comissaoUtilizadaPrazoMed) * 100) / 100;
+			valorNaoDirecionadoPrazoMed = Math.round((valorTotalAcresPrazoMed - (valUtilizadoVerbaPrazoMed + comissaoUtilizadaPrazoMed)) * 100) / 100;
 			
 			console.log("VALOR NÃO DIRECIONADO AMOSTRA.");
-			valorNaoDirecionadoAmostra = Math.round((valorTotalAcresPrazoMed - comissaoUtilizadaPrazoMed) * 100) / 100;
+			valorNaoDirecionadoAmostra = Math.round((valTotalExcedenteAmostra - (valUtilizadoVerbaAmostra + valUtilizadoComissaoAmostra)) * 100) / 100;
 			
 			console.log("VALOR NÃO DIRECIONADO BONIFICAÇÃO.");
-			valorNaoDirecionadoBonificacao = Math.round((valorTotalAcresPrazoMed - comissaoUtilizadaPrazoMed) * 100) / 100;
+			valorNaoDirecionadoBonificacao = Math.round((valTotalExcedenteBonif - (valUtilizadoVerbaBonif + valUtilizadoComissaoBonif)) * 100) / 100;
 			
 			console.log("VALOR NÃO DIRECIONADO BRINDE.");
-			valorNaoDirecionadoBrinde = Math.round((valorTotalAcresPrazoMed - comissaoUtilizadaPrazoMed) * 100) / 100;
-			
-			
-			console.log("TOTAL VERBA UTILIZADA.");
-			//Será a propria verba destinada para descontos : verbaUtilizadaDesconto
-			totalVerbaUtilizada = verbaUtilizadaDesconto;
-			
-			console.log("TOTAL COMISSÃO UTILIZADA.");
-			totalComissaoUtilizada = comissaoUtilizadaDesconto + comissaoUtilizadaPrazoMed;
-			
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoComissao", totalComissaoUtilizada);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoVerba", totalVerbaUtilizada);
+			valorNaoDirecionadoBrinde = Math.round((valTotalExcedenteBrinde - (valUtilizadoVerbaBrinde + valUtilizadoComissaoBrinde)) * 100) / 100;
 			
 			//NÃO DIRECIONADO
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", valorNaoDirecionadoDesconto);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", valorNaoDirecionadoPrazoMed);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoBrinde", valorNaoDirecionadoPrazoMed);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoAmostra", valorNaoDirecionadoPrazoMed);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoBonif", valorNaoDirecionadoPrazoMed);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoBrinde", valorNaoDirecionadoBrinde);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoAmostra", valorNaoDirecionadoAmostra);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoBonif", valorNaoDirecionadoBonificacao);
+			
+			console.log("TOTAL VERBA UTILIZADA.");
+			//Será a propria verba destinada para descontos : verbaUtilizadaDesconto
+			totalVerbaUtilizada = verbaUtilizadaDesconto + valUtilizadoVerbaPrazoMed + valUtilizadoVerbaAmostra + valUtilizadoVerbaBonif + valUtilizadoVerbaBrinde;
+			
+			console.log("TOTAL COMISSÃO UTILIZADA.");
+			totalComissaoUtilizada = comissaoUtilizadaDesconto + comissaoUtilizadaPrazoMed + valUtilizadoComissaoAmostra + valUtilizadoComissaoBonif + valUtilizadoComissaoBrinde;
+			
 			
 			//TOTAIS DO PEDIDO
-			
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoComissao", totalComissaoUtilizada);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoVerba", totalVerbaUtilizada);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", totalExcedenteDescontosDiluicao);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedentePrazoMed", valorTotalAcresPrazoMed);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", totalExcedenteDescontos);
@@ -1768,7 +1780,6 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", 0);
 			
 			console.log("CALCULO PARCELAMENTO");
-			
 			var valorEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido");
 			var percEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
 			
@@ -1786,7 +1797,7 @@ sap.ui.define([
 					valorParcelas = aux / quantidadeParcelas;
 					valorParcelas = Math.round(valorParcelas * 100) / 100;
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "Entrada: " + percEntradaPedido + "% + " +
-						quantidadeParcelas + "x " + valorParcelas);
+						quantidadeParcelas + "x " + valorParcelas.toLocaleString("pt-BR"));
 						
 				} else if (percEntradaPedido == 0) {
 					
@@ -1800,8 +1811,9 @@ sap.ui.define([
 				}
 			}
 			
-			console.log("INICIO DAS VALIDAÇÕES DO BALANÇO DE EXCEDENTES.");
-			//Tratativa se o kra excedeu o total de desconto direcionado na comissão do valor que ele gerou no pedido.
+			
+			console.log("VALIDAÇÕES DE VALORES DIGITADOS MAIS QUE DEVERIAM.");
+			//DESCONTO
 			if ((comissaoUtilizadaDesconto + verbaUtilizadaDesconto) > totalExcedenteDescontos) {
 				
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
@@ -1822,20 +1834,84 @@ sap.ui.define([
 				that.byId("idComissaoUtilizadaDesconto").setValueStateText("");
 			}
 			
-			if ((comissaoUtilizadaPrazoMed) > valorTotalAcresPrazoMed) {
+			//PRAZO MÉDIO
+			if ((comissaoUtilizadaPrazoMed + valUtilizadoVerbaPrazoMed) > valorTotalAcresPrazoMed) {
 				
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+				
 				that.byId("idComissaoUtilizadaPrazo").setValueState("Error");
-				that.byId("idComissaoUtilizadaPrazo").setValueStateText(
-					"Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" +
-					valorTotalAcresPrazoMed + ")");
+				that.byId("idComissaoUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" + valorTotalAcresPrazoMed + ")");
 				that.byId("idComissaoUtilizadaPrazo").focus();
+				
+				that.byId("idVerbaUtilizadaPrazo").setValueState("Error");
+				that.byId("idVerbaUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" + valorTotalAcresPrazoMed + ")");
 				
 			} else {
 				
 				that.byId("idComissaoUtilizadaPrazo").setValueState("None");
 				that.byId("idComissaoUtilizadaPrazo").setValueStateText("");
+				
+				that.byId("idVerbaUtilizadaPrazo").setValueState("None");
+				that.byId("idVerbaUtilizadaPrazo").setValueStateText("");
 			}
+			
+			//BONIFICAÇÃO
+			if(valTotalExcedenteBonif < valUtilizadoVerbaBonif + valUtilizadoComissaoBonif){
+				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+				
+				that.byId("idVerbaUtilizadaBonif").setValueState("Error");
+				that.byId("idVerbaUtilizadaBonif").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Bonificação (" + totalExcedenteDescontosDiluicao + ")");
+				that.byId("idVerbaUtilizadaBonif").focus();
+				
+				that.byId("idComissaoUtilizadaBonif").setValueState("Error");
+				that.byId("idComissaoUtilizadaBonif").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Bonificação (" + totalExcedenteDescontosDiluicao + ")");
+				
+			} else{
+				that.byId("idVerbaUtilizadaBonif").setValueState("None");
+				that.byId("idVerbaUtilizadaBonif").setValueStateText("");
+				
+				that.byId("idComissaoUtilizadaBonif").setValueState("None");
+				that.byId("idComissaoUtilizadaBonif").setValueStateText("");
+			}
+			
+			//AMOSTRA
+			if(valTotalExcedenteAmostra < valUtilizadoVerbaAmostra + valUtilizadoComissaoAmostra){
+				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+				
+				that.byId("idVerbaUtilizadaAmostra").setValueState("Error");
+				that.byId("idVerbaUtilizadaAmostra").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Amostra (" + valTotalExcedenteAmostra + ")");
+				that.byId("idVerbaUtilizadaAmostra").focus();
+				
+				that.byId("idComissaoUtilizadaAmostra").setValueState("Error");
+				that.byId("idComissaoUtilizadaAmostra").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Amostra (" + valTotalExcedenteAmostra + ")");
+				
+			} else{
+				that.byId("idVerbaUtilizadaAmostra").setValueState("None");
+				that.byId("idVerbaUtilizadaAmostra").setValueStateText("");
+				
+				that.byId("idComissaoUtilizadaAmostra").setValueState("None");
+				that.byId("idComissaoUtilizadaAmostra").setValueStateText("");
+			}
+			
+			//BRINDE
+			if(valTotalExcedenteBrinde < valUtilizadoComissaoBrinde + valUtilizadoVerbaBrinde){
+				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+				
+				that.byId("idVerbaUtilizadaBrinde").setValueState("Error");
+				that.byId("idVerbaUtilizadaBrinde").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Brinde (" + valTotalExcedenteBrinde + ")");
+				that.byId("idVerbaUtilizadaBrinde").focus();
+				
+				that.byId("idComissaoUtilizadaBrinde").setValueState("Error");
+				that.byId("idComissaoUtilizadaBrinde").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Brinde (" + valTotalExcedenteBrinde + ")");
+				
+			} else{
+				that.byId("idVerbaUtilizadaBrinde").setValueState("None");
+				that.byId("idVerbaUtilizadaBrinde").setValueStateText("");
+				
+				that.byId("idComissaoUtilizadaBrinde").setValueState("None");
+				that.byId("idComissaoUtilizadaBrinde").setValueStateText("");
+			}
+			
 		},
 		
 		onCalculaDiluicaoItem: function () {
@@ -3892,7 +3968,21 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
-				oSource.setValue(0);
+				
+			}
+		},
+		
+		onValidaVerbaUtilizadaPrazoMedio: function (evt) {
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor >= 0) {
+				
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", parseFloat(valor));
+			} else {
+				
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", 0);
+				
 			}
 		},
 
@@ -3900,11 +3990,11 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor > 0) {
+			if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", 0);
-				oSource.setValue(0);
+				
 			}
 		},
 		
@@ -3912,11 +4002,71 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor > 0) {
+			if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", 0);
-				oSource.setValue(0);
+				
+			}
+		},
+		
+		onValidaVerbaUtilizadaBonif: function (evt) {
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor >= 0) {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", parseFloat(valor));
+			} else {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", 0);
+				
+			}
+		},
+		
+		onValidaVerbaUtilizadaAmostra: function (evt) {
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor >= 0) {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", parseFloat(valor));
+			} else {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", 0);
+				
+			}
+		},
+		
+		onValidaComissaoUtilizadaAmostra: function (evt) {
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor >= 0) {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", parseFloat(valor));
+			} else {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", 0);
+				
+			}
+		},
+		
+		onValidaComissaoUtilizadaBrinde: function (evt) {
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor >= 0) {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", parseFloat(valor));
+			} else {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", 0);
+				
+			}
+		},
+		
+		onValidaVerbaUtilizadaBrinde: function (evt) {
+			var oSource = evt.getSource();
+			var valor = oSource.getValue();
+
+			if (valor >= 0) {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", parseFloat(valor));
+			} else {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", 0);
+				
 			}
 		},
 		
@@ -3928,7 +4078,7 @@ sap.ui.define([
 
 			if (valor < 0) {
 
-				oSource.setValue(0);
+				
 			}
 		},
 
@@ -3940,7 +4090,7 @@ sap.ui.define([
 			if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", parseFloat(valor));
 			} else {
-				oSource.setValue(0);
+				
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
 			}
 			

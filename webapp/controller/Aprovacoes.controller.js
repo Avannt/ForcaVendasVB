@@ -19,6 +19,10 @@ sap.ui.define([
 			this.onBuscaPedidos();
 
 		},
+		
+		teste: function(){
+			console.log("tteste");
+		},
 
 		myFormatterDataImp: function (value) {
 
