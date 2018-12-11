@@ -156,10 +156,12 @@ sap.ui.define([
 		/*FIM onNavBack*/
 
 		myFormatterDataImp: function (value) {
-			var aux = value.split("/");
-			var aux2 = aux[2].substring(2, aux[2].length);
-			value = aux[0] + "/" + aux[1] + "/" + aux2;
-			return value;
+			if(value != undefined){
+				var aux = value.split("/");
+				var aux2 = aux[2].substring(2, aux[2].length);
+				value = aux[0] + "/" + aux[1] + "/" + aux2;
+				return value;
+			}
 		},
 		/*FIM myFormatterDataImp*/
 
