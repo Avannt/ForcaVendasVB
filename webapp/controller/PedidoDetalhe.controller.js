@@ -69,6 +69,10 @@ sap.ui.define([
 				});
 			};
 		},
+		
+		formatNumber: function(value){
+			return value.toLocaleString("pt-BR");
+		},
 
 		onCarregaCliente: function () {
 
@@ -1742,6 +1746,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoBonif", valorNaoDirecionadoPrazoMed);
 			
 			//TOTAIS DO PEDIDO
+			
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", totalExcedenteDescontosDiluicao);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedentePrazoMed", valorTotalAcresPrazoMed);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", totalExcedenteDescontos);
