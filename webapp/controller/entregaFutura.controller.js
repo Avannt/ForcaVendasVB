@@ -69,6 +69,8 @@ sap.ui.define([
 
 		_onLoadFields: function () {
 			var that = this;
+			
+			this.onPressDetailBack();
 			oSF = this.byId("sfItem");
 
 			this.getView().byId("objectHeader").setTitle();

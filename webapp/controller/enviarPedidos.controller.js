@@ -78,7 +78,11 @@ sap.ui.define([
 						if (oPedidoGrid == undefined || oPedidoGrid.length == 0) {
 							oPedidoGrid = event.target.result;
 						} else {
-							oPedidoGrid.push(event.target.result);
+							if (event.target.result == undefined || event.target.result.length == 0) {
+								var oPedidoGrid2 = event.target.result;
+							} else {
+								oPedidoGrid.push(event.target.result);
+							}
 						}
 
 						var oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
