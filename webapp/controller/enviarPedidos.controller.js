@@ -66,36 +66,51 @@ sap.ui.define([
 				request.onsuccess = function (event) {
 					oPedidoGrid = event.target.result;
 
-					var oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-					that.getView().setModel(oModel, "PedidosEnviar");
-
 					var vetorPromise = [];
 
-					for (var j = 0; j < oPedidoGrid.length; j++) {
+					/* Recupero todos os pedidos pendentes de preposto (9)*/
+					store = db.transaction("PrePedidos").objectStore("PrePedidos");
+					indiceStatusPed = store.index("idStatusPedido");
 
-						vetorPromise.push(new Promise(function (resolve, reject) {
-							var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
-							var indiceNrPed = storeItensPed.index("nrPedCli");
+					request = indiceStatusPed.getAll(9);
+					request.onsuccess = function (event) {
 
-							request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
+						if (oPedidoGrid == undefined || oPedidoGrid.length == 0) {
+							oPedidoGrid = event.target.result;
+						} else {
+							oPedidoGrid.push(event.target.result);
+						}
 
-							request.onsuccess = function (event) {
+						var oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+						that.getView().setModel(oModel, "PedidosEnviar");
 
-								for (var i = 0; i < event.target.result.length; i++) {
-									var aux = event.target.result[i];
-									oItensPedidoGrid.push(aux);
-								}
-								console.log(oItensPedidoGrid);
-								resolve();
-							};
+						for (var j = 0; j < oPedidoGrid.length; j++) {
 
-							request.onerror = function (event) {
-								console.error(event.error.mensage);
-								reject();
-							};
+							vetorPromise.push(new Promise(function (resolve, reject) {
+								var storeItensPed = db.transaction("ItensPedido").objectStore("ItensPedido");
+								var indiceNrPed = storeItensPed.index("nrPedCli");
 
-						}));
-					}
+								request = indiceNrPed.getAll(oPedidoGrid[j].nrPedCli);
+
+								request.onsuccess = function (event) {
+
+									for (var i = 0; i < event.target.result.length; i++) {
+										var aux = event.target.result[i];
+										oItensPedidoGrid.push(aux);
+									}
+									console.log(oItensPedidoGrid);
+									resolve();
+								};
+
+								request.onerror = function (event) {
+									console.error(event.error.mensage);
+									reject();
+								};
+
+							}));
+						}
+					};
+
 					Promise.all(vetorPromise).then(function (values) {
 						console.log(oItensPedidoGrid);
 					});
@@ -618,10 +633,10 @@ sap.ui.define([
 									});
 								})); /*vetorPromise*/
 							}
-							
+
 							Promise.all(vetorPromise).then(function (values) {
 								that.onLoadEntregas();
-							});							
+							});
 						};
 					}
 				}
