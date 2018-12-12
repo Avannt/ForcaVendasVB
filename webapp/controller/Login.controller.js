@@ -225,7 +225,7 @@ function(Controller, MessageBox, mensagem, index) {
 						}
 
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>..TABELA A964 (ZSDMF_A964) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-						//A964 – Esta tabela conterá o percentual de juros.
+						//A964 – Esta tabela conterá o percentual de juros
 						if (!db.objectStoreNames.contains("A964")) {
 							var objA964 = db.createObjectStore("A964", {
 								keyPath: "idA964",
