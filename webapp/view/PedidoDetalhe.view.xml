@@ -70,11 +70,11 @@
 										columnsM="2" layout="ResponsiveGridLayout" title="Parcelamento">
 										<f:content>
 											<Label text="Dias da primeira parcela *"/>
-											<Input id="idPrimeiraParcela" type="Number" value="{modelDadosPedido>/DiasPrimeiraParcela}"/>
+											<Input id="idPrimeiraParcela" type="Number" value="{modelDadosPedido>/DiasPrimeiraParcela}" submit="onSubmitParcela"/>
 											<Label text="Quantidade de parcelas *"/>
-											<Input id="idQuantParcelas" type="Number" value="{modelDadosPedido>/QuantParcelas}"/>
+											<Input id="idQuantParcelas" type="Number" value="{modelDadosPedido>/QuantParcelas}" submit="onSubmitParcela2"/>
 											<Label text="Dias de intervalo entre as parcelas *"/>
-											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}"/>
+											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}" submit="onSubmitParcela3"/>
 											<Label text="Existe entrada"/>
 											<CheckBox id="idCheckEntrada"  select="onExisteEntrada"/>
 											<!--selected="{modelDadosPedido>/ExisteEntradaPedido}"-->
@@ -162,7 +162,7 @@
 													<Text text="{ItensPedidoGrid>zzQnt}"/>
 													<!--<Text text="{ItensPedidoGrid>zzDesitem} %"/>-->
 													<Text text="{ItensPedidoGrid>zzPercDescTotal} %"/>
-													<Text text="R$: {ItensPedidoGrid>zzVprodDesc}"/>
+													<Text text="R$: {path: 'ItensPedidoGrid>zzVprodDesc', formatter:'.onFormatterzzVprodDesc'}"/>
 													<Text text="R$: {ItensPedidoGrid>zzVprodDescTotal}"/>
 													<!--<Text text="{ItensPedidoGrid>zzPercom} %" />-->
 													<!--<Text text="{ItensPedidoGrid>zzPervm} %" />-->
