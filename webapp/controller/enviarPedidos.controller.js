@@ -74,14 +74,20 @@ sap.ui.define([
 
 					request = indiceStatusPed.getAll(9);
 					request.onsuccess = function (event) {
-
+						var oPedidoGrid2 = event.target.result;
+						
+						/* Verifico se já existem registros de pedidos de representante (status=2) */
 						if (oPedidoGrid == undefined || oPedidoGrid.length == 0) {
+							/* Caso não tenha, considero somente os pedidos de prepostos */
 							oPedidoGrid = event.target.result;
 						} else {
-							if (event.target.result == undefined || event.target.result.length == 0) {
-								var oPedidoGrid2 = event.target.result;
-							} else {
-								oPedidoGrid.push(event.target.result);
+							/* Caso exista pedidos de representantes, necessito verificar se existe pedidos de prepostos.*/
+							if (!(oPedidoGrid2 == undefined || oPedidoGrid2 == 0)) {
+								
+								/* Se existir, necessito acrescentar 1 a 1 nos pedidos de representantes */
+								for (var k = 0; k < oPedidoGrid2.length; k++) {
+									oPedidoGrid.push(oPedidoGrid2[k]);
+								}
 							}
 						}
 
@@ -160,7 +166,7 @@ sap.ui.define([
 		/*FIM onNavBack*/
 
 		myFormatterDataImp: function (value) {
-			if(value != undefined){
+			if (value != undefined) {
 				var aux = value.split("/");
 				var aux2 = aux[2].substring(2, aux[2].length);
 				value = aux[0] + "/" + aux[1] + "/" + aux2;

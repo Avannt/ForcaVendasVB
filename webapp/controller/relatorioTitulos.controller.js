@@ -59,7 +59,8 @@ sap.ui.define([
 		_onLoadFields: function() {
 
 			var that = this;
-			var oclientes = [];
+			var oClientes = [];
+			var oTitulos = [];
 			oDuplicataRelatorio = [];
 			this.byId("idtableTitulos").setGrowingTriggerText("Próximo >>>");
 			this.byId("idClientesRelatorio").setValue("");
@@ -78,34 +79,14 @@ sap.ui.define([
 			};
 			open1.onsuccess = function() {
 				var db = open1.result;
-				var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
 
 				//CARREGA OS CAMPOS DO LOCAL DE ENTREGA
-				var store = db.transaction("Clientes").objectStore("Clientes");
-				store.openCursor().onsuccess = function(event) {
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.IdBase == IdBase) {
-							oclientes.push(cursor.value);
-						}
-						cursor.continue();
-					} else {
-						oModel = new sap.ui.model.json.JSONModel(oclientes);
-						that.getView().setModel(oModel, "cliRelatorio");
-						that.byId("idtableTitulos").setBusy(false);
-					}
+				var sTitulos = db.transaction("TitulosAbertos").objectStore("TitulosAbertos");
+				var sClientes = db.transaction("TitulosAbertos").objectStore("TitulosAbertos");
+
+				sClientes.getAll().onsuccess = function(event) {
+					oClientes = event.target.result;
 				};
-
-				var cliente = that.getOwnerComponent().getModel("modelAux").getProperty("/CodCliente");
-				var telaPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/telaPedido");
-
-				if (telaPedido == true) {
-					if (cliente !== undefined && cliente !== null && cliente !== "") {
-						that.byId("idClientesRelatorio").setValue(cliente);
-						that.onItemChange();
-					}
-				}
-				that.getOwnerComponent().getModel("modelAux").setProperty("/telaPedido", false);
 			};
 		},
 
