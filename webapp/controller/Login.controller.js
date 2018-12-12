@@ -648,634 +648,829 @@ sap.ui.define([
 
 												if (result1 !== null && result1 !== undefined) {
 
-													oModel.read("/EntregaFutura", {
+													/* GetPedidoPrepostoTopo */
+													oModel.read("/GetPedidoPrepostoTopo", {
 														urlParameters: {
 															"$filter": "IRepresentante eq '" + CodRepres + "'"
 														},
-														success: function (retornoEntregaFutura) {
-															var txEntregaFutura = db.transaction("EntregaFutura", "readwrite");
-															var objEntregaFutura = txEntregaFutura.objectStore("EntregaFutura");
+														success: function (retornoPVPrepostoTopo) {
+															var txPVPrepostoTopo = db.transaction("PrePedidos", "readwrite");
+															var objPVPrepostoTopo = txPVPrepostoTopo.objectStore("PrePedidos");
 
-															for (var i = 0; i < retornoEntregaFutura.results.length; i++) {
+															for (var i = 0; i < retornoPVPrepostoTopo.results.length; i++) {
 
-																var objBancoEntregaFutura = {
-																	idEntregaFutura: retornoEntregaFutura.results[i].Vbeln + retornoEntregaFutura.results[i].Matnr,
-																	IRepresentante: retornoEntregaFutura.results[i].IRepresentante,
-																	Vbeln: retornoEntregaFutura.results[i].Vbeln,
-																	Posnr: retornoEntregaFutura.results[i].Posnr,
-																	Kunrg: retornoEntregaFutura.results[i].Kunrg,
-																	Aubel: retornoEntregaFutura.results[i].Aubel,
-																	Aupos: retornoEntregaFutura.results[i].Aupos,
-																	Bstkd: retornoEntregaFutura.results[i].Bstkd,
-																	Matnr: retornoEntregaFutura.results[i].Matnr,
-																	Arktx: retornoEntregaFutura.results[i].Arktx,
-																	Fkimg: retornoEntregaFutura.results[i].Fkimg,
-																	Lifnr: retornoEntregaFutura.results[i].Lifnr,
-																	NameOrg1: retornoEntregaFutura.results[i].NameOrg1,
-																	NameOrg2: retornoEntregaFutura.results[i].NameOrg2,
-																	Sldfut: retornoEntregaFutura.results[i].Sldfut,
-																	Slddia: "0"
+																var objBancoPVPrepostoTopo = {
+																	nrPedCli: retornoPVPrepostoTopo.results[i].Nrpedcli,
+																	idStatusPedido: retornoPVPrepostoTopo.results[i].Idstatuspedido,
+																	kunnr: retornoPVPrepostoTopo.results[i].Kunnr,
+																	werks: retornoPVPrepostoTopo.results[i].Werks,
+																	repres: retornoPVPrepostoTopo.results[i].Lifnr,
+																	tipoPedido: retornoPVPrepostoTopo.results[i].Auart,
+																	situacaoPedido: retornoPVPrepostoTopo.results[i].Situacaopedido,
+																	ntgew: retornoPVPrepostoTopo.results[i].Ntgew,
+																	tabPreco: retornoPVPrepostoTopo.results[i].Pltyp,
+																	completo: retornoPVPrepostoTopo.results[i].Completo,
+																	valMinPedido: retornoPVPrepostoTopo.results[i].Valminped,
+																	dataImpl: retornoPVPrepostoTopo.results[i].Erdat,
+																	observacaoPedido: retornoPVPrepostoTopo.results[i].Obsped,
+																	observacaoAuditoriaPedido: retornoPVPrepostoTopo.results[i].Obsaudped,
+																	existeEntradaPedido: retornoPVPrepostoTopo.results[i].Existeentradapedido,
+																	percEntradaPedido: retornoPVPrepostoTopo.results[i].Percentradapedido,
+																	valorEntradaPedido: retornoPVPrepostoTopo.results[i].Valorentradapedido,
+																	tipoTransporte: retornoPVPrepostoTopo.results[i].Inco1,
+																	diasPrimeiraParcela: retornoPVPrepostoTopo.results[i].Diasprimeiraparcela,
+																	quantParcelas: retornoPVPrepostoTopo.results[i].Quantparcelas,
+																	intervaloParcelas: retornoPVPrepostoTopo.results[i].Intervaloparcelas,
+																	tipoNegociacao: retornoPVPrepostoTopo.results[i].Tiponego,
+																	totalItensPedido: retornoPVPrepostoTopo.results[i].Totitens,
+																	valComissao: retornoPVPrepostoTopo.results[i].Valorcomissao,
+																	valTotPed: retornoPVPrepostoTopo.results[i].Valtotpedido,
+																	valTotalAbatidoComissao: retornoPVPrepostoTopo.results[i].Valtotabcomissao,
+																	valTotalAbatidoVerba: retornoPVPrepostoTopo.results[i].Valabverba,
+																	valTotalExcedentePrazoMed: retornoPVPrepostoTopo.results[i].Vlrprz,
+																	valUtilizadoComissaoPrazoMed: retornoPVPrepostoTopo.results[i].VlrprzCom,
+																	valTotalExcedenteDesconto: retornoPVPrepostoTopo.results[i].Vlrdsc,
+																	valComissaoUtilizadaDesconto: retornoPVPrepostoTopo.results[i].VlrdscCom,
+																	valVerbaUtilizadaDesconto: retornoPVPrepostoTopo.results[i].VlrdscVm,
+																	valTotalExcedenteAmostra: retornoPVPrepostoTopo.results[i].Vlramo,
+																	valUtilizadoComissaoAmostra: retornoPVPrepostoTopo.results[i].VlramoCom,
+																	valUtilizadoVerbaAmostra: retornoPVPrepostoTopo.results[i].VlramoVm,
+																	valTotalExcedenteBrinde: retornoPVPrepostoTopo.results[i].Vlrbri,
+																	valUtilizadoComissaoBrinde: retornoPVPrepostoTopo.results[i].VlrbriCom,
+																	valUtilizadoVerbaBrinde: retornoPVPrepostoTopo.results[i].VlrbriVm,
+																	valTotalExcedenteBonif: retornoPVPrepostoTopo.results[i].Vlrbon,
+																	valUtilizadoComissaoBonif: retornoPVPrepostoTopo.results[i].VlrbonCom,
+																	valUtilizadoVerbaBonif: retornoPVPrepostoTopo.results[i].VlrbonVm,
+																	valUtilizadoCampProdutoAcabado: retornoPVPrepostoTopo.results[i].Valtotabcamppa,
+																	valUtilizadoCampBrinde: retornoPVPrepostoTopo.results[i].Valtotabcampbrinde,
+																	valTotalExcedenteNaoDirecionadoDesconto: retornoPVPrepostoTopo.results[i].Valtotexcndirdesc,
+																	valTotalExcedenteNaoDirecionadoPrazoMed: retornoPVPrepostoTopo.results[i].Valtotexcndirprazo,
+																	valVerbaPedido: retornoPVPrepostoTopo.results[i].Valverbapedido
 																};
 
-																var requestEntregaFutura = objEntregaFutura.add(objBancoEntregaFutura);
+																var requestPVPrepostoTopo = objPVPrepostoTopo.add(objBancoPVPrepostoTopo);
 
-																requestEntregaFutura.onsuccess = function (event) {
-																	console.log("Dados Entrega Futura inseridos. " + event);
+																requestPVPrepostoTopo.onsuccess = function (event) {
+																	console.log("Dados Topo PV Preposto inseridos. " + event);
 																};
 
-																requestEntregaFutura.onerror = function (event) {
-																	console.log("Dados Entrega Futura não foram inseridos :" + event);
+																requestPVPrepostoTopo.onerror = function (event) {
+																	console.log("Dados Topo PV Preposto não foram inseridos :" + event);
 																};
 															}
 
-															oModel.read("/A959", {
-																success: function (retornoA959) {
-																	var txA959 = db.transaction("A959", "readwrite");
-																	var objA959 = txA959.objectStore("A959");
+															/* GetPedidoPrepostoItem */
+															oModel.read("/GetPedidoPrepostoItem", {
+																urlParameters: {
+																	"$filter": "IRepresentante eq '" + CodRepres + "'"
+																},
+																success: function (retornoPVPrepostoItem) {
+																	var txPVPrepostoItem = db.transaction("ItensPedido", "readwrite");
+																	var objPVPrepostoItem = txPVPrepostoItem.objectStore("ItensPedido");
 
-																	for (var i = 0; i < retornoA959.results.length; i++) {
+																	for (var i = 0; i < retornoPVPrepostoItem.results.length; i++) {
 
-																		var objBancoA959 = {
-																			idA959: retornoA959.results[i].Werks + "." +
-																				retornoA959.results[i].Pltyp,
-																			kappl: retornoA959.results[i].Kappl,
-																			kschl: retornoA959.results[i].Kschl,
-																			werks: retornoA959.results[i].Werks,
-																			pltyp: retornoA959.results[i].Pltyp,
-																			zzPrzminav: retornoA959.results[i].ZzPrzminav,
-																			zzPrzminap: retornoA959.results[i].ZzPrzminap,
-																			zzVlrPedMin: retornoA959.results[i].ZzVlrPedMin,
-																			zzPrzmaxav: retornoA959.results[i].ZzPrzmaxav,
-																			zzPrzmaxap: retornoA959.results[i].ZzPrzmaxap,
-																			kfrst: retornoA959.results[i].Kfrst,
-																			datbi: retornoA959.results[i].Datbi,
-																			datab: retornoA959.results[i].Datab,
-																			kbstat: retornoA959.results[i].Kbstat,
-																			knumh: retornoA959.results[i].Knumh
+																		var objBancoPVPrepostoItem = {
+																			idItemPedido: retornoPVPrepostoItem.results[i].Iditempedido,
+																			index: retornoPVPrepostoItem.results[i].Tindex,
+																			knumh: retornoPVPrepostoItem.results[i].Knumh,
+																			knumhExtra: retornoPVPrepostoItem.results[i].Knumhextra,
+																			zzRegra: retornoPVPrepostoItem.results[i].Zzregra,
+																			zzGrpmatExtra: retornoPVPrepostoItem.results[i].Zzgrpmatextra,
+																			zzGrpmat: retornoPVPrepostoItem.results[i].Zzgrpmat,
+																			zzRegraExtra: retornoPVPrepostoItem.results[i].Zzregraextra,
+																			maktx: retornoPVPrepostoItem.results[i].Maktx,
+																			matnr: retornoPVPrepostoItem.results[i].Matnr,
+																			nrPedCli: retornoPVPrepostoItem.results[i].Nrpedcli,
+																			ntgew: retornoPVPrepostoItem.results[i].Ntgew,
+																			tipoItem: retornoPVPrepostoItem.results[i].Tipoitem,
+																			zzDesext: retornoPVPrepostoItem.results[i].Zzdesext,
+																			zzDesitem: retornoPVPrepostoItem.results[i].Zzdesitem,
+																			zzPercDescDiluicao: retornoPVPrepostoItem.results[i].Zzpercdescdiluicao,
+																			zzPercDescTotal: retornoPVPrepostoItem.results[i].Zzpercdesctotal,
+																			zzPercom: retornoPVPrepostoItem.results[i].Zzpercom,
+																			zzPervm: retornoPVPrepostoItem.results[i].Zzpervm,
+																			zzQnt: retornoPVPrepostoItem.results[i].Zzqnt,
+																			zzVprod: retornoPVPrepostoItem.results[i].Zzvprod,
+																			zzVprodDesc: retornoPVPrepostoItem.results[i].Zzvproddesc,
+																			zzVprodDescTotal: retornoPVPrepostoItem.results[i].Zzvproddesctotal,
 																		};
 
-																		var requestA959 = objA959.add(objBancoA959);
+																		var requestPVPrepostoItem = objPVPrepostoItem.add(objBancoPVPrepostoItem);
 
-																		requestA959.onsuccess = function (event) {
-																			console.log("Dados A959 inseridos. " + event);
+																		requestPVPrepostoItem.onsuccess = function (event) {
+																			console.log("Dados Item PV Preposto inseridos. " + event);
 																		};
 
-																		requestA959.onerror = function (event) {
-																			console.log("Dados A959 não foram inseridos :" + event);
+																		requestPVPrepostoItem.onerror = function (event) {
+																			console.log("Dados Item PV Preposto não foram inseridos :" + event);
 																		};
 																	}
 
-																	oModel.read("/TiposPedidos", {
-																		success: function (retornoTiposPedidos) {
+																	oModel.read("/EntregaFutura", {
+																		urlParameters: {
+																			"$filter": "IRepresentante eq '" + CodRepres + "'"
+																		},
+																		success: function (retornoEntregaFutura) {
+																			var txEntregaFutura = db.transaction("EntregaFutura", "readwrite");
+																			var objEntregaFutura = txEntregaFutura.objectStore("EntregaFutura");
 
-																			var txTiposPedidos = db.transaction("TiposPedidos", "readwrite");
-																			var objTiposPedidos = txTiposPedidos.objectStore("TiposPedidos");
+																			for (var i = 0; i < retornoEntregaFutura.results.length; i++) {
 
-																			for (i = 0; i < retornoTiposPedidos.results.length; i++) {
-
-																				var objBancoTiposPedidos = {
-																					idTipoPedido: retornoTiposPedidos.results[i].IdTipoPedido,
-																					descricao: retornoTiposPedidos.results[i].Descricao
+																				var objBancoEntregaFutura = {
+																					idEntregaFutura: retornoEntregaFutura.results[i].Vbeln + retornoEntregaFutura.results[i].Matnr,
+																					IRepresentante: retornoEntregaFutura.results[i].IRepresentante,
+																					Vbeln: retornoEntregaFutura.results[i].Vbeln,
+																					Posnr: retornoEntregaFutura.results[i].Posnr,
+																					Kunrg: retornoEntregaFutura.results[i].Kunrg,
+																					Aubel: retornoEntregaFutura.results[i].Aubel,
+																					Aupos: retornoEntregaFutura.results[i].Aupos,
+																					Bstkd: retornoEntregaFutura.results[i].Bstkd,
+																					Matnr: retornoEntregaFutura.results[i].Matnr,
+																					Arktx: retornoEntregaFutura.results[i].Arktx,
+																					Fkimg: retornoEntregaFutura.results[i].Fkimg,
+																					Lifnr: retornoEntregaFutura.results[i].Lifnr,
+																					NameOrg1: retornoEntregaFutura.results[i].NameOrg1,
+																					NameOrg2: retornoEntregaFutura.results[i].NameOrg2,
+																					Sldfut: retornoEntregaFutura.results[i].Sldfut,
+																					Slddia: "0"
 																				};
 
-																				var requestTiposPedidos = objTiposPedidos.add(objBancoTiposPedidos);
+																				var requestEntregaFutura = objEntregaFutura.add(objBancoEntregaFutura);
 
-																				requestTiposPedidos.onsuccess = function (event) {
-																					console.log("Dados TiposPedidos inseridos");
+																				requestEntregaFutura.onsuccess = function (event) {
+																					console.log("Dados Entrega Futura inseridos. " + event);
 																				};
-																				requestTiposPedidos.onerror = function (event) {
-																					console.log("Dados TiposPedidos não foram inseridos :" + event);
+
+																				requestEntregaFutura.onerror = function (event) {
+																					console.log("Dados Entrega Futura não foram inseridos :" + event);
 																				};
 																			}
 
-																			oModel.read("/TitulosAbertos", {
-																				success: function (retornoTitulosAbertos) {
+																			oModel.read("/A959", {
+																				success: function (retornoA959) {
+																					var txA959 = db.transaction("A959", "readwrite");
+																					var objA959 = txA959.objectStore("A959");
 
-																					var txTitulosAbertos = db.transaction("TitulosAbertos", "readwrite");
-																					var objTitulosAbertos = txTitulosAbertos.objectStore("TitulosAbertos");
-																					// objTitulosAbertos.autoIncrement();
+																					for (var i = 0; i < retornoA959.results.length; i++) {
 
-																					for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
-																						var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
-																						var date = retornoTitulosAbertos.results[i].Budat;
-																						var dia = String(date.getDate());
-																						var mes = String(date.getMonth() + 1);
-																						var ano = String(date.getFullYear());
-																						ano = ano.substring(2, 4);
-																						var minuto = String(date.getMinutes());
-																						var hora = String(date.getHours());
-																						var seg = String(date.getSeconds());
-
-																						if (dia.length == 1) {
-																							dia = "0" + String(dia);
-																						}
-
-																						if (mes.length == 1) {
-																							mes = "0" + String(mes);
-																						}
-
-																						if (minuto.length == 1) {
-																							minuto = "0" + String(minuto);
-																						}
-																						if (hora.length == 1) {
-																							hora = "0" + String(hora);
-																						}
-																						if (seg.length == 1) {
-																							seg = "0" + String(seg);
-																						}
-																						//HRIMP E DATIMP
-																						//var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
-																						var data = String(dia + "/" + mes + "/" + ano);
-
-																						var objBancoTitulosAbertos = {
-																							// idTituloAberto: retornoTitulosAbertos.results[i].Belnr + "." + retornoTitulosAbertos.results[
-																							// 		i].Kunnr + "." +
-																							// 	auxDmbtr + "." + data,
-																							idTituloAberto: String(i),
-																							belnr: retornoTitulosAbertos.results[i].Belnr,
-																							budat: data,
-																							dmbtr: auxDmbtr,
-																							kunnr: retornoTitulosAbertos.results[i].Kunnr
+																						var objBancoA959 = {
+																							idA959: retornoA959.results[i].Werks + "." +
+																								retornoA959.results[i].Pltyp,
+																							kappl: retornoA959.results[i].Kappl,
+																							kschl: retornoA959.results[i].Kschl,
+																							werks: retornoA959.results[i].Werks,
+																							pltyp: retornoA959.results[i].Pltyp,
+																							zzPrzminav: retornoA959.results[i].ZzPrzminav,
+																							zzPrzminap: retornoA959.results[i].ZzPrzminap,
+																							zzVlrPedMin: retornoA959.results[i].ZzVlrPedMin,
+																							zzPrzmaxav: retornoA959.results[i].ZzPrzmaxav,
+																							zzPrzmaxap: retornoA959.results[i].ZzPrzmaxap,
+																							kfrst: retornoA959.results[i].Kfrst,
+																							datbi: retornoA959.results[i].Datbi,
+																							datab: retornoA959.results[i].Datab,
+																							kbstat: retornoA959.results[i].Kbstat,
+																							knumh: retornoA959.results[i].Knumh
 																						};
 
-																						var requestTitulosAbertos = objTitulosAbertos.add(objBancoTitulosAbertos);
+																						var requestA959 = objA959.add(objBancoA959);
 
-																						requestTitulosAbertos.onsuccess = function (event) {
-																							event.stopPropagation();
-																							console.log("Dados TitulosAbertos inseridos");
+																						requestA959.onsuccess = function (event) {
+																							console.log("Dados A959 inseridos. " + event);
 																						};
-																						requestTitulosAbertos.onerror = function (event) {
-																							event.stopPropagation();
-																							console.log("Dados TitulosAbertos não foram inseridos :" + event.srcElement.error);
+
+																						requestA959.onerror = function (event) {
+																							console.log("Dados A959 não foram inseridos :" + event);
 																						};
 																					}
 
-																					//Clientes
-																					oModel.read("/Clientes?$filter=IvRepres eq '" + CodRepres + "'", {
-																						success: function (retornoCliente) {
+																					oModel.read("/TiposPedidos", {
+																						success: function (retornoTiposPedidos) {
 
-																							var txCliente = db.transaction("Clientes", "readwrite");
-																							var objCliente = txCliente.objectStore("Clientes");
+																							var txTiposPedidos = db.transaction("TiposPedidos", "readwrite");
+																							var objTiposPedidos = txTiposPedidos.objectStore("TiposPedidos");
 
-																							for (var i = 0; i < retornoCliente.results.length; i++) {
+																							for (i = 0; i < retornoTiposPedidos.results.length; i++) {
 
-																								var objBancoCliente = {
-																									kunnr: retornoCliente.results[i].Kunnr,
-																									land1: retornoCliente.results[i].Land1,
-																									name1: retornoCliente.results[i].Name1,
-																									name2: retornoCliente.results[i].Name2,
-																									ort01: retornoCliente.results[i].Ort01,
-																									ort02: retornoCliente.results[i].Ort02,
-																									regio: retornoCliente.results[i].Regio,
-																									stras: retornoCliente.results[i].Stras,
-																									pstlz: retornoCliente.results[i].Pstlz,
-																									stcd1: retornoCliente.results[i].Stcd1,
-																									stcd2: retornoCliente.results[i].Stcd2,
-																									// inco1: retornoCliente.results[i].Inco1,
-																									parvw: retornoCliente.results[i].Parvw,
-																									lifnr: retornoCliente.results[i].Lifnr,
-																									efetuoucompra: retornoCliente.results[i].Efetuoucompra
+																								var objBancoTiposPedidos = {
+																									idTipoPedido: retornoTiposPedidos.results[i].IdTipoPedido,
+																									descricao: retornoTiposPedidos.results[i].Descricao
 																								};
 
-																								var requestCliente = objCliente.add(objBancoCliente);
+																								var requestTiposPedidos = objTiposPedidos.add(objBancoTiposPedidos);
 
-																								objBancoCliente = {
-																									kunnr: "",
-																									land1: "",
-																									name1: "",
-																									name2: "",
-																									ort01: "",
-																									ort02: "",
-																									regio: "",
-																									stras: "",
-																									pstlz: "",
-																									stcd1: "",
-																									stcd2: "",
-																									// inco1: "",
-																									parvw: "",
-																									lifnr: ""
+																								requestTiposPedidos.onsuccess = function (event) {
+																									console.log("Dados TiposPedidos inseridos");
 																								};
-
-																								requestCliente.onsuccess = function (event) {
-																									console.log("Dados Clientes inseridos");
-																								};
-																								requestCliente.onerror = function (event) {
-																									console.log("Dados Clientes não foram inseridos :" + event);
+																								requestTiposPedidos.onerror = function (event) {
+																									console.log("Dados TiposPedidos não foram inseridos :" + event);
 																								};
 																							}
 
-																							oModel.read("/Materiais", {
-																								success: function (retornoMateriais) {
+																							oModel.read("/TitulosAbertos", {
+																								success: function (retornoTitulosAbertos) {
 
-																									var txMateriais = db.transaction("Materiais", "readwrite");
-																									var objMateriais = txMateriais.objectStore("Materiais");
+																									var txTitulosAbertos = db.transaction("TitulosAbertos", "readwrite");
+																									var objTitulosAbertos = txTitulosAbertos.objectStore("TitulosAbertos");
+																									// objTitulosAbertos.autoIncrement();
 
-																									for (i = 0; i < retornoMateriais.results.length; i++) {
+																									for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
+																										var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
+																										var date = retornoTitulosAbertos.results[i].Budat;
+																										var dia = String(date.getDate());
+																										var mes = String(date.getMonth() + 1);
+																										var ano = String(date.getFullYear());
+																										ano = ano.substring(2, 4);
+																										var minuto = String(date.getMinutes());
+																										var hora = String(date.getHours());
+																										var seg = String(date.getSeconds());
 
-																										var objBancoMateriais = {
-																											matnr: retornoMateriais.results[i].Matnr,
-																											meins: retornoMateriais.results[i].Meins,
-																											maktx: retornoMateriais.results[i].Maktx,
-																											aumng: retornoMateriais.results[i].Aumng,
-																											scmng: retornoMateriais.results[i].Scmng,
-																											vrkme: retornoMateriais.results[i].Vrkme,
-																											mtpos: retornoMateriais.results[i].Mtpos,
-																											ntgew: retornoMateriais.results[i].Ntgew
+																										if (dia.length == 1) {
+																											dia = "0" + String(dia);
+																										}
+
+																										if (mes.length == 1) {
+																											mes = "0" + String(mes);
+																										}
+
+																										if (minuto.length == 1) {
+																											minuto = "0" + String(minuto);
+																										}
+																										if (hora.length == 1) {
+																											hora = "0" + String(hora);
+																										}
+																										if (seg.length == 1) {
+																											seg = "0" + String(seg);
+																										}
+																										//HRIMP E DATIMP
+																										//var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
+																										var data = String(dia + "/" + mes + "/" + ano);
+
+																										var objBancoTitulosAbertos = {
+																											// idTituloAberto: retornoTitulosAbertos.results[i].Belnr + "." + retornoTitulosAbertos.results[
+																											// 		i].Kunnr + "." +
+																											// 	auxDmbtr + "." + data,
+																											idTituloAberto: String(i),
+																											belnr: retornoTitulosAbertos.results[i].Belnr,
+																											budat: data,
+																											dmbtr: auxDmbtr,
+																											kunnr: retornoTitulosAbertos.results[i].Kunnr
 																										};
 
-																										var requestMateriais = objMateriais.add(objBancoMateriais);
+																										var requestTitulosAbertos = objTitulosAbertos.add(objBancoTitulosAbertos);
 
-																										requestMateriais.onsuccess = function (event) {
-																											console.log("Dados Materiais inseridos. " + event);
+																										requestTitulosAbertos.onsuccess = function (event) {
+																											event.stopPropagation();
+																											console.log("Dados TitulosAbertos inseridos");
 																										};
-
-																										requestMateriais.onerror = function (event) {
-																											console.log("Dados Materiais não foram inseridos :" + event);
+																										requestTitulosAbertos.onerror = function (event) {
+																											event.stopPropagation();
+																											console.log("Dados TitulosAbertos não foram inseridos :" + event.srcElement.error);
 																										};
 																									}
 
-																									oModel.read("/A960", {
-																										success: function (retornoA960) {
+																									//Clientes
+																									oModel.read("/Clientes?$filter=IvRepres eq '" + CodRepres + "'", {
+																										success: function (retornoCliente) {
 
-																											var txA960 = db.transaction("A960", "readwrite");
-																											var objA960 = txA960.objectStore("A960");
+																											var txCliente = db.transaction("Clientes", "readwrite");
+																											var objCliente = txCliente.objectStore("Clientes");
 
-																											for (i = 0; i < retornoA960.results.length; i++) {
-																												var objBancoA960 = {
-																													idA960: retornoA960.results[i].Werks + "." + retornoA960.results[i].Pltyp +
-																														"." + retornoA960.results[i].Matnr,
-																													kappl: retornoA960.results[i].Kappl,
-																													kschl: retornoA960.results[i].Kschl,
-																													werks: retornoA960.results[i].Werks,
-																													pltyp: retornoA960.results[i].Pltyp,
-																													// inco1: retornoA960.results[i].Inco1,
-																													matnr: retornoA960.results[i].Matnr,
-																													kfrst: retornoA960.results[i].Kfrst,
-																													datbi: retornoA960.results[i].Datbi,
-																													datab: retornoA960.results[i].Datab,
-																													kbstat: retornoA960.results[i].Kbstat,
-																													zzVprod: retornoA960.results[i].ZzVprod,
-																													zzPercom: retornoA960.results[i].ZzPercom,
-																													zzPervm: retornoA960.results[i].ZzPervm,
-																													knumh: retornoA960.results[i].Knumh
+																											for (var i = 0; i < retornoCliente.results.length; i++) {
+
+																												var objBancoCliente = {
+																													kunnr: retornoCliente.results[i].Kunnr,
+																													land1: retornoCliente.results[i].Land1,
+																													name1: retornoCliente.results[i].Name1,
+																													name2: retornoCliente.results[i].Name2,
+																													ort01: retornoCliente.results[i].Ort01,
+																													ort02: retornoCliente.results[i].Ort02,
+																													regio: retornoCliente.results[i].Regio,
+																													stras: retornoCliente.results[i].Stras,
+																													pstlz: retornoCliente.results[i].Pstlz,
+																													stcd1: retornoCliente.results[i].Stcd1,
+																													stcd2: retornoCliente.results[i].Stcd2,
+																													// inco1: retornoCliente.results[i].Inco1,
+																													parvw: retornoCliente.results[i].Parvw,
+																													lifnr: retornoCliente.results[i].Lifnr,
+																													efetuoucompra: retornoCliente.results[i].Efetuoucompra
 																												};
 
-																												var requestA960 = objA960.add(objBancoA960);
+																												var requestCliente = objCliente.add(objBancoCliente);
 
-																												requestA960.onsuccess = function (event) {
-																													console.log("Dados A960 inseridos. " + event);
+																												objBancoCliente = {
+																													kunnr: "",
+																													land1: "",
+																													name1: "",
+																													name2: "",
+																													ort01: "",
+																													ort02: "",
+																													regio: "",
+																													stras: "",
+																													pstlz: "",
+																													stcd1: "",
+																													stcd2: "",
+																													// inco1: "",
+																													parvw: "",
+																													lifnr: ""
 																												};
 
-																												requestA960.onerror = function (event) {
-																													console.log("Dados A960 não foram inseridos :" + event);
+																												requestCliente.onsuccess = function (event) {
+																													console.log("Dados Clientes inseridos");
+																												};
+																												requestCliente.onerror = function (event) {
+																													console.log("Dados Clientes não foram inseridos :" + event);
 																												};
 																											}
 
-																											oModel.read("/A961 ", {
-																												success: function (retornoA961) {
+																											oModel.read("/Materiais", {
+																												success: function (retornoMateriais) {
 
-																													var txClienteTabPreco = db.transaction("A961", "readwrite");
-																													var objClienteTabPreco = txClienteTabPreco.objectStore("A961");
+																													var txMateriais = db.transaction("Materiais", "readwrite");
+																													var objMateriais = txMateriais.objectStore("Materiais");
 
-																													for (i = 0; i < retornoA961.results.length; i++) {
+																													for (i = 0; i < retornoMateriais.results.length; i++) {
 
-																														var objBancoA961 = {
-																															idA961: retornoA961.results[i].Werks + "." +
-																																retornoA961.results[i].Kunnr + "." + retornoA961.results[i].Pltyp,
-																															kunnr: retornoA961.results[i].Kunnr,
-																															werks: retornoA961.results[i].Werks,
-																															pltyp: retornoA961.results[i].Pltyp,
-																															ptext: retornoA961.results[i].Ptext
+																														var objBancoMateriais = {
+																															matnr: retornoMateriais.results[i].Matnr,
+																															meins: retornoMateriais.results[i].Meins,
+																															maktx: retornoMateriais.results[i].Maktx,
+																															aumng: retornoMateriais.results[i].Aumng,
+																															scmng: retornoMateriais.results[i].Scmng,
+																															vrkme: retornoMateriais.results[i].Vrkme,
+																															mtpos: retornoMateriais.results[i].Mtpos,
+																															ntgew: retornoMateriais.results[i].Ntgew
 																														};
 
-																														var requestA961 = objClienteTabPreco.add(objBancoA961);
-																														requestA961.onsuccess = function (event) {
-																															console.log("Dados A961 inseridos. " + event);
+																														var requestMateriais = objMateriais.add(objBancoMateriais);
+
+																														requestMateriais.onsuccess = function (event) {
+																															console.log("Dados Materiais inseridos. " + event);
 																														};
 
-																														requestA961.onerror = function (event) {
-																															console.log("Dados A961 não foram inseridos :" + event);
+																														requestMateriais.onerror = function (event) {
+																															console.log("Dados Materiais não foram inseridos :" + event);
 																														};
 																													}
 
-																													oModel.read("/A962 ", {
-																														success: function (retornoA962) {
+																													oModel.read("/A960", {
+																														success: function (retornoA960) {
 
-																															var txA962 = db.transaction("A962", "readwrite");
-																															var objA962 = txA962.objectStore("A962");
+																															var txA960 = db.transaction("A960", "readwrite");
+																															var objA960 = txA960.objectStore("A960");
 
-																															for (i = 0; i < retornoA962.results.length; i++) {
-
-																																var objBancoA962 = {
-																																	idA962: retornoA962.results[i].Werks + "." +
-																																		retornoA962.results[i].ZzGrpmat + "." +
-																																		retornoA962.results[i].Matnr,
-																																	zzGrpmat: retornoA962.results[i].ZzGrpmat,
-																																	werks: retornoA962.results[i].Werks,
-																																	matnr: retornoA962.results[i].Matnr
+																															for (i = 0; i < retornoA960.results.length; i++) {
+																																var objBancoA960 = {
+																																	idA960: retornoA960.results[i].Werks + "." + retornoA960.results[i]
+																																		.Pltyp +
+																																		"." + retornoA960.results[i].Matnr,
+																																	kappl: retornoA960.results[i].Kappl,
+																																	kschl: retornoA960.results[i].Kschl,
+																																	werks: retornoA960.results[i].Werks,
+																																	pltyp: retornoA960.results[i].Pltyp,
+																																	// inco1: retornoA960.results[i].Inco1,
+																																	matnr: retornoA960.results[i].Matnr,
+																																	kfrst: retornoA960.results[i].Kfrst,
+																																	datbi: retornoA960.results[i].Datbi,
+																																	datab: retornoA960.results[i].Datab,
+																																	kbstat: retornoA960.results[i].Kbstat,
+																																	zzVprod: retornoA960.results[i].ZzVprod,
+																																	zzPercom: retornoA960.results[i].ZzPercom,
+																																	zzPervm: retornoA960.results[i].ZzPervm,
+																																	knumh: retornoA960.results[i].Knumh
 																																};
 
-																																var requestA962 = objA962.add(objBancoA962);
+																																var requestA960 = objA960.add(objBancoA960);
 
-																																requestA962.onsuccess = function (event) {
-																																	console.log("Dados A962 inseridos. " + event);
+																																requestA960.onsuccess = function (event) {
+																																	console.log("Dados A960 inseridos. " + event);
 																																};
 
-																																requestA962.onerror = function (event) {
-																																	console.log("Dados A962 não foram inseridos :" + event);
+																																requestA960.onerror = function (event) {
+																																	console.log("Dados A960 não foram inseridos :" + event);
 																																};
 																															}
 
-																															oModel.read("/A963 ", {
-																																success: function (retornoA963) {
+																															oModel.read("/A961 ", {
+																																success: function (retornoA961) {
 
-																																	var txA963 = db.transaction("A963", "readwrite");
-																																	var objA963 = txA963.objectStore("A963");
+																																	var txClienteTabPreco = db.transaction("A961", "readwrite");
+																																	var objClienteTabPreco = txClienteTabPreco.objectStore("A961");
 
-																																	for (i = 0; i < retornoA963.results.length; i++) {
+																																	for (i = 0; i < retornoA961.results.length; i++) {
 
-																																		var objBancoA963 = {
-																																			idA963: retornoA963.results[i].Werks + "." +
-																																				retornoA963.results[i].Lifnr + "." + retornoA962.results[i].Pltyp,
-																																			lifnr: retornoA963.results[i].Lifnr,
-																																			werks: retornoA963.results[i].Werks,
-																																			pltyp: retornoA963.results[i].Pltyp
+																																		var objBancoA961 = {
+																																			idA961: retornoA961.results[i].Werks + "." +
+																																				retornoA961.results[i].Kunnr + "." + retornoA961.results[i].Pltyp,
+																																			kunnr: retornoA961.results[i].Kunnr,
+																																			werks: retornoA961.results[i].Werks,
+																																			pltyp: retornoA961.results[i].Pltyp,
+																																			ptext: retornoA961.results[i].Ptext
 																																		};
 
-																																		var requestA963 = objA963.add(objBancoA963);
-
-																																		requestA963.onsuccess = function (event) {
-																																			console.log("Dados A963 inseridos. " + event);
+																																		var requestA961 = objClienteTabPreco.add(objBancoA961);
+																																		requestA961.onsuccess = function (event) {
+																																			console.log("Dados A961 inseridos. " + event);
 																																		};
 
-																																		requestA963.onerror = function (event) {
-																																			console.log("Dados A963 não foram inseridos :" + event);
+																																		requestA961.onerror = function (event) {
+																																			console.log("Dados A961 não foram inseridos :" + event);
 																																		};
 																																	}
 
-																																	oModel.read("/A964", {
-																																		success: function (retornoA964) {
+																																	oModel.read("/A962 ", {
+																																		success: function (retornoA962) {
 
-																																			var txA964 = db.transaction("A964", "readwrite");
-																																			var objA964 = txA964.objectStore("A964");
+																																			var txA962 = db.transaction("A962", "readwrite");
+																																			var objA962 = txA962.objectStore("A962");
 
-																																			for (i = 0; i < retornoA964.results.length; i++) {
+																																			for (i = 0; i < retornoA962.results.length; i++) {
 
-																																				var objBancoA964 = {
-																																					idA964: retornoA964.results[i].Werks + "." + retornoA964.results[
-																																						i].ZzPerjur,
-																																					werks: retornoA964.results[i].Werks,
-																																					zzPerjur: retornoA964.results[i].ZzPerjur
+																																				var objBancoA962 = {
+																																					idA962: retornoA962.results[i].Werks + "." +
+																																						retornoA962.results[i].ZzGrpmat + "." +
+																																						retornoA962.results[i].Matnr,
+																																					zzGrpmat: retornoA962.results[i].ZzGrpmat,
+																																					werks: retornoA962.results[i].Werks,
+																																					matnr: retornoA962.results[i].Matnr
 																																				};
 
-																																				var requestA964 = objA964.add(objBancoA964);
+																																				var requestA962 = objA962.add(objBancoA962);
 
-																																				requestA964.onsuccess = function (event) {
-																																					console.log("Dados A964 inseridos. " + event);
+																																				requestA962.onsuccess = function (event) {
+																																					console.log("Dados A962 inseridos. " + event);
 																																				};
 
-																																				requestA964.onerror = function (event) {
-																																					console.log("Dados A964 não foram inseridos :" + event);
+																																				requestA962.onerror = function (event) {
+																																					console.log("Dados A962 não foram inseridos :" + event);
 																																				};
 																																			}
 
-																																			oModel.read("/A965", { // A965
-																																				success: function (retornoA965) {
+																																			oModel.read("/A963 ", {
+																																				success: function (retornoA963) {
 
-																																					var txA965 = db.transaction("A965", "readwrite");
-																																					var objA965 = txA965.objectStore("A965");
+																																					var txA963 = db.transaction("A963", "readwrite");
+																																					var objA963 = txA963.objectStore("A963");
 
-																																					for (i = 0; i < retornoA965.results.length; i++) {
+																																					for (i = 0; i < retornoA963.results.length; i++) {
 
-																																						var objBancoA965 = {
-																																							idA965: retornoA965.results[i].Werks + "." +
-																																								retornoA965.results[i].ZzGrpmat + "." +
-																																								retornoA965.results[i].Matnr,
-																																							werks: retornoA965.results[i].Werks,
-																																							zzGrpmat: retornoA965.results[i].ZzGrpmat,
-																																							matnr: retornoA965.results[i].Matnr
+																																						var objBancoA963 = {
+																																							idA963: retornoA963.results[i].Werks + "." +
+																																								retornoA963.results[i].Lifnr + "." + retornoA962.results[
+																																									i].Pltyp,
+																																							lifnr: retornoA963.results[i].Lifnr,
+																																							werks: retornoA963.results[i].Werks,
+																																							pltyp: retornoA963.results[i].Pltyp
 																																						};
 
-																																						var requestA965 = objA965.add(objBancoA965);
+																																						var requestA963 = objA963.add(objBancoA963);
 
-																																						requestA965.onsuccess = function (event) {
-																																							console.log("Dados A965 inseridos. " + event);
+																																						requestA963.onsuccess = function (event) {
+																																							console.log("Dados A963 inseridos. " + event);
 																																						};
 
-																																						requestA965.onerror = function (event) {
-																																							console.log("Dados A965 não foram inseridos :" +
+																																						requestA963.onerror = function (event) {
+																																							console.log("Dados A963 não foram inseridos :" +
 																																								event);
 																																						};
 																																					}
 
-																																					oModel.read("/A966", {
-																																						success: function (retornoA966) {
+																																					oModel.read("/A964", {
+																																						success: function (retornoA964) {
 
-																																							var txA966 = db.transaction("A966", "readwrite");
-																																							var objA966 = txA966.objectStore("A966");
+																																							var txA964 = db.transaction("A964", "readwrite");
+																																							var objA964 = txA964.objectStore("A964");
 
-																																							for (i = 0; i < retornoA966.results.length; i++) {
+																																							for (i = 0; i < retornoA964.results.length; i++) {
 
-																																								var objBancoA966 = {
-																																									idA966: retornoA966.results[i].Werks + "." +
-																																										retornoA966.results[i].ZzRegra + "." +
-																																										retornoA966.results[i].ZzGrpmat + "." +
-																																										retornoA966.results[i].Pltyp,
-																																									werks: retornoA966.results[i].Werks,
-																																									zzRegra: retornoA966.results[i].ZzRegra,
-																																									zzGrpmat: retornoA966.results[i].ZzGrpmat,
-																																									pltyp: retornoA966.results[i].Pltyp,
-																																									zzTexto: retornoA966.results[i].ZzTexto
+																																								var objBancoA964 = {
+																																									idA964: retornoA964.results[i].Werks + "." +
+																																										retornoA964.results[
+																																											i].ZzPerjur,
+																																									werks: retornoA964.results[i].Werks,
+																																									zzPerjur: retornoA964.results[i].ZzPerjur
 																																								};
 
-																																								var requestA966 = objA966.add(objBancoA966);
+																																								var requestA964 = objA964.add(objBancoA964);
 
-																																								requestA966.onsuccess = function (event) {
-																																									console.log("Dados A966 inseridos. " + event);
+																																								requestA964.onsuccess = function (event) {
+																																									console.log("Dados A964 inseridos. " + event);
 																																								};
 
-																																								requestA966.onerror = function (event) {
-																																									console.log("Dados A966 não foram inseridos :" +
+																																								requestA964.onerror = function (event) {
+																																									console.log("Dados A964 não foram inseridos :" +
 																																										event);
 																																								};
-
 																																							}
 
-																																							oModel.read("/A967", {
-																																								success: function (retornoA967) {
+																																							oModel.read("/A965", { // A965
+																																								success: function (retornoA965) {
 
-																																									var txA967 = db.transaction("A967",
+																																									var txA965 = db.transaction("A965",
 																																										"readwrite");
-																																									var objA967 = txA967.objectStore("A967");
+																																									var objA965 = txA965.objectStore("A965");
 
-																																									for (i = 0; i < retornoA967.results.length; i++) {
+																																									for (i = 0; i < retornoA965.results.length; i++) {
 
-																																										var objBancoA967 = {
-																																											idA967: retornoA967.results[i].Werks + "." +
-																																												retornoA967.results[i].ZzRegra + "." +
-																																												retornoA967.results[i].Knumh,
-																																											werks: retornoA967.results[i].Werks,
-																																											zzRegra: retornoA967.results[i].ZzRegra,
-																																											knumh: retornoA967.results[i].Knumh
+																																										var objBancoA965 = {
+																																											idA965: retornoA965.results[i].Werks + "." +
+																																												retornoA965.results[i].ZzGrpmat + "." +
+																																												retornoA965.results[i].Matnr,
+																																											werks: retornoA965.results[i].Werks,
+																																											zzGrpmat: retornoA965.results[i].ZzGrpmat,
+																																											matnr: retornoA965.results[i].Matnr
 																																										};
 
-																																										var requestA967 = objA967.add(objBancoA967);
+																																										var requestA965 = objA965.add(objBancoA965);
 
-																																										requestA967.onsuccess = function (event) {
-																																											console.log("Dados A967 inseridos. " +
+																																										requestA965.onsuccess = function (event) {
+																																											console.log("Dados A965 inseridos. " +
 																																												event);
 																																										};
 
-																																										requestA967.onerror = function (event) {
+																																										requestA965.onerror = function (event) {
 																																											console.log(
-																																												"Dados A967 não foram inseridos :" +
+																																												"Dados A965 não foram inseridos :" +
 																																												event);
 																																										};
 																																									}
 
-																																									oModel.read("/Konm", {
-																																										success: function (retornoKonm) {
+																																									oModel.read("/A966", {
+																																										success: function (retornoA966) {
 
-																																											var txKonm = db.transaction("Konm",
+																																											var txA966 = db.transaction("A966",
 																																												"readwrite");
-																																											var objKonm = txKonm.objectStore("Konm");
+																																											var objA966 = txA966.objectStore("A966");
 
-																																											for (i = 0; i < retornoKonm.results.length; i++) {
+																																											for (i = 0; i < retornoA966.results.length; i++) {
 
-																																												var objBancoKonm = {
-																																													idKonm: retornoKonm.results[i].Knumh +
+																																												var objBancoA966 = {
+																																													idA966: retornoA966.results[i].Werks +
 																																														"." +
-																																														retornoKonm.results[i].Kstbm + "." +
-																																														retornoKonm.results[i].Kbetr,
-																																													knumh: retornoKonm.results[i].Knumh, //(Condição define qual valor de range pegar)
-																																													kstbm: retornoKonm.results[i].Kstbm, //Escala até
-																																													kbetr: retornoKonm.results[i].Kbetr //Percentual de desconto
+																																														retornoA966.results[i].ZzRegra + "." +
+																																														retornoA966.results[i].ZzGrpmat +
+																																														"." +
+																																														retornoA966.results[i].Pltyp,
+																																													werks: retornoA966.results[i].Werks,
+																																													zzRegra: retornoA966.results[i].ZzRegra,
+																																													zzGrpmat: retornoA966.results[i].ZzGrpmat,
+																																													pltyp: retornoA966.results[i].Pltyp,
+																																													zzTexto: retornoA966.results[i].ZzTexto
 																																												};
 
-																																												var requestKonm = objKonm.add(
-																																													objBancoKonm);
+																																												var requestA966 = objA966.add(
+																																													objBancoA966);
 
-																																												requestKonm.onsuccess = function (event) {
-																																													console.log("Dados Konm inseridos. " +
+																																												requestA966.onsuccess = function (event) {
+																																													console.log("Dados A966 inseridos. " +
 																																														event);
 																																												};
 
-																																												requestKonm.onerror = function (event) {
+																																												requestA966.onerror = function (event) {
 																																													console.log(
-																																														"Dados Konm não foram inseridos :" +
+																																														"Dados A966 não foram inseridos :" +
 																																														event);
 																																												};
+
 																																											}
 
-																																											oModel.read("/A968", {
-																																												success: function (retornoA968) {
+																																											oModel.read("/A967", {
+																																												success: function (retornoA967) {
 
-																																													var txA968 = db.transaction("A968",
+																																													var txA967 = db.transaction("A967",
 																																														"readwrite");
-																																													var objA968 = txA968.objectStore(
-																																														"A968");
+																																													var objA967 = txA967.objectStore(
+																																														"A967");
 
-																																													for (i = 0; i < retornoA968.results
+																																													for (i = 0; i < retornoA967.results
 																																														.length; i++) {
 
-																																														var objBancoA968 = {
-																																															idA968: retornoA968.results[i].Werks +
+																																														var objBancoA967 = {
+																																															idA967: retornoA967.results[i].Werks +
 																																																"." +
-																																																retornoA968.results[i].ZzRegra +
+																																																retornoA967.results[i].ZzRegra +
 																																																"." +
-																																																retornoA968.results[i].ZzGrpmat +
-																																																"." +
-																																																retornoA968.results[i].Pltyp,
-																																															werks: retornoA968.results[i].Werks,
-																																															zzRegra: retornoA968.results[i].ZzRegra,
-																																															zzGrpmat: retornoA968.results[i]
-																																																.ZzGrpmat,
-																																															pltyp: retornoA968.results[i].Pltyp,
-																																															zzTexto: retornoA968.results[i].ZzTexto
+																																																retornoA967.results[i].Knumh,
+																																															werks: retornoA967.results[i].Werks,
+																																															zzRegra: retornoA967.results[i].ZzRegra,
+																																															knumh: retornoA967.results[i].Knumh
 																																														};
-																																														var requestA968 = objA968.add(
-																																															objBancoA968);
 
-																																														requestA968.onsuccess = function (
+																																														var requestA967 = objA967.add(
+																																															objBancoA967);
+
+																																														requestA967.onsuccess = function (
 																																															event) {
 																																															console.log(
-																																																"Dados A968 inseridos. " +
+																																																"Dados A967 inseridos. " +
 																																																event);
 																																														};
 
-																																														requestA968.onerror = function (
+																																														requestA967.onerror = function (
 																																															event) {
 																																															console.log(
-																																																"Dados A968 não foram inseridos :" +
+																																																"Dados A967 não foram inseridos :" +
 																																																event);
 																																														};
 																																													}
 
-																																													oModel.read("/A969", {
-																																														success: function (retornoA969) {
-																																															var txA969 = db.transaction(
-																																																"A969",
-																																																"readwrite");
-																																															var objA969 = txA969.objectStore(
-																																																"A969");
+																																													oModel.read("/Konm", {
+																																														success: function (retornoKonm) {
 
-																																															for (i = 0; i < retornoA969.results
+																																															var txKonm = db.transaction(
+																																																"Konm",
+																																																"readwrite");
+																																															var objKonm = txKonm.objectStore(
+																																																"Konm");
+
+																																															for (i = 0; i < retornoKonm.results
 																																																.length; i++) {
 
-																																																var objBancoA969 = {
-																																																	idA969: retornoA969.results[
-																																																			i]
-																																																		.Werks +
+																																																var objBancoKonm = {
+																																																	idKonm: retornoKonm.results[
+																																																			i].Knumh +
 																																																		"." +
-																																																		retornoA969.results[i].ZzRegra +
+																																																		retornoKonm.results[i].Kstbm +
 																																																		"." +
-																																																		retornoA969.results[i].Knumh,
-																																																	werks: retornoA969.results[
-																																																		i].Werks,
-																																																	zzRegra: retornoA969.results[
-																																																			i]
-																																																		.ZzRegra,
-																																																	knumh: retornoA969.results[
-																																																		i].Knumh
+																																																		retornoKonm.results[i].Kbetr,
+																																																	knumh: retornoKonm.results[
+																																																		i].Knumh, //(Condição define qual valor de range pegar)
+																																																	kstbm: retornoKonm.results[
+																																																		i].Kstbm, //Escala até
+																																																	kbetr: retornoKonm.results[
+																																																			i].Kbetr //Percentual de desconto
 																																																};
 
-																																																var requestA969 = objA969.add(
-																																																	objBancoA969);
+																																																var requestKonm = objKonm.add(
+																																																	objBancoKonm);
 
-																																																requestA969.onsuccess =
-																																																	function (
-																																																		event) {
+																																																requestKonm.onsuccess =
+																																																	function (event) {
 																																																		console.log(
-																																																			"Dados A969 inseridos. " +
+																																																			"Dados Konm inseridos. " +
 																																																			event);
 																																																	};
 
-																																																requestA969.onerror =
-																																																	function (
-																																																		event) {
+																																																requestKonm.onerror =
+																																																	function (event) {
 																																																		console.log(
-																																																			"Dados A969 não foram inseridos :" +
+																																																			"Dados Konm não foram inseridos :" +
 																																																			event);
 																																																	};
 																																															}
 
-																																															MessageBox.show(
-																																																"Tabelas carregadas com sucesso!", {
-																																																	icon: MessageBox.Icon.SUCCESS,
-																																																	title: "Carregamento Completo",
-																																																	actions: [MessageBox.Action
-																																																		.OK
-																																																	],
-																																																	onClose: function () {
+																																															oModel.read("/A968", {
+																																																success: function (
+																																																	retornoA968) {
 
-																																																		if (that._ItemDialog) {
-																																																			that._ItemDialog.destroy(
-																																																				true);
-																																																		}
+																																																	var txA968 = db.transaction(
+																																																		"A968",
+																																																		"readwrite");
+																																																	var objA968 = txA968.objectStore(
+																																																		"A968");
 
-																																																		that.onUpdateDateTime();
+																																																	for (i = 0; i <
+																																																		retornoA968.results
+																																																		.length; i++) {
+
+																																																		var objBancoA968 = {
+																																																			idA968: retornoA968.results[
+																																																					i].Werks +
+																																																				"." +
+																																																				retornoA968.results[i]
+																																																				.ZzRegra +
+																																																				"." +
+																																																				retornoA968.results[i]
+																																																				.ZzGrpmat +
+																																																				"." +
+																																																				retornoA968.results[i]
+																																																				.Pltyp,
+																																																			werks: retornoA968.results[
+																																																				i].Werks,
+																																																			zzRegra: retornoA968.results[
+																																																				i].ZzRegra,
+																																																			zzGrpmat: retornoA968.results[
+																																																					i]
+																																																				.ZzGrpmat,
+																																																			pltyp: retornoA968.results[
+																																																				i].Pltyp,
+																																																			zzTexto: retornoA968.results[
+																																																				i].ZzTexto
+																																																		};
+																																																		var requestA968 =
+																																																			objA968.add(
+																																																				objBancoA968);
+
+																																																		requestA968.onsuccess =
+																																																			function (
+																																																				event) {
+																																																				console.log(
+																																																					"Dados A968 inseridos. " +
+																																																					event);
+																																																			};
+
+																																																		requestA968.onerror =
+																																																			function (
+																																																				event) {
+																																																				console.log(
+																																																					"Dados A968 não foram inseridos :" +
+																																																					event);
+																																																			};
 																																																	}
-																																																});
+
+																																																	oModel.read("/A969", {
+																																																		success: function (
+																																																			retornoA969) {
+																																																			var txA969 = db.transaction(
+																																																				"A969",
+																																																				"readwrite");
+																																																			var objA969 = txA969
+																																																				.objectStore(
+																																																					"A969");
+
+																																																			for (i = 0; i <
+																																																				retornoA969.results
+																																																				.length; i++) {
+
+																																																				var objBancoA969 = {
+																																																					idA969: retornoA969
+																																																						.results[
+																																																							i]
+																																																						.Werks +
+																																																						"." +
+																																																						retornoA969.results[
+																																																							i].ZzRegra +
+																																																						"." +
+																																																						retornoA969.results[
+																																																							i].Knumh,
+																																																					werks: retornoA969
+																																																						.results[
+																																																							i].Werks,
+																																																					zzRegra: retornoA969
+																																																						.results[
+																																																							i]
+																																																						.ZzRegra,
+																																																					knumh: retornoA969
+																																																						.results[
+																																																							i].Knumh
+																																																				};
+
+																																																				var requestA969 =
+																																																					objA969.add(
+																																																						objBancoA969);
+
+																																																				requestA969.onsuccess =
+																																																					function (
+																																																						event) {
+																																																						console.log(
+																																																							"Dados A969 inseridos. " +
+																																																							event);
+																																																					};
+
+																																																				requestA969.onerror =
+																																																					function (
+																																																						event) {
+																																																						console.log(
+																																																							"Dados A969 não foram inseridos :" +
+																																																							event);
+																																																					};
+																																																			}
+
+																																																			MessageBox.show(
+																																																				"Tabelas carregadas com sucesso!", {
+																																																					icon: MessageBox.Icon
+																																																						.SUCCESS,
+																																																					title: "Carregamento Completo",
+																																																					actions: [
+																																																						MessageBox.Action
+																																																						.OK
+																																																					],
+																																																					onClose: function () {
+
+																																																						if (that._ItemDialog) {
+																																																							that._ItemDialog
+																																																								.destroy(
+																																																									true);
+																																																						}
+
+																																																						that.onUpdateDateTime();
+																																																					}
+																																																				});
+																																																		},
+																																																		error: function (error) {
+																																																			console.log(error);
+																																																			that.onMensagemErroODATA(
+																																																				error
+																																																				.statusCode);
+																																																		}
+																																																	});
+																																																},
+																																																error: function (error) {
+																																																	console.log(error);
+																																																	that.onMensagemErroODATA(
+																																																		error.statusCode);
+																																																}
+																																															});
 																																														},
 																																														error: function (error) {
 																																															console.log(error);
@@ -1372,13 +1567,14 @@ sap.ui.define([
 																	console.log(error);
 																	that.onMensagemErroODATA(error.statusCode);
 																}
-															});
+															}); // GetPedidoPrepostoItem
+
 														},
 														error: function (error) {
 															console.log(error);
 															that.onMensagemErroODATA(error.statusCode);
 														}
-													});
+													}); // GetPedidoPrepostoTopo
 
 												} else {
 													MessageBox.show(

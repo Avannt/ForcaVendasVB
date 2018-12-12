@@ -83,7 +83,9 @@ sap.ui.define([
 
 		_onLoadFields: function() {
 			var that = this;
-
+			
+			this.navBack2();
+			
 			this.getView().byId("objectHeader").setTitle();
 			this.getView().byId("objectHeader").setNumber();
 			this.getView().byId("objectAttribute_cnpj").setText();
