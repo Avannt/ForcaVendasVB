@@ -275,7 +275,8 @@ sap.ui.define([
 		onCriarNumeroPedido: function () {
 			var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "Não");
-
+			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
+			
 			var date = new Date();
 			var dia = String(date.getDate());
 			var mes = String(date.getMonth() + 1);
@@ -1636,7 +1637,6 @@ sap.ui.define([
 				if (objItensPedidoTemplate[i].tipoItem == "Normal"){
 					
 					if(objItensPedidoTemplate[i].tipoItem2 == "Normal"){
-						
 						//VALOR DE COMISSÃO GERADA NO PEDIDO
 						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
 						objItensPedidoTemplate[i].zzQnt;
@@ -1931,7 +1931,13 @@ sap.ui.define([
 				
 				var totalPercentualDiluicaoDado = 0;
 				var TotalDiluicao = 0;
-				var TotalNormal = 0; 
+				var TotalNormal = 0;
+				
+				objItensPedidoTemplate.sort(function(a,b) {
+				    var x = a.tipoItem2.toLowerCase();
+				    var y = b.tipoItem2.toLowerCase();
+				    return x > y ? -1 : x < y ? 1 : 0;
+				});
 				
 				for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 					if (objItensPedidoTemplate[i].tipoItem === "Diluicao"){
@@ -3436,15 +3442,11 @@ sap.ui.define([
 							valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
 							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
 							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
-							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
-								"/ValComissaoUtilizadaDesconto"),
+							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto"),
 							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
-							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
-								"/ValUtilizadoComissaoPrazoMed"),
-							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
-								"/ValTotalExcedenteNaoDirecionadoDesconto"),
-							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty(
-								"/ValTotalExcedenteNaoDirecionadoPrazoMed"),
+							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed"),
+							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoDesconto"),
+							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed"),
 							valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
 							valTotalAbatidoVerba: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoVerba"),
 							valTotalCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampGlobal"),
@@ -3934,6 +3936,11 @@ sap.ui.define([
 				this.byId("idTipoTransporte").setEnabled(true);
 				this.byId("idTipoNegociacao").setEnabled(true);
 				this.byId("idTipoPedido").setEnabled(true);
+				this.byId("idPrimeiraParcela").setEnabled(true);
+				this.byId("idQuantParcelas").setEnabled(true);
+				this.byId("idIntervaloParcelas").setEnabled(true);
+				this.byId("idValorEntrada").setEnabled(true);
+				this.byId("idPercEntrada").setEnabled(true);
 			}
 		},
 

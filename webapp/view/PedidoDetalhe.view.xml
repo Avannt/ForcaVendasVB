@@ -55,7 +55,7 @@
 												<core:Item key="{tabPreco>pltyp}" text="{tabPreco>pltyp} - {tabPreco>ptext}"/>
 											</Select>
 											<Label text="Tipo transporte *"/>
-											<Select id="idTipoTransporte" forceSelection="false" visible="false" items="{ path: 'tipoTransporte>/' }" showSecondaryValues="true"
+											<Select id="idTipoTransporte" forceSelection="false" visible="true" items="{ path: 'tipoTransporte>/' }" showSecondaryValues="true"
 												change="onChangeTipoTransporte">
 												<core:Item key="{tipoTransporte>idTransporte}" text="{tipoTransporte>idTransporte}"/>
 											</Select>

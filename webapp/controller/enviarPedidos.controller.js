@@ -368,10 +368,10 @@ sap.ui.define([
 									Pltyp: String(oPedidosEnviar[i].tabPreco),
 									Completo: oPedidosEnviar[i].completo,
 									Valminped: String(oPedidosEnviar[i].valMinPedido),
-									Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + oPedidosEnviar[i].dataImpl
-										.substr(0, 2)),
-									Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + oPedidosEnviar[i].dataImpl
-										.substr(17, 2)),
+									Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + 
+										oPedidosEnviar[i].dataImpl.substr(0, 2)),
+									Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + 
+										oPedidosEnviar[i].dataImpl.substr(17, 2)),
 									Obsped: oPedidosEnviar[i].observacaoPedido,
 									Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
 									Existeentradapedido: String(oPedidosEnviar[i].existeEntradaPedido),
@@ -387,7 +387,7 @@ sap.ui.define([
 									// ValCampBrinde: String(oPedidosEnviar[i].valCampBrinde),
 									// ValCampEnxoval: String(oPedidosEnviar[i].valCampEnxoval),
 									// ValCampGlobal: String(oPedidosEnviar[i].valCampGlobal),
-									Valorcomissao: String(oPedidosEnviar[i].valComissao),
+									Valorcomissao: String(parseFloat(oPedidosEnviar[i].valComissao)),
 									// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
 									// ValMinPedido: oPedidosEnviar[i].valMinPedido,
 									Valtotpedido: String(oPedidosEnviar[i].valTotPed),

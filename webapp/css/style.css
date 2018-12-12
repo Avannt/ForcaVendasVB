@@ -1,6 +1,10 @@
 .desabilitado .sapMInputBaseInner {
     background-color: #F8F8FF;
 }
+.desabilitado2 .sapMInputBaseInner {
+    background-color: #F8F8FF;
+    font-weight:bold;
+}
 .marginBottomInpu {
 	padding-botton: 20px !important;
 }

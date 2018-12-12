@@ -15,18 +15,17 @@ sap.ui.define([
 		},
 
 		_onLoadFields: function (evt) {
-			
 			this.onBuscaPedidos();
 		},
 		
 		onCarregaExcedentes: function(){
 			
-			var vlrTotalDesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
+			var Vlrdsc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
 			var Vlrdsccom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
 			var Vlrdscdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
 			var Vlrdscvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
 			var Vlrdscvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
-			var Valtotexcndirdesc = vlrTotalDesc - (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb);
+			var Valtotexcndirdesc = Vlrdsc - (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb);
 			
 			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
 			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
@@ -56,11 +55,15 @@ sap.ui.define([
 			var Vlrbonvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
 			var ValtotexcndirBonif = Vlrbon - (Vlrbonvm + Vlrboncom + Vlrbondd + Vlrbonvvb);
 			
-			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc);
-			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirprazo", Valtotexcndirprazo);
-			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBrinde", ValtotexcndirBrinde);
-			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirAmostra", ValtotexcndirAmostra);
-			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif);
+			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc.toFixed(2));
+			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirprazo", Valtotexcndirprazo.toFixed(2));
+			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBrinde", ValtotexcndirBrinde.toFixed(2));
+			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirAmostra", ValtotexcndirAmostra.toFixed(2));
+			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif.toFixed(2));
+			
+			//Atualiza o total de excedente para ser destinado.
+			var totalExc = Vlramo + Vlrprz + Vlrbri + Vlrbon + Vlrdsc;
+			this.getView().getModel("ItemAprovar").setProperty("/Vlrexc", totalExc.toFixed(2));
 			
 		},
 		
@@ -209,17 +212,6 @@ sap.ui.define([
 			}
 		},
 		
-		onCalculaTotalDestinar: function(){
-			var var1 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc");
-			var var2 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo");
-			var var3 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde");
-			var var4 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirAmostra");
-			var var5 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif");
-			
-			var Vlrdst = parseFloat(var1) + parseFloat(var2) + parseFloat(var3) + parseFloat(var4) + parseFloat(var5);
-			this.getView().getModel("ItemAprovar").setProperty("/Vlrdst", Vlrdst);
-		},
-		
 		onDestinaPrazo: function(evt){
 			var Valtotexcndirprazo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo"));
 			
@@ -265,6 +257,155 @@ sap.ui.define([
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueState("None");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueStateText();
 			}
+		},
+		
+		onDestinaBonif: function(evt){
+			var ValtotexcndirBonif = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif"));
+			
+			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
+			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
+			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
+			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
+			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
+			var somaDosDestinados = Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb;
+			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrprz + ")";
+			
+			if(somaDosDestinados > Vlrprz){
+				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaBonif").setValueState("Error");
+				sap.ui.getCore().byId("idComissaoUtilizadaBonif").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueStateText(msg);
+				
+			} else{
+				
+				ValtotexcndirBonif = Vlrprz - somaDosDestinados;
+				this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif.toFixed(2));
+				
+				this.onCalculaTotalDestinar();
+				
+				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueState("None");
+				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueStateText();
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaBonif").setValueState("None");
+				sap.ui.getCore().byId("idComissaoUtilizadaBonif").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setValueState("None");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueState("None");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueStateText();
+			}
+		},
+		
+		onDestinaAmostra: function(evt){
+			var ValtotexcndirAmostra = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirAmostra"));
+
+			var Vlramo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramo"));
+			var Vlramocom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
+			var Vlramodd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
+			var Vlramovm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
+			var Vlramovvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
+			var somaDosDestinados = Vlramocom + Vlramodd + Vlramovm + Vlramovvb;
+			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlramo + ")";
+			
+			if(somaDosDestinados > Vlramo){
+				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueStateText(msg);
+				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").focus();
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaAmostra").setValueState("Error");
+				sap.ui.getCore().byId("idComissaoUtilizadaAmostra").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setValueStateText(msg);
+				
+			} else{
+				
+				ValtotexcndirAmostra = Vlramo - somaDosDestinados;
+				this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirAmostra", ValtotexcndirAmostra.toFixed(2));
+				
+				this.onCalculaTotalDestinar();
+				
+				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueState("None");
+				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueStateText();
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaAmostra").setValueState("None");
+				sap.ui.getCore().byId("idComissaoUtilizadaAmostra").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setValueState("None");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setValueState("None");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setValueStateText();
+			}
+		},
+		
+		onDestinaBrinde:  function(evt){
+			var ValtotexcndirBrinde = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde"));
+			
+			var Vlrbri = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbri"));
+			var Vlrbricom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
+			var Vlrbridd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
+			var Vlrbrivm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
+			var Vlrbrivvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
+			var somaDosDestinados = Vlrbricom + Vlrbridd + Vlrbrivm + Vlrbrivvb;
+			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrbri + ")";
+			
+			if(somaDosDestinados > Vlrbri){
+				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueStateText(msg);
+				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").focus();
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaBrinde").setValueState("Error");
+				sap.ui.getCore().byId("idComissaoUtilizadaBrinde").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setValueStateText(msg);
+				
+			} else{
+				
+				ValtotexcndirBrinde = Vlrbri - somaDosDestinados;
+				this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBrinde", ValtotexcndirBrinde.toFixed(2));
+				
+				this.onCalculaTotalDestinar();
+				
+				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueState("None");
+				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueStateText();
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaBrinde").setValueState("None");
+				sap.ui.getCore().byId("idComissaoUtilizadaBrinde").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setValueState("None");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setValueState("None");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setValueStateText();
+			}
+		},
+		
+		onCalculaTotalDestinar: function(){
+			var var1 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc");
+			var var2 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo");
+			var var3 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde");
+			var var4 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirAmostra");
+			var var5 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif");
+			
+			var Vlrdst = parseFloat(var1) + parseFloat(var2) + parseFloat(var3) + parseFloat(var4) + parseFloat(var5);
+			this.getView().getModel("ItemAprovar").setProperty("/Vlrdst", Vlrdst);
+			
 		},
 
 		onBuscaPedidos: function () {
@@ -431,11 +572,17 @@ sap.ui.define([
 					if (that._ItemDialog) {
 						that._ItemDialog.destroy(true);
 					}
+					
+					if(retorno.Message == ""){
+						var mensagem = "Pedido aprovado com sucesso!";
+					}else{
+						mensagem = retorno.Message;
+					}
 						
 					sap.m.MessageBox.show(
-						"Verifique a conexão com a internet!", {
+						mensagem, {
 							icon: sap.m.MessageBox.Icon.SUCCESS,
-							title: "Falha na Conexão!",
+							title: "Sucesso!",
 							actions: [sap.m.MessageBox.Action.OK],
 							onClose: function (oAction) {
 									
@@ -566,6 +713,10 @@ sap.ui.define([
 		
 		onExit: function () {
 			
+		},
+		
+		onCasasDecimais: function(value){
+			// return parseFloat(value).toFixed(2);
 		},
 
 		onMensagemErroODATA: function (codigoErro) {
