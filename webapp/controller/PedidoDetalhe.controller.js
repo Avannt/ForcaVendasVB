@@ -532,8 +532,7 @@ sap.ui.define([
 
 		carregarItensPedido: function (db) {
 			var that = this;
-			db = open.result;
-
+			
 			var store = db.transaction("ItensPedido").objectStore("ItensPedido");
 			//CARREGA TODOS OS ITENS DE UM DETERMINADO PEDIDO
 			store.openCursor().onsuccess = function (event) {
@@ -1564,10 +1563,10 @@ sap.ui.define([
 			oItemPedido.zzVprodDescTotal = oItemPedido.zzVprodDesc * oItemPedido.zzQnt;
 			oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
 
-			oItemPedido.zzVprodDesc = Math.round(oItemPedido.zzVprodDesc * 100) / 100;
+			// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc;
 			
-			//Desconto normal. *****
-			oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+			// //Desconto normal. *****
+			// oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
 		},
 
 		calculaTotalPedido: function () {
@@ -3908,14 +3907,22 @@ sap.ui.define([
 			for(var i=0; i<objItensPedidoTemplate.length; i++){
 				if(objItensPedidoTemplate[i].tipoItem == "Diluicao"){
 					this.byId("idDiluirItens").setEnabled(true);
+					this.byId("idInserirItemDiluicao").setEnabled(true);
 					break;
-				}else{
+				}else if(objItensPedidoTemplate[i].tipoItem == "Diluido"){
 					this.byId("idDiluirItens").setEnabled(false);
+					this.byId("idInserirItemDiluicao").setEnabled(false);
+					this.byId("idInserirItem").setEnabled(false);
+					break;
+				}
+				else{
+					this.byId("idDiluirItens").setEnabled(true);
+					this.byId("idInserirItemDiluicao").setEnabled(true);
+					this.byId("idInserirItem").setEnabled(true);
 				}
 			}
 
 			if (objItensPedidoTemplate.length > 0) {
-
 				this.byId("idTabelaPreco").setEnabled(false);
 				this.byId("idTipoTransporte").setEnabled(false);
 				this.byId("idTipoNegociacao").setEnabled(false);
@@ -4095,58 +4102,16 @@ sap.ui.define([
 			}
 			
 		},
-
-		onAddOV: function () {
-
-			var oModel = new sap.ui.model.odata.ODataModel({
-				serviceUrl: "/sap/opu/odata/sap/zforca_vendas_srv/",
-				user: "rcardilo",
-				password: "sap123"
-			});
-
-			var ordemVenda = {
-				DocType: "",
-				SalesOrg: "",
-				DistrChan: "",
-				Division: "",
-				ItmNumber: "",
-				TextLine: "",
-				ReqQty: "",
-				PartnRole: "",
-				PartnNumb: "",
-				Material: "",
-				TargetQty: "",
-				Plant: ""
-			};
-
-			oModel.create("/OrdemVendas", ordemVenda, {
-				success: function (data) {
-
-					MessageBox.show("Ordem de Venda: " + data.Salesdocumentin + " criada com sucesso!", {
-						icon: MessageBox.Icon.SUCCESS,
-						title: "Ordem de Venda CRIADA!",
-						actions: [MessageBox.Action.OK],
-						onClose: function () {
-
-						}
-					});
-
-				},
-				error: function (error) {
-
-					console.log(error);
-
-					MessageBox.show("Erro ao criar Ordem de Venda!", {
-						icon: MessageBox.Icon.ERROR,
-						title: "Não encontrado!",
-						actions: [MessageBox.Action.OK],
-						onClose: function () {
-							console.log(error.response);
-
-						}
-					});
-				}
-			});
+		onSubmitParcela: function(){
+			this.byId("idQuantParcelas").focus();
+		},
+		
+		onSubmitParcela2: function(){
+			this.byId("idIntervaloParcelas").focus();
+		},
+		
+		onFormatterzzVprodDesc: function(value){
+			return parseFloat(Math.round(value * 100) / 100);
 		}
 
 	});

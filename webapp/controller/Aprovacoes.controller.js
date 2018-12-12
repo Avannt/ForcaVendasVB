@@ -15,15 +15,78 @@ sap.ui.define([
 		},
 
 		_onLoadFields: function (evt) {
-
+			
 			this.onBuscaPedidos();
-
 		},
 		
-		teste: function(){
-			console.log("tteste");
+		onCarregaExcedentes: function(){
+			
+			var vlrTotalDesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
+			var Vlrdsccom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
+			var Vlrdscdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
+			var Vlrdscvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
+			var Vlrdscvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
+			var Valtotexcndirdesc = vlrTotalDesc - (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb);
+			
+			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
+			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
+			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
+			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
+			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
+			var Valtotexcndirprazo = Vlrprz - (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb);
+			
+			var Vlrbri = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbri"));
+			var Vlrbrivm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
+			var Vlrbricom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
+			var Vlrbridd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
+			var Vlrbrivvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
+			var ValtotexcndirBrinde = Vlrbri - (Vlrbrivm + Vlrbricom + Vlrbridd + Vlrbrivvb);
+			
+			var Vlramo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramo"));
+			var Vlramovm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
+			var Vlramocom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
+			var Vlramodd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
+			var Vlramovvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
+			var ValtotexcndirAmostra = Vlramo - (Vlramovm + Vlramocom + Vlramodd + Vlramovvb);
+			
+			var Vlrbon = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbon"));
+			var Vlrbonvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
+			var Vlrboncom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
+			var Vlrbondd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
+			var Vlrbonvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
+			var ValtotexcndirBonif = Vlrbon - (Vlrbonvm + Vlrboncom + Vlrbondd + Vlrbonvvb);
+			
+			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc);
+			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirprazo", Valtotexcndirprazo);
+			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBrinde", ValtotexcndirBrinde);
+			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirAmostra", ValtotexcndirAmostra);
+			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif);
+			
 		},
+		
+		onCarregaLimites: function(){
+			
+			var that = this;
+			this.byId("idTableEnvioPedidos").setBusy(true);
 
+			var oModel = that.getView().getModel();
+			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+
+			oModel.read("/PedidosAprovar(IAprovador='" + codRepres + "')", {
+				success: function (retorno) {
+					var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
+					that.getView().setModel(oModelAprovacoes, "PedidosAprovar");
+					that.byId("idTableEnvioPedidos").setBusy(false);
+				},
+				error: function (error) {
+					console.log(error);
+					that.byId("idTableEnvioPedidos").setBusy(false);
+					that.onMensagemErroODATA(error.statusCode);
+				}
+			});
+			
+		},
+		
 		myFormatterDataImp: function (value) {
 
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
@@ -58,6 +121,8 @@ sap.ui.define([
 			
 			var oModelAprovacoes = new sap.ui.model.json.JSONModel(itemAprovar);
 			this.getView().setModel(oModelAprovacoes, "ItemAprovar");
+			
+			this.onCarregaExcedentes();
 			
 			
 			if (this._ItemDialog) {
@@ -95,6 +160,111 @@ sap.ui.define([
 			aFilters.push(allFilters);
 			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, "Application");
 
+		},
+		
+		onDestinaDesc: function(evt){
+			
+			var Valtotexcndirdesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc"));
+			var vlrTotalDesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
+			var Vlrdsccom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
+			var Vlrdscdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
+			var Vlrdscvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
+			var Vlrdscvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
+			var somaDosDestinados = Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb;
+			var msg = "Valores destinados para abater o excedente de descontos, ultrapassou o valor total necessário. Valor Excedente (" + vlrTotalDesc + ")";
+			
+			if(somaDosDestinados > vlrTotalDesc){
+				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueState("Error");
+				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueStateText(msg);
+				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").focus();
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueStateText(msg);
+				
+			} else{
+				
+				Valtotexcndirdesc = vlrTotalDesc - somaDosDestinados;
+				this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc.toFixed(2));
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueState("None");
+				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueState("None");
+				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueState("None");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueState("None");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueStateText();
+				
+				this.onCalculaTotalDestinar();
+				
+			}
+		},
+		
+		onCalculaTotalDestinar: function(){
+			var var1 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc");
+			var var2 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo");
+			var var3 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde");
+			var var4 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirAmostra");
+			var var5 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif");
+			
+			var Vlrdst = parseFloat(var1) + parseFloat(var2) + parseFloat(var3) + parseFloat(var4) + parseFloat(var5);
+			this.getView().getModel("ItemAprovar").setProperty("/Vlrdst", Vlrdst);
+		},
+		
+		onDestinaPrazo: function(evt){
+			var Valtotexcndirprazo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo"));
+			
+			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
+			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
+			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
+			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
+			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
+			var somaDosDestinados = Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb;
+			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrprz + ")";
+			
+			if(somaDosDestinados > Vlrprz){
+				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueStateText(msg);
+				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").focus();
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setValueState("Error");
+				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaPrazo").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaPrazo").setValueStateText(msg);
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueState("Error");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueStateText(msg);
+				
+			} else{
+				
+				Valtotexcndirprazo = Vlrprz - somaDosDestinados;
+				this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirprazo", Valtotexcndirprazo.toFixed(2));
+				
+				this.onCalculaTotalDestinar();
+				
+				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueState("None");
+				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueStateText();
+				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").focus();
+				
+				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setValueState("None");
+				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaPrazo").setValueState("None");
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaPrazo").setValueStateText();
+				
+				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueState("None");
+				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueStateText();
+			}
 		},
 
 		onBuscaPedidos: function () {
@@ -250,7 +420,8 @@ sap.ui.define([
 				VlrbonCom: String(itemAprovar.Vlrboncom),
 				VlrbonVm: String(itemAprovar.Vlrbonvm),
 				VlrbonDd: String(itemAprovar.Vlrbondd),
-				VlrbonVvb: String(itemAprovar.Vlrbonvvb)
+				VlrbonVvb: String(itemAprovar.Vlrbonvvb),
+				Vlrdst: String(itemAprovar.Vlrdst)
 			};
 					
 			oModel.create("/AprovarOV", aux , {
