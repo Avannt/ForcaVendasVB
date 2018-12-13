@@ -373,7 +373,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", oPrePedido.valVerbaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", oPrePedido.valComissaoPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", oPrePedido.completo);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissao", oPrePedido.valComissao);
+					// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissao", oPrePedido.valComissao);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", oPrePedido.valComissaoUtilizadaDesconto);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", oPrePedido.valVerbaUtilizadaDesconto);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", oPrePedido.valUtilizadoComissaoPrazoMed);
@@ -1648,6 +1648,10 @@ sap.ui.define([
 						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) * 
 						(objItensPedidoTemplate[i].zzQnt);
 						
+						//Calculo do acréscimo de prazo médio .
+						percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
+						valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100));
+						
 						//calculo do desconto total retirando excluindo total diluido pra ele
 						var valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
 						objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
@@ -1705,10 +1709,6 @@ sap.ui.define([
 			
 			totalVerbaGerada = Math.round(totalVerbaGerada * 100) / 100;
 			totalComissaoGerada = Math.round(totalComissaoGerada * 100) / 100;
-			
-			//Calculo do acréscimo de prazo médio .
-			percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
-			valorTotalAcresPrazoMed = Math.round(parseFloat(TotalPedidoDesc * (percAcresPrazoMed / 100) * 100)) / 100;
 			
 			//Calculando total de desconto dado.
 			TotalPedidoDesc = Math.round(parseFloat(TotalPedidoDesc * 100)) / 100;
@@ -2583,9 +2583,9 @@ sap.ui.define([
 					}
 					valorTot += intervaloParcelas * i;
 				}
-
+				
 				var prazoMedio = valorTot / quantidadeParcelas;
-
+				
 				if (diasPrimeiraParcela < intervaloParcelas) {
 					valorAux = intervaloParcelas - diasPrimeiraParcela;
 					prazoMedio = prazoMedio - valorAux;
@@ -2656,13 +2656,30 @@ sap.ui.define([
 				if (valorEntradaPedido > 0 || valorEntradaPedido != null || valorEntradaPedido != undefined) {
 
 					valorDasparcelas = Math.round(parseFloat((valTotPed - valorEntradaPedido) / quantidadeParcelas) * 100) / 100;
-
-					//COMEÇA EM 1 POR QUE A PRIMEIRA PARCELA É DEFINIDO.
-					for (var i = 1; i < quantidadeParcelas; i++) {
-						somatoriaParcelas = (valorDasparcelas * intervaloParcelas);
+					var base = 0;
+					var valorInterm = 0;
+					var dias = 0;
+					
+					for (i = 1; i <= quantidadeParcelas+1; i++) {
+						if (i == 1) {
+							base = valorEntradaPedido;
+							dias = 1;
+						}else if(i == 2){
+							dias += diasPrimeiraParcela;
+							valorInterm += dias * valorDasparcelas;
+						}else{
+							dias += intervaloParcelas;
+							valorInterm += dias * valorDasparcelas;
+						}
 					}
+					mediaPonderada = (base + valorInterm) / valTotPed;
 
-					mediaPonderada = ((diasPrimeiraParcela * valorDasparcelas) + somatoriaParcelas) / valTotPed * quantidadeParcelas;
+					// //COMEÇA EM 1 POR QUE A PRIMEIRA PARCELA É DEFINIDO.
+					// for (i = 1; i < quantidadeParcelas; i++) {
+					// 	somatoriaParcelas += (valorDasparcelas * intervaloParcelas);
+					// }
+
+					// mediaPonderada = ((1 * valorDasparcelas) + somatoriaParcelas) / valTotPed;
 					mediaPonderada = Math.round(mediaPonderada * 100) / 100;
 					
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", mediaPonderada);
@@ -2721,62 +2738,83 @@ sap.ui.define([
 					}
 				} else if (percEntradaPedido > 0 || percEntradaPedido != null || percEntradaPedido != undefined) {
 
-					valorDasparcelas = (valTotPed - (percEntradaPedido * valTotPed)) / quantidadeParcelas;
-
-					//COMEÇA EM 1 POR QUE A PRIMEIRA PARCELA É DEFINIDO.
-					for (i = 1; i < quantidadeParcelas; i++) {
-						somatoriaParcelas = (valorDasparcelas * intervaloParcelas);
+					// valorDasparcelas = (valTotPed - (percEntradaPedido * valTotPed)) / quantidadeParcelas;
+					valorEntradaPedido = percEntradaPedido * valTotPed;
+					valorDasparcelas = Math.round(parseFloat((valTotPed - valorEntradaPedido) / quantidadeParcelas) * 100) / 100;
+					
+					base = 0;
+					valorInterm = 0;
+					dias = 0;
+					
+					for (i = 1; i <= quantidadeParcelas+1; i++) {
+						if (i == 1) {
+							base = valorEntradaPedido;
+							dias = 1;
+						}else if(i == 2){
+							dias += diasPrimeiraParcela;
+							valorInterm += dias * valorDasparcelas;
+						}else{
+							dias += intervaloParcelas;
+							valorInterm += dias * valorDasparcelas;
+						}
 					}
-
-					mediaPonderada = ((diasPrimeiraParcela * valorDasparcelas) + somatoriaParcelas) / valTotPed * quantidadeParcelas;
+					mediaPonderada = (base + valorInterm) / valTotPed;
 					mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-
+					
+					// //COMEÇA EM 1 POR QUE A PRIMEIRA PARCELA É DEFINIDO.
+					// for (i = 1; i < quantidadeParcelas; i++) {
+					// 	somatoriaParcelas = (valorDasparcelas * intervaloParcelas);
+					// }
+					
+					// mediaPonderada = ((diasPrimeiraParcela * valorDasparcelas) + somatoriaParcelas) / valTotPed * quantidadeParcelas;
+					// mediaPonderada = Math.round(mediaPonderada * 100) / 100;
+					
 					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 						if (valTotPed < valorPedMin && mediaPonderada >= prazoMinAvista) {
-
+							
 							diasExcedente = mediaPonderada - prazoMinAvista;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-
+							
 						} else if (valTotPed < valorPedMin && mediaPonderada < prazoMinAvista) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-
+							
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAvista) {
-
+							
 							diasExcedente = mediaPonderada - prazoMaxAvista;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-
+							
 						} else if (valTotPed >= valorPedMin && mediaPonderada < prazoMaxAvista) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 						}
-
+						
 					} else if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
 						if (valTotPed < valorPedMin && mediaPonderada >= prazoMinAprazo) {
-
+							
 							diasExcedente = mediaPonderada - prazoMinAprazo;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-
+							
 						} else if (valTotPed < valorPedMin && mediaPonderada < prazoMinAprazo) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
-
+							
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAprazo) {
-
+							
 							diasExcedente = mediaPonderada - prazoMaxAprazo;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-
+							
 						} else if (valTotPed >= valorPedMin && mediaPonderada < prazoMaxAprazo) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
@@ -3426,7 +3464,7 @@ sap.ui.define([
 							valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
 							dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
 							dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
-							valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
+							// valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
 							observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
 							observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
 							existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),
@@ -3660,7 +3698,7 @@ sap.ui.define([
 							valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
 							dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
 							dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
-							valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
+							// valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
 							observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
 							observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
 							existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),

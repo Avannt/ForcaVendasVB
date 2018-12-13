@@ -404,7 +404,7 @@ sap.ui.define([
 									// ValCampBrinde: String(oPedidosEnviar[i].valCampBrinde),
 									// ValCampEnxoval: String(oPedidosEnviar[i].valCampEnxoval),
 									// ValCampGlobal: String(oPedidosEnviar[i].valCampGlobal),
-									Valorcomissao: String(parseFloat(oPedidosEnviar[i].valComissao)),
+									Valorcomissao: String(parseFloat(oPedidosEnviar[i].valComissaoPedido)),
 									// ValDescontoTotal: oPedidosEnviar[i].valDescontoTotal,
 									// ValMinPedido: oPedidosEnviar[i].valMinPedido,
 									Valtotpedido: String(oPedidosEnviar[i].valTotPed),
