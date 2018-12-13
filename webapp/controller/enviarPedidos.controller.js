@@ -268,10 +268,11 @@ sap.ui.define([
 					if (oPedidoGrid[j].nrPedCli == nrPedido) {
 						oPedidosEnviar.push(oPedidoGrid[j]);
 
-						var bVerificadoPreposto = oPedidosEnviar.verificadoPreposto == undefined ? false : oPedidosEnviar.verificadoPreposto;
+						var bVerificadoPreposto = oPedidoGrid[j].verificadoPreposto == undefined ? false : oPedidoGrid[j].verificadoPreposto;
 						var bRepresentante = this.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == "1";
+						var iStatusPedido = oPedidoGrid[j].idStatusPedido;
 
-						if (bRepresentante && !bVerificadoPreposto) {
+						if (bRepresentante && iStatusPedido == 9 && !bVerificadoPreposto) {
 							var oTable = this.byId(oEvent.getParameter("id"));
 							var oListItem = oEvent.getParameter("listItem");
 
@@ -283,7 +284,7 @@ sap.ui.define([
 								actions: [MessageBox.Action.OK]
 							});
 						}
-					}
+					} /*EndIf*/
 				}
 				for (var k = 0; k < oItensPedidoGrid.length; k++) {
 					if (oItensPedidoGrid[k].nrPedCli == nrPedido) {
