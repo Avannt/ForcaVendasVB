@@ -79,9 +79,9 @@
 											<CheckBox id="idCheckEntrada"  select="onExisteEntrada"/>
 											<!--selected="{modelDadosPedido>/ExisteEntradaPedido}"-->
 											<Label text="Valor (R$)"/>
-											<Input id="idValorEntrada" type="Text" value="{modelDadosPedido>/ValorEntradaPedido}" liveChange="onBloqueiaPercEntrada" visible="false"/>
+											<Input id="idValorEntrada" type="Number" value="{modelDadosPedido>/ValorEntradaPedido}" liveChange="onBloqueiaPercEntrada" visible="false"/>
 											<Label text="Perc. (%)"/>
-											<Input id="idPercEntrada" type="Text" value="{modelDadosPedido>/PercEntradaPedido}" liveChange="onBloqueiaValorEntrada" visible="false"/>
+											<Input id="idPercEntrada" type="Number" value="{modelDadosPedido>/PercEntradaPedido}" liveChange="onBloqueiaValorEntrada" visible="false"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="3" columnsL="2"
@@ -285,6 +285,8 @@
 											<Input id="idComissaoAbaTotal" value="{modelDadosPedido>/ValComissaoPedido}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Parcela "/>
 											<Input id="idParcela" value="{modelDadosPedido>/ValParcelasPedido}" enabled="false" class="desabilitado" />
+											<Label text="Prazo Médio "/>
+											<Input id="idPrazoMedio" value="{modelDadosPedido>/PrazoMedioParcelas} dias" enabled="false" class="desabilitado" />
 										</f:content>
 									</f:SimpleForm>
 									<!--<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"-->
@@ -310,7 +312,7 @@
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Valores a Destinar">
 										<f:content>
 											<Label text="Valor sem destinar Desconto (R$)"/>
-											<Input id="idAbaterNaoDestinadoDesconto" value="{parts: ['modelDadosPedido>/ValTotalExcedenteNaoDirecionadoDesconto']}" enabled="false" class="desabilitado" type="Number"/>
+											<Input id="idAbaterNaoDestinadoDesconto" value="{modelDadosPedido>/ValTotalExcedenteNaoDirecionadoDesconto}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Valor sem destinar Prazo Médio (R$)"/>
 											<Input id="idAbaterNaoDestinadoPrazoMed" value="{modelDadosPedido>/ValTotalExcedenteNaoDirecionadoPrazoMed}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Valor sem destinar Brinde (R$)"/>
