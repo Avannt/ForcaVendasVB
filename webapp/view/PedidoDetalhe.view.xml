@@ -310,7 +310,7 @@
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Valores a Destinar">
 										<f:content>
 											<Label text="Valor sem destinar Desconto (R$)"/>
-											<Input id="idAbaterNaoDestinadoDesconto" value="{parts: ['modelDadosPedido>/ValTotalExcedenteNaoDirecionadoDesconto'], formatter: 'formatNumber'}" enabled="false" class="desabilitado" type="Number"/>
+											<Input id="idAbaterNaoDestinadoDesconto" value="{parts: ['modelDadosPedido>/ValTotalExcedenteNaoDirecionadoDesconto']}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Valor sem destinar Prazo Médio (R$)"/>
 											<Input id="idAbaterNaoDestinadoPrazoMed" value="{modelDadosPedido>/ValTotalExcedenteNaoDirecionadoPrazoMed}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Valor sem destinar Brinde (R$)"/>
