@@ -1277,7 +1277,7 @@ sap.ui.define([
 																																																				intervaloParcelas: parseInt(retornoPVPrepostoTopo.results[i].Intervaloparcelas),
 																																																				tipoNegociacao: retornoPVPrepostoTopo.results[i].Tiponego,
 																																																				totalItensPedido: parseInt(retornoPVPrepostoTopo.results[i].Totitens),
-																																																				valComissao: parseFloat(retornoPVPrepostoTopo.results[i].Valorcomissao),
+																																																				valComissaoPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorcomissao),
 																																																				valTotPed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotpedido),
 																																																				valTotalAbatidoComissao: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcomissao),
 																																																				valTotalAbatidoVerba: parseFloat(retornoPVPrepostoTopo.results[i].Valabverba),
@@ -1326,7 +1326,7 @@ sap.ui.define([
 
 																																																					var objBancoPVPrepostoItem = {
 																																																						idItemPedido: retornoPVPrepostoItem.results[i].Iditempedido,
-																																																						index: retornoPVPrepostoItem.results[i].Tindex,
+																																																						index: parseInt(retornoPVPrepostoItem.results[i].Tindex),
 																																																						knumh: retornoPVPrepostoItem.results[i].Knumh,
 																																																						knumhExtra: retornoPVPrepostoItem.results[i].Knumhextra,
 																																																						zzRegra: retornoPVPrepostoItem.results[i].Zzregra,
@@ -1336,18 +1336,18 @@ sap.ui.define([
 																																																						maktx: retornoPVPrepostoItem.results[i].Maktx,
 																																																						matnr: retornoPVPrepostoItem.results[i].Matnr,
 																																																						nrPedCli: retornoPVPrepostoItem.results[i].Nrpedcli,
-																																																						ntgew: retornoPVPrepostoItem.results[i].Ntgew,
+																																																						ntgew: parseFloat(retornoPVPrepostoItem.results[i].Ntgew),
 																																																						tipoItem: retornoPVPrepostoItem.results[i].Tipoitem,
-																																																						zzDesext: retornoPVPrepostoItem.results[i].Zzdesext,
-																																																						zzDesitem: retornoPVPrepostoItem.results[i].Zzdesitem,
-																																																						zzPercDescDiluicao: retornoPVPrepostoItem.results[i].Zzpercdescdiluicao,
-																																																						zzPercDescTotal: retornoPVPrepostoItem.results[i].Zzpercdesctotal,
-																																																						zzPercom: retornoPVPrepostoItem.results[i].Zzpercom,
-																																																						zzPervm: retornoPVPrepostoItem.results[i].Zzpervm,
-																																																						zzQnt: retornoPVPrepostoItem.results[i].Zzqnt,
-																																																						zzVprod: retornoPVPrepostoItem.results[i].Zzvprod,
-																																																						zzVprodDesc: retornoPVPrepostoItem.results[i].Zzvproddesc,
-																																																						zzVprodDescTotal: retornoPVPrepostoItem.results[i].Zzvproddesctotal,
+																																																						zzDesext: parseFloat(retornoPVPrepostoItem.results[i].Zzdesext),
+																																																						zzDesitem: parseFloat(retornoPVPrepostoItem.results[i].Zzdesitem),
+																																																						zzPercDescDiluicao: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdescdiluicao),
+																																																						zzPercDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdesctotal),
+																																																						zzPercom: parseFloat(retornoPVPrepostoItem.results[i].Zzpercom),
+																																																						zzPervm: parseFloat(retornoPVPrepostoItem.results[i].Zzpervm),
+																																																						zzQnt: parseInt(retornoPVPrepostoItem.results[i].Zzqnt),
+																																																						zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
+																																																						zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
+																																																						zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal)
 																																																					};
 
 																																																					var requestPVPrepostoItem = objPVPrepostoItem.add(objBancoPVPrepostoItem);
