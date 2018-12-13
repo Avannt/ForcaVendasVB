@@ -2076,7 +2076,7 @@ sap.ui.define([
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
 											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
 											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
-											zzValorDiluido: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQntDiluicao
+											zzValorDiluido: 0
 										};
 										
 										vetorAux.push(objAuxItem1);
@@ -2123,7 +2123,7 @@ sap.ui.define([
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
 											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
 											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
-											zzValorDiluido: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQntDiluicao,
+											zzValorDiluido: 0,
 										};
 										
 										vetorAux.push(objAuxItem2);
@@ -2156,7 +2156,7 @@ sap.ui.define([
 										vetorAux[m].zzVprodDescTotal = vetorAux[m].zzVprodDesc * vetorAux[m].zzQnt;
 										vetorAux[m].zzVprodDesc = vetorAux[m].zzVprodDesc;
 										vetorAux[m].zzQntDiluicao = objItensPedidoTemplate[l].zzQntDiluicao;
-										vetorAux[m].zzValorDiluido = objItensPedidoTemplate[l].zzQntDiluicao * objItensPedidoTemplate[l].zzVprodDesc2;
+										vetorAux[m].zzValorDiluido = objItensPedidoTemplate[l].zzQntDiluicao * objItensPedidoTemplate[l].zzVprodDesc;
 									}
 								}
 							}
@@ -3917,13 +3917,8 @@ sap.ui.define([
 					this.byId("idInserirItem").setEnabled(false);
 					break;
 				}
-				else{
-					this.byId("idDiluirItens").setEnabled(true);
-					this.byId("idInserirItemDiluicao").setEnabled(true);
-					this.byId("idInserirItem").setEnabled(true);
-				}
 			}
-
+			
 			if (objItensPedidoTemplate.length > 0) {
 				this.byId("idTabelaPreco").setEnabled(false);
 				this.byId("idTipoTransporte").setEnabled(false);
