@@ -1265,7 +1265,12 @@ sap.ui.define([
 																																																				tabPreco: retornoPVPrepostoTopo.results[i].Pltyp,
 																																																				completo: "Não",
 																																																				valMinPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valminped),
-																																																				dataImpl: retornoPVPrepostoTopo.results[i].Erdat,
+																																																				dataImpl: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
+																																																					retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
+																																																					retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4) + "-" +
+																																																					retornoPVPrepostoTopo.results[i].Horaped.substring(0, 2) + ":" +
+																																																					retornoPVPrepostoTopo.results[i].Horaped.substring(2, 4) + ":" +
+																																																					retornoPVPrepostoTopo.results[i].Horaped.substring(4, 6),
 																																																				observacaoPedido: retornoPVPrepostoTopo.results[i].Obsped,
 																																																				observacaoAuditoriaPedido: retornoPVPrepostoTopo.results[i].Obsaudped,
 																																																				existeEntradaPedido: (retornoPVPrepostoTopo.results[i].Existeentradapedido == "true"),
@@ -1299,7 +1304,11 @@ sap.ui.define([
 																																																				valUtilizadoCampBrinde: retornoPVPrepostoTopo.results[i].Valtotabcampbrinde,
 																																																				valTotalExcedenteNaoDirecionadoDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirdesc),
 																																																				valTotalExcedenteNaoDirecionadoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirprazo),
-																																																				valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido)
+																																																				valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido),
+																																																				valTotalCampEnxoval: 0,
+																																																				valTotalCampGlobal: 0,
+																																																				valTotalCampProdutoAcabado: 0,
+																																																				valUtilizadoVerbaPrazoMed: 0
 																																																			};
 
 																																																			var requestPVPrepostoTopo = objPVPrepostoTopo.add(objBancoPVPrepostoTopo);
@@ -1491,7 +1500,7 @@ sap.ui.define([
 															});
 														},
 														error: function(error) {
-															console.log(error);	
+															console.log(error);
 															that.onMensagemErroODATA(error.statusCode);
 														}
 													});
