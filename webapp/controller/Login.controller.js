@@ -1003,8 +1003,7 @@ sap.ui.define([
 
 																																		var objBancoA963 = {
 																																			idA963: retornoA963.results[i].Werks + "." +
-																																				retornoA963.results[i].Lifnr + "." + retornoA962.results[
-																																					i].Pltyp,
+																																				retornoA963.results[i].Lifnr + "." + retornoA963.results[i].Pltyp,
 																																			lifnr: retornoA963.results[i].Lifnr,
 																																			werks: retornoA963.results[i].Werks,
 																																			pltyp: retornoA963.results[i].Pltyp
@@ -1630,12 +1629,13 @@ sap.ui.define([
 					var tx = db.transaction("Usuarios", "readwrite");
 					var objUsuarios = tx.objectStore("Usuarios");
 					var Werks = that.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
-
+					
 					var request = objUsuarios.get(Werks);
 
 					/* Verifico se existe a tabela de Usuários.*/
 					request.onsuccess = function(e1) {
 						var result1 = e1.target.result;
+						
 						if (result1 == undefined) {
 							MessageBox.show(
 								"Por Favor atualize o banco de dados para conectar no sistema.", {
@@ -1647,6 +1647,9 @@ sap.ui.define([
 									}
 								});
 						}
+						
+						that.getOwnerComponent().getModel("modelAux").setProperty("/Usuario", result1);
+
 						var bAtualizarTabelas = false;
 
 						var sData = result1.dataAtualizacao;
@@ -1963,20 +1966,20 @@ sap.ui.define([
 												numVersao: numVersao,
 												codRepres: codRepres,
 												tipousuario: retorno.Tipousuario,
-												utilcampAmo: retorno.UtilcampAmo,
-												utilcampBri: retorno.UtilcampBri,
-												utilcampDesc: retorno.UtilcampDesc,
-												utilcampPrz: retorno.UtilcampPrz,
-												utilcomAmo: retorno.UtilcomAmo,
-												utilcomBon: retorno.UtilcomBon,
-												utilcomBri: retorno.UtilcomBri,
-												utilcomDesc: retorno.UtilcomDesc,
-												utilcomPrz: retorno.UtilcomPrz,
-												utilverbAmo: retorno.UtilverbAmo,
-												utilverbBon: retorno.UtilverbBon,
-												utilverbBri: retorno.UtilverbBri,
-												utilverbDesc: retorno.UtilverbDesc,
-												utilverbPrz: retorno.UtilverbPrz
+												utilcampAmo: retorno.UtilcampAmo == "S",
+												utilcampBri: retorno.UtilcampBri == "S",
+												utilcampDesc: retorno.UtilcampDesc == "S",
+												utilcampPrz: retorno.UtilcampPrz == "S",
+												utilcomAmo: retorno.UtilcomAmo == "S",
+												utilcomBon: retorno.UtilcomBon == "S",
+												utilcomBri: retorno.UtilcomBri == "S",
+												utilcomDesc: retorno.UtilcomDesc == "S",
+												utilcomPrz: retorno.UtilcomPrz == "S",
+												utilverbAmo: retorno.UtilverbAmo == "S",
+												utilverbBon: retorno.UtilverbBon == "S",
+												utilverbBri: retorno.UtilverbBri == "S",
+												utilverbDesc: retorno.UtilverbDesc == "S",
+												utilverbPrz: retorno.UtilverbPrz == "S"
 											};
 
 											if (result == null || result == undefined) {
