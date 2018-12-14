@@ -14,6 +14,11 @@ sap.ui.define([
 
 			onInit: function() {
 				var that = this;
+				
+				var oModel2 = new sap.ui.model.odata.v2.ODataModel("https://104.46.124.66:8001/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV");
+
+				this.getView().setModel(oModel2, "VBModel");
+				
 				this.onInicializaModels();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
@@ -1265,6 +1270,9 @@ sap.ui.define([
 																																																				tabPreco: retornoPVPrepostoTopo.results[i].Pltyp,
 																																																				completo: "Não",
 																																																				valMinPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valminped),
+																																																				dataPedido: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
+																																																					retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
+																																																					retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4),
 																																																				dataImpl: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
 																																																					retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
 																																																					retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4) + "-" +
@@ -1305,10 +1313,22 @@ sap.ui.define([
 																																																				valTotalExcedenteNaoDirecionadoDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirdesc),
 																																																				valTotalExcedenteNaoDirecionadoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirprazo),
 																																																				valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido),
-																																																				valTotalCampEnxoval: 0,
-																																																				valTotalCampGlobal: 0,
-																																																				valTotalCampProdutoAcabado: 0,
-																																																				valUtilizadoVerbaPrazoMed: 0
+																																																				
+																																																				valTotalCampEnxoval: parseFloat(0),
+																																																				valTotalCampGlobal: parseFloat(0),
+																																																				valTotalCampProdutoAcabado: parseFloat(0),
+																																																				valUtilizadoVerbaPrazoMed: parseFloat(0),
+																																																				
+																																																				codRepres: CodRepres,
+																																																				codUsr: "" ,
+																																																				tipoUsuario: "" ,
+																																																				valCampBrinde: parseFloat(0),
+																																																				valCampEnxoval: parseFloat(0),
+																																																				valCampGlobal: parseFloat(0),
+																																																				
+																																																				valTotalExcedenteNaoDirecionadoBrinde: 0,
+																																																				valTotalExcedenteNaoDirecionadoAmostra: 0,
+																																																				valTotalExcedenteNaoDirecionadoBonif: 0
 																																																			};
 
 																																																			var requestPVPrepostoTopo = objPVPrepostoTopo.add(objBancoPVPrepostoTopo);
@@ -1356,7 +1376,16 @@ sap.ui.define([
 																																																						zzQnt: parseInt(retornoPVPrepostoItem.results[i].Zzqnt),
 																																																						zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
 																																																						zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
-																																																						zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal)
+																																																						zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
+																																																						
+																																																						zzVprodDesc2: parseFloat(0),
+																																																						zzVprodMinPermitido: parseFloat(0),
+																																																						zzValorDiluido: parseFloat(0),
+																																																						zzValExcedidoItem: parseFloat(0),
+																																																						zzQntDiluicao: parseInt(0),
+																																																						tipoItem2: "",
+																																																						maxDescPermitidoExtra: parseFloat(0),
+																																																						maxDescPermitido: parseFloat(0)	
 																																																					};
 
 																																																					var requestPVPrepostoItem = objPVPrepostoItem.add(objBancoPVPrepostoItem);

@@ -16,7 +16,8 @@
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
-					"localUri": "localService/ZFORCA_VENDAS_VB_SRV/metadata.xml"
+					"localUri": "localService/ZFORCA_VENDAS_VB_SRV/metadata.xml",
+					"annotations": []
 				}
 			}
 		},
@@ -33,9 +34,7 @@
 			"tablet": true,
 			"phone": true
 		},
-		"supportedThemes": [
-			"sap_bluecrystal"
-		]
+		"supportedThemes": ["sap_bluecrystal"]
 	},
 	"sap.ui5": {
 		"_version": "1.2.0",
@@ -77,11 +76,9 @@
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		},
 		"contentDensities": {
 			"compact": true,
@@ -96,108 +93,87 @@
 				"controlAggregation": "pages",
 				"transition": "slide"
 			},
-			"routes": [
-				{
-					"pattern": "",
-					"name": "login",
-					"target": "login"
-				},
-				{
-					"pattern": "Menu",
-					"name": "menu",
-					"target": "menu"
-				},
-				{
-					"pattern": "enviarPedidos",
-					"name": "enviarPedidos",
-					"target": "enviarPedidos"
-				},
-				{
-					"pattern": "MenuConsultas",
-					"name": "menuConsultas",
-					"target": "menuConsultas"
-				},
-				{
-					"pattern": "MenuComercial",
-					"name": "menuComercial",
-					"target": "menuComercial"
-				},
-				{
-					"pattern": "MenuRelatorios",
-					"name": "menuRelatorios",
-					"target": "menuRelatorios"
-				},
-				{
-					"pattern": "Pedido",
-					"name": "pedido",
-					"target": "pedido"
-				},
-				{
-					"pattern": "clienteConsultas",
-					"name": "clienteConsultas",
-					"target": "clienteConsultas"
-				},
-				{
-					"pattern": "produtoConsultas",
-					"name": "produtoConsultas",
-					"target": "produtoConsultas"
-				},
-				{
-					"pattern": "verbaConsultas",
-					"name": "VerbaConsultas",
-					"target": "VerbaConsultas"
-				},
-				{
-					"pattern": "PedidoDetalhe",
-					"name": "pedidoDetalhe",
-					"target": "pedidoDetalhe"
-				},
-				{
-					"pattern": "clienteConsultasDetalhe",
-					"name": "clienteConsultasDetalhe",
-					"target": "clienteConsultasDetalhe"
-				},
-				{
-					"pattern": "detalheProdutos",
-					"name": "detalheProdutos",
-					"target": "detalheProdutos"
-				},
-				{
-					"pattern": "verbaConsultasDetalhe",
-					"name": "verbaConsultasDetalhe",
-					"target": "verbaConsultasDetalhe"
-				},
-				{
-					"pattern": "relatorioTitulos",
-					"name": "relatorioTitulos",
-					"target": "relatorioTitulos"
-				},
-				{
-					"pattern": "relatorioTabelas",
-					"name": "relatorioTabelas",
-					"target": "relatorioTabelas"
-				},
-				{
-					"pattern": "detalhesRelatorioTabelas",
-					"name": "detalhesRelatorioTabelas",
-					"target": "detalhesRelatorioTabelas"
-				},
-				{
-					"pattern": "relatorioPedidos",
-					"name": "relatorioPedidos",
-					"target": "relatorioPedidos"
-				},
-				{
-					"name": "entregaFutura",
-					"pattern": "entregaFutura",
-					"target": "entregaFutura"
-				},
-				{
-					"name": "Aprovacoes",
-					"pattern": "Aprovacoes",
-					"target": "Aprovacoes"
-				}
-			],
+			"routes": [{
+				"pattern": "",
+				"name": "login",
+				"target": "login"
+			}, {
+				"pattern": "Menu",
+				"name": "menu",
+				"target": "menu"
+			}, {
+				"pattern": "enviarPedidos",
+				"name": "enviarPedidos",
+				"target": "enviarPedidos"
+			}, {
+				"pattern": "MenuConsultas",
+				"name": "menuConsultas",
+				"target": "menuConsultas"
+			}, {
+				"pattern": "MenuComercial",
+				"name": "menuComercial",
+				"target": "menuComercial"
+			}, {
+				"pattern": "MenuRelatorios",
+				"name": "menuRelatorios",
+				"target": "menuRelatorios"
+			}, {
+				"pattern": "Pedido",
+				"name": "pedido",
+				"target": "pedido"
+			}, {
+				"pattern": "clienteConsultas",
+				"name": "clienteConsultas",
+				"target": "clienteConsultas"
+			}, {
+				"pattern": "produtoConsultas",
+				"name": "produtoConsultas",
+				"target": "produtoConsultas"
+			}, {
+				"pattern": "verbaConsultas",
+				"name": "VerbaConsultas",
+				"target": "VerbaConsultas"
+			}, {
+				"pattern": "PedidoDetalhe",
+				"name": "pedidoDetalhe",
+				"target": "pedidoDetalhe"
+			}, {
+				"pattern": "clienteConsultasDetalhe",
+				"name": "clienteConsultasDetalhe",
+				"target": "clienteConsultasDetalhe"
+			}, {
+				"pattern": "detalheProdutos",
+				"name": "detalheProdutos",
+				"target": "detalheProdutos"
+			}, {
+				"pattern": "verbaConsultasDetalhe",
+				"name": "verbaConsultasDetalhe",
+				"target": "verbaConsultasDetalhe"
+			}, {
+				"pattern": "relatorioTitulos",
+				"name": "relatorioTitulos",
+				"target": "relatorioTitulos"
+			}, {
+				"pattern": "relatorioTabelas",
+				"name": "relatorioTabelas",
+				"target": "relatorioTabelas"
+			}, {
+				"pattern": "detalhesRelatorioTabelas",
+				"name": "detalhesRelatorioTabelas",
+				"target": "detalhesRelatorioTabelas"
+			}, {
+				"pattern": "relatorioPedidos",
+				"name": "relatorioPedidos",
+				"target": "relatorioPedidos"
+			}, {
+				"name": "entregaFutura",
+				"pattern": "entregaFutura",
+				"target": "entregaFutura"
+			}, {
+				"name": "Aprovacoes",
+				"pattern": "Aprovacoes",
+				"target": "Aprovacoes"
+			}],
 			"targets": {
 				"login": {
 					"viewName": "Login",
