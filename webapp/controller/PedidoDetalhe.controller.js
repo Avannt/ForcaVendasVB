@@ -3505,7 +3505,7 @@ sap.ui.define([
 						
 						if(that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == 2){
 							that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 9);
-							that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "PrePosto");
+							that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "Preposto");
 						}
 						
 						
