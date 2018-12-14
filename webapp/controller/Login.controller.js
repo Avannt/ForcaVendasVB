@@ -14,6 +14,11 @@ sap.ui.define([
 
 			onInit: function() {
 				var that = this;
+				
+				var oModel2 = new sap.ui.model.odata.v2.ODataModel("https://104.46.124.66:8001/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV");
+
+				this.getView().setModel(oModel2, "VBModel");
+				
 				this.onInicializaModels();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
