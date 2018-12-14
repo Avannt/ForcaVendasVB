@@ -3,72 +3,72 @@ sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/core/mvc/Controller",
 	"sap/m/MessageBox"
-], function (BaseController, MessageBox) {
+], function(BaseController, MessageBox) {
 
 	"use strict";
 	var oItensAprovar = [];
 
 	return BaseController.extend("testeui5.controller.Aprovacoes", {
 
-		onInit: function () {
+		onInit: function() {
 			this.getRouter().getRoute("Aprovacoes").attachPatternMatched(this._onLoadFields, this);
 		},
 
-		_onLoadFields: function (evt) {
+		_onLoadFields: function(evt) {
 			this.onBuscaPedidos();
 		},
-		
-		onCarregaExcedentes: function(){
-			
+
+		onCarregaExcedentes: function() {
+
 			var Vlrdsc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
 			var Vlrdsccom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
 			var Vlrdscdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
 			var Vlrdscvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
 			var Vlrdscvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
 			var Valtotexcndirdesc = Vlrdsc - (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb);
-			
+
 			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
 			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
 			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
 			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
 			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
 			var Valtotexcndirprazo = Vlrprz - (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb);
-			
+
 			var Vlrbri = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbri"));
 			var Vlrbrivm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
 			var Vlrbricom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
 			var Vlrbridd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
 			var Vlrbrivvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
 			var ValtotexcndirBrinde = Vlrbri - (Vlrbrivm + Vlrbricom + Vlrbridd + Vlrbrivvb);
-			
+
 			var Vlramo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramo"));
 			var Vlramovm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
 			var Vlramocom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
 			var Vlramodd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
 			var Vlramovvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
 			var ValtotexcndirAmostra = Vlramo - (Vlramovm + Vlramocom + Vlramodd + Vlramovvb);
-			
+
 			var Vlrbon = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbon"));
 			var Vlrbonvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
 			var Vlrboncom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
 			var Vlrbondd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
 			var Vlrbonvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
 			var ValtotexcndirBonif = Vlrbon - (Vlrbonvm + Vlrboncom + Vlrbondd + Vlrbonvvb);
-			
+
 			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc.toFixed(2));
 			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirprazo", Valtotexcndirprazo.toFixed(2));
 			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBrinde", ValtotexcndirBrinde.toFixed(2));
 			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirAmostra", ValtotexcndirAmostra.toFixed(2));
 			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif.toFixed(2));
-			
+
 			//Atualiza o total de excedente para ser destinado.
 			var totalExc = Vlramo + Vlrprz + Vlrbri + Vlrbon + Vlrdsc;
 			this.getView().getModel("ItemAprovar").setProperty("/Vlrexc", totalExc.toFixed(2));
-			
+
 		},
-		
-		onCarregaLimites: function(){
-			
+
+		onCarregaLimites: function() {
+
 			var that = this;
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
@@ -76,21 +76,21 @@ sap.ui.define([
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
 			oModel.read("/PedidosAprovar(IAprovador='" + codRepres + "')", {
-				success: function (retorno) {
+				success: function(retorno) {
 					var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
 					that.getView().setModel(oModelAprovacoes, "PedidosAprovar");
 					that.byId("idTableEnvioPedidos").setBusy(false);
 				},
-				error: function (error) {
+				error: function(error) {
 					console.log(error);
 					that.byId("idTableEnvioPedidos").setBusy(false);
 					that.onMensagemErroODATA(error.statusCode);
 				}
 			});
-			
+
 		},
-		
-		myFormatterDataImp: function (value) {
+
+		myFormatterDataImp: function(value) {
 
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
 				var aux = value.split("/");
@@ -101,7 +101,7 @@ sap.ui.define([
 			}
 		},
 
-		onNavBack: function () {
+		onNavBack: function() {
 
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
@@ -113,38 +113,50 @@ sap.ui.define([
 
 		},
 
-		onOpenDialog: function () {
+		onOpenDialog: function() {
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
-			
-			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
-			
-			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1,2)];
-			
-			console.log(itemAprovar);
-			
-			var oModelAprovacoes = new sap.ui.model.json.JSONModel(itemAprovar);
-			this.getView().setModel(oModelAprovacoes, "ItemAprovar");
-			
-			this.onCarregaExcedentes();
-			
-			
-			if (this._ItemDialog) {
-				this._ItemDialog.destroy(true);
+
+			if (oSelectedItems.length == 0) {
+				MessageBox.show("Selecione um pedido para aprovar", {
+					icon: sap.m.MessageBox.Icon.INFORMATION,
+					title: "escolher um pedido!",
+					actions: [MessageBox.Action.OK],
+					onClose: function() {
+
+					}
+				});
+			} else {
+				var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
+
+				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+
+				console.log(itemAprovar);
+
+				var oModelAprovacoes = new sap.ui.model.json.JSONModel(itemAprovar);
+				this.getView().setModel(oModelAprovacoes, "ItemAprovar");
+
+				this.onCarregaExcedentes();
+
+				if (this._ItemDialog) {
+					this._ItemDialog.destroy(true);
+				}
+
+				if (!this._CreateMaterialFragment) {
+					this._ItemDialog = sap.ui.xmlfragment(
+						"testeui5.view.AprovacaoDialog",
+						this
+					);
+					this.getView().addDependent(this._ItemDialog);
+				}
+
+				this.onBloquearVerbas();
+
+				this._ItemDialog.open();
+
 			}
-
-			if (!this._CreateMaterialFragment) {
-				this._ItemDialog = sap.ui.xmlfragment(
-					"testeui5.view.AprovacaoDialog",
-					this
-				);
-				this.getView().addDependent(this._ItemDialog);
-			}
-
-			this._ItemDialog.open();
-
 		},
 
-		handleChange: function (oEvent) {
+		handleChange: function(oEvent) {
 			var oDP = oEvent.getSource();
 			var sValue = oEvent.getParameter("value");
 			var bValid = oEvent.getParameter("valid");
@@ -164,9 +176,9 @@ sap.ui.define([
 			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, "Application");
 
 		},
-		
-		onDestinaDesc: function(evt){
-			
+
+		onDestinaDesc: function(evt) {
+
 			var Valtotexcndirdesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc"));
 			var vlrTotalDesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
 			var Vlrdsccom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
@@ -175,46 +187,46 @@ sap.ui.define([
 			var Vlrdscvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
 			var somaDosDestinados = Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb;
 			var msg = "Valores destinados para abater o excedente de descontos, ultrapassou o valor total necessário. Valor Excedente (" + vlrTotalDesc + ")";
-			
-			if(somaDosDestinados > vlrTotalDesc){
+
+			if (somaDosDestinados > vlrTotalDesc) {
 				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueState("Error");
 				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueStateText(msg);
 				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").focus();
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueStateText(msg);
-				
-			} else{
-				
+
+			} else {
+
 				Valtotexcndirdesc = vlrTotalDesc - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc.toFixed(2));
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueState("None");
 				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueState("None");
 				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueState("None");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueState("None");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueStateText();
-				
+
 				this.onCalculaTotalDestinar();
-				
+
 			}
 		},
-		
-		onDestinaPrazo: function(evt){
+
+		onDestinaPrazo: function(evt) {
 			var Valtotexcndirprazo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo"));
-			
+
 			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
 			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
 			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
@@ -222,46 +234,46 @@ sap.ui.define([
 			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
 			var somaDosDestinados = Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb;
 			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrprz + ")";
-			
-			if(somaDosDestinados > Vlrprz){
+
+			if (somaDosDestinados > Vlrprz) {
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueStateText(msg);
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").focus();
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setValueState("Error");
 				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaPrazo").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaPrazo").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueStateText(msg);
-				
-			} else{
-				
+
+			} else {
+
 				Valtotexcndirprazo = Vlrprz - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirprazo", Valtotexcndirprazo.toFixed(2));
-				
+
 				this.onCalculaTotalDestinar();
-				
+
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueState("None");
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueStateText();
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").focus();
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setValueState("None");
 				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaPrazo").setValueState("None");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaPrazo").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueState("None");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueStateText();
 			}
 		},
-		
-		onDestinaBonif: function(evt){
+
+		onDestinaBonif: function(evt) {
 			var ValtotexcndirBonif = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif"));
-			
+
 			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
 			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
 			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
@@ -269,42 +281,42 @@ sap.ui.define([
 			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
 			var somaDosDestinados = Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb;
 			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrprz + ")";
-			
-			if(somaDosDestinados > Vlrprz){
+
+			if (somaDosDestinados > Vlrprz) {
 				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaBonif").setValueState("Error");
 				sap.ui.getCore().byId("idComissaoUtilizadaBonif").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueStateText(msg);
-				
-			} else{
-				
+
+			} else {
+
 				ValtotexcndirBonif = Vlrprz - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif.toFixed(2));
-				
+
 				this.onCalculaTotalDestinar();
-				
+
 				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueState("None");
 				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaBonif").setValueState("None");
 				sap.ui.getCore().byId("idComissaoUtilizadaBonif").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setValueState("None");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueState("None");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueStateText();
 			}
 		},
-		
-		onDestinaAmostra: function(evt){
+
+		onDestinaAmostra: function(evt) {
 			var ValtotexcndirAmostra = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirAmostra"));
 
 			var Vlramo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramo"));
@@ -314,45 +326,45 @@ sap.ui.define([
 			var Vlramovvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
 			var somaDosDestinados = Vlramocom + Vlramodd + Vlramovm + Vlramovvb;
 			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlramo + ")";
-			
-			if(somaDosDestinados > Vlramo){
+
+			if (somaDosDestinados > Vlramo) {
 				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueStateText(msg);
 				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").focus();
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaAmostra").setValueState("Error");
 				sap.ui.getCore().byId("idComissaoUtilizadaAmostra").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setValueStateText(msg);
-				
-			} else{
-				
+
+			} else {
+
 				ValtotexcndirAmostra = Vlramo - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirAmostra", ValtotexcndirAmostra.toFixed(2));
-				
+
 				this.onCalculaTotalDestinar();
-				
+
 				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueState("None");
 				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaAmostra").setValueState("None");
 				sap.ui.getCore().byId("idComissaoUtilizadaAmostra").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setValueState("None");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setValueState("None");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setValueStateText();
 			}
 		},
-		
-		onDestinaBrinde:  function(evt){
+
+		onDestinaBrinde: function(evt) {
 			var ValtotexcndirBrinde = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde"));
-			
+
 			var Vlrbri = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbri"));
 			var Vlrbricom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
 			var Vlrbridd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
@@ -360,55 +372,55 @@ sap.ui.define([
 			var Vlrbrivvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
 			var somaDosDestinados = Vlrbricom + Vlrbridd + Vlrbrivm + Vlrbrivvb;
 			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrbri + ")";
-			
-			if(somaDosDestinados > Vlrbri){
+
+			if (somaDosDestinados > Vlrbri) {
 				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueStateText(msg);
 				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").focus();
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaBrinde").setValueState("Error");
 				sap.ui.getCore().byId("idComissaoUtilizadaBrinde").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setValueStateText(msg);
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setValueStateText(msg);
-				
-			} else{
-				
+
+			} else {
+
 				ValtotexcndirBrinde = Vlrbri - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBrinde", ValtotexcndirBrinde.toFixed(2));
-				
+
 				this.onCalculaTotalDestinar();
-				
+
 				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueState("None");
 				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaBrinde").setValueState("None");
 				sap.ui.getCore().byId("idComissaoUtilizadaBrinde").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setValueState("None");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setValueState("None");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setValueStateText();
 			}
 		},
-		
-		onCalculaTotalDestinar: function(){
+
+		onCalculaTotalDestinar: function() {
 			var var1 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc");
 			var var2 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo");
 			var var3 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde");
 			var var4 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirAmostra");
 			var var5 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif");
-			
+
 			var Vlrdst = parseFloat(var1) + parseFloat(var2) + parseFloat(var3) + parseFloat(var4) + parseFloat(var5);
 			this.getView().getModel("ItemAprovar").setProperty("/Vlrdst", Vlrdst);
-			
+
 		},
 
-		onBuscaPedidos: function () {
+		onBuscaPedidos: function() {
 			var that = this;
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
@@ -419,17 +431,17 @@ sap.ui.define([
 				urlParameters: {
 					"$filter": "IAprovador eq '" + codRepres + "'"
 				},
-				success: function (retorno) {
+				success: function(retorno) {
 					oItensAprovar = [];
 
 					for (var i = 0; i < retorno.results.length; i++) {
 						var data = retorno.results[i].Erdat;
-						
-						data = data.substring(6,8) + "/" + data.substring(4,6) + "/" + data.substring(0,4);
-						
+
+						data = data.substring(6, 8) + "/" + data.substring(4, 6) + "/" + data.substring(0, 4);
+
 						var hora = retorno.results[i].Horaped;
-						hora = hora.substring(0,2) + ":" + hora.substring(2,4);
-						
+						hora = hora.substring(0, 2) + ":" + hora.substring(2, 4);
+
 						var aux = {
 							IAprovador: retorno.results[i].IAprovador,
 							Nivel: retorno.results[i].Nivel,
@@ -505,34 +517,61 @@ sap.ui.define([
 							Vlrprzdd: retorno.results[i].Vlrprzdd,
 							Vlrprzvm: retorno.results[i].Vlrprzvm,
 							Vlrprzvvb: retorno.results[i].Vlrprzvvb,
+							Obsvvb: retorno.results[i].Obsvvb,
+							Obsdd: retorno.results[i].Obsdd,
+							Obscom: retorno.results[i].Obscom,
+							Obsvm: retorno.results[i].Obsvm,
+							Bugruop: retorno.results[i].BuGruop
 						};
-						
+
 						oItensAprovar.push(aux);
 					}
-					
+
 					var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
 					that.getView().setModel(oModelAprovacoes, "PedidosAprovar");
 					that.byId("idTableEnvioPedidos").setBusy(false);
 				},
-				error: function (error) {
+				error: function(error) {
 					console.log(error);
 					that.byId("idTableEnvioPedidos").setBusy(false);
 					that.onMensagemErroODATA(error.statusCode);
 				}
 			});
 		},
-		
-		onAprovar: function(){
+
+		onAprovar: function() {
+
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
+
+			if (!this._CreateMaterialFragment) {
+
+				this._ItemDialog = sap.ui.xmlfragment(
+					"testeui5.view.observacoesAprovador",
+					this
+				);
+
+				this.getView().addDependent(this._ItemDialog);
+			}
+
+			this.onBloquearCampos();
+
+			this._ItemDialog.open();
+
+		},
+
+		onAprovarDialog: function() {
 			var that = this;
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
 			var oModel = this.getView().getModel();
-			
+
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
-			
-			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1,2)];
-			
+
+			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+
 			var aux = {
 				Nrpedcli: String(itemAprovar.Nrpedcli),
 				Aprov: String(itemAprovar.Aprov),
@@ -564,43 +603,43 @@ sap.ui.define([
 				VlrbonVvb: String(itemAprovar.Vlrbonvvb),
 				Vlrdst: String(itemAprovar.Vlrdst)
 			};
-					
-			oModel.create("/AprovarOV", aux , {
-				success: function (retorno) {
+
+			oModel.create("/AprovarOV", aux, {
+				success: function(retorno) {
 					oItensAprovar = [];
-					
+
 					if (that._ItemDialog) {
 						that._ItemDialog.destroy(true);
 					}
-					
-					if(retorno.Message == ""){
+
+					if (retorno.Message == "") {
 						var mensagem = "Pedido aprovado com sucesso!";
-					}else{
+					} else {
 						mensagem = retorno.Message;
 					}
-						
+
 					sap.m.MessageBox.show(
 						mensagem, {
 							icon: sap.m.MessageBox.Icon.SUCCESS,
 							title: "Sucesso!",
 							actions: [sap.m.MessageBox.Action.OK],
-							onClose: function (oAction) {
-									
+							onClose: function(oAction) {
+
 								oModel.read("/PedidosAprovar", {
 									urlParameters: {
 										"$filter": "IAprovador eq '" + codRepres + "'"
 									},
-									success: function (retorno) {
+									success: function(retorno) {
 										oItensAprovar = [];
-										
+
 										for (var i = 0; i < retorno.results.length; i++) {
-												
+
 											var data = retorno.results[i].Erdat;
-											data = data.substring(6,8) + "/" + data.substring(4,6) + "/" + data.substring(0,4);
-											
+											data = data.substring(6, 8) + "/" + data.substring(4, 6) + "/" + data.substring(0, 4);
+
 											var hora = retorno.results[i].Horaped;
-											hora = hora.substring(0,2) + ":" + hora.substring(2,4);
-												
+											hora = hora.substring(0, 2) + ":" + hora.substring(2, 4);
+
 											var aux = {
 												IAprovador: retorno.results[i].IAprovador,
 												Nivel: retorno.results[i].Nivel,
@@ -677,15 +716,15 @@ sap.ui.define([
 												VlrprzVm: retorno.results[i].VlrprzVm,
 												VlrprzVvb: retorno.results[i].VlrprzVvb,
 											};
-											
+
 											oItensAprovar.push(aux);
 										}
-										
+
 										var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
 										that.getView().setModel(oModelAprovacoes, "PedidosAprovar");
 										that.byId("idTableEnvioPedidos").setBusy(false);
 									},
-									error: function (error) {
+									error: function(error) {
 										console.log(error);
 										that.byId("idTableEnvioPedidos").setBusy(false);
 										that.onMensagemErroODATA(error.statusCode);
@@ -694,32 +733,244 @@ sap.ui.define([
 							}
 						}
 					);
-					
+
 				},
-				error: function (error) {
+				error: function(error) {
 					console.log(error);
 					that.byId("idTableEnvioPedidos").setBusy(false);
 					that.onMensagemErroODATA(error.statusCode);
 				}
 			});
-			
+
 		},
-		
-		onCancelar: function(){
+
+		onCancelar: function() {
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
 			}
 		},
-		
-		onExit: function () {
-			
+
+		onExit: function() {
+
 		},
 		
-		onCasasDecimais: function(value){
+		onBloquearVerbas: function(){
+			
+			var oModel = this.getView().getModel("ItemAprovar");
+			var nivelAprovacao = oModel.getProperty("/Bugruop");
+			
+			nivelAprovacao = "ZCO";
+			
+			if (nivelAprovacao == "ZCO") {
+				
+				//Desc - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(false);
+				
+				//Prazo - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaPrazo").setVisible(false);
+				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setVisible(false);
+				
+				//Brinde - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBrinde").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setVisible(false);
+				
+				//Bonif - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBonif").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setVisible(false);
+				
+				//Amostra - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaAmostra").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setVisible(false);
+				
+				//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+				
+				//Desc - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaDesconto").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setVisible(false);
+				
+				//Prazo - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaPrazo").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setVisible(false);
+				
+				//Brinde - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBrinde").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setVisible(false);
+				
+				//Bonif - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBonf").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setVisible(false);
+				
+				//Amostra - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaAmostra").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setVisible(false);
+				
+			} else if (nivelAprovacao == "ZSN" || nivelAprovacao == "ZSR") {
+				
+				//Desc - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(false);
+				
+				//Prazo - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaPrazo").setVisible(false);
+				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setVisible(false);
+				
+				//Brinde - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBrinde").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setVisible(false);
+				
+				//Bonif - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBonif").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setVisible(false);
+				
+				//Amostra - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaAmostra").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setVisible(false);
+				
+				//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+				
+				//Desc - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaDesconto").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setVisible(false);
+				
+				//Prazo - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaPrazo").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setVisible(false);
+				
+				//Brinde - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBrinde").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setVisible(false);
+				
+				//Bonif - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBonf").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setVisible(false);
+				
+				//Amostra - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaAmostra").setVisible(false);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setVisible(false);
+				
+			} else if (nivelAprovacao == "ZVB") {
+				
+				//Desc - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(true);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(true);
+				
+				//Prazo - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaPrazo").setVisible(true);
+				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setVisible(true);
+				
+				//Brinde - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBrinde").setVisible(true);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setVisible(true);
+				
+				//Bonif - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBonif").setVisible(true);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setVisible(true);
+				
+				//Amostra - dd
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaAmostra").setVisible(true);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setVisible(true);
+				
+				//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+				
+				//Desc - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaDesconto").setVisible(true);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setVisible(true);
+				
+				//Prazo - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaPrazo").setVisible(true);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setVisible(true);
+				
+				//Brinde - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBrinde").setVisible(true);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setVisible(true);
+				
+				//Bonif - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBonf").setVisible(true);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setVisible(true);
+				
+				//Amostra - vb
+				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaAmostra").setVisible(true);
+				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setVisible(true);
+			}
+		},
+
+		onBloquearCampos: function() {
+
+			var oModel = this.getView().getModel("ItemAprovar");
+			var nivelAprovacao = oModel.getProperty("/Bugruop");
+			
+			nivelAprovacao = "ZCO";
+			
+			if (nivelAprovacao == "ZCO") {
+
+				sap.ui.getCore().byId("idRepresentante").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador1").setEnabled(true);
+				sap.ui.getCore().byId("idAprovador1").focus();
+				sap.ui.getCore().byId("idAprovador2").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador3").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador4").setEnabled(false);
+
+				sap.ui.getCore().byId("idRepresentante").setVisible(true);
+				sap.ui.getCore().byId("idAprovador1").setVisible(true);
+				sap.ui.getCore().byId("idAprovador2").setVisible(false);
+				sap.ui.getCore().byId("idAprovador3").setVisible(false);
+				sap.ui.getCore().byId("idAprovador4").setVisible(false);
+
+			} else if (nivelAprovacao == "ZSN") {
+
+				sap.ui.getCore().byId("idRepresentante").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador1").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador2").setEnabled(true);
+				sap.ui.getCore().byId("idAprovador2").focus();
+				sap.ui.getCore().byId("idAprovador3").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador4").setEnabled(false);
+
+				sap.ui.getCore().byId("idRepresentante").setVisible(false);
+				sap.ui.getCore().byId("idAprovador1").setVisible(false);
+				sap.ui.getCore().byId("idAprovador2").setVisible(true);
+				sap.ui.getCore().byId("idAprovador3").setVisible(false);
+				sap.ui.getCore().byId("idAprovador3").focus();
+				sap.ui.getCore().byId("idAprovador4").setVisible(false);
+
+			} else if (nivelAprovacao == "ZSR") {
+
+				sap.ui.getCore().byId("idRepresentante").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador1").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador2").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador3").setEnabled(true);
+				sap.ui.getCore().byId("idAprovador4").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador4").focus();
+
+				sap.ui.getCore().byId("idRepresentante").setVisible(false);
+				sap.ui.getCore().byId("idAprovador1").setVisible(false);
+				sap.ui.getCore().byId("idAprovador2").setVisible(false);
+				sap.ui.getCore().byId("idAprovador3").setVisible(true);
+				sap.ui.getCore().byId("idAprovador4").setVisible(false);
+
+			} else if (nivelAprovacao == "ZVB") {
+
+				sap.ui.getCore().byId("idRepresentante").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador1").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador2").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador3").setEnabled(false);
+				sap.ui.getCore().byId("idAprovador4").setEnabled(true);
+				sap.ui.getCore().byId("idAprovador4").focus();
+
+				sap.ui.getCore().byId("idRepresentante").setVisible(true);
+				sap.ui.getCore().byId("idAprovador1").setVisible(true);
+				sap.ui.getCore().byId("idAprovador2").setVisible(true);
+				sap.ui.getCore().byId("idAprovador3").setVisible(true);
+				sap.ui.getCore().byId("idAprovador4").setVisible(true);
+
+			}
+		},
+
+		onCasasDecimais: function(value) {
 			// return parseFloat(value).toFixed(2);
 		},
 
-		onMensagemErroODATA: function (codigoErro) {
+		onMensagemErroODATA: function(codigoErro) {
 			var that = this;
 
 			if (codigoErro == 0) {
@@ -728,7 +979,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Falha na Conexão!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+						onClose: function(oAction) {
 							if (that._ItemDialog) {
 								that._ItemDialog.destroy(true);
 							}
@@ -741,7 +992,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Fiori!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+						onClose: function(oAction) {
 							if (that._ItemDialog) {
 								that._ItemDialog.destroy(true);
 							}
@@ -754,7 +1005,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Abap!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+						onClose: function(oAction) {
 							if (that._ItemDialog) {
 								that._ItemDialog.destroy(true);
 							}
@@ -767,7 +1018,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Abap!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+						onClose: function(oAction) {
 							if (that._ItemDialog) {
 								that._ItemDialog.destroy(true);
 							}
@@ -780,7 +1031,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Abap!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+						onClose: function(oAction) {
 							if (that._ItemDialog) {
 								that._ItemDialog.destroy(true);
 							}
@@ -793,7 +1044,7 @@ sap.ui.define([
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Erro no programa Abap!",
 						actions: [sap.m.MessageBox.Action.OK],
-						onClose: function (oAction) {
+						onClose: function(oAction) {
 							if (that._ItemDialog) {
 								that._ItemDialog.destroy(true);
 							}
