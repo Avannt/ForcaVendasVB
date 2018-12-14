@@ -15,9 +15,9 @@ sap.ui.define([
 			onInit: function() {
 				var that = this;
 				
-				var oModel2 = new sap.ui.model.odata.v2.ODataModel("https://104.46.124.66:8001/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV");
+				// var oModel2 = new sap.ui.model.odata.v2.ODataModel("https://104.46.124.66:8001/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV");
 
-				this.getView().setModel(oModel2, "VBModel");
+				// this.getView().setModel(oModel2, "VBModel");
 				
 				this.onInicializaModels();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
@@ -1378,14 +1378,14 @@ sap.ui.define([
 																																																						zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
 																																																						zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
 																																																						
-																																																						zzVprodDesc2: parseFloat(0),
-																																																						zzVprodMinPermitido: parseFloat(0),
-																																																						zzValorDiluido: parseFloat(0),
-																																																						zzValExcedidoItem: parseFloat(0),
-																																																						zzQntDiluicao: parseInt(0),
-																																																						tipoItem2: "",
-																																																						maxDescPermitidoExtra: parseFloat(0),
-																																																						maxDescPermitido: parseFloat(0)	
+																																																						zzVprodDesc2: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc2),
+																																																						zzVprodMinPermitido: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodminpermitido),
+																																																						zzValorDiluido: parseFloat(retornoPVPrepostoItem.results[i].Zzvalordiluido),
+																																																						zzValExcedidoItem: parseFloat(retornoPVPrepostoItem.results[i].Zzvalexcedidoitem),
+																																																						zzQntDiluicao: parseInt(retornoPVPrepostoItem.results[i].Zzqntdiluicao),
+																																																						tipoItem2: retornoPVPrepostoItem.results[i].Tipoitem2,
+																																																						maxDescPermitidoExtra: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitido),
+																																																						maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra)	
 																																																					};
 
 																																																					var requestPVPrepostoItem = objPVPrepostoItem.add(objBancoPVPrepostoItem);
