@@ -1,0 +1,63 @@
+<core:FragmentDefinition id="obsAprovador" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:form="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout">
+	<Dialog contentWidth="40%" contentHeight="70%" icon="sap-icon://paid-leave" title="Observações dos Aprovadores!">
+		<content>
+			<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+				<form:content>
+					<Label text="Obs Repres." class="bold"/>
+					<TextArea id="idRepresentante" value="{path: 'ItemAprovar>/Obsaudped'}" maxLength="200" showExceededText="true" enabled="true" />
+					<Label text="Aprovador 1" class="bold"/>
+					<TextArea id="idAprovador1" value="{path: 'ItemAprovar>/Obsvm'}" maxLength="200" showExceededText="true" enabled="true" />
+					<Label text="Aprovador 2" class="bold"/>
+					<TextArea id="idAprovador2" value="{path: 'ItemAprovar>/Obscom'}" maxLength="200" showExceededText="true" enabled="true" />
+					<Label text="Aprovador 3" class="bold"/>
+					<TextArea id="idAprovador3" value="{path: 'ItemAprovar>/Obsdd'}" maxLength="200" showExceededText="true" enabled="true" />
+					<Label text="Aprovador 4" class="bold"/>
+					<TextArea id="idAprovador4" value="{path: 'ItemAprovar>/Obsvvb'}" maxLength="200" showExceededText="true" enabled="true" />
+				</form:content>
+			</form:SimpleForm>
+			<!--<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"-->
+			<!--	emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">-->
+			<!--	<form:content>-->
+			<!--		<Label text="Obs Repres." class="bold"/>-->
+			<!--		<TextArea id="idRepresentante" value="{path: 'ItemAprovar>/Obsaudped'}" maxLength="200" showExceededText="true" enabled="true" />-->
+			<!--	</form:content>-->
+			<!--</form:SimpleForm>-->
+			<!--<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"-->
+			<!--	emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Aprovador 1">-->
+			<!--	<form:content>-->
+					<!--<Label text="Obs Repres." class="bold"/>-->
+			<!--		<TextArea id="idAprovador1" value="{path: 'ItemAprovar>/Obsvm'}" maxLength="200" showExceededText="true" enabled="true" />-->
+			<!--	</form:content>-->
+			<!--</form:SimpleForm>-->
+			<!--<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"-->
+			<!--	emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Aprovador 2">-->
+			<!--	<form:content>-->
+					<!--<Label text="Obs Repres." class="bold"/>-->
+			<!--		<TextArea id="idAprovador2" value="{path: 'ItemAprovar>/Obscom'}" maxLength="200" showExceededText="true" enabled="true" />-->
+			<!--	</form:content>-->
+			<!--</form:SimpleForm>-->
+			<!--<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"-->
+			<!--	emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Aprovador 3">-->
+			<!--	<form:content>-->
+					<!--<Label text="Obs Repres." class="bold"/>-->
+			<!--		<TextArea id="idAprovador3" value="{path: 'ItemAprovar>/Obsdd'}" maxLength="200" showExceededText="true" enabled="true" />-->
+			<!--	</form:content>-->
+			<!--</form:SimpleForm>-->
+			<!--<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"-->
+			<!--	emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Aprovador 4">-->
+			<!--	<form:content>-->
+					<!--<Label text="Obs Repres." class="bold"/>-->
+			<!--		<TextArea id="idAprovador4" value="{path: 'ItemAprovar>/Obsvvb'}" maxLength="200" showExceededText="true" enabled="true" />-->
+			<!--	</form:content>-->
+			<!--</form:SimpleForm>-->
+		</content>
+		<beginButton>
+			<Button icon="sap-icon://accept" text="OK" press="onAprovarDialog"/>
+		</beginButton>
+		<endButton>
+			<Button icon="sap-icon://decline" text="Cancelar" press="onCancelar"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

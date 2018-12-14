@@ -22,9 +22,9 @@
 					<Input id="idVerbaUtilizadaDesconto" value="{path: 'ItemAprovar>/Vlrdscvm'}" type="Number" enabled="true" change="onDestinaDesc" />
 					<Label text="Comissão (R$)"/>
 					<Input id="idComissaoUtilizadaDesconto" value="{path: 'ItemAprovar>/Vlrdsccom'}" type="Number" enabled="true" change="onDestinaDesc" />
-					<Label text="Verba VB (R$)" />
+					<Label id="idLabelVerbaDiaDiaUtilizadaDesconto" text="Verba VB (R$)" />
 					<Input id="idVerbaDiaDiaUtilizadaDesconto" value="{path: 'ItemAprovar>/Vlrdscdd'}" type="Number" enabled="true" change="onDestinaDesc" />
-					<Label text="Verba Institucional (R$)"/>
+					<Label id="idLabelVerbaVBUtilizadaDesconto" text="Verba Institucional (R$)"/>
 					<Input id="idVerbaVBUtilizadaDesconto" value="{path: 'ItemAprovar>/Vlrdscvvb'}" type="Number" enabled="true" change="onDestinaDesc" />
 				</form:content>
 			</form:SimpleForm>
@@ -40,9 +40,9 @@
 					<Input id="idVerbaUtilizadaPrazo" type="Number" value="{path: 'ItemAprovar>/Vlrprzvm'}" enabled="true" change="onDestinaPrazo"/>
 					<Label text="Comissão (R$)"/>
 					<Input id="idComissaoUtilizadaPrazo" type="Number" value="{path: 'ItemAprovar>/Vlrprzcom'}" enabled="true" change="onDestinaPrazo"/>
-					<Label text="Verba VB (R$)" />
+					<Label id="idLabelVerbaDiaDiaUtilizadaPrazo" text="Verba VB (R$)" />
 					<Input id="idVerbaDiaDiaUtilizadaPrazo" type="Number" value="{path: 'ItemAprovar>/Vlrprzdd'}" enabled="true" change="onDestinaPrazo"/>
-					<Label text="Verba Institucional (R$)"/>
+					<Label id="idLabelVerbaVBUtilizadaPrazo" text="Verba Institucional (R$)"/>
 					<Input id="idVerbaVBUtilizadaPrazo" type="Number" value="{path: 'ItemAprovar>/Vlrprzvvb'}" enabled="true" change="onDestinaPrazo"/>
 				</form:content>
 			</form:SimpleForm>
@@ -58,9 +58,9 @@
 					<Input id="idVerbaUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbrivm'}" enabled="true" type="Number" />
 					<Label text="Comissão (R$)"/>
 					<Input id="idComissaoUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbricom'}" enabled="true" />
-					<Label text="Verba VB (R$)" />
-					<Input id="idVerbaDiaDiaUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbridd'}{ItemAprovar>/}" enabled="true" type="Number" />
-					<Label text="Verba Institucional (R$)"/>
+					<Label id="idLabelVerbaDiaDiaUtilizadaBrinde" text="Verba VB (R$)" />
+					<Input id="idVerbaDiaDiaUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbridd'}" enabled="true" type="Number" />
+					<Label id="idLabelVerbaVBUtilizadaBrinde" text="Verba Institucional (R$)"/>
 					<Input id="idVerbaVBUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbrivvb'}" enabled="true" />
 				</form:content>
 			</form:SimpleForm>
@@ -71,14 +71,14 @@
 					<Label text="Valor excedente amostra (R$)" class="bold"/>
 					<Input id="idExcedenteAmostra" value="{path: 'ItemAprovar>/Vlramo'}" enabled="false" type="Number" class="desabilitado2"/>
 					<Label text="Valor sem destinar Amostra (R$)" class="bold"/>
-					<Input id="idAbaterNaoDestinadoAmostra" value="{path: 'ItemAprovar>/ValtotexcndirAmostra'}{ItemAprovar>/}" type="Number" valueState="Warning" enabled="false" class="desabilitado"/>
+					<Input id="idAbaterNaoDestinadoAmostra" value="{path: 'ItemAprovar>/ValtotexcndirAmostra'}" type="Number" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
 					<Input id="idVerbaUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramovm'}" enabled="true" type="Number" />
 					<Label text="Comissão (R$)"/>
 					<Input id="idComissaoUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramocom'}" enabled="true" type="Number" />
-					<Label text="Verba VB (R$)" />
+					<Label id="idLabelVerbaDiaDiaUtilizadaAmostra" text="Verba VB (R$)" />
 					<Input id="idVerbaDiaDiaUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramodd'}" enabled="true" type="Number" />
-					<Label text="Verba Institucional (R$)"/>
+					<Label id="idLabelVerbaVBUtilizadaAmostra" text="Verba Institucional (R$)"/>
 					<Input id="idVerbaVBUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramovvb'}" enabled="true" type="Number" />
 				</form:content>
 			</form:SimpleForm>
@@ -92,20 +92,20 @@
 					<Input id="idAbaterNaoDestinadoBonif" value="{path: 'ItemAprovar>/ValtotexcndirBonif'}" type="Number" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
 					<Input id="idVerbaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbonvm'}" enabled="true" type="Number" />
-					<Label text="Comissão (R$)"/>
+					<Label id="idLabelComissaoUtilizadaBonif" text="Comissão (R$)"/>
 					<Input id="idComissaoUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrboncom'}" enabled="true" type="Number" />
-					<Label text="Verba VB (R$)" />
-					<Input id="idVerbaDiaDiaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbondd'}" enabled="true" type="Number" />
-					<Label text="Verba Institucional (R$)"/>
+					<Label id="idLabelVerbaDiaDiaUtilizadaBonif" text="Verba VB (R$)" />
+					<Input id="idVerbaDiaDiaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbondd'}" enabled="true"  />
+					<Label id="idLabelVerbaVBUtilizadaBonf" text="Verba Institucional (R$)"/>
 					<Input id="idVerbaVBUtilizadaBonf" value="{path: 'ItemAprovar>/Vlrbonvvb'}" enabled="true" type="Number" />
 				</form:content>
 			</form:SimpleForm>
 		</content>
 		<beginButton>
-			<Button id="idButtonSalvarDialog" text="Salvar" press="onAprovar"/>
+			<Button icon="sap-icon://accept" id="idButtonSalvarDialog" text="Salvar" press="onAprovar"/>
 		</beginButton>
 		<endButton>
-			<Button text="Cancelar" press="onCancelar"/>
+			<Button icon="sap-icon://decline" text="Cancelar" press="onCancelar"/>
 		</endButton>
 	</Dialog>
 </core:FragmentDefinition>
