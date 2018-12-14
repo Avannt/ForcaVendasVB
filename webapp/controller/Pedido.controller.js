@@ -61,10 +61,13 @@ sap.ui.define([
 		myFormatterDataImp: function(value) {
 
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
-				var aux = value.split("/");
+				var data = value.split("-");
+				
+				var aux = data[0].split("/");
+				var hora = data[1].split(":");
 				// var aux2 = aux[2].substring(2, aux[2].length);
 				// value = aux[0] + "/" + aux[1] + "/" + aux2;
-				value = aux[0] + "/" + aux[1];
+				value = aux[0] + "/" + aux[1] + "-" + hora[0] + ":" + hora[1];
 				return value;
 			}
 		},

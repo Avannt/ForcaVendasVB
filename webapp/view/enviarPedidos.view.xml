@@ -40,7 +40,7 @@
 							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Representante"/>
 							</Column>
-							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+							<Column minScreenWidth="2000px" hAlign="Center" width="auto" popinDisplay="Inline">
 								<Text text="Cliente"/>
 							</Column>
 							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
@@ -107,7 +107,7 @@
 						<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Left" popinDisplay="Inline">
 							<Text text="N°Ped"/>
 						</Column>
-						<Column minScreenWidth="320px" hAlign="Left" width="70px" popinDisplay="Inline">
+						<Column minScreenWidth="320px" hAlign="Left" width="auto" popinDisplay="Inline">
 							<Text text="Data"/>
 						</Column>
 						<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
@@ -125,7 +125,7 @@
 							<cells>
 								<Text text="{path : 'PedidosEnviar>kunnr'}"/>
 								<Text text="{path : 'PedidosEnviar>nrPedCli'}"/>
-								<Text text="{path : 'PedidosEnviar>dataPedido', formatter:'.myFormatterDataImp'}"/>
+								<Text text="{path : 'PedidosEnviar>dataImpl', formatter:'.myFormatterDataImp'}"/>
 								<Text text="{path : 'PedidosEnviar>totalItensPedido'}"/>
 								<Text text="R$: {path : 'PedidosEnviar>valTotPed'}"/>
 								<Text text="{path :'PedidosEnviar>situacaoPedido'}"/>

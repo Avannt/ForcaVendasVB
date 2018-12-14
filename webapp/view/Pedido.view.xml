@@ -27,7 +27,7 @@
 							<Column minScreenWidth="320px" demandPopin="false" hAlign="Left" width="auto">
 								<Text text="N°Ped"/>
 							</Column>
-							<Column minScreenWidth="320px" hAlign="Left" width="60px" popinDisplay="Inline">
+							<Column minScreenWidth="320px" hAlign="Left" width="auto" popinDisplay="Inline">
 								<Text text="Data"/>
 							</Column>
 							<Column minScreenWidth="550px" demandPopin="true" popinDisplay="Inline">
@@ -44,7 +44,7 @@
 							<ColumnListItem type="Active" >
 								<cells>
 									<Text text="{path : 'pedidosCadastrados>nrPedCli'}"/>
-									<Text text="{path : 'pedidosCadastrados>dataPedido', formatter:'.myFormatterDataImp'}"/>
+									<Text text="{path : 'pedidosCadastrados>dataImpl', formatter:'.myFormatterDataImp'}"/>
 									<Text text="R$: {path : 'pedidosCadastrados>valTotPed'}"/>
 									<Text text="{path : 'pedidosCadastrados>totalItensPedido'}"/>
 									<Text text="{path :'pedidosCadastrados>situacaoPedido'}"/>

@@ -25,14 +25,14 @@
 						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
 							<Text text="Repres"/>
 						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left" popinDisplay="Inline">
-							<Text text="Tot Exc"/>
-						</Column>
 						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
 							<Text text="Data"/>
 						</Column>
+						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left" popinDisplay="Inline">
+							<Text text="Tot Exc"/>
+						</Column>
 						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left" popinDisplay="Inline">
-							<Text text="V. Tot"/>
+							<Text text="Tot. Ped."/>
 						</Column>
 						<!--<Column minScreenWidth="380px" visible="false" demandPopin="true">-->
 						<!--	<Text text="Exc Total"/>-->
@@ -49,8 +49,8 @@
 							<cells>
 								<Text text="{PedidosAprovar>Kunnr}" />
 								<Text text="{PedidosAprovar>Lifnr}" />
-								<Text text="R$: {path :'PedidosAprovar>Vlrexc'}" />
 								<Text text="{path : 'PedidosAprovar>Erdat', formatter:'.myFormatterDataImp'} - {PedidosAprovar>Horaped}" />
+								<Text text="R$: {path :'PedidosAprovar>Vlrexc'}" />
 								<Text text="R$: {PedidosAprovar>Valtotpedido}" />
 								<Text text="{PedidosAprovar>NrPedcli}" visible="false"/>
 								<!--<Text text="{PedidosEnviar>ValVerbaPedido}"/>-->
