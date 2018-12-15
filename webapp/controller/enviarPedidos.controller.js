@@ -263,7 +263,9 @@ sap.ui.define([
 
 			var that = this;
 			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
-
+			
+			console.log("teste");
+			
 			for (var i = 0; i < oSelectedItems.length; i++) {
 				var nrPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
 
@@ -275,18 +277,22 @@ sap.ui.define([
 						var bVerificadoPreposto = oPedidoGrid[j].verificadoPreposto == undefined ? false : oPedidoGrid[j].verificadoPreposto;
 						var bRepresentante = this.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == "1";
 						var iStatusPedido = oPedidoGrid[j].idStatusPedido;
+						var sPedido = oPedidoGrid[j].nrPedCli;
 
 						if (bRepresentante && iStatusPedido == 9 && !bVerificadoPreposto) {
 							var oTable = this.byId(oEvent.getParameter("id"));
 							var oListItem = oEvent.getParameter("listItem");
+							var sMensagem = "Pedido " + sPedido + " necessita ser revisado antes do envio.";
 
 							oTable.setSelectedItem(oListItem, false);
 							
-							MessageBox.show("Pedido necessita ser revisado antes do envio.", {
-								icon: MessageBox.Icon.ERROR,
-								title: "Erro",
-								actions: [MessageBox.Action.OK]
-							});
+							sap.m.MessageToast.show(sMensagem);
+							
+							// MessageBox.show("Pedido " + sPedido + " necessita ser revisado antes do envio.", {
+							// 	icon: MessageBox.Icon.ERROR,
+							// 	title: "Erro",
+							// 	actions: [MessageBox.Action.OK]
+							// });
 						}
 					} /*EndIf*/
 				}

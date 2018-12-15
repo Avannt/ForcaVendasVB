@@ -20,7 +20,7 @@ sap.ui.define([
 			
 			var oModel = new sap.ui.model.json.JSONModel("./model/Menu.json");
     		this.setModel(oModel,"menu");
-    		
+
     		sap.ui.getCore().getConfiguration().setLanguage("pt-BR");
     		
     	   // set the device model

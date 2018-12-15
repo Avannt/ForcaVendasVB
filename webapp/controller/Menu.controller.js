@@ -66,6 +66,8 @@ sap.ui.define([
 		_onRouteMatched: function (oEvent) {
 			var oModel = new sap.ui.model.json.JSONModel();
 			this.getOwnerComponent().getModel("modelAux");
+			
+
 			// var empresa = this.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
 			// var nomeEmpresa;
 			// var icone;

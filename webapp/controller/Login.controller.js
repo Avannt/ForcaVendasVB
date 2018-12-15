@@ -83,6 +83,10 @@ sap.ui.define([
 								keyPath: "matnr",
 								unique: true
 							});
+							
+							objMateriais.createIndex("matpos", "matpos", {
+								unique: false
+							});
 						}
 
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -969,7 +973,8 @@ sap.ui.define([
 																																		retornoA963.results[i].Lifnr + "." + retornoA963.results[i].Pltyp,
 																																	lifnr: retornoA963.results[i].Lifnr,
 																																	werks: retornoA963.results[i].Werks,
-																																	pltyp: retornoA963.results[i].Pltyp
+																																	pltyp: retornoA963.results[i].Pltyp,
+																																	ptext: "Tebela padrão representante"
 																																};
 
 																																var requestA963 = objA963.add(objBancoA963);
@@ -1652,6 +1657,71 @@ sap.ui.define([
 						}
 
 						that.getOwnerComponent().getModel("modelAux").setProperty("/Usuario", result1);
+						var oPrincipal = that.getView().getModel("menu").getProperty("/Principal");
+
+						/* TRATAMENTO DE EXIBIÇÃO DOS MENUS */
+						// Oculto alguns menus para o usuário Preposto
+						var sTipoUsuario = that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario");
+
+						// VERT -> Representante
+						// Diferente de VERT -> Aprovador
+						var bAprovador = result1.buGroup =! "VERT";
+						var bPreposto = sTipoUsuario == "2";
+						var bRepresentante = (sTipoUsuario == "1" && !bAprovador);
+
+						/*Preposto-> Oculto aprovações e entrega futura*/
+						if (bRepresentante) {
+							for (var i = 0; i < oPrincipal.length; i++) {
+
+								if (oPrincipal[i].id == "aprovacoes") {
+									oPrincipal[i].visible = false;
+								}
+							}
+						}
+						
+
+						/*Preposto-> Oculto aprovações e entrega futura*/
+						if (bPreposto) {
+							for (var i = 0; i < oPrincipal.length; i++) {
+
+								if (oPrincipal[i].id == "aprovacoes" || oPrincipal[i].id == "entregaFutura") {
+									oPrincipal[i].visible = false;
+								}
+							}
+						}
+
+						/* Aprovador-> Ocultar pedido de vendas e entrega futura
+									-> Verifico a quantidade de pedidos para aprovação*/
+						if (bAprovador) {
+							for (var i = 0; i < oPrincipal.length; i++) {
+
+								if (oPrincipal[i].id == "pedido" || oPrincipal[i].id == "entregaFutura") {
+									oPrincipal[i].visible = false;
+								}
+
+								if (oPrincipal[i].id == "aprovacoes") {
+									var oMenuAprovar = oPrincipal[i];
+									var oModel = that.getView().getModel();
+									var codRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
+
+									oModel.read("/PedidosAprovar/$count", {
+										urlParameters: {
+											"$filter": "IAprovador eq '" + codRepres + "'"
+										},
+										success: function(retorno) {
+											// oMenuAprovar.number = retorno;
+											oMenuAprovar.number = retorno;
+											that.getView().getModel("menu").refresh();
+										},
+										error: function(error) {
+											console.log(error);
+											that.byId("idTableEnvioPedidos").setBusy(false);
+											that.onMensagemErroODATA(error.statusCode);
+										}
+									});
+								}
+							}
+						}
 
 						var bAtualizarTabelas = false;
 
@@ -1982,7 +2052,8 @@ sap.ui.define([
 												utilverbBon: retorno.UtilverbBon == "S",
 												utilverbBri: retorno.UtilverbBri == "S",
 												utilverbDesc: retorno.UtilverbDesc == "S",
-												utilverbPrz: retorno.UtilverbPrz == "S"
+												utilverbPrz: retorno.UtilverbPrz == "S",
+												buGroup: retorno.BuGroup
 											};
 
 											if (result == null || result == undefined) {

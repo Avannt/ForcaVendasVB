@@ -3,7 +3,7 @@
 	<Page class="backgroundAzul" title="Força de vendas" showHeader="false">
 		<TileContainer id="container" tileDelete="handleTileDelete" tiles="{menu>/Principal}">
 			<StandardTile icon="sap-icon://{menu>icon}" type="{menu>type}" number="{menu>number}" numberUnit="{menu>numberUnit}" title="{menu>title}"
-				info="{menu>info}" infoState="{menu>infoState}" app:opcao="{menu>id}" press="onTile"/>
+				info="{menu>info}" infoState="{menu>infoState}" app:opcao="{menu>id}" press="onTile" visible="{menu>visible}"/> 
 		</TileContainer>
 		<footer>
 			<Bar>
