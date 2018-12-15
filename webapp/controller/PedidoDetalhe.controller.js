@@ -33,6 +33,7 @@ sap.ui.define([
 			var that = this;
 			this.getView().setModel(this.getView().getModel("modelCliente"));
 			this.getView().setModel(this.getView().getModel("modelAux"));
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
 
 			that.onCarregaCliente();
 			this.byId("tabItensPedidoStep").setProperty("enabled", false);
@@ -246,27 +247,21 @@ sap.ui.define([
 					if (oVetorTabPreco.length == 0) {
 
 						var CodRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
-
-						var transactionA963 = db.transaction(["A963"], "readonly");
+						
+						var transactionA963 = db.transaction("A963", "readonly");
 						var objectStoreA963 = transactionA963.objectStore("A963");
-
-						objectStoreA963.openCursor().onsuccess = function (event) {
-							var cursor1 = event.target.result;
-							if (cursor1) {
-								if (cursor.value.lifnr == CodRepres) {
-
-									oVetorTabPreco.push(cursor.value);
+			
+						if ("getAll" in objectStore) {
+							objectStoreA963.getAll().onsuccess = function (event) {
+								
+								for(var j=0; j<event.target.result.length; j++){
+									oVetorTabPreco.push(event.target.result[j]);
 								}
-
-								cursor.continue();
-
-							} else {
-
+			
 								oModelTabPreco = new sap.ui.model.json.JSONModel(oVetorTabPreco);
 								that.getView().setModel(oModelTabPreco, "tabPreco");
-
-							}
-						};
+							};
+						}
 					}
 				}
 			};
@@ -356,6 +351,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", oPrePedido.observacaoPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", oPrePedido.observacaoAuditoriaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", oPrePedido.existeEntradaPedido);
+					that.byId("idCheckEntrada").setSelected(oPrePedido.existeEntradaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", oPrePedido.percEntradaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", oPrePedido.valorEntradaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", oPrePedido.valMinPedido);
@@ -752,6 +748,7 @@ sap.ui.define([
 
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
+			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
 			this.onResetaCamposPrePedido();
 
 		},
@@ -851,7 +848,9 @@ sap.ui.define([
 
 									if (oA960 == undefined) {
 										oPanel.setBusy(false);
-
+										
+										sap.ui.getCore().byId("idItemPedido").setValue("");
+										
 										MessageBox.show("Não existe preço para o produto: " + codItem + " de acordo com a tabela de preço: " +
 											that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"), {
 												icon: MessageBox.Icon.ERROR,
@@ -1201,6 +1200,8 @@ sap.ui.define([
 									if (oA960 == undefined) {
 										oPanel.setBusy(false);
 										
+										sap.ui.getCore().byId("idItemPedido").setValue("");
+										
 										MessageBox.show("Não existe preço para o produto: " + codItem + " de acordo com a tabela de preço: " +
 											that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"), {
 												icon: MessageBox.Icon.ERROR,
@@ -1442,14 +1443,16 @@ sap.ui.define([
 					var oMaterial = e.target.result;
 
 					if (oMaterial == undefined) {
-
+						
+						sap.ui.getCore().byId("idItemPedido").setValue("");
+						
 						MessageBox.show("Não existe o produto: " + sap.ui.getCore().byId("idItemPedido").getValue(), {
 							icon: MessageBox.Icon.ERROR,
 							title: "Produto não encontrado.",
 							actions: [MessageBox.Action.YES],
 							onClose: function () {
 								that.onResetaCamposDialog();
-								sap.ui.getCore().byId("idItemPedido").focus();
+								// sap.ui.getCore().byId("idItemPedido").focus();
 							}
 						});
 

@@ -11,7 +11,7 @@
 					<f:formElements>
 						<f:FormElement label="">
 							<f:fields>
-								<Image src="img/logo.png"  width="100%" >
+								<Image src="img/logo.png"  width="100%">
 									<layoutData>
 										<l:GridData span="XL4 L4 M4 S8" linebreakXL="false"/>
 									</layoutData>
