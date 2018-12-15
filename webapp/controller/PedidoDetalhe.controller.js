@@ -5,7 +5,7 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"testeui5/model/formatter"
 
-], function (BaseController, JSONModel, MessageBox, formatter) {
+], function(BaseController, JSONModel, MessageBox, formatter) {
 	"use strict";
 	//variavel para salvar o obj ATUAL do item do pedido E obj pra salvar TODOS os items do pedido
 	var oItemTemplate = [];
@@ -25,14 +25,15 @@ sap.ui.define([
 
 		formatter: formatter,
 
-		onInit: function () {
+		onInit: function() {
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this._onLoadFields, this);
 		},
 
-		_onLoadFields: function () {
+		_onLoadFields: function() {
 			var that = this;
 			this.getView().setModel(this.getView().getModel("modelCliente"));
 			this.getView().setModel(this.getView().getModel("modelAux"));
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
 
 			that.onCarregaCliente();
 			this.byId("tabItensPedidoStep").setProperty("enabled", false);
@@ -42,7 +43,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -50,15 +51,15 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
 
-				var promise = new Promise(function (resolve, reject) {
+				var promise = new Promise(function(resolve, reject) {
 					that.onCarregaCampos(db);
 					resolve();
 				});
 
-				promise.then(function (value) {
+				promise.then(function(value) {
 					if (that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli") === "") {
 						console.log("Criando numero pedido");
 						that.onCriarNumeroPedido();
@@ -69,12 +70,12 @@ sap.ui.define([
 				});
 			};
 		},
-		
-		formatNumber: function(value){
+
+		formatNumber: function(value) {
 			return value.toLocaleString("pt-BR");
 		},
 
-		onCarregaCliente: function () {
+		onCarregaCliente: function() {
 
 			this.byId("idCodCliente").setValue(this.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + "-" +
 				this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"));
@@ -86,7 +87,7 @@ sap.ui.define([
 			this.byId("idFone").setValue();
 		},
 
-		onResetaCamposPrePedido: function () {
+		onResetaCamposPrePedido: function() {
 			//*modelDadosPedido
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", "");
@@ -157,7 +158,7 @@ sap.ui.define([
 		},
 
 		//CARREGA OS CAMPOS, POPULANDO OS COMBO BOX
-		onCarregaCampos: function (db, resolve, reject) {
+		onCarregaCampos: function(db, resolve, reject) {
 			var that = this;
 			oVetorTabPreco = [];
 			oVetorMateriais = [];
@@ -177,25 +178,25 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", data[0] + "-" + data[1]);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", data[0]);
 
-			//CARREGA OS MATERIAIS
-			var transaction = db.transaction("Materiais", "readonly");
-			var objectStore = transaction.objectStore("Materiais");
+			// //CARREGA OS MATERIAIS
+			// var transaction = db.transaction("Materiais", "readonly");
+			// var objectStore = transaction.objectStore("Materiais");
 
-			if ("getAll" in objectStore) {
-				objectStore.getAll().onsuccess = function (event) {
-					oVetorMateriais = event.target.result;
+			// if ("getAll" in objectStore) {
+			// 	objectStore.getAll().onsuccess = function(event) {
+			// 		oVetorMateriais = event.target.result;
 
-					var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
-					that.getView().setModel(oModel, "materiaisCadastrados");
-				};
-			}
+			// 		var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+			// 		that.getView().setModel(oModel, "materiaisCadastrados");
+			// 	};
+			// }
 
 			//Tipos Pedidos
 			var transactionTiposPedidos = db.transaction("TiposPedidos", "readonly");
 			var objectStoreTiposPedidos = transactionTiposPedidos.objectStore("TiposPedidos");
 
-			if ("getAll" in objectStore) {
-				objectStoreTiposPedidos.getAll().onsuccess = function (event) {
+			if ("getAll" in objectStoreTiposPedidos) {
+				objectStoreTiposPedidos.getAll().onsuccess = function(event) {
 					oVetorTiposPedidos = event.target.result;
 
 					var oModel = new sap.ui.model.json.JSONModel(oVetorTiposPedidos);
@@ -228,7 +229,7 @@ sap.ui.define([
 			var transactionA961 = db.transaction(["A961"], "readonly");
 			var objectStoreA961 = transactionA961.objectStore("A961");
 
-			objectStoreA961.openCursor().onsuccess = function (event) {
+			objectStoreA961.openCursor().onsuccess = function(event) {
 				var cursor = event.target.result;
 				if (cursor) {
 					if (cursor.value.kunnr == Kunnr) {
@@ -247,36 +248,30 @@ sap.ui.define([
 
 						var CodRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
-						var transactionA963 = db.transaction(["A963"], "readonly");
+						var transactionA963 = db.transaction("A963", "readonly");
 						var objectStoreA963 = transactionA963.objectStore("A963");
 
-						objectStoreA963.openCursor().onsuccess = function (event) {
-							var cursor1 = event.target.result;
-							if (cursor1) {
-								if (cursor.value.lifnr == CodRepres) {
+						if ("getAll" in objectStoreA963) {
+							objectStoreA963.getAll().onsuccess = function(event) {
 
-									oVetorTabPreco.push(cursor.value);
+								for (var j = 0; j < event.target.result.length; j++) {
+									oVetorTabPreco.push(event.target.result[j]);
 								}
-
-								cursor.continue();
-
-							} else {
 
 								oModelTabPreco = new sap.ui.model.json.JSONModel(oVetorTabPreco);
 								that.getView().setModel(oModelTabPreco, "tabPreco");
-
-							}
-						};
+							};
+						}
 					}
 				}
 			};
 		},
 
-		onCriarNumeroPedido: function () {
+		onCriarNumeroPedido: function() {
 			var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", "Não");
 			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
-			
+
 			var date = new Date();
 			var dia = String(date.getDate());
 			var mes = String(date.getMonth() + 1);
@@ -310,7 +305,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", numeroPed);
 		},
 
-		onCarregaDadosPedido: function (db) {
+		onCarregaDadosPedido: function(db) {
 			var that = this;
 			objItensPedidoTemplate = [];
 			var vetorAux = [];
@@ -325,7 +320,7 @@ sap.ui.define([
 
 			var requestPrePedidos = objPrePedidos.get(that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"));
 
-			requestPrePedidos.onsuccess = function (e) {
+			requestPrePedidos.onsuccess = function(e) {
 				var oPrePedido = e.target.result;
 
 				if (oPrePedido == undefined) {
@@ -356,6 +351,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", oPrePedido.observacaoPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", oPrePedido.observacaoAuditoriaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", oPrePedido.existeEntradaPedido);
+					that.byId("idCheckEntrada").setSelected(oPrePedido.existeEntradaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", oPrePedido.percEntradaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", oPrePedido.valorEntradaPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", oPrePedido.valMinPedido);
@@ -389,7 +385,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", oPrePedido.valUtilizadoCampEnxoval);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", oPrePedido.valTotalCampProdutoAcabado);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", oPrePedido.valUtilizadoCampProdutoAcabado);
-					
+
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBrinde", oPrePedido.valTotalExcedenteBrinde);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", oPrePedido.valUtilizadoVerbaBrinde);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", oPrePedido.valUtilizadoVerbaPrazoMed);
@@ -400,62 +396,62 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", oPrePedido.valTotalExcedenteBonif);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", oPrePedido.valUtilizadoVerbaBonif);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", oPrePedido.valUtilizadoComissaoBonif);
-
+					
 					//Tela cabeçalho (2º aba)
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oPrePedido.tipoTransporte);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oPrePedido.tabPreco);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oPrePedido.tipoNegociacao);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oPrePedido.tipoPedido);
-
+					
 					//Seleciona o valor do combo
 					that.byId("idTabelaPreco").setSelectedKey(oPrePedido.tabPreco);
 					that.byId("idTipoTransporte").setSelectedKey(oPrePedido.tipoTransporte);
 					that.byId("idTipoNegociacao").setSelectedKey(oPrePedido.tipoNegociacao);
 					that.byId("idTipoPedido").setSelectedKey(oPrePedido.tipoPedido);
-
+					
+					that.onBloqueioPorTipoPedido(oPrePedido.tipoPedido);
+					that.onCarregaMateriais(db, oPrePedido.tipoPedido);
+					
 					//FILTRA ITENS PARA APARECER NO COMBO PARA SELECIONAR DE ACORDO COM O TIPO DE PEDIDO JÁ EXISTENTE.
 					//AMOSTRA
-					if (oPrePedido.tipoPedido == "06") {
-						for (var i = 0; i < oVetorMateriais.length; i++) {
-							if (oVetorMateriais[i].mtpos == "YAMO") {
-								vetorAux.push(oVetorMateriais[i]);
-							}
-						}
-
-						oVetorMateriais = vetorAux;
-
-					}
-					//BRINDES
-					if (oPrePedido.tipoPedido == "07") {
-						for (i = 0; i < oVetorMateriais.length; i++) {
-							if (oVetorMateriais[i].mtpos == "YBRI") {
-								vetorAux.push(oVetorMateriais[i]);
-							}
-						}
-
-						oVetorMateriais = vetorAux;
-
-					}
-
-					var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
-					that.getView().setModel(oModel, "materiaisCadastrados");
-
+					// if (oPrePedido.tipoPedido == "YBRI") {
+					// 	for (var i = 0; i < oVetorMateriais.length; i++) {
+					// 		if (oVetorMateriais[i].mtpos == "YAMO") {
+					// 			vetorAux.push(oVetorMateriais[i]);
+					// 		}
+					// 	}
+					// 	oVetorMateriais = vetorAux;
+					// }
+					// //BRINDES
+					// if (oPrePedido.tipoPedido == "YBRI") {
+					// 	for (i = 0; i < oVetorMateriais.length; i++) {
+					// 		if (oVetorMateriais[i].mtpos == "YBRI") {
+					// 			vetorAux.push(oVetorMateriais[i]);
+					// 		}
+					// 	}
+						
+					// 	oVetorMateriais = vetorAux;
+					// }
+					
+					// var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+					// that.getView().setModel(oModel, "materiaisCadastrados");
+					
 					var storeItensPedido = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
-					storeItensPedido.openCursor().onsuccess = function (event) {
+					storeItensPedido.openCursor().onsuccess = function(event) {
 						// consulta resultado do event
 						var cursor = event.target.result;
 						if (cursor) {
 							if (cursor.value.nrPedCli === that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli")) {
-
+								
 								objItensPedidoTemplate.push(cursor.value);
-
+								
 							}
 							cursor.continue();
 						} else {
-
+							
 							var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
-
+							
 							that.onBloqueiaPrePedido();
 							that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
 							// that.calculaTotalPedido();
@@ -464,8 +460,24 @@ sap.ui.define([
 				}
 			};
 		},
+		
+		onCarregaMateriais: function(db, tipoPedido){
+			var transaction = db.transaction("Materiais", "readonly");
+			var objectStoreMaterial = transaction.objectStore("Materiais");
+			
+			var indexMtpos = objectStoreMaterial.index("mtpos");
 
-		onDataAtualizacao: function () {
+			var request = indexMtpos.getAll(tipoPedido);
+
+			request.onsuccess = function (event) {
+				oVetorMateriais = event.target.result;
+
+				var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+				this.getView().setModel(oModel, "materiaisCadastrados");
+			};
+		},
+		
+		onDataAtualizacao: function() {
 			var date = new Date();
 			var dia = String(date.getDate());
 			var mes = String(date.getMonth() + 1);
@@ -473,7 +485,7 @@ sap.ui.define([
 			var minuto = String(date.getMinutes());
 			var hora = String(date.getHours());
 			var seg = String(date.getSeconds());
-
+			
 			if (dia.length == 1) {
 				dia = String("0" + dia);
 			}
@@ -492,179 +504,104 @@ sap.ui.define([
 			//HRIMP E DATIMP
 			var data = String(dia + "/" + mes + "/" + ano);
 			var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
-
+			
 			return [data, horario];
 		},
-
-		myFormatterRentabilidade: function (Value) {
-			// var rentabilidade = sap.ui.getCore().byId("idRentabilidade").getValue();
-
-			if (Value <= -3) {
-
-				Value = "img/Verm.png";
-				return Value;
-
-			} else if (Value >= 3) {
-
-				Value = "img/Verde.png";
-				return Value;
-
-			} else if (Value < 3 && Value > -3) {
-
-				Value = "img/Amar.png";
-				return Value;
-
-			}
-		},
-
-		myFormatterRentabilidadePorcentagem: function (Value) {
-			// var rentabilidade = sap.ui.getCore().byId("idRentabilidade").getValue();
-
-			if (Value > -3) {
-
-				this.byId("idRentabilidadePedido").setVisible(false);
-				return "";
-
-			} else {
-				this.byId("idRentabilidadePedido").setVisible(true);
-				return Value;
-			}
-		},
-
-		carregarItensPedido: function (db) {
-			var that = this;
-			
-			var store = db.transaction("ItensPedido").objectStore("ItensPedido");
-			//CARREGA TODOS OS ITENS DE UM DETERMINADO PEDIDO
-			store.openCursor().onsuccess = function (event) {
-				// consulta resultado do event
-				var cursor = event.target.result;
-				var numeroPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/numeroPedido");
-				var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-
-				if (cursor) {
-					if (cursor.NrPedcli == numeroPedido && cursor.value.IdBase == IdBase) {
-						oItemTemplateTotal.push(cursor.value);
-					}
-					cursor.continue();
+		
+		onBloqueioPorTipoPedido: function(valor){
+			if (valor == "YAMO" || valor == "YBRI" || valor == "YTRO" || valor == "YBON") {
+				
+				this.byId("idFormParcelamento").setVisible(false);
+				this.byId("idInserirItemDiluicao").setEnabled(false);
+				
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", 0);
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", 0);
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", 0);
+				
+				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido") == true) {
+					
+					this.byId("idPercEntrada").setVisible(true);
+					this.byId("idValorEntrada").setVisible(true);
+					
+				} else {
+					
+					this.byId("idPercEntrada").setVisible(false);
+					this.byId("idValorEntrada").setVisible(false);
+					
 				}
-			};
-			var oModel = new sap.ui.model.json.JSONModel(oItemTemplateTotal);
-			that.getView().setModel(oModel, "ItensPedidoGrid");
+			} else {
+				this.byId("idFormParcelamento").setVisible(true);
+				this.byId("idInserirItemDiluicao").setEnabled(true);
+			}
 		},
-
-		/// EVENTOS STANDARD  APLICAÇÃO 			<<<<<<<<<<<<
-
-		onAfterRendering: function () {},
-
-		onBeforerRendering: function () {},
-
-		onExit: function () {
-
-		},
-
-		///  FIM EVENTOS STANDARD  APLICAÇÃO
-
+		
 		/// EVENTOS CAMPOS							<<<<<<<<<<<<
-
-		onChangeTipoPedido: function (evt) {
+		
+		onChangeTipoPedido: function(evt) {
 			var that = this;
 			var tipoPedido = "";
 			var vetorAux = [];
-
+			
 			var oSource = evt.getSource();
 			tipoPedido = oSource.getSelectedKey();
-
+			
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", tipoPedido);
-
-			if (oSource.getSelectedKey() == "03") {
-				this.byId("idFormParcelamento").setVisible(false);
-			} else {
-				this.byId("idFormParcelamento").setVisible(true);
-			}
-
+			
+			this.onBloqueioPorTipoPedido(tipoPedido);
+			
 			var open = indexedDB.open("VB_DataBase");
-
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
 					actions: [MessageBox.Action.OK]
 				});
 			};
-
-			open.onsuccess = function () {
+			
+			open.onsuccess = function() {
 				var db = open.result;
-
-				var transaction = db.transaction("Materiais", "readonly");
-				var objectStore = transaction.objectStore("Materiais");
-
-				if ("getAll" in objectStore) {
-					objectStore.getAll().onsuccess = function (event) {
-
-						oVetorMateriais = event.target.result;
-						//AMOSTRA
-						if (tipoPedido == "06") {
-							for (var i = 0; i < oVetorMateriais.length; i++) {
-								if (oVetorMateriais[i].mtpos == "YAMO") {
-									vetorAux.push(oVetorMateriais[i]);
-								}
-							}
-
-							oVetorMateriais = vetorAux;
-						}
-
-						//BRINDES
-						if (tipoPedido == "07") {
-							for (i = 0; i < oVetorMateriais.length; i++) {
-								if (oVetorMateriais[i].mtpos == "YBRI") {
-									vetorAux.push(oVetorMateriais[i]);
-								}
-							}
-							oVetorMateriais = vetorAux;
-						}
-
-						var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
-						that.getView().setModel(oModel, "materiaisCadastrados");
-					};
-				}
+				
+				that.onCarregaMateriais(db, tipoPedido);
+				
 			};
-
 		},
-
-		onExisteEntrada: function (evt) {
-
+		
+		onExisteEntrada: function(evt) {
+			
 			var bSelected = evt.getParameter("selected");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", bSelected);
-
+			
 			if (bSelected == true) {
-
+				
 				this.byId("idPercEntrada").setVisible(true);
 				this.byId("idValorEntrada").setVisible(true);
-
+				
 			} else {
-
+				
 				this.byId("idPercEntrada").setVisible(false);
 				this.byId("idValorEntrada").setVisible(false);
 			}
 		},
-
-		onBloqueiaPercEntrada: function (evt) {
+		
+		onBloqueiaPercEntrada: function(evt) {
 			var percEntrada = evt.getSource();
-
+			
 			if (percEntrada.getValue() > 0) {
 				this.byId("idPercEntrada").setEnabled(false);
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", parseFloat(percEntrada.getValue()));
 			} else {
 				this.byId("idPercEntrada").setEnabled(true);
 			}
-
+			
 		},
 
-		onBloqueiaValorEntrada: function (evt) {
-
+		onBloqueiaValorEntrada: function(evt) {
+			
 			var vlrEntrada = evt.getSource();
-
+			
 			if (vlrEntrada.getValue() > 0) {
 				this.byId("idValorEntrada").setEnabled(false);
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", vlrEntrada.getValue());
@@ -672,32 +609,32 @@ sap.ui.define([
 				this.byId("idValorEntrada").setEnabled(true);
 			}
 		},
-
-		onChangeTipoNegociacao: function (evt) {
+		
+		onChangeTipoNegociacao: function(evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oSource.getSelectedKey());
 		},
-
-		onChangeTabelaPreco: function (evt) {
+		
+		onChangeTabelaPreco: function(evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oSource.getSelectedKey());
 		},
 
-		onChangeTipoTransporte: function (evt) {
+		onChangeTipoTransporte: function(evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oSource.getSelectedKey());
 		},
 
-		onChangeDataPedido: function () {
+		onChangeDataPedido: function() {
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", this.byId("idDataPedido").getValue());
 		},
 
-		onChangeObservacoes: function (evt) {
+		onChangeObservacoes: function(evt) {
 			var oObservacoes = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", oObservacoes.getValue());
 		},
 
-		onChangeAuditoriaObservacoes: function (evt) {
+		onChangeAuditoriaObservacoes: function(evt) {
 			var oObservacoes = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", oObservacoes.getValue());
 		},
@@ -706,7 +643,7 @@ sap.ui.define([
 
 		/// EVENTOS UTILITARIOS						<<<<<<<<<<<<
 
-		bloquearCampos: function () {
+		bloquearCampos: function() {
 
 			this.byId("idEstabelecimento").setProperty("enabled", false);
 			this.byId("idTipoPedido").setProperty("enabled", false);
@@ -718,7 +655,7 @@ sap.ui.define([
 
 		},
 
-		desbloquearCampos: function () {
+		desbloquearCampos: function() {
 			this.byId("idEstabelecimento").setProperty("enabled", true);
 			this.byId("idTipoPedido").setProperty("enabled", true);
 			this.byId("idVencimento1").setProperty("enabled", true);
@@ -729,7 +666,7 @@ sap.ui.define([
 
 		},
 
-		resetarCamposTela: function () {
+		resetarCamposTela: function() {
 
 			this.byId("idNumeroPedido").setValue("");
 			this.byId("idSituacao").setValue("");
@@ -748,10 +685,11 @@ sap.ui.define([
 
 		},
 
-		onNavBack: function () {
+		onNavBack: function() {
 
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
+			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
 			this.onResetaCamposPrePedido();
 
 		},
@@ -760,7 +698,7 @@ sap.ui.define([
 
 		// EVENTOS DO FRAGMENTO 					<<<<<<<<<<<<
 
-		onItemChange: function (oEvent) {
+		onItemChange: function(oEvent) {
 			var that = this;
 			var itemExistente = false;
 			var oProduto = oEvent.getSource();
@@ -772,7 +710,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -780,7 +718,7 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
 
 				oPanel.setBusy(true);
@@ -792,7 +730,7 @@ sap.ui.define([
 
 					var requestMaterial = objMaterial.get(codItem);
 
-					requestMaterial.onsuccess = function (e) {
+					requestMaterial.onsuccess = function(e) {
 						var oMaterial = e.target.result;
 
 						if (oMaterial == undefined) {
@@ -802,7 +740,7 @@ sap.ui.define([
 								icon: MessageBox.Icon.ERROR,
 								title: "Produto não encontrado.",
 								actions: [MessageBox.Action.YES],
-								onClose: function () {
+								onClose: function() {
 									that.onResetaCamposDialog();
 									sap.ui.getCore().byId("idItemPedido").focus();
 								}
@@ -826,10 +764,9 @@ sap.ui.define([
 							oItemPedido.zzQntDiluicao = 0;
 							oItemPedido.zzValorDiluido = 0;
 							oItemPedido.zzPercDescDiluicao = 0;
-							
+
 							//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
 							oItemPedido.zzValorDiluido = 0;
-							
 
 							for (var j = 0; j < objItensPedidoTemplate.length; j++) {
 								if (oItemPedido.matnr == objItensPedidoTemplate[j].matnr && objItensPedidoTemplate[j].tipoItem == "Normal") {
@@ -846,18 +783,20 @@ sap.ui.define([
 
 								var requesA960 = objA960.get(idA960);
 
-								requesA960.onsuccess = function (e) {
+								requesA960.onsuccess = function(e) {
 									var oA960 = e.target.result;
 
 									if (oA960 == undefined) {
 										oPanel.setBusy(false);
+
+										sap.ui.getCore().byId("idItemPedido").setValue("");
 
 										MessageBox.show("Não existe preço para o produto: " + codItem + " de acordo com a tabela de preço: " +
 											that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"), {
 												icon: MessageBox.Icon.ERROR,
 												title: "Preço do produto não encontrado.",
 												actions: [MessageBox.Action.YES],
-												onClose: function () {
+												onClose: function() {
 													that.onResetaCamposDialog();
 												}
 											});
@@ -891,7 +830,7 @@ sap.ui.define([
 										var vetorAuxFamiliasExtra = [];
 										//Buscando informações da FAMILIA de desconto normal
 										var objA965 = db.transaction("A965").objectStore("A965");
-										objA965.openCursor().onsuccess = function (event) {
+										objA965.openCursor().onsuccess = function(event) {
 
 											var cursor = event.target.result;
 
@@ -907,7 +846,7 @@ sap.ui.define([
 											} else {
 
 												var objA966 = db.transaction("A966").objectStore("A966");
-												objA966.openCursor().onsuccess = function (event2) {
+												objA966.openCursor().onsuccess = function(event2) {
 													var cursor2 = event2.target.result;
 
 													if (cursor2) {
@@ -925,7 +864,7 @@ sap.ui.define([
 													} else {
 
 														var objA967 = db.transaction("A967").objectStore("A967");
-														objA967.openCursor().onsuccess = function (event3) {
+														objA967.openCursor().onsuccess = function(event3) {
 															var cursorA967 = event3.target.result;
 
 															if (cursorA967) {
@@ -944,7 +883,7 @@ sap.ui.define([
 																//Buscando Familia de desconto extra
 
 																var objA962 = db.transaction("A962").objectStore("A962");
-																objA962.openCursor().onsuccess = function (event) {
+																objA962.openCursor().onsuccess = function(event) {
 
 																	var cursor = event.target.result;
 
@@ -960,7 +899,7 @@ sap.ui.define([
 																	} else {
 
 																		var objA968 = db.transaction("A968").objectStore("A968");
-																		objA968.openCursor().onsuccess = function (event2) {
+																		objA968.openCursor().onsuccess = function(event2) {
 																			cursor2 = event2.target.result;
 
 																			if (cursor2) {
@@ -979,7 +918,7 @@ sap.ui.define([
 																			} else {
 
 																				var objA969 = db.transaction("A969").objectStore("A969");
-																				objA969.openCursor().onsuccess = function (event3) {
+																				objA969.openCursor().onsuccess = function(event3) {
 																					var cursorA969 = event3.target.result;
 
 																					if (cursorA969) {
@@ -1021,7 +960,7 @@ sap.ui.define([
 									icon: MessageBox.Icon.ERROR,
 									title: "Produto já inserido.",
 									actions: [MessageBox.Action.YES],
-									onClose: function () {
+									onClose: function() {
 
 										that.onResetaCamposDialog();
 										sap.ui.getCore().byId("idItemPedido").focus();
@@ -1041,7 +980,7 @@ sap.ui.define([
 			};
 		},
 
-		onCriarIndexItemPedido: function () {
+		onCriarIndexItemPedido: function() {
 			//Define o index do produto a ser inserido
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (i === 0) {
@@ -1066,7 +1005,7 @@ sap.ui.define([
 			return indexItem;
 		},
 
-		onItemChangeDiluicao: function (oEvent) {
+		onItemChangeDiluicao: function(oEvent) {
 			var that = this;
 			var objAuxItem = {};
 			var itemJaInseridoDiluicao = false;
@@ -1076,46 +1015,46 @@ sap.ui.define([
 			var oPanel = sap.ui.getCore().byId("idDialog");
 			var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
 			var tabPreco = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco");
-			
+
 			var open = indexedDB.open("VB_DataBase");
-			
-			open.onerror = function () {
+
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
 					actions: [MessageBox.Action.OK]
 				});
 			};
-			
-			open.onsuccess = function () {
+
+			open.onsuccess = function() {
 				var db = open.result;
-				
+
 				if (codItem !== "") {
 					oPanel.setBusy(true);
-					
+
 					var store = db.transaction("Materiais", "readwrite");
 					var objMaterial = store.objectStore("Materiais");
-					
+
 					var requestMaterial = objMaterial.get(codItem);
-					
-					requestMaterial.onsuccess = function (e) {
+
+					requestMaterial.onsuccess = function(e) {
 						var oMaterial = e.target.result;
-						
+
 						if (oMaterial == undefined) {
 							oPanel.setBusy(false);
-							
+
 							MessageBox.show("Não existe o produto: " + codItem, {
 								icon: MessageBox.Icon.ERROR,
 								title: "Produto não encontrado.",
 								actions: [MessageBox.Action.YES],
-								onClose: function () {
+								onClose: function() {
 									that.onResetaCamposDialog();
 									sap.ui.getCore().byId("idItemPedido").focus();
 								}
 							});
-							
+
 						} else {
-							
+
 							oItemPedido.zzQnt = 1;
 							oItemPedido.matnr = oMaterial.matnr;
 							oItemPedido.maktx = oMaterial.maktx;
@@ -1128,10 +1067,10 @@ sap.ui.define([
 							oItemPedido.zzRegraExtra = 0;
 							oItemPedido.zzGrpmatExtra = 0;
 							oItemPedido.zzPercDescDiluicao = 0;
-							
+
 							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 								if (objItensPedidoTemplate[i].matnr === codItem && objItensPedidoTemplate[i].tipoItem === "Normal") {
-									
+
 									objAuxItem = {
 										idItemPedido: "",
 										index: "",
@@ -1163,7 +1102,7 @@ sap.ui.define([
 										zzQntDiluicao: 0,
 										zzValorDiluido: 0
 									};
-									
+
 									itemEncontradoDiluicao = true;
 								}
 								if (objItensPedidoTemplate[i].matnr === codItem && objItensPedidoTemplate[i].tipoItem === "Diluicao") {
@@ -1171,48 +1110,50 @@ sap.ui.define([
 									break;
 								}
 							}
-							
+
 							if (itemJaInseridoDiluicao == true) {
-								
+
 								MessageBox.show("Item de diluição já inserido!", {
 									icon: MessageBox.Icon.ERROR,
 									title: "Item inválido.",
 									actions: [MessageBox.Action.OK],
-									onClose: function () {
+									onClose: function() {
 										oPanel.setBusy(false);
 										sap.ui.getCore().byId("idItemPedido").focus();
 										itemJaInseridoDiluicao = false;
 									}
 								});
-								
+
 							} else {
-								
+
 								//REGRA DILUIÇÃO - > SENÃO EXISTIR ITEM NA GRID  .. ACHAR O VALOR MINIMO DO ITEM
 								var storeA960 = db.transaction("A960", "readwrite");
 								var objA960 = storeA960.objectStore("A960");
-								
+
 								var idA960 = werks + "." + tabPreco + "." + oMaterial.matnr;
-								
+
 								var requesA960 = objA960.get(idA960);
-								
-								requesA960.onsuccess = function (e) {
+
+								requesA960.onsuccess = function(e) {
 									var oA960 = e.target.result;
-									
+
 									if (oA960 == undefined) {
 										oPanel.setBusy(false);
-										
+
+										sap.ui.getCore().byId("idItemPedido").setValue("");
+
 										MessageBox.show("Não existe preço para o produto: " + codItem + " de acordo com a tabela de preço: " +
 											that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"), {
 												icon: MessageBox.Icon.ERROR,
 												title: "Preço do produto não encontrado.",
 												actions: [MessageBox.Action.YES],
-												onClose: function () {
+												onClose: function() {
 													that.onResetaCamposDialog();
 												}
 											});
-											
+
 									} else {
-										
+
 										if (oA960.zzPervm !== "" || oA960.zzPervm !== undefined) {
 											oA960.zzPervm = parseFloat(oA960.zzPervm);
 										}
@@ -1222,7 +1163,7 @@ sap.ui.define([
 										if (oA960.zzVprod !== "" || oA960.zzVprod !== undefined) {
 											oA960.zzVprod = parseFloat(oA960.zzVprod);
 										}
-										
+
 										// Desconto Extra aplicado depois do dento digitado no item
 										oItemPedido.zzDesext = 0;
 										oItemPedido.zzPervm = oA960.zzPervm; //Verba
@@ -1240,13 +1181,13 @@ sap.ui.define([
 										oItemPedido.zzPercDescTotal = 0;
 										oItemPedido.zzVprodMinPermitido = 0;
 										oItemPedido.tipoItem = "Diluicao";
-										
+
 										//De inicio atribuir zzVprodDesc COM O VALOR CHEIO. DAI DIRECIONAR PARA OS DESCONTOS
 										oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
-										
+
 										//Desconto normal. *****
 										oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-										
+
 										oItemPedido.tipoItem2 = "Diluicao";
 										oItemPedido.zzQntDiluicao = 0;
 										oItemPedido.zzValorDiluido = 0;
@@ -1254,7 +1195,7 @@ sap.ui.define([
 										var vetorAuxFamilias = [];
 										var vetorAuxFamiliasExtra = [];
 										var objA965 = db.transaction("A965").objectStore("A965");
-										objA965.openCursor().onsuccess = function (event) {
+										objA965.openCursor().onsuccess = function(event) {
 
 											var cursor = event.target.result;
 
@@ -1270,7 +1211,7 @@ sap.ui.define([
 											} else {
 
 												var objA966 = db.transaction("A966").objectStore("A966");
-												objA966.openCursor().onsuccess = function (event2) {
+												objA966.openCursor().onsuccess = function(event2) {
 													var cursor2 = event2.target.result;
 
 													if (cursor2) {
@@ -1288,7 +1229,7 @@ sap.ui.define([
 													} else {
 														// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 														var objA967 = db.transaction("A967").objectStore("A967");
-														objA967.openCursor().onsuccess = function (event3) {
+														objA967.openCursor().onsuccess = function(event3) {
 															var cursorA967 = event3.target.result;
 
 															if (cursorA967) {
@@ -1306,7 +1247,7 @@ sap.ui.define([
 
 																var auxRangeQuant = 0;
 																var objKonm = db.transaction("Konm").objectStore("Konm");
-																objKonm.openCursor().onsuccess = function (event2) {
+																objKonm.openCursor().onsuccess = function(event2) {
 																	var cursor3 = event2.target.result;
 
 																	if (cursor3) {
@@ -1327,7 +1268,7 @@ sap.ui.define([
 																		//Buscando Familia de desconto extra
 
 																		var objA962 = db.transaction("A962").objectStore("A962");
-																		objA962.openCursor().onsuccess = function (event) {
+																		objA962.openCursor().onsuccess = function(event) {
 
 																			var cursor = event.target.result;
 
@@ -1343,7 +1284,7 @@ sap.ui.define([
 																			} else {
 
 																				var objA968 = db.transaction("A968").objectStore("A968");
-																				objA968.openCursor().onsuccess = function (event2) {
+																				objA968.openCursor().onsuccess = function(event2) {
 																					cursor2 = event2.target.result;
 
 																					if (cursor2) {
@@ -1362,7 +1303,7 @@ sap.ui.define([
 																					} else {
 
 																						var objA969 = db.transaction("A969").objectStore("A969");
-																						objA969.openCursor().onsuccess = function (event3) {
+																						objA969.openCursor().onsuccess = function(event3) {
 																							var cursorA969 = event3.target.result;
 
 																							if (cursorA969) {
@@ -1405,7 +1346,7 @@ sap.ui.define([
 			};
 		},
 
-		onResetaCamposDialog: function () {
+		onResetaCamposDialog: function() {
 			oItemPedido = [];
 			sap.ui.getCore().byId("idItemPedido").setValue();
 			sap.ui.getCore().byId("idDesconto").setValue();
@@ -1418,11 +1359,11 @@ sap.ui.define([
 
 		},
 
-		onQuantidadeChange: function (evt) {
+		onQuantidadeChange: function(evt) {
 			var that = this;
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -1430,7 +1371,7 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
 
 				var store = db.transaction("Materiais", "readwrite");
@@ -1438,18 +1379,20 @@ sap.ui.define([
 
 				var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
 
-				requestMaterial.onsuccess = function (e) {
+				requestMaterial.onsuccess = function(e) {
 					var oMaterial = e.target.result;
 
 					if (oMaterial == undefined) {
+
+						sap.ui.getCore().byId("idItemPedido").setValue("");
 
 						MessageBox.show("Não existe o produto: " + sap.ui.getCore().byId("idItemPedido").getValue(), {
 							icon: MessageBox.Icon.ERROR,
 							title: "Produto não encontrado.",
 							actions: [MessageBox.Action.YES],
-							onClose: function () {
+							onClose: function() {
 								that.onResetaCamposDialog();
-								sap.ui.getCore().byId("idItemPedido").focus();
+								// sap.ui.getCore().byId("idItemPedido").focus();
 							}
 						});
 
@@ -1461,16 +1404,16 @@ sap.ui.define([
 							oItemPedido.zzQnt = parseInt(quantidade);
 							that.calculaPrecoItem();
 							that.popularCamposItemPedido();
-							
+
 						} else {
 							MessageBox.show("Quantidade deve ser maior que 0.", {
 								icon: MessageBox.Icon.ERROR,
 								title: "Quantidade inválida.",
 								actions: [MessageBox.Action.OK],
-								onClose: function () {
+								onClose: function() {
 									sap.ui.getCore().byId("idQuantidade").setValue(1);
 									sap.ui.getCore().byId("idQuantidade").focus();
-									
+
 								}
 							});
 						}
@@ -1478,53 +1421,52 @@ sap.ui.define([
 				};
 			};
 		},
-		
-		onFocusQnt: function () {
+
+		onFocusQnt: function() {
 			sap.ui.getCore().byId("idDesconto").focus();
 		},
-		
-		onDescontoChange: function () {
+
+		onDescontoChange: function() {
 			var desconto = sap.ui.getCore().byId("idDesconto").getValue();
 			if (desconto === "") {
 				desconto = 0;
 			}
-			
+
 			if (desconto >= 0) {
 
 				oItemPedido.zzDesitem = parseFloat(desconto);
 				this.calculaPrecoItem();
 				this.popularCamposItemPedido();
-				
+
 			} else {
 				MessageBox.show("O desconto não pode ser negativo.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Desconto inválida.",
 					actions: [MessageBox.Action.OK],
-					onClose: function () {
-						
+					onClose: function() {
+
 					}
 				});
 			}
 		},
 
-		calculaPrecoItem: function () {
+		calculaPrecoItem: function() {
 			oItemPedido.zzPercDescTotal = 0;
-			
+
 			if (oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr > 0) {
-				
-				
+
 				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
 				oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
 
 				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
 				oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
 				oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
-				
-			} else if(oItemPedido.tipoItem === "Diluicao"){
-				
+
+			} else if (oItemPedido.tipoItem === "Diluicao") {
+
 				oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
 				oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
-				
+
 			} else {
 
 				//Inicialmente o valor cheio do produto é atribuido para o valor com desconto.
@@ -1533,26 +1475,25 @@ sap.ui.define([
 				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 
 					oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
-					
+
 					//Desconto normal. *****
 					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
-					
+
 				} else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
-					
+
 					oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
-					
+
 					//Desconto normal. *****
 					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-					
+
 				}
-				
+
 				//2º Aplicar o Desconto digitado na tela de digitação dos itens
 				oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
-				
+
 				//Desconto normal. *****
 				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
-				
-				
+
 				// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
 				// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
 				// oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
@@ -1568,12 +1509,12 @@ sap.ui.define([
 			oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
 
 			// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc;
-			
+
 			// //Desconto normal. *****
 			// oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
 		},
 
-		calculaTotalPedido: function () {
+		calculaTotalPedido: function() {
 			var Qnt = 0;
 			var that = this;
 			var Total = 0;
@@ -1592,7 +1533,7 @@ sap.ui.define([
 			var totalComissaoUtilizada = 0;
 			var totalExcedenteDescontos = 0;
 			var valorTotalAcresPrazoMed = 0;
-			var valorTotalAcresBonif= 0;
+			var valorTotalAcresBonif = 0;
 			var valorTotalAcresAmostra = 0;
 			var valorTotalAcresBrinde = 0;
 			var valorNaoDirecionadoDesconto = 0;
@@ -1605,158 +1546,159 @@ sap.ui.define([
 			var percEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
 			var quantidadeParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"));
 			var totalExcedenteDescontosDiluicao = 0;
-			
+
 			//Valores utilizados para abater de verbas e comissões.
 			var verbaUtilizadaDesconto = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"));
 			var comissaoUtilizadaDesconto = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto"));
-			
+
 			var comissaoUtilizadaPrazoMed = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed"));
 			var valUtilizadoVerbaPrazoMed = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaPrazoMed"));
-			
+
 			var valUtilizadoVerbaBrinde = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBrinde"));
 			var valUtilizadoComissaoBrinde = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBrinde"));
 			var valTotalExcedenteBrinde = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde"));
-			
+			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBrinde", valTotalExcedenteBrinde.toFixed(2));
+
 			var valUtilizadoVerbaAmostra = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaAmostra"));
 			var valUtilizadoComissaoAmostra = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoAmostra"));
 			var valTotalExcedenteAmostra = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteAmostra"));
-			
+			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteAmostra", valTotalExcedenteAmostra.toFixed(2));
+
 			var valUtilizadoVerbaBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif"));
 			var valUtilizadoComissaoBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"));
 			var valTotalExcedenteBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
-			
+			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", valTotalExcedenteBonif.toFixed(2));
+
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
 				TotalPedidoDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
 				Total += objItensPedidoTemplate[i].zzVprod * objItensPedidoTemplate[i].zzQnt;
 				Qnt += objItensPedidoTemplate[i].zzQnt;
 				QntProdutos += 1;
-				
+
 				if (objItensPedidoTemplate[i].ntgew > 0) {
 					Ntgew += objItensPedidoTemplate[i].ntgew * objItensPedidoTemplate[i].zzQnt;
 				}
 				// >>>>>>>>>>>> PADRÃO PARA AMBOS OS TIPOS DE ITEM (NORMAL / DILUÍDO) >>>>>>>>>>>>
-				
-				if (objItensPedidoTemplate[i].tipoItem == "Normal"){
-					
-					if(objItensPedidoTemplate[i].tipoItem2 == "Normal"){
+
+				if (objItensPedidoTemplate[i].tipoItem == "Normal") {
+
+					if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
 						//VALOR DE COMISSÃO GERADA NO PEDIDO
 						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
-						objItensPedidoTemplate[i].zzQnt;
-						
+							objItensPedidoTemplate[i].zzQnt;
+
 						//VALOR DE VERBA GERADA NO PEDIDO
-						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) * 
-						(objItensPedidoTemplate[i].zzQnt);
-						
+						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
+							(objItensPedidoTemplate[i].zzQnt);
+
 						//Calculo do acréscimo de prazo médio .
 						percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
 						valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100));
-						
+
 						//calculo do desconto total retirando excluindo total diluido pra ele
 						var valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
 						objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
-	
+
 						if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
 							//Negatvo .. excedeu o valor.
 							console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
 							totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt;
 						}
-						
-					} else if (objItensPedidoTemplate[i].tipoItem2 == "Diluicao"){
+
+					} else if (objItensPedidoTemplate[i].tipoItem2 == "Diluicao") {
 						//VALOR DE COMISSÃO GERADA NO PEDIDO
 						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPercom / 100) *
-						(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
-						
+							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+
 						//VALOR DE VERBA GERADA NO PEDIDO
-						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) * 
-						(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
-						
+						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) *
+							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+
 					}
-					
-				}
-				else if(objItensPedidoTemplate[i].tipoItem == "Diluido"){
-					
+
+				} else if (objItensPedidoTemplate[i].tipoItem == "Diluido") {
+
 					totalExcedenteDescontosDiluicao += objItensPedidoTemplate[i].zzValorDiluido;
-					
-					if(objItensPedidoTemplate[i].tipoItem2 == "Normal"){
-						
+
+					if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
+
 						//VALOR DE COMISSÃO GERADA NO PEDIDO
 						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
-						(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
-						
+							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+
 						//VALOR DE VERBA GERADA NO PEDIDO
-						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) * 
-						(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
-						
+						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
+							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+
 						//calculo do desconto total retirando excluindo total diluido pra ele
 						var valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
 						objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
-	
+
 						if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
 							//Negatvo .. excedeu o valor.
 							console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
 							totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * (objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
 						}
-						
+
 					}
-				}
-				else if(objItensPedidoTemplate[i].tipoItem == "Diluicao"){
-					
+				} else if (objItensPedidoTemplate[i].tipoItem == "Diluicao") {
+
 				}
 			}
-			
+
 			console.log("CALCULO DADOS GERAIS");
-			
+
 			totalVerbaGerada = Math.round(totalVerbaGerada * 100) / 100;
 			totalComissaoGerada = Math.round(totalComissaoGerada * 100) / 100;
-			
+
 			//Calculando total de desconto dado.
 			TotalPedidoDesc = Math.round(parseFloat(TotalPedidoDesc * 100)) / 100;
-			
+
 			var descontoTotal = Total - TotalPedidoDesc;
 			descontoTotal = Math.round(parseFloat(descontoTotal * 100)) / 100;
-			
+
 			console.log(totalExcedenteDescontosDiluicao);
 			totalExcedenteDescontosDiluicao = Math.round(totalExcedenteDescontosDiluicao * 100) / 100;
-			
+
 			console.log(totalExcedenteDescontos);
 			totalExcedenteDescontos = Math.abs(Math.round(totalExcedenteDescontos * 100) / 100);
-			
+
 			// TODO: Precisa ser feito a comparação da verba que o kra tem pra ver se ele ele excedeu o tanto de verba que ele tem.
 			// TODO: A comissão precisa ser travada apenas se o total do valor gerado de comissão no proprio pedido for menor que o valor destiando para descontar.
-			
+
 			console.log("Verba: " + verbaUtilizadaDesconto + ". Comissão: " + comissaoUtilizadaDesconto + ". Comissão PM: " + comissaoUtilizadaPrazoMed);
-				
+
 			//VALOR NAO DIRECIONADO NO BALANÇO DE VERBAS. UMA VEZ QUE GEROU UMA DIFERENÇA.. GERARÁ WORKFLOW DE APROVAÇÃO;
 			console.log("VALOR NÃO DIRECIONADO DESCONTOS.");
 			valorNaoDirecionadoDesconto = Math.round((totalExcedenteDescontos - (verbaUtilizadaDesconto + comissaoUtilizadaDesconto)) * 100) / 100;
-				
+
 			console.log("VALOR NÃO DIRECIONADO PRAZO MÉDIO.");
 			valorNaoDirecionadoPrazoMed = Math.round((valorTotalAcresPrazoMed - (valUtilizadoVerbaPrazoMed + comissaoUtilizadaPrazoMed)) * 100) / 100;
-			
+
 			console.log("VALOR NÃO DIRECIONADO AMOSTRA.");
 			valorNaoDirecionadoAmostra = Math.round((valTotalExcedenteAmostra - (valUtilizadoVerbaAmostra + valUtilizadoComissaoAmostra)) * 100) / 100;
-			
+
 			console.log("VALOR NÃO DIRECIONADO BONIFICAÇÃO.");
 			valorNaoDirecionadoBonificacao = Math.round((valTotalExcedenteBonif - (valUtilizadoVerbaBonif + valUtilizadoComissaoBonif)) * 100) / 100;
-			
+
 			console.log("VALOR NÃO DIRECIONADO BRINDE.");
 			valorNaoDirecionadoBrinde = Math.round((valTotalExcedenteBrinde - (valUtilizadoVerbaBrinde + valUtilizadoComissaoBrinde)) * 100) / 100;
-			
+
 			//NÃO DIRECIONADO
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", parseFloat(valorNaoDirecionadoDesconto).toFixed(2));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", parseFloat(valorNaoDirecionadoPrazoMed).toFixed(2));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoBrinde", parseFloat(valorNaoDirecionadoBrinde).toFixed(2));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoAmostra", parseFloat(valorNaoDirecionadoAmostra).toFixed(2));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoBonif", parseFloat(valorNaoDirecionadoBonificacao).toFixed(2));
-			
+
 			console.log("TOTAL VERBA UTILIZADA.");
 			//Será a propria verba destinada para descontos : verbaUtilizadaDesconto
 			totalVerbaUtilizada = verbaUtilizadaDesconto + valUtilizadoVerbaPrazoMed + valUtilizadoVerbaAmostra + valUtilizadoVerbaBonif + valUtilizadoVerbaBrinde;
-			
+
 			console.log("TOTAL COMISSÃO UTILIZADA.");
 			totalComissaoUtilizada = comissaoUtilizadaDesconto + comissaoUtilizadaPrazoMed + valUtilizadoComissaoAmostra + valUtilizadoComissaoBonif + valUtilizadoComissaoBrinde;
-			
+
 			//TOTAIS DO PEDIDO
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoComissao", parseFloat(totalComissaoUtilizada).toFixed(2));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoVerba", parseFloat(totalVerbaUtilizada).toFixed(2));
@@ -1772,54 +1714,54 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", valorCampEnxoval);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", valorCampBrinde);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", valorCampGlobal);
-			
-			
+
 			console.log("VALORES UTILIZADOS CAMPANHA");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", 0);
-			
+			var teste = "0.00";
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", teste);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", teste);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", teste);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", teste);
+
 			console.log("CALCULO PARCELAMENTO");
 			var valorEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido");
 			var percEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
-			
+
 			if (existeParcelas == false) {
-				
+
 				valorParcelas = TotalPedidoDesc / quantidadeParcelas;
-				valorParcelas = Math.round(valorParcelas * 100) / 100;
+				valorParcelas = parseFloat(Math.round(valorParcelas * 100) / 100).toFixed(2);
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", quantidadeParcelas + "x " + valorParcelas);
-				
+
 			} else if (existeParcelas == true) {
-				
+
 				if (valorEntradaPedido == 0) {
-					
+
 					var aux = TotalPedidoDesc - (percEntradaPedido * TotalPedidoDesc) / 100;
 					valorParcelas = aux / quantidadeParcelas;
 					valorParcelas = Math.round(valorParcelas * 100) / 100;
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "Entrada: " + percEntradaPedido + "% + " +
 						quantidadeParcelas + "x " + valorParcelas.toLocaleString("pt-BR"));
-						
+
 				} else if (percEntradaPedido == 0) {
-					
+
 					aux = (TotalPedidoDesc - valorEntradaPedido);
 					valorParcelas = aux / quantidadeParcelas;
 					valorParcelas = Math.round(valorParcelas * 100) / 100;
-					
+
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "Entrada: R$: " + valorEntradaPedido +
 						" + " + quantidadeParcelas + "x " + valorParcelas);
-					
+
 				}
 			}
-			
+
 			totalExcedenteDescontos = Math.round(totalExcedenteDescontos * 100) / 100;
 			verbaUtilizadaDesconto = Math.round(verbaUtilizadaDesconto * 100) / 100;
 			comissaoUtilizadaDesconto = Math.round(comissaoUtilizadaDesconto * 100) / 100;
-			
+
 			console.log("VALIDAÇÕES DE VALORES DIGITADOS MAIS QUE DEVERIAM.");
 			//DESCONTO
 			if ((comissaoUtilizadaDesconto + verbaUtilizadaDesconto) > totalExcedenteDescontos) {
-				
+
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 				that.byId("idComissaoUtilizadaDesconto").setValueState("Error");
 				that.byId("idComissaoUtilizadaDesconto").setValueStateText("Valor destinado para abater o excedente de descontos ultrapassou o valor total necessário. Desconto Excedente (" +
@@ -1828,200 +1770,201 @@ sap.ui.define([
 				that.byId("idVerbaUtilizadaDesconto").setValueStateText("Valor destinado para abater o excedente de descontos ultrapassou o valor total necessário. Desconto Excedente (" +
 					totalExcedenteDescontos + ")");
 				that.byId("idVerbaUtilizadaDesconto").focus();
-				
+
 			} else {
-				
+
 				that.byId("idVerbaUtilizadaDesconto").setValueState("None");
 				that.byId("idVerbaUtilizadaDesconto").setValueStateText("");
-				
+
 				that.byId("idComissaoUtilizadaDesconto").setValueState("None");
 				that.byId("idComissaoUtilizadaDesconto").setValueStateText("");
 			}
-			
+
 			valorTotalAcresPrazoMed = Math.round(valorTotalAcresPrazoMed * 100) / 100;
 			valUtilizadoVerbaPrazoMed = Math.round(valUtilizadoVerbaPrazoMed * 100) / 100;
 			comissaoUtilizadaPrazoMed = Math.round(comissaoUtilizadaPrazoMed * 100) / 100;
-			
+
 			//PRAZO MÉDIO
-			if ((comissaoUtilizadaPrazoMed + valUtilizadoVerbaPrazoMed) >  valorTotalAcresPrazoMed) {
-				
+			if ((comissaoUtilizadaPrazoMed + valUtilizadoVerbaPrazoMed) > valorTotalAcresPrazoMed) {
+
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
-				
+
 				that.byId("idComissaoUtilizadaPrazo").setValueState("Error");
-				that.byId("idComissaoUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" +  + ")");
+				that.byId("idComissaoUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" + +")");
 				that.byId("idComissaoUtilizadaPrazo").focus();
-				
+
 				that.byId("idVerbaUtilizadaPrazo").setValueState("Error");
 				that.byId("idVerbaUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" + valorTotalAcresPrazoMed + ")");
-				
+
 			} else {
-				
+
 				that.byId("idComissaoUtilizadaPrazo").setValueState("None");
 				that.byId("idComissaoUtilizadaPrazo").setValueStateText("");
-				
+
 				that.byId("idVerbaUtilizadaPrazo").setValueState("None");
 				that.byId("idVerbaUtilizadaPrazo").setValueStateText("");
 			}
-			
+
 			valUtilizadoComissaoBonif = Math.round(valUtilizadoComissaoBonif * 100) / 100;
 			valUtilizadoVerbaBonif = Math.round(valUtilizadoVerbaBonif * 100) / 100;
 			valTotalExcedenteBonif = Math.round(valTotalExcedenteBonif * 100) / 100;
-			
+
 			//BONIFICAÇÃO
-			if(valTotalExcedenteBonif < valUtilizadoVerbaBonif + valUtilizadoComissaoBonif){
+			if (valTotalExcedenteBonif < valUtilizadoVerbaBonif + valUtilizadoComissaoBonif) {
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
-				
+
 				that.byId("idVerbaUtilizadaBonif").setValueState("Error");
 				that.byId("idVerbaUtilizadaBonif").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Bonificação (" + totalExcedenteDescontosDiluicao + ")");
 				that.byId("idVerbaUtilizadaBonif").focus();
-				
+
 				that.byId("idComissaoUtilizadaBonif").setValueState("Error");
 				that.byId("idComissaoUtilizadaBonif").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Bonificação (" + totalExcedenteDescontosDiluicao + ")");
-				
-			} else{
+
+			} else {
 				that.byId("idVerbaUtilizadaBonif").setValueState("None");
 				that.byId("idVerbaUtilizadaBonif").setValueStateText("");
-				
+
 				that.byId("idComissaoUtilizadaBonif").setValueState("None");
 				that.byId("idComissaoUtilizadaBonif").setValueStateText("");
 			}
-			
+
 			valTotalExcedenteAmostra = Math.round(valTotalExcedenteAmostra * 100) / 100;
 			valUtilizadoVerbaAmostra = Math.round(valUtilizadoVerbaAmostra * 100) / 100;
 			valUtilizadoComissaoAmostra = Math.round(valUtilizadoComissaoAmostra * 100) / 100;
-			
+
 			//AMOSTRA
-			if(valTotalExcedenteAmostra < valUtilizadoVerbaAmostra + valUtilizadoComissaoAmostra){
+			if (valTotalExcedenteAmostra < valUtilizadoVerbaAmostra + valUtilizadoComissaoAmostra) {
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
-				
+
 				that.byId("idVerbaUtilizadaAmostra").setValueState("Error");
 				that.byId("idVerbaUtilizadaAmostra").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Amostra (" + valTotalExcedenteAmostra + ")");
 				that.byId("idVerbaUtilizadaAmostra").focus();
-				
+
 				that.byId("idComissaoUtilizadaAmostra").setValueState("Error");
 				that.byId("idComissaoUtilizadaAmostra").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Amostra (" + valTotalExcedenteAmostra + ")");
-				
-			} else{
+
+			} else {
 				that.byId("idVerbaUtilizadaAmostra").setValueState("None");
 				that.byId("idVerbaUtilizadaAmostra").setValueStateText("");
-				
+
 				that.byId("idComissaoUtilizadaAmostra").setValueState("None");
 				that.byId("idComissaoUtilizadaAmostra").setValueStateText("");
 			}
-				
+
 			valTotalExcedenteBrinde = Math.round(valTotalExcedenteBrinde * 100) / 100;
 			valUtilizadoComissaoBrinde = Math.round(valUtilizadoComissaoBrinde * 100) / 100;
 			valUtilizadoVerbaBrinde = Math.round(valUtilizadoVerbaBrinde * 100) / 100;
-				
+
 			//BRINDE
-			if(valTotalExcedenteBrinde < valUtilizadoComissaoBrinde + valUtilizadoVerbaBrinde){
+			if (valTotalExcedenteBrinde < valUtilizadoComissaoBrinde + valUtilizadoVerbaBrinde) {
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
-				
+
 				that.byId("idVerbaUtilizadaBrinde").setValueState("Error");
 				that.byId("idVerbaUtilizadaBrinde").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Brinde (" + valTotalExcedenteBrinde + ")");
 				that.byId("idVerbaUtilizadaBrinde").focus();
-				
+
 				that.byId("idComissaoUtilizadaBrinde").setValueState("Error");
 				that.byId("idComissaoUtilizadaBrinde").setValueStateText("Valor destinado para abater da comissão/verba ultrapassou o valor total necessário. Excedente Brinde (" + valTotalExcedenteBrinde + ")");
-				
-			} else{
+
+			} else {
+
 				that.byId("idVerbaUtilizadaBrinde").setValueState("None");
 				that.byId("idVerbaUtilizadaBrinde").setValueStateText("");
-				
+
 				that.byId("idComissaoUtilizadaBrinde").setValueState("None");
 				that.byId("idComissaoUtilizadaBrinde").setValueStateText("");
 			}
 		},
-		
-		onCalculaDiluicaoItem: function () {
+
+		onCalculaDiluicaoItem: function() {
 			var that = this;
 			var open = indexedDB.open("VB_DataBase");
-			
-			open.onerror = function () {
+
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
 					actions: [MessageBox.Action.OK]
 				});
 			};
-			
-			open.onsuccess = function () {
+
+			open.onsuccess = function() {
 				var db = open.result;
 				var NrPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
-				
+
 				var totalPercentualDiluicaoDado = 0;
 				var TotalDiluicao = 0;
 				var TotalNormal = 0;
-				
-				objItensPedidoTemplate.sort(function(a,b) {
-				    var x = a.tipoItem2.toLowerCase();
-				    var y = b.tipoItem2.toLowerCase();
-				    return x > y ? -1 : x < y ? 1 : 0;
+
+				objItensPedidoTemplate.sort(function(a, b) {
+					var x = a.tipoItem2.toLowerCase();
+					var y = b.tipoItem2.toLowerCase();
+					return x > y ? -1 : x < y ? 1 : 0;
 				});
-				
+
 				for (var i = 0; i < objItensPedidoTemplate.length; i++) {
-					if (objItensPedidoTemplate[i].tipoItem === "Diluicao"){
+					if (objItensPedidoTemplate[i].tipoItem === "Diluicao") {
 						TotalDiluicao += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
 					}
-					if (objItensPedidoTemplate[i].tipoItem === "Normal"){
+					if (objItensPedidoTemplate[i].tipoItem === "Normal") {
 						TotalNormal += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
 					}
 				}
-				
+
 				totalPercentualDiluicaoDado = Math.round((TotalDiluicao / TotalNormal) * 10000);
 				totalPercentualDiluicaoDado = totalPercentualDiluicaoDado / 10000;
-				
-				if(totalPercentualDiluicaoDado > 0.30){
+
+				if (totalPercentualDiluicaoDado > 0.30) {
 					MessageBox.show("Quantidade de descontos ultrapassa o máximo permitido (30%) - máximo dado (" + Math.round(totalPercentualDiluicaoDado * 100) + "%)", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Corrigir o itens a ser diluidos!",
 						actions: [MessageBox.Action.OK]
 					});
-					
+
 				} else {
 					var store = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
-					store.openCursor().onsuccess = function (event) {
+					store.openCursor().onsuccess = function(event) {
 						// consulta resultado do event
 						var cursor = event.target.result;
 						if (cursor) {
 							if (cursor.value.nrPedCli === NrPedido) {
-								
+
 								var store2 = db.transaction("ItensPedido", "readwrite");
 								var objItemPedido = store2.objectStore("ItensPedido");
-								
+
 								var request = objItemPedido.delete(cursor.key);
-								
-								request.onsuccess = function () {
+
+								request.onsuccess = function() {
 									console.log("Itens Pedido deletado(s)!");
 								};
-								request.onerror = function () {
+								request.onerror = function() {
 									console.log("Itens Pedido não foi deletado(s)!");
 								};
 							}
 							cursor.continue();
 						} else {
-							
+
 							var TotalNormal = 0;
 							var TotalDiluicao = 0;
 							var PercDescDiluicao = 0;
 							var vetorAuxObjetos = [];
 							var vetorAux = [];
 							var existeItem = false;
-							
+
 							var inseridoAux = false;
 							var inseridoAuxDiluicao = false;
-							
+
 							//ACHA O PERCENTUAL DE DESCONTO
 							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 								inseridoAux = false;
 								inseridoAuxDiluicao = false;
-								
+
 								if (objItensPedidoTemplate[i].tipoItem === "Normal") {
 									TotalNormal += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
-									
+
 									//Regra para totalizar o total do pedido.
 									if (vetorAux.length == 0) {
-										
+
 										var objAuxItem = {
 											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 											index: objItensPedidoTemplate[i].index,
@@ -2054,19 +1997,19 @@ sap.ui.define([
 											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
 											zzValorDiluido: 0
 										};
-										
+
 										vetorAux.push(objAuxItem);
 									}
-									
+
 									for (var t = 0; t < vetorAux.length; t++) {
-										
+
 										if (vetorAux[t].matnr == objItensPedidoTemplate[i].matnr) {
 											inseridoAux = true;
 										}
 									}
-									
+
 									if (inseridoAux == false) {
-										
+
 										var objAuxItem1 = {
 											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 											index: objItensPedidoTemplate[i].index,
@@ -2098,22 +2041,22 @@ sap.ui.define([
 											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
 											zzValorDiluido: 0
 										};
-										
+
 										vetorAux.push(objAuxItem1);
 									}
-									
+
 								} else if (objItensPedidoTemplate[i].tipoItem === "Diluicao") {
 									TotalDiluicao += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
-	
+
 									for (t = 0; t < vetorAux.length; t++) {
-	
+
 										if (vetorAux[t].matnr == objItensPedidoTemplate[i].matnr) {
 											inseridoAuxDiluicao = true;
 										}
 									}
-	
+
 									if (inseridoAuxDiluicao == false) {
-	
+
 										var objAuxItem2 = {
 											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 											index: objItensPedidoTemplate[i].index,
@@ -2145,30 +2088,30 @@ sap.ui.define([
 											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
 											zzValorDiluido: 0,
 										};
-										
+
 										vetorAux.push(objAuxItem2);
 									}
 								}
 							}
-							
+
 							PercDescDiluicao = TotalNormal / (TotalNormal + TotalDiluicao);
 							PercDescDiluicao = parseFloat((1 - PercDescDiluicao) * 100);
-							
+
 							console.log("Perc. de desconto para ser aplicado nos itens na regra de Diluição " + PercDescDiluicao);
-							
+
 							//APLICA O DESCONTO
 							// for (var j = 0; j < objItensPedidoTemplate.length; j++) {
-							
+
 							// 	oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (PercDescDiluicao / 100));
 							// 	oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
-							
+
 							// }
-							
+
 							for (var j = 0; j < vetorAux.length; j++) {
 								vetorAux[j].zzVprodDesc = vetorAux[j].zzVprodDesc - ((vetorAux[j].zzVprodDesc) * (PercDescDiluicao / 100));
 								// vetorAux[j].zzVprodDesc = Math.round(parseFloat(vetorAux[j].zzVprodDesc * 100)) / 100;
 							}
-							
+
 							for (var l = 0; l < objItensPedidoTemplate.length; l++) {
 								for (var m = 0; m < vetorAux.length; m++) {
 									if (vetorAux[m].matnr === objItensPedidoTemplate[l].matnr) {
@@ -2180,67 +2123,67 @@ sap.ui.define([
 									}
 								}
 							}
-							
+
 							for (m = 0; m < vetorAux.length; m++) {
 								//Calcula percentual dado
 								vetorAux[m].zzPercDescTotal = Math.round((1 - (vetorAux[m].zzVprodDesc / vetorAux[m].zzVprod)) * 10000) / 100;
-								
+
 								//Arredondamento
 								vetorAux[m].zzVprodDescTotal = Math.round(parseFloat((vetorAux[m].zzVprodDescTotal) * 100)) / 100;
 								vetorAux[m].zzVprodDesc = Math.round(parseFloat(vetorAux[m].zzVprodDesc * 100)) / 100;
-								
+
 								//Calculo do percentual Desc Dado
 							}
-								
+
 							objItensPedidoTemplate = [];
 							objItensPedidoTemplate = vetorAux;
 							var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
-							
+
 							that.onBloqueiaPrePedido();
-							
+
 							console.log("Resultado dos itens da regra de Diluição");
 							console.log(vetorAux);
-							
+
 							var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 							var objItensPedido = storeItensPedido.objectStore("ItensPedido");
-							
+
 							for (var p = 0; p < objItensPedidoTemplate.length; p++) {
-								
+
 								var requestADDItem = objItensPedido.put(objItensPedidoTemplate[p]);
-								
-								requestADDItem.onsuccess = function (e3) {
+
+								requestADDItem.onsuccess = function(e3) {
 									console.log("Item adicionado com sucesso");
-									
+
 								};
-								requestADDItem.onerror = function (e3) {
+								requestADDItem.onerror = function(e3) {
 									console.log("Falha ao adicionar o Item");
 								};
 							}
-							
+
 							that.calculaTotalPedido();
 							that.setaCompleto(db, "Não");
-							
+
 							that.byId("idDiluirItens").setEnabled(false);
 							that.byId("idInserirItemDiluicao").setEnabled(false);
 							that.byId("idInserirItem").setEnabled(false);
-							
+
 							that.byId("idTipoNegociacao").setProperty("enabled", false);
 							that.byId("idTabelaPreco").setProperty("enabled", false);
 							that.byId("idTipoTransporte").setProperty("enabled", false);
 							that.byId("idPrimeiraParcela").setProperty("enabled", false);
 							that.byId("idQuantParcelas").setProperty("enabled", false);
 							that.byId("idIntervaloParcelas").setProperty("enabled", false);
-							
+
 							oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 						}
-				};
+					};
 				}
 			};
 		},
 
-		onInicioBalancoVerbas: function (resolve, reject) {
+		onInicioBalancoVerbas: function(resolve, reject) {
 			//Carrega as tabelas necessarias para fazer os calculos dos excedentes.
 			//buscar os campos zzPrzmax/ zzPrzmin/ zzVlrPedMin na tabela de preço
 			var that = this;
@@ -2254,7 +2197,7 @@ sap.ui.define([
 			var prazoMaxAprazo = 0;
 
 			var open = indexedDB.open("VB_DataBase");
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -2262,14 +2205,14 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
 
 				var transaction = db.transaction("Konm", "readonly");
 				var objectStore = transaction.objectStore("Konm");
 
 				if ("getAll" in objectStore) {
-					objectStore.getAll().onsuccess = function (event) {
+					objectStore.getAll().onsuccess = function(event) {
 
 						that.vetorRange = event.target.result;
 
@@ -2277,7 +2220,7 @@ sap.ui.define([
 						var objectStore1 = transaction1.objectStore("A964");
 
 						if ("getAll" in objectStore1) {
-							objectStore1.getAll().onsuccess = function (event) {
+							objectStore1.getAll().onsuccess = function(event) {
 
 								var vetorPerc = event.target.result;
 
@@ -2288,7 +2231,7 @@ sap.ui.define([
 								var objectStore2 = transaction2.objectStore("A959");
 
 								if ("getAll" in objectStore2) {
-									objectStore2.getAll().onsuccess = function (event) {
+									objectStore2.getAll().onsuccess = function(event) {
 
 										var perc = event.target.result;
 
@@ -2323,7 +2266,7 @@ sap.ui.define([
 			};
 		},
 
-		onPrecoMinPermitido: function (objItensPedidoTemplate) {
+		onPrecoMinPermitido: function(objItensPedidoTemplate) {
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				var valorProdutoCheio = objItensPedidoTemplate[i].zzVprod;
@@ -2344,12 +2287,12 @@ sap.ui.define([
 			}
 		},
 
-		onTablFilterEvent: function (evt) {
+		onTablFilterEvent: function(evt) {
 			var that = this;
 			var item = evt.getParameters();
 			var open = indexedDB.open("VB_DataBase");
-			
-			open.onerror = function () {
+
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -2357,42 +2300,42 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
-				
+
 				if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
-					
-					var promise = new Promise(function (resolve, reject) {
+
+					var promise = new Promise(function(resolve, reject) {
 						that.onInicioBalancoVerbas(resolve, reject);
 					});
-					
-					promise.then(function () {
+
+					promise.then(function() {
 						that.calculaTotalPedido();
 					});
-					
+
 					that.setaCompleto(db, "Não");
-				
+
 					var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 					var objItensPedido = storeItensPedido.objectStore("ItensPedido");
-					
+
 					for (var p = 0; p < objItensPedidoTemplate.length; p++) {
-						
-						if(objItensPedidoTemplate[p].tipoItem2 == "Diluicao"){
+
+						if (objItensPedidoTemplate[p].tipoItem2 == "Diluicao") {
 							objItensPedidoTemplate[p].zzValExcedidoItem = 0;
-						}else{
-							objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(objItensPedidoTemplate[p].zzValExcedidoItem * 100 ) / 100;
+						} else {
+							objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(objItensPedidoTemplate[p].zzValExcedidoItem * 100) / 100;
 						}
-						
-						objItensPedidoTemplate[p].zzVprodDesc2 = Math.round(objItensPedidoTemplate[p].zzVprodDesc2 * 100 ) / 100;
-						objItensPedidoTemplate[p].zzVprodDesc = Math.round(objItensPedidoTemplate[p].zzVprodDesc * 100 ) / 100;
-						
+
+						objItensPedidoTemplate[p].zzVprodDesc2 = Math.round(objItensPedidoTemplate[p].zzVprodDesc2 * 100) / 100;
+						objItensPedidoTemplate[p].zzVprodDesc = Math.round(objItensPedidoTemplate[p].zzVprodDesc * 100) / 100;
+
 						var requestADDItem = objItensPedido.put(objItensPedidoTemplate[p]);
-						
-						requestADDItem.onsuccess = function (e3) {
+
+						requestADDItem.onsuccess = function(e3) {
 							console.log("Itens atualizados com sucesso");
-							
+
 						};
-						requestADDItem.onerror = function (e3) {
+						requestADDItem.onerror = function(e3) {
 							console.log("Falha ao atualizar os Itens");
 						};
 					}
@@ -2400,7 +2343,7 @@ sap.ui.define([
 			};
 		},
 
-		onDefineFamilias: function (vetorRange, tipoDesconto) {
+		onDefineFamilias: function(vetorRange, tipoDesconto) {
 			var vetorGeral = objItensPedidoTemplate;
 			var vetorGeralExtra = objItensPedidoTemplate;
 			var vetorFamilia = [];
@@ -2410,7 +2353,7 @@ sap.ui.define([
 			if (tipoDesconto == "Normal") {
 
 				//Ordenando para desconto Familia normal
-				vetorGeral.sort(function (a, b) {
+				vetorGeral.sort(function(a, b) {
 					return parseInt(a.kstbm) - parseInt(b.kstbm);
 				});
 
@@ -2462,7 +2405,7 @@ sap.ui.define([
 			} else if (tipoDesconto == "Extra") {
 
 				//Ordenando para desconto Familia normal
-				vetorGeralExtra.sort(function (a, b) {
+				vetorGeralExtra.sort(function(a, b) {
 					return a.zzGrpmatExtra - b.zzGrpmatExtra;
 				});
 
@@ -2515,7 +2458,7 @@ sap.ui.define([
 		},
 
 		//Calcula se o item entra no desconto extra e calcula o desconto normal
-		onBuscaPorcentagem: function (vetorFamilia, vetorDescontos, tipoDesconto) {
+		onBuscaPorcentagem: function(vetorFamilia, vetorDescontos, tipoDesconto) {
 
 			var auxRangeQuant = 0;
 			var auxRangeQuantExtra = 0;
@@ -2537,7 +2480,7 @@ sap.ui.define([
 					}
 				}
 
-				vetorAuxFamilia.sort(function (a, b) {
+				vetorAuxFamilia.sort(function(a, b) {
 					return a.kstbm - b.kstbm;
 				});
 
@@ -2576,7 +2519,7 @@ sap.ui.define([
 					}
 				}
 
-				vetorAuxFamilia.sort(function (a, b) {
+				vetorAuxFamilia.sort(function(a, b) {
 					return a.kstbm - b.kstbm;
 				});
 
@@ -2604,7 +2547,7 @@ sap.ui.define([
 			}
 		},
 
-		onCalculaPrazoMedio: function (vetorParametros) {
+		onCalculaPrazoMedio: function(vetorParametros) {
 
 			//pre requisito ter executado total do pedido antes de executar essa função
 			//Parâmetros pegos do banco antes de executar a função 
@@ -2641,9 +2584,9 @@ sap.ui.define([
 					}
 					valorTot += intervaloParcelas * i;
 				}
-				
+
 				var prazoMedio = valorTot / quantidadeParcelas;
-				
+
 				if (diasPrimeiraParcela < intervaloParcelas) {
 					valorAux = intervaloParcelas - diasPrimeiraParcela;
 					prazoMedio = prazoMedio - valorAux;
@@ -2717,15 +2660,15 @@ sap.ui.define([
 					var base = 0;
 					var valorInterm = 0;
 					var dias = 0;
-					
-					for (i = 1; i <= quantidadeParcelas+1; i++) {
+
+					for (i = 1; i <= quantidadeParcelas + 1; i++) {
 						if (i == 1) {
 							base = valorEntradaPedido;
 							dias = 1;
-						}else if(i == 2){
+						} else if (i == 2) {
 							dias += diasPrimeiraParcela;
 							valorInterm += dias * valorDasparcelas;
-						}else{
+						} else {
 							dias += intervaloParcelas;
 							valorInterm += dias * valorDasparcelas;
 						}
@@ -2739,9 +2682,9 @@ sap.ui.define([
 
 					// mediaPonderada = ((1 * valorDasparcelas) + somatoriaParcelas) / valTotPed;
 					mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-					
+
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", mediaPonderada);
-					
+
 					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 						if (valTotPed < valorPedMin && mediaPonderada >= prazoMinAvista) {
 
@@ -2799,80 +2742,80 @@ sap.ui.define([
 					// valorDasparcelas = (valTotPed - (percEntradaPedido * valTotPed)) / quantidadeParcelas;
 					valorEntradaPedido = percEntradaPedido * valTotPed;
 					valorDasparcelas = Math.round(parseFloat((valTotPed - valorEntradaPedido) / quantidadeParcelas) * 100) / 100;
-					
+
 					base = 0;
 					valorInterm = 0;
 					dias = 0;
-					
-					for (i = 1; i <= quantidadeParcelas+1; i++) {
+
+					for (i = 1; i <= quantidadeParcelas + 1; i++) {
 						if (i == 1) {
 							base = valorEntradaPedido;
 							dias = 1;
-						}else if(i == 2){
+						} else if (i == 2) {
 							dias += diasPrimeiraParcela;
 							valorInterm += dias * valorDasparcelas;
-						}else{
+						} else {
 							dias += intervaloParcelas;
 							valorInterm += dias * valorDasparcelas;
 						}
 					}
 					mediaPonderada = (base + valorInterm) / valTotPed;
 					mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-					
+
 					// //COMEÇA EM 1 POR QUE A PRIMEIRA PARCELA É DEFINIDO.
 					// for (i = 1; i < quantidadeParcelas; i++) {
 					// 	somatoriaParcelas = (valorDasparcelas * intervaloParcelas);
 					// }
-					
+
 					// mediaPonderada = ((diasPrimeiraParcela * valorDasparcelas) + somatoriaParcelas) / valTotPed * quantidadeParcelas;
 					// mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-					
+
 					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 						if (valTotPed < valorPedMin && mediaPonderada >= prazoMinAvista) {
-							
+
 							diasExcedente = mediaPonderada - prazoMinAvista;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-							
+
 						} else if (valTotPed < valorPedMin && mediaPonderada < prazoMinAvista) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-							
+
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAvista) {
-							
+
 							diasExcedente = mediaPonderada - prazoMaxAvista;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-							
+
 						} else if (valTotPed >= valorPedMin && mediaPonderada < prazoMaxAvista) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 						}
-						
+
 					} else if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
 						if (valTotPed < valorPedMin && mediaPonderada >= prazoMinAprazo) {
-							
+
 							diasExcedente = mediaPonderada - prazoMinAprazo;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-							
+
 						} else if (valTotPed < valorPedMin && mediaPonderada < prazoMinAprazo) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
-							
+
 						} else if (valTotPed >= valorPedMin && mediaPonderada >= prazoMaxAprazo) {
-							
+
 							diasExcedente = mediaPonderada - prazoMaxAprazo;
 							percExcedentePrazoMed = Math.round((diasExcedente * (percJurosDia)) * 100) / 100;
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-							
+
 						} else if (valTotPed >= valorPedMin && mediaPonderada < prazoMaxAprazo) {
 							//Não gera excedente.
 							console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
@@ -2885,13 +2828,13 @@ sap.ui.define([
 
 		},
 
-		onNavegaBalancoVenda: function () {
+		onNavegaBalancoVenda: function() {
 
 			this.byId("idTopLevelIconTabBar").setSelectedKey("tab6");
 
 		},
 
-		popularCamposItemPedido: function () {
+		popularCamposItemPedido: function() {
 
 			sap.ui.getCore().byId("idItemPedido").setValue(oItemPedido.matnr);
 			sap.ui.getCore().byId("idDescricao").setValue(oItemPedido.maktx);
@@ -2907,7 +2850,7 @@ sap.ui.define([
 
 		},
 
-		_handleValueHelpSearch: function (evt) {
+		_handleValueHelpSearch: function(evt) {
 			var sValue = evt.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("matnr", sap.ui.model.FilterOperator.Contains, sValue), new sap.ui.model.Filter(
@@ -2918,7 +2861,7 @@ sap.ui.define([
 			sap.ui.getCore().byId("idItemPedido").suggest();
 		},
 
-		onDialogCancelButton: function () {
+		onDialogCancelButton: function() {
 			var that = this;
 			oItemTemplateTotal = [];
 
@@ -2928,7 +2871,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -2936,13 +2879,13 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				objItensPedidoTemplate = [];
 				var db = open.result;
 				var numeroPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
 
 				var store = db.transaction("ItensPedido").objectStore("ItensPedido");
-				store.openCursor().onsuccess = function (event1) {
+				store.openCursor().onsuccess = function(event1) {
 					var cursor = event1.target.result;
 
 					if (cursor) {
@@ -2965,7 +2908,7 @@ sap.ui.define([
 			};
 		},
 
-		onDialogSubmitButton: function () {
+		onDialogSubmitButton: function() {
 
 			var that = this;
 			var aux = [];
@@ -3005,7 +2948,7 @@ sap.ui.define([
 					icon: MessageBox.Icon.ERROR,
 					title: "Falha ao inserir",
 					actions: [MessageBox.Action.OK],
-					onClose: function () {
+					onClose: function() {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
 					}
@@ -3016,7 +2959,7 @@ sap.ui.define([
 					icon: MessageBox.Icon.ERROR,
 					title: "Campo Inválido.",
 					actions: [MessageBox.Action.OK],
-					onClose: function () {
+					onClose: function() {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
 						sap.ui.getCore().byId("idQuantidade").setValue(oItemTemplate.QtdPedida);
@@ -3027,7 +2970,7 @@ sap.ui.define([
 			} else {
 				var open = indexedDB.open("VB_DataBase");
 
-				open.onerror = function () {
+				open.onerror = function() {
 					oButtonSalvar.setEnabled(true);
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
@@ -3036,70 +2979,70 @@ sap.ui.define([
 					});
 				};
 
-				open.onsuccess = function () {
+				open.onsuccess = function() {
 					var db = open.result;
 
 					var store = db.transaction("Materiais", "readwrite");
 					var objMaterial = store.objectStore("Materiais");
 
 					var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
-					
-					requestMaterial.onsuccess = function (e) {
+
+					requestMaterial.onsuccess = function(e) {
 						var oMaterial = e.target.result;
-						
+
 						if (oMaterial == undefined) {
 							oPanel.setBusy(false);
-							
+
 							MessageBox.show("Não existe o produto: " + sap.ui.getCore().byId("idItemPedido").getValue(), {
 								icon: MessageBox.Icon.ERROR,
 								title: "Produto não encontrado.",
 								actions: [MessageBox.Action.YES],
-								onClose: function () {
+								onClose: function() {
 									that.onResetaCamposDialog();
 									sap.ui.getCore().byId("idItemPedido").focus();
 									oButtonSalvar.setEnabled(true);
 								}
 							});
-							
+
 						} else {
-							
+
 							var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 							var objItensPedido = storeItensPedido.objectStore("ItensPedido");
-							
+
 							// indexEdit inicia com 0, só é populado quando clica para editar 1 item. Senão sempre vai adicionar novo item
 							var request = objItensPedido.get(indexEdit);
-							
-							request.onsuccess = function (e3) {
+
+							request.onsuccess = function(e3) {
 								var result2 = e3.target.result;
 								//preparar o obj a ser adicionado ou editado
 								if (result2 == undefined) {
-									
+
 									that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoIndexItem", nrPedCli + "/" + (indexItem));
 									oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoIndexItem");
 									oItemPedido.index = indexItem;
 									oItemPedido.nrPedCli = nrPedCli;
 									var requestADDItem = objItensPedido.add(oItemPedido);
-									requestADDItem.onsuccess = function (e3) {
-										
+									requestADDItem.onsuccess = function(e3) {
+
 										objItensPedidoTemplate.push(oItemPedido);
 										// indexItem = indexItem + 1;
 										that.setaCompleto(db, "Não");
-										
+
 										var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 										that.getView().setModel(oModel, "ItensPedidoGrid");
-										
+
 										that.onBloqueiaPrePedido();
-										
+
 										console.log("Item: " + oItemPedido.index + " adicionado com sucesso");
-										
+
 										that.calculaTotalPedido();
-										
+
 									};
-									requestADDItem.onerror = function (e3) {
+									requestADDItem.onerror = function(e3) {
 										oButtonSalvar.setEnabled(true);
 										console.log("Falha ao adicionar o Item: " + oItemPedido.index);
 									};
-									
+
 									if (that._ItemDialog) {
 										that._ItemDialog.destroy(true);
 										oButtonSalvar.setEnabled(true);
@@ -3107,37 +3050,37 @@ sap.ui.define([
 								} else {
 									//OBJ ENCONTRADO NO BANCO... ATUALIZA ELE.
 									oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarIndexItem");
-									
+
 									var requestPutItens = objItensPedido.put(oItemPedido);
-									requestPutItens.onsuccess = function () {
+									requestPutItens.onsuccess = function() {
 										for (var j = 0; j < objItensPedidoTemplate.length; j++) {
 											if (objItensPedidoTemplate[j].idItemPedido === oItemPedido.idItemPedido) {
 												objItensPedidoTemplate[j] = oItemPedido;
 											}
 										}
-										
+
 										that.setaCompleto(db, "Não");
-										
+
 										that.calculaTotalPedido();
-										
+
 										oItemTemplate = [];
-										
+
 										if (that._ItemDialog) {
 											that._ItemDialog.destroy(true);
 										}
 										oButtonSalvar.setEnabled(true);
-										
+
 										that.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
-										
+
 										var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 										that.getView().setModel(oModel, "ItensPedidoGrid");
-										
+
 										that.onBloqueiaPrePedido();
-										
+
 										console.log("Item: " + oItemPedido.index + " foi Atualizado");
 
 									};
-									requestPutItens.onerror = function (event) {
+									requestPutItens.onerror = function(event) {
 										console.log(" Dados itensPedido não foram inseridos");
 
 										oButtonSalvar.setEnabled(true);
@@ -3153,114 +3096,114 @@ sap.ui.define([
 				};
 			}
 		},
-		
-		onDialogDiluicaoSubmitButton: function () {
-			
+
+		onDialogDiluicaoSubmitButton: function() {
+
 			var that = this;
 			var nrPedCli = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
 			var oPanel = sap.ui.getCore().byId("idDialog");
 			var oButtonSalvar = sap.ui.getCore().byId("idButtonSalvarDiluicaoDialog");
 			oButtonSalvar.setEnabled(false);
-			
+
 			indexItem = this.onCriarIndexItemPedido();
-			
+
 			if (sap.ui.getCore().byId("idItemPedido").getValue() === "") {
 				MessageBox.show("Selecione um produto.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Falha ao inserir",
 					actions: [MessageBox.Action.OK],
-					onClose: function () {
+					onClose: function() {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
 					}
 				});
 			} else if (sap.ui.getCore().byId("idQuantidade").getValue() === "" || sap.ui.getCore().byId("idQuantidade").getValue() === 0) {
-				
+
 				MessageBox.show("Digite uma quantidade acima de 0.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Campo Inválido.",
 					actions: [MessageBox.Action.OK],
-					onClose: function () {
+					onClose: function() {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
 						sap.ui.getCore().byId("idQuantidade").setValue(oItemTemplate.QtdPedida);
-						
+
 					}
 				});
-				
+
 			} else {
 				var open = indexedDB.open("VB_DataBase");
-				
-				open.onerror = function () {
-					
+
+				open.onerror = function() {
+
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
 						title: "Banco não encontrado!",
 						actions: [MessageBox.Action.OK],
-						onClose: function () {
+						onClose: function() {
 							oButtonSalvar.setEnabled(true);
 						}
 					});
 				};
-				
-				open.onsuccess = function () {
+
+				open.onsuccess = function() {
 					var db = open.result;
-					
+
 					var store = db.transaction("Materiais", "readwrite");
 					var objMaterial = store.objectStore("Materiais");
-					
+
 					var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
-					
-					requestMaterial.onsuccess = function (e) {
+
+					requestMaterial.onsuccess = function(e) {
 						var oMaterial = e.target.result;
-						
+
 						if (oMaterial == undefined) {
 							oPanel.setBusy(false);
-							
+
 							MessageBox.show("Não existe o produto: " + sap.ui.getCore().byId("idItemPedido").getValue(), {
 								icon: MessageBox.Icon.ERROR,
 								title: "Produto não encontrado.",
 								actions: [MessageBox.Action.YES],
-								onClose: function () {
+								onClose: function() {
 									that.onResetaCamposDialog();
 									sap.ui.getCore().byId("idItemPedido").focus();
 									oButtonSalvar.setEnabled(true);
 								}
 							});
-							
+
 						} else {
-							
+
 							var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 							var objItensPedido = storeItensPedido.objectStore("ItensPedido");
-							
+
 							that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoIndexItem", nrPedCli + "/" + (indexItem));
 							oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoIndexItem");
 							oItemPedido.index = indexItem;
 							oItemPedido.nrPedCli = nrPedCli;
 							var requestADDItem = objItensPedido.add(oItemPedido);
-							requestADDItem.onsuccess = function (e3) {
-								
+							requestADDItem.onsuccess = function(e3) {
+
 								objItensPedidoTemplate.push(oItemPedido);
 								// indexItem = indexItem + 1;
 								that.setaCompleto(db, "Não");
-								
+
 								var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 								that.getView().setModel(oModel, "ItensPedidoGrid");
-								
+
 								that.onBloqueiaPrePedido();
-								
+
 								that.byId("idDiluirItens").setEnabled(true);
-								
+
 								console.log("Item: " + oItemPedido.index + " adicionado com sucesso, tipo Item: " + oItemPedido.tipoItem);
-								
+
 								that.calculaTotalPedido();
-								
+
 							};
-							requestADDItem.onerror = function (e3) {
+							requestADDItem.onerror = function(e3) {
 								oButtonSalvar.setEnabled(true);
 								console.log("Falha ao adicionar o Item: " + oItemPedido.index);
 							};
-							
+
 							if (that._ItemDialog) {
 								that._ItemDialog.destroy(true);
 								oButtonSalvar.setEnabled(true);
@@ -3274,10 +3217,10 @@ sap.ui.define([
 		// FIM DOS DADOS FRAGMENTO
 
 		// EVENTOS DA TABLE 						<<<<<<<<<<<<
-		onNovoItem: function () {
+		onNovoItem: function() {
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idSituacaoDadosPedido");
 			oItemPedido = [];
-			
+
 			if (statusPedido > 2) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
@@ -3288,7 +3231,7 @@ sap.ui.define([
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-				
+
 				if (!this._CreateMaterialFragment) {
 					this._ItemDialog = sap.ui.xmlfragment(
 						"testeui5.view.ItemDialog",
@@ -3296,16 +3239,16 @@ sap.ui.define([
 					);
 					this.getView().addDependent(this._ItemDialog);
 				}
-				
+
 				this._ItemDialog.open();
 				sap.ui.getCore().byId("idItemPedido").focus();
 			}
 		},
-		
-		onNovoItemDiluicao: function () {
+
+		onNovoItemDiluicao: function() {
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idSituacaoDadosPedido");
 			oItemPedido = [];
-			
+
 			if (statusPedido > 2) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
@@ -3316,7 +3259,7 @@ sap.ui.define([
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-				
+
 				if (!this._CreateMaterialFragment) {
 					this._ItemDialog = sap.ui.xmlfragment(
 						"testeui5.view.ItemDiluicaoDialog",
@@ -3331,7 +3274,7 @@ sap.ui.define([
 			}
 		},
 
-		onEditarItemPress: function (oEvent) {
+		onEditarItemPress: function(oEvent) {
 
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
@@ -3351,8 +3294,6 @@ sap.ui.define([
 			if (that._ItemDialog) {
 				that._ItemDialog.destroy(true);
 			}
-			
-			
 
 			that._ItemDialog = sap.ui.xmlfragment(
 				"testeui5.view.ItemDialog",
@@ -3362,18 +3303,18 @@ sap.ui.define([
 
 			that._ItemDialog.open();
 			that.popularCamposItemPedido();
-			
-			if(oItemPedido.tipoItem == "Diluicao"){
+
+			if (oItemPedido.tipoItem == "Diluicao") {
 				sap.ui.getCore().byId("idDesconto").setEnabled(false);
-				
-			}else{
+
+			} else {
 				sap.ui.getCore().byId("idDesconto").setEnabled(true);
-				
+
 			}
 			sap.ui.getCore().byId("idItemPedido").setEnabled(false);
 		},
 
-		onDeletarItemPedido: function (oEvent) {
+		onDeletarItemPedido: function(oEvent) {
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var idItemPedido = oItem.getBindingContext("ItensPedidoGrid").getProperty("idItemPedido");
 			var idItem = oItem.getBindingContext("ItensPedidoGrid").getProperty("matnr");
@@ -3390,7 +3331,7 @@ sap.ui.define([
 					icon: MessageBox.Icon.WARNING,
 					title: "Exclusão de Item!",
 					actions: ["Excluir", "Cancelar"],
-					onClose: function (oAction) {
+					onClose: function(oAction) {
 						if (oAction === "Excluir") {
 
 							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
@@ -3420,7 +3361,7 @@ sap.ui.define([
 							that.onBloqueiaPrePedido();
 
 							var open = indexedDB.open("VB_DataBase");
-							open.onerror = function () {
+							open.onerror = function() {
 								MessageBox.show(open.error.mensage, {
 									icon: MessageBox.Icon.ERROR,
 									title: "Banco não encontrado!",
@@ -3428,7 +3369,7 @@ sap.ui.define([
 								});
 							};
 
-							open.onsuccess = function () {
+							open.onsuccess = function() {
 								var db = open.result;
 
 								that.setaCompleto(db, "Não");
@@ -3438,10 +3379,10 @@ sap.ui.define([
 								var objPedido = store1.objectStore("ItensPedido");
 
 								var request = objPedido.delete(idItemPedido);
-								request.onsuccess = function () {
+								request.onsuccess = function() {
 									console.log("Item com ID: " + idItemPedido + " foi deletado!");
 								};
-								request.onerror = function () {
+								request.onerror = function() {
 									console.log("ERRO!! Item: " + idItemPedido + "Não foi deletado!");
 								};
 							};
@@ -3455,7 +3396,7 @@ sap.ui.define([
 
 		// EVENTOS DOS BOTÕES 						<<<<<<<<<<<<
 
-		onFinalizarPedido: function () {
+		onFinalizarPedido: function() {
 
 			//Percorre os itens do pedido para fazer uma verificação se realmente não tem produto repetido.
 			var i = 0;
@@ -3489,7 +3430,7 @@ sap.ui.define([
 				//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Atualizando o PrePedido PEDIDO NO BANCO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 				var open = indexedDB.open("VB_DataBase");
 
-				open.onerror = function () {
+				open.onerror = function() {
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
 						title: "Falha ao abrir o banco para inserir os dados do pedido!",
@@ -3497,18 +3438,16 @@ sap.ui.define([
 					});
 				};
 
-				open.onsuccess = function () {
+				open.onsuccess = function() {
 					var db = open.result;
 
 					if (completoPedido == "Não") {
-						
-						
-						if(that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == 2){
+
+						if (that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == 2) {
 							that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 9);
 							that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "Preposto");
 						}
-						
-						
+
 						var objBancoPrePedido = {
 							nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
 							kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
@@ -3580,7 +3519,7 @@ sap.ui.define([
 						var objPedido = store1.objectStore("PrePedidos");
 						var request = objPedido.put(objBancoPrePedido);
 
-						request.onsuccess = function () {
+						request.onsuccess = function() {
 							// that.atualizaMovtoVerba(db);
 							that.setaCompleto(db, "Sim");
 							that.onResetarCamposPrePedido();
@@ -3589,7 +3528,7 @@ sap.ui.define([
 							console.log("Pedido inserido");
 						};
 
-						request.onerror = function () {
+						request.onerror = function() {
 							console.log("Pedido não foi Inserido!");
 						};
 					}
@@ -3598,7 +3537,7 @@ sap.ui.define([
 						icon: MessageBox.Icon.ERROR,
 						title: "Atenção",
 						actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
-						onClose: function (oAction) {
+						onClose: function(oAction) {
 							if (oAction == sap.m.MessageBox.Action.YES) {
 								sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
 								that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
@@ -3613,7 +3552,7 @@ sap.ui.define([
 			}
 		},
 
-		onLiberarItensPedido: function () {
+		onLiberarItensPedido: function() {
 			var that = this;
 
 			var date = new Date();
@@ -3731,11 +3670,11 @@ sap.ui.define([
 				// this.byId("tabItensDiluicaoPedidoStep").setProperty("enabled", true);
 
 				var open = indexedDB.open("VB_DataBase");
-				open.onerror = function (hxr) {
+				open.onerror = function(hxr) {
 					console.log("falha abrir tabela PrePedido as tabelas");
 				};
 				//Load tables
-				open.onsuccess = function () {
+				open.onsuccess = function() {
 					var db = open.result;
 
 					var tx = db.transaction("PrePedidos", "readwrite");
@@ -3743,9 +3682,9 @@ sap.ui.define([
 
 					var request = objPrePedido.get(that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"));
 
-					request.onsuccess = function (e) {
+					request.onsuccess = function(e) {
 						var result = e.target.result;
-						
+
 						var objBancoPrePedido = {
 							nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
 							kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
@@ -3879,7 +3818,7 @@ sap.ui.define([
 								verificadoPreposto: ""
 							};
 
-							request1.onsuccess = function () {
+							request1.onsuccess = function() {
 
 								that.setaCompleto(db, "Não");
 
@@ -3887,7 +3826,7 @@ sap.ui.define([
 									icon: MessageBox.Icon.SUCCESS,
 									title: "Confirmação",
 									actions: [MessageBox.Action.OK],
-									onClose: function () {
+									onClose: function() {
 										that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
 										console.log("Dados PrePedido inseridos");
 									}
@@ -3895,7 +3834,7 @@ sap.ui.define([
 
 							};
 
-							request1.onerror = function (event) {
+							request1.onerror = function(event) {
 								console.log("Dados PrePedido não foram inseridos :" + event.Message);
 							};
 
@@ -3969,26 +3908,26 @@ sap.ui.define([
 								verificadoPreposto: ""
 							};
 
-							request1.onsuccess = function () {
+							request1.onsuccess = function() {
 								that.setaCompleto(db, "Não");
 								MessageBox.show("Cabeçalho atualizado com Sucesso!", {
 									icon: MessageBox.Icon.SUCCESS,
 									title: "Concluido!",
 									actions: [MessageBox.Action.OK],
-									onClose: function () {
+									onClose: function() {
 										that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
 										console.log("Dados PrePedido Atualizados");
 									}
 								});
 							};
 
-							request1.onerror = function (event) {
+							request1.onerror = function(event) {
 								console.log("Dados PrePedido não foram Atualizados :" + event.Message);
 							};
 						}
 					};
 
-					request.onerror = function (e) {
+					request.onerror = function(e) {
 						console.log("Error");
 						console.dir(e);
 					};
@@ -3996,7 +3935,7 @@ sap.ui.define([
 			}
 		},
 
-		onResetarCamposPrePedido: function () {
+		onResetarCamposPrePedido: function() {
 
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
@@ -4004,7 +3943,7 @@ sap.ui.define([
 			this.onResetaCamposPrePedido();
 		},
 
-		onCancelarPedido: function () {
+		onCancelarPedido: function() {
 			this.onResetarCamposPrePedido();
 			oItemTemplate = [];
 			oItemTemplateTotal = [];
@@ -4012,21 +3951,21 @@ sap.ui.define([
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
 		},
 
-		onBloqueiaPrePedido: function () {
-			
-			for(var i=0; i<objItensPedidoTemplate.length; i++){
-				if(objItensPedidoTemplate[i].tipoItem == "Diluicao"){
+		onBloqueiaPrePedido: function() {
+
+			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
+				if (objItensPedidoTemplate[i].tipoItem == "Diluicao") {
 					this.byId("idDiluirItens").setEnabled(true);
 					this.byId("idInserirItemDiluicao").setEnabled(true);
 					break;
-				}else if(objItensPedidoTemplate[i].tipoItem == "Diluido"){
+				} else if (objItensPedidoTemplate[i].tipoItem == "Diluido") {
 					this.byId("idDiluirItens").setEnabled(false);
 					this.byId("idInserirItemDiluicao").setEnabled(false);
 					this.byId("idInserirItem").setEnabled(false);
 					break;
 				}
 			}
-			
+
 			if (objItensPedidoTemplate.length > 0) {
 				this.byId("idTabelaPreco").setEnabled(false);
 				this.byId("idTipoTransporte").setEnabled(false);
@@ -4049,7 +3988,7 @@ sap.ui.define([
 
 		// FIM EVENTOS DOS BOTÕES 					
 
-		setaCompleto: function (db, completo) {
+		setaCompleto: function(db, completo) {
 			var that = this;
 			var objSetaCompletoPedido = [];
 			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", completo);
@@ -4059,7 +3998,7 @@ sap.ui.define([
 
 			var request = objPrePedido.get(that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"));
 
-			request.onsuccess = function (e) {
+			request.onsuccess = function(e) {
 				var result = e.target.result;
 				objSetaCompletoPedido = result;
 				objSetaCompletoPedido.completo = completo;
@@ -4068,16 +4007,16 @@ sap.ui.define([
 				var objPedido = store1.objectStore("PrePedidos");
 				var request1 = objPedido.put(objSetaCompletoPedido);
 
-				request1.onsuccess = function () {
+				request1.onsuccess = function() {
 					console.log("O campo completo foi atualizado para > " + completo);
 				};
-				request1.onerror = function () {
+				request1.onerror = function() {
 					console.log("Erro ao abrir o Pedido > " + that.getOwnerComponent().getModel("modelAux").getProperty("/nrPedCli"));
 				};
 			};
 		},
 
-		onValidaComissaoUtilizadaDesconto: function (evt) {
+		onValidaComissaoUtilizadaDesconto: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
@@ -4085,25 +4024,25 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
-				
+
 			}
 		},
-		
-		onValidaVerbaUtilizadaPrazoMedio: function (evt) {
+
+		onValidaVerbaUtilizadaPrazoMedio: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
 			if (valor >= 0) {
-				
+
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", parseFloat(valor));
 			} else {
-				
+
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", 0);
-				
+
 			}
 		},
 
-		onValidaComissaoUtilizadaPrazoMedio: function (evt) {
+		onValidaComissaoUtilizadaPrazoMedio: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
@@ -4111,11 +4050,11 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", 0);
-				
+
 			}
 		},
-		
-		onValidaComissaoUtilizadaBonif: function (evt) {
+
+		onValidaComissaoUtilizadaBonif: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
@@ -4123,11 +4062,11 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", 0);
-				
+
 			}
 		},
-		
-		onValidaVerbaUtilizadaBonif: function (evt) {
+
+		onValidaVerbaUtilizadaBonif: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
@@ -4135,11 +4074,11 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", 0);
-				
+
 			}
 		},
-		
-		onValidaVerbaUtilizadaAmostra: function (evt) {
+
+		onValidaVerbaUtilizadaAmostra: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
@@ -4147,11 +4086,11 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", 0);
-				
+
 			}
 		},
-		
-		onValidaComissaoUtilizadaAmostra: function (evt) {
+
+		onValidaComissaoUtilizadaAmostra: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
@@ -4159,11 +4098,11 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", 0);
-				
+
 			}
 		},
-		
-		onValidaComissaoUtilizadaBrinde: function (evt) {
+
+		onValidaComissaoUtilizadaBrinde: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
@@ -4171,11 +4110,11 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", 0);
-				
+
 			}
 		},
-		
-		onValidaVerbaUtilizadaBrinde: function (evt) {
+
+		onValidaVerbaUtilizadaBrinde: function(evt) {
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
@@ -4183,11 +4122,11 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", parseFloat(valor));
 			} else {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", 0);
-				
+
 			}
 		},
-		
-		onValidaNumeroPositivo: function (evt) {
+
+		onValidaNumeroPositivo: function(evt) {
 
 			var oSource = evt.getSource();
 
@@ -4195,11 +4134,10 @@ sap.ui.define([
 
 			if (valor < 0) {
 
-				
 			}
 		},
 
-		onValidaVerbaUtilizadaDesconto: function (evt) {
+		onValidaVerbaUtilizadaDesconto: function(evt) {
 
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
@@ -4207,20 +4145,20 @@ sap.ui.define([
 			if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", parseFloat(valor));
 			} else {
-				
+
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
 			}
-			
+
 		},
-		onSubmitParcela: function(){
+		onSubmitParcela: function() {
 			this.byId("idQuantParcelas").focus();
 		},
-		
-		onSubmitParcela2: function(){
+
+		onSubmitParcela2: function() {
 			this.byId("idIntervaloParcelas").focus();
 		},
-		
-		onFormatterzzVprodDesc: function(value){
+
+		onFormatterzzVprodDesc: function(value) {
 			return parseFloat(Math.round(value * 100) / 100);
 		}
 

@@ -76,8 +76,7 @@
 											<Label text="Dias de intervalo entre as parcelas *"/>
 											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}" submit="onSubmitParcela3"/>
 											<Label text="Existe entrada"/>
-											<CheckBox id="idCheckEntrada"  select="onExisteEntrada"/>
-											<!--selected="{modelDadosPedido>/ExisteEntradaPedido}"-->
+											<CheckBox id="idCheckEntrada" select="onExisteEntrada" />
 											<Label text="Valor (R$)"/>
 											<Input id="idValorEntrada" type="Number" value="{modelDadosPedido>/ValorEntradaPedido}" liveChange="onBloqueiaPercEntrada" visible="false"/>
 											<Label text="Perc. (%)"/>
@@ -239,8 +238,8 @@
 										<f:content>
 											<Label text="Valor campanha enxoval (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
 											<Input id="idValorTotalEnxoval" visible="{path:'modelAux>/Usuario/utilcampDesc'}" value="{modelDadosPedido>/ValTotalCampEnxoval}" enabled="false" class="desabilitado" type="Number"/>
-											<Label text="Valor a ser utilizado (R$)"/>
-											<Input id="idVerbaEnxoval" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampEnxoval}" />
+											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampDesc'}" />
+											<Input id="idVerbaEnxoval" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampEnxoval}" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
 										</f:content>
 									</f:SimpleForm>
 									
@@ -249,8 +248,8 @@
 										<f:content>
 											<Label text="Valor campanha produto acabado (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampPrz'}"/>
 											<Input id="idValTotCampProdutoAcabado" visible="{path:'modelAux>/Usuario/utilcampPrz'}" value="{modelDadosPedido>/ValTotalCampProdutoAcabado}" enabled="false" class="desabilitado" type="Number"/>
-											<Label text="Valor a ser utilizado (R$)"/>
-											<Input id="idValCampProdAcabado" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampProdutoAcabado}"/>
+											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampPrz'}"/>
+											<Input id="idValCampProdAcabado" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampProdutoAcabado}" visible="{path:'modelAux>/Usuario/utilcampPrz'}"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"

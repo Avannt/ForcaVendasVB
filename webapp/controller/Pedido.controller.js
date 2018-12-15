@@ -34,30 +34,6 @@ sap.ui.define([
 			}
 		},
 
-		myFormatterCodEmpresa: function(value) {
-
-			if (value == 1) {
-				value = "Pred.";
-				return value;
-			}
-			if (value == 2) {
-				value = "SóFruta";
-				return value;
-			}
-			if (value == 3) {
-				value = "Stella";
-				return value;
-			}
-			// if (value == 5) {
-			// 	value = "";
-			// 	return value;
-			// }
-			if (value == 6) {
-				value = "Minas";
-				return value;
-			}
-		},
-
 		myFormatterDataImp: function(value) {
 
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
@@ -71,19 +47,7 @@ sap.ui.define([
 				return value;
 			}
 		},
-
-		myFormatterPercLucro: function(aValue) {
-			if (aValue !== undefined && aValue !== null && aValue !== "") {
-				if (aValue < 0) {
-					// sap.m.text.byId("idRentTable").addStyleClass("corVermelho");
-					return aValue;
-				} else {
-					// sap.m.text.byId("idRentTable").addStyleClass("corVerde");
-					return aValue;
-				}
-			}
-		},
-
+		
 		_onLoadFields: function() {
 			var that = this;
 			
@@ -92,6 +56,8 @@ sap.ui.define([
 			this.getView().byId("objectHeader").setTitle();
 			this.getView().byId("objectHeader").setNumber();
 			this.getView().byId("objectAttribute_cnpj").setText();
+			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
+			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
 			
 			var oModel = new sap.ui.model.json.JSONModel();
 			that.getView().setModel(oModel, "pedidosCadastrados");
@@ -290,7 +256,18 @@ sap.ui.define([
 
 			var that = this;
 
-			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedidoDetalhe");
+			var cliente = this.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+			if(cliente == ""){
+				
+				MessageBox.show("Nenhum cliente selecionado! Selecione um cliente!", {
+					icon: sap.m.MessageBox.Icon.WARNING,
+					title: "Nenhum cliente selecionado",
+					actions: [MessageBox.Action.OK]
+				});
+				
+			}else {
+				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedidoDetalhe");
+			}
 
 			// var open1 = indexedDB.open("VB_DataBase");
 

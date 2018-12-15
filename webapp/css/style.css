@@ -22,12 +22,13 @@
 }
 
 tr[data-mydata="Diluicao"]{	
-  background:  #EDFFEF !important;
+  background:  #FF8484 !important;
 }
 
 tr[data-mydata="Diluido"]{	
-  background:  #FFE187 !important;
+  background:  #C1FFAD !important;
 }
+
 tr[data-mydata="Normal"]{	
   background:  #FFFFFF !important;
 }
