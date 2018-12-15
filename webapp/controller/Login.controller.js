@@ -84,7 +84,7 @@ sap.ui.define([
 								unique: true
 							});
 							
-							objMateriais.createIndex("matpos", "matpos", {
+							objMateriais.createIndex("mtpos", "mtpos", {
 								unique: false
 							});
 						}

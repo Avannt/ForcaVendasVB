@@ -281,18 +281,19 @@ sap.ui.define([
 
 						if (bRepresentante && iStatusPedido == 9 && !bVerificadoPreposto) {
 							var oTable = this.byId(oEvent.getParameter("id"));
-							var oListItem = oEvent.getParameter("listItem");
+							// var oListItem = oEvent.getParameter("listItem");
+							var oListItem = oSelectedItems[i];
 							var sMensagem = "Pedido " + sPedido + " necessita ser revisado antes do envio.";
 
 							oTable.setSelectedItem(oListItem, false);
 							
-							sap.m.MessageToast.show(sMensagem);
+							//sap.m.MessageToast.show(sMensagem);
 							
-							// MessageBox.show("Pedido " + sPedido + " necessita ser revisado antes do envio.", {
-							// 	icon: MessageBox.Icon.ERROR,
-							// 	title: "Erro",
-							// 	actions: [MessageBox.Action.OK]
-							// });
+							MessageBox.show("Pedido " + sPedido + " necessita ser revisado antes do envio.", {
+								icon: MessageBox.Icon.ERROR,
+								title: "Erro",
+								actions: [MessageBox.Action.OK]
+							});
 						}
 					} /*EndIf*/
 				}
