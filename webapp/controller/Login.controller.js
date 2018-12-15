@@ -954,6 +954,9 @@ sap.ui.define([
 																													}
 
 																													oModel.read("/A963 ", {
+																														urlParameters: {
+																															"$filter": "IRepresentante eq '" + CodRepres + "'"
+																														},
 																														success: function(retornoA963) {
 
 																															var txA963 = db.transaction("A963", "readwrite");
@@ -1358,7 +1361,7 @@ sap.ui.define([
 																																																			};
 
 																																																		}
-																																																		
+
 																																																		oModel.read("/EntregaFutura", {
 																																																			urlParameters: {
 																																																				"$filter": "IRepresentante eq '" + CodRepres + "'"
