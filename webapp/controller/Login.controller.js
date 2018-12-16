@@ -22,7 +22,7 @@ sap.ui.define([
 				this.onInicializaModels();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
-				//sap.ui.getCore().byId("label").visible = f		alse;
+				//sap.ui.getCore().byId("label").visible = false;
 
 				if ("indexedDB" in window) {
 					idbSupported = true;

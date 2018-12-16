@@ -462,18 +462,33 @@ sap.ui.define([
 		},
 		
 		onCarregaMateriais: function(db, tipoPedido){
+			var that = this;
+			
+			if(tipoPedido == "YVEF" || tipoPedido == "YVEN" || tipoPedido == "YVEX" || tipoPedido == "YTRO" || 
+				tipoPedido == "YBON"){
+					
+				var filtro = "NORM";
+				
+			}else{
+				
+				filtro = tipoPedido;
+				
+			}
+			
 			var transaction = db.transaction("Materiais", "readonly");
 			var objectStoreMaterial = transaction.objectStore("Materiais");
 			
-			var indexMtpos = objectStoreMaterial.index("mtpos");
+			var indexMtpos = objectStoreMaterial.index("matpos");
 
-			var request = indexMtpos.getAll(tipoPedido);
+			var request = indexMtpos.getAll(filtro);
 
 			request.onsuccess = function (event) {
 				oVetorMateriais = event.target.result;
 
 				var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
-				this.getView().setModel(oModel, "materiaisCadastrados");
+				that.getView().setModel(oModel, "materiaisCadastrados");
+				
+				console.log("Materiais carregados: matpos: " + tipoPedido);
 			};
 		},
 		
