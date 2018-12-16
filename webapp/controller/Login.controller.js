@@ -1352,7 +1352,9 @@ sap.ui.define([
 																																																				zzQntDiluicao: parseInt(retornoPVPrepostoItem.results[i].Zzqntdiluicao),
 																																																				tipoItem2: retornoPVPrepostoItem.results[i].Tipoitem2,
 																																																				maxDescPermitidoExtra: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitido),
-																																																				maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra)
+																																																				maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra),
+																																																				mtpos: retornoPVPrepostoItem.results[i].Mtpos,
+																																																				kbetr: retornoPVPrepostoItem.results[i].Kbetr
 																																																			};
 
 																																																			var requestPVPrepostoItem = objPVPrepostoItem.put(objBancoPVPrepostoItem);
