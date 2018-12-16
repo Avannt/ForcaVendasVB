@@ -1287,8 +1287,8 @@ sap.ui.define([
 																																																		valUtilizadoVerbaPrazoMed: parseFloat(0),
 
 																																																		codRepres: CodRepres,
-																																																		codUsr: "",
-																																																		tipoUsuario: "",
+																																																		codUsr: retornoPVPrepostoTopo.results[i].Usuario,
+																																																		tipoUsuario: retornoPVPrepostoTopo.results[i].Tipousuario,
 																																																		valCampBrinde: parseFloat(0),
 																																																		valCampEnxoval: parseFloat(0),
 																																																		valCampGlobal: parseFloat(0),

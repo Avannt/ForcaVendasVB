@@ -12,7 +12,7 @@
 									<f:SimpleForm id="form0" minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="3" columnsL="2" columnsM="2">
 										<f:content>
-											<Label text="Cod Cli - Cod Repres"/>
+											<Label text="Cod Cli - Cod Repres - Cod Prep"/>
 											<Input id="idCodCliente" value="" enabled="false"/>
 											<Label text="Nome"/>
 											<Input id="idNome" value="" enabled="false"/>

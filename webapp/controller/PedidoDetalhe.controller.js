@@ -78,7 +78,7 @@ sap.ui.define([
 		onCarregaCliente: function() {
 
 			this.byId("idCodCliente").setValue(this.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + "-" +
-				this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"));
+				this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres") + "-" + this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"));
 			this.byId("idNome").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Name1"));
 			this.byId("idCNPJ").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Stcd1"));
 			this.byId("idEndereco").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Stras"));
@@ -2206,8 +2206,8 @@ sap.ui.define([
 										vetorAux[m].zzVprodDescTotal = vetorAux[m].zzVprodDesc * vetorAux[m].zzQnt;
 										vetorAux[m].zzVprodDesc = vetorAux[m].zzVprodDesc;
 										vetorAux[m].zzQntDiluicao = objItensPedidoTemplate[l].zzQntDiluicao;
-										vetorAux[m].zzValorDiluido = objItensPedidoTemplate[l].zzQntDiluicao * objItensPedidoTemplate[l].zzVprodDesc;
-									}
+										vetorAux[m].zzValorDiluido = (Math.round(objItensPedidoTemplate[l].zzQntDiluicao * objItensPedidoTemplate[l].zzVprodDesc  * 100 ) / 100 ).toFixed(2);
+									}	vetorAux[m].zzValorDiluido = parseFloat(vetorAux[m].zzValorDiluido);
 								}
 							}
 
@@ -4070,6 +4070,9 @@ sap.ui.define([
 				this.byId("idIntervaloParcelas").setEnabled(true);
 				this.byId("idValorEntrada").setEnabled(true);
 				this.byId("idPercEntrada").setEnabled(true);
+				this.byId("idInserirItemDiluicao").setEnabled(true);
+				this.byId("idInserirItem").setEnabled(true);
+				
 			}
 		},
 

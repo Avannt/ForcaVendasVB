@@ -468,7 +468,9 @@ sap.ui.define([
 									Valcampenxoval: String(oPedidosEnviar[i].valUtilizadoCampEnxoval),
 									Valcampglobal: String(oPedidosEnviar[i].valCampGlobal),
 									Vlrutilcampenx: String(oPedidosEnviar[i].valCampEnxoval),
-									Valcampbrinde: String(oPedidosEnviar[i].valCampBrinde)
+									Valcampbrinde: String(oPedidosEnviar[i].valCampBrinde),
+									Usuario: String(oPedidosEnviar[i].codUsr),
+									Tipousuario: String(oPedidosEnviar[i].tipoUsuario)
 								};
 								
 								oModel.create("/InserirOV", objPedido, {
