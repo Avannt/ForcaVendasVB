@@ -1682,7 +1682,9 @@ sap.ui.define([
 
 						// VERT -> Representante
 						// Diferente de VERT -> Aprovador
-						var bAprovador = result1.buGroup = !"VERT";
+						// var bAprovador = result1.buGroup = !"VERT";
+						var bAprovador = true;
+						
 						var bPreposto = sTipoUsuario == "2";
 						var bRepresentante = (sTipoUsuario == "1" && !bAprovador);
 

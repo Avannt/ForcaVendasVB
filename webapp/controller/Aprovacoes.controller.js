@@ -624,7 +624,9 @@ sap.ui.define([
 							title: "Sucesso!",
 							actions: [sap.m.MessageBox.Action.OK],
 							onClose: function(oAction) {
-
+								
+								that.byId("idTableEnvioPedidos").setBusy(true);
+								
 								oModel.read("/PedidosAprovar", {
 									urlParameters: {
 										"$filter": "IAprovador eq '" + codRepres + "'"
