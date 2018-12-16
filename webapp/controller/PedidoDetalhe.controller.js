@@ -411,6 +411,7 @@ sap.ui.define([
 					
 					that.onBloqueioFormaPagamento(oPrePedido.tipoPedido);
 					that.onCarregaMateriais(db, oPrePedido.tipoPedido);
+					that.onCarregaMateriaisComPreco(db, oPrePedido.tabPreco, oVetorMateriais);
 					
 					//FILTRA ITENS PARA APARECER NO COMBO PARA SELECIONAR DE ACORDO COM O TIPO DE PEDIDO JÁ EXISTENTE.
 					//AMOSTRA
