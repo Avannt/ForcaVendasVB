@@ -410,8 +410,14 @@ sap.ui.define([
 					that.byId("idTipoPedido").setSelectedKey(oPrePedido.tipoPedido);
 					
 					that.onBloqueioFormaPagamento(oPrePedido.tipoPedido);
-					that.onCarregaMateriais(db, oPrePedido.tipoPedido);
-					that.onCarregaMateriaisComPreco(db, oPrePedido.tabPreco, oVetorMateriais);
+					
+					var promise = new Promise(function(resolve, reject) {
+						that.onCarregaMateriais(db, oPrePedido.tipoPedido, resolve);
+					});
+
+					promise.then(function() {
+						that.onCarregaMateriaisComPreco(db, oPrePedido.tabPreco, oVetorMateriais);
+					});
 					
 					//FILTRA ITENS PARA APARECER NO COMBO PARA SELECIONAR DE ACORDO COM O TIPO DE PEDIDO JÁ EXISTENTE.
 					//AMOSTRA
@@ -524,7 +530,7 @@ sap.ui.define([
 			}
 		},
 		
-		onCarregaMateriais: function(db, tipoPedido){
+		onCarregaMateriais: function(db, tipoPedido, resolve, reject){
 			var that = this;
 			
 			if(tipoPedido == "YVEF" || tipoPedido == "YVEN" || tipoPedido == "YVEX" || tipoPedido == "YTRO" || 
@@ -552,6 +558,7 @@ sap.ui.define([
 				that.getView().setModel(oModel, "materiaisCadastrados");
 				
 				console.log("Materiais carregados: mtpos: " + tipoPedido);
+				resolve();
 				
 			};
 		},
@@ -1673,15 +1680,16 @@ sap.ui.define([
 					if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
 						//VALOR DE COMISSÃO GERADA NO PEDIDO
 						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
-							objItensPedidoTemplate[i].zzQnt;
+							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
 
 						//VALOR DE VERBA GERADA NO PEDIDO
 						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
-							(objItensPedidoTemplate[i].zzQnt);
+							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
 
 						//Calculo do acréscimo de prazo médio .
 						percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
-						valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100));
+						valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) * 
+							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao));
 
 						//calculo do desconto total retirando excluindo total diluido pra ele
 						var valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
@@ -1717,9 +1725,14 @@ sap.ui.define([
 						//VALOR DE VERBA GERADA NO PEDIDO
 						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
 							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+							
+						//Calculo do acréscimo de prazo médio .
+						percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
+						valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) * 
+							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao));
 
 						//calculo do desconto total retirando excluindo total diluido pra ele
-						var valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
+						valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
 						objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
 
 						if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
