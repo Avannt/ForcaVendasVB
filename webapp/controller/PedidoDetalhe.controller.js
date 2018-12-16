@@ -409,7 +409,7 @@ sap.ui.define([
 					that.byId("idTipoNegociacao").setSelectedKey(oPrePedido.tipoNegociacao);
 					that.byId("idTipoPedido").setSelectedKey(oPrePedido.tipoPedido);
 					
-					that.onBloqueioPorTipoPedido(oPrePedido.tipoPedido);
+					that.onBloqueioFormaPagamento(oPrePedido.tipoPedido);
 					that.onCarregaMateriais(db, oPrePedido.tipoPedido);
 					
 					//FILTRA ITENS PARA APARECER NO COMBO PARA SELECIONAR DE ACORDO COM O TIPO DE PEDIDO JÁ EXISTENTE.
@@ -461,36 +461,6 @@ sap.ui.define([
 			};
 		},
 		
-		onCarregaMateriais: function(db, tipoPedido){
-			var that = this;
-			
-			if(tipoPedido == "YVEF" || tipoPedido == "YVEN" || tipoPedido == "YVEX" || tipoPedido == "YTRO" || 
-				tipoPedido == "YBON"){
-					
-				var filtro = "NORM";
-				
-			}else{
-				
-				filtro = tipoPedido;
-				
-			}
-			
-			var transaction = db.transaction("Materiais", "readonly");
-			var objectStoreMaterial = transaction.objectStore("Materiais");
-			
-			var indexMtpos = objectStoreMaterial.index("matpos");
-
-			var request = indexMtpos.getAll(filtro);
-
-			request.onsuccess = function (event) {
-				oVetorMateriais = event.target.result;
-
-				var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
-				that.getView().setModel(oModel, "materiaisCadastrados");
-				
-				console.log("Materiais carregados: matpos: " + tipoPedido);
-			};
-		},
 		
 		onDataAtualizacao: function() {
 			var date = new Date();
@@ -523,7 +493,7 @@ sap.ui.define([
 			return [data, horario];
 		},
 		
-		onBloqueioPorTipoPedido: function(valor){
+		onBloqueioFormaPagamento: function(valor){
 			if (valor == "YAMO" || valor == "YBRI" || valor == "YTRO" || valor == "YBON") {
 				
 				this.byId("idFormParcelamento").setVisible(false);
@@ -553,9 +523,78 @@ sap.ui.define([
 			}
 		},
 		
+		onCarregaMateriais: function(db, tipoPedido){
+			var that = this;
+			
+			if(tipoPedido == "YVEF" || tipoPedido == "YVEN" || tipoPedido == "YVEX" || tipoPedido == "YTRO" || 
+				tipoPedido == "YBON"){
+					
+				var filtro = "NORM";
+				
+			}else{
+				
+				filtro = tipoPedido;
+				
+			}
+			
+			var transaction = db.transaction("Materiais", "readonly");
+			var objectStoreMaterial = transaction.objectStore("Materiais");
+			
+			var indexMtpos = objectStoreMaterial.index("mtpos");
+
+			var request = indexMtpos.getAll(filtro);
+
+			request.onsuccess = function (event) {
+				oVetorMateriais = event.target.result;
+
+				var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+				that.getView().setModel(oModel, "materiaisCadastrados");
+				
+				console.log("Materiais carregados: mtpos: " + tipoPedido);
+				
+			};
+		},
+		
+		onCarregaMateriaisComPreco: function(db, tabPreco, vetorMateriais,  resolve, reject, vetorResultMateriais){
+			var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
+			var that = this;
+			
+			var storeA960 = db.transaction("A960", "readwrite");
+			var objA960 = storeA960.objectStore("A960");
+			
+			for(var i=0; i<vetorMateriais.length; i++){
+				
+				var idA960 = werks + "." + tabPreco + "." + vetorMateriais[i].matnr;
+				var requesA960 = objA960.get(idA960);
+				
+				requesA960.onsuccess = function(e) {
+					var oA960 = e.target.result;
+					if (oA960 != undefined) {
+						
+						for(var j=0; j<vetorMateriais.length; j++){
+							if(oA960.matnr == vetorMateriais[j].matnr){
+								vetorResultMateriais.push(vetorMateriais[j]);
+								break;
+							}
+						}
+						var oModel = new sap.ui.model.json.JSONModel(vetorResultMateriais);
+						that.getView().setModel(oModel, "materiaisCadastrados");
+					}
+					
+					if(i == vetorMateriais.length - 1){
+						resolve();
+					}
+				};
+			}
+		},
 		/// EVENTOS CAMPOS							<<<<<<<<<<<<
 		
 		onChangeTipoPedido: function(evt) {
+			
+			//Toda vez tem que resetar a tabela de preço pra ativar novamente o evento e filtrar os materiais com preço.
+			this.byId("idTabelaPreco").setSelectedKey();
+			
+			
 			var that = this;
 			var tipoPedido = "";
 			var vetorAux = [];
@@ -563,9 +602,10 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			tipoPedido = oSource.getSelectedKey();
 			
+			
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", tipoPedido);
 			
-			this.onBloqueioPorTipoPedido(tipoPedido);
+			this.onBloqueioFormaPagamento(tipoPedido);
 			
 			var open = indexedDB.open("VB_DataBase");
 			open.onerror = function() {
@@ -631,35 +671,75 @@ sap.ui.define([
 		},
 		
 		onChangeTabelaPreco: function(evt) {
+			var that = this;
 			var oSource = evt.getSource();
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oSource.getSelectedKey());
-		},
+			var vetorResultMateriais = [];
+			//PRECISA PREENCHER O TIPO DE PEDIDO ANTES, POIS O TIPO DE PEDIDO CARREGA OS MATERIAIS PARA CADA TIPO.
+			//DEPOIS DISSO ESSE METODO IRÁ FILTRAR TODOS OS MATERIAIS COM PREÇO.
+			
+			var open = indexedDB.open("VB_DataBase");
+			
+			open.onerror = function() {
+				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+			
+			open.onsuccess = function() {
+				var db = open.result;
+			
+				var tipoPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+				if(tipoPedido == ""){
+					
+					MessageBox.show("Selecione Tipo de pedido!", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Pre-requisito!",
+						actions: [MessageBox.Action.OK],
+						onClose: function(){
+							oSource.setSelectedKey();
+						}
+					});
+					
+				}else{
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oSource.getSelectedKey());
+					var promise = new Promise(function(resolve, reject) {
+						that.onCarregaMateriaisComPreco(db, oSource.getSelectedKey(), oVetorMateriais, resolve, reject, vetorResultMateriais);
+					});
 
+					promise.then(function() {
+						oVetorMateriais = vetorResultMateriais;
+					});
+				}
+			};
+		},
+		
 		onChangeTipoTransporte: function(evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oSource.getSelectedKey());
 		},
-
+		
 		onChangeDataPedido: function() {
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", this.byId("idDataPedido").getValue());
 		},
-
+		
 		onChangeObservacoes: function(evt) {
 			var oObservacoes = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", oObservacoes.getValue());
 		},
-
+		
 		onChangeAuditoriaObservacoes: function(evt) {
 			var oObservacoes = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", oObservacoes.getValue());
 		},
-
+		
 		/// FIM EVENTOS CAMPOS
-
+		
 		/// EVENTOS UTILITARIOS						<<<<<<<<<<<<
-
+		
 		bloquearCampos: function() {
-
+			
 			this.byId("idEstabelecimento").setProperty("enabled", false);
 			this.byId("idTipoPedido").setProperty("enabled", false);
 			this.byId("idVencimento1").setProperty("enabled", false);
