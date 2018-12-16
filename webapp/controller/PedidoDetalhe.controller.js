@@ -555,7 +555,8 @@ sap.ui.define([
 			};
 		},
 		
-		onCarregaMateriaisComPreco: function(db, tabPreco, vetorMateriais,  resolve, reject, vetorResultMateriais){
+		onCarregaMateriaisComPreco: function(db, tabPreco, vetorMateriais){
+			var vetorResultMateriais = [];
 			var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
 			var that = this;
 			
@@ -579,10 +580,6 @@ sap.ui.define([
 						}
 						var oModel = new sap.ui.model.json.JSONModel(vetorResultMateriais);
 						that.getView().setModel(oModel, "materiaisCadastrados");
-					}
-					
-					if(i == vetorMateriais.length - 1){
-						resolve();
 					}
 				};
 			}
@@ -704,13 +701,7 @@ sap.ui.define([
 					
 				}else{
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oSource.getSelectedKey());
-					var promise = new Promise(function(resolve, reject) {
-						that.onCarregaMateriaisComPreco(db, oSource.getSelectedKey(), oVetorMateriais, resolve, reject, vetorResultMateriais);
-					});
-
-					promise.then(function() {
-						oVetorMateriais = vetorResultMateriais;
-					});
+					that.onCarregaMateriaisComPreco(db, oSource.getSelectedKey(), oVetorMateriais);
 				}
 			};
 		},
