@@ -83,7 +83,7 @@ sap.ui.define([
 								keyPath: "matnr",
 								unique: true
 							});
-							
+
 							objMateriais.createIndex("mtpos", "mtpos", {
 								unique: false
 							});
@@ -1230,7 +1230,7 @@ sap.ui.define([
 																																																		idStatusPedido: parseInt(retornoPVPrepostoTopo.results[i].Idstatuspedido),
 																																																		kunnr: retornoPVPrepostoTopo.results[i].Kunnr,
 																																																		werks: retornoPVPrepostoTopo.results[i].Werks,
-																																																		repres: retornoPVPrepostoTopo.results[i].Lifnr,
+																																																		// repres: retornoPVPrepostoTopo.results[i].Lifnr,
 																																																		tipoPedido: retornoPVPrepostoTopo.results[i].Auart,
 																																																		situacaoPedido: retornoPVPrepostoTopo.results[i].Situacaopedido,
 																																																		ntgew: parseInt(retornoPVPrepostoTopo.results[i].Ntgew),
@@ -1287,7 +1287,7 @@ sap.ui.define([
 																																																		valUtilizadoVerbaPrazoMed: parseFloat(0),
 
 																																																		codRepres: CodRepres,
-																																																		codUsr: retornoPVPrepostoTopo.results[i].Usuario,
+																																																		codUsr: parseInt(retornoPVPrepostoTopo.results[i].Usuario),
 																																																		tipoUsuario: retornoPVPrepostoTopo.results[i].Tipousuario,
 																																																		valCampBrinde: parseFloat(0),
 																																																		valCampEnxoval: parseFloat(0),
@@ -1298,7 +1298,7 @@ sap.ui.define([
 																																																		valTotalExcedenteNaoDirecionadoBonif: 0
 																																																	};
 
-																																																	var requestPVPrepostoTopo = objPVPrepostoTopo.add(objBancoPVPrepostoTopo);
+																																																	var requestPVPrepostoTopo = objPVPrepostoTopo.put(objBancoPVPrepostoTopo);
 
 																																																	requestPVPrepostoTopo.onsuccess = function(event) {
 																																																		console.log("Dados Topo PV Preposto inseridos. " + event);
@@ -1355,7 +1355,7 @@ sap.ui.define([
 																																																				maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra)
 																																																			};
 
-																																																			var requestPVPrepostoItem = objPVPrepostoItem.add(objBancoPVPrepostoItem);
+																																																			var requestPVPrepostoItem = objPVPrepostoItem.put(objBancoPVPrepostoItem);
 
 																																																			requestPVPrepostoItem.onsuccess = function(event) {
 																																																				console.log("Dados Item PV Preposto inseridos. " + event);
@@ -1396,7 +1396,7 @@ sap.ui.define([
 																																																						Slddia: "0"
 																																																					};
 
-																																																					var requestEntregaFutura = objEntregaFutura.add(objBancoEntregaFutura);
+																																																					var requestEntregaFutura = objEntregaFutura.put(objBancoEntregaFutura);
 
 																																																					requestEntregaFutura.onsuccess = function(event) {
 																																																						console.log("Dados Entrega Futura inseridos. " + event);
@@ -1406,6 +1406,22 @@ sap.ui.define([
 																																																						console.log("Dados Entrega Futura não foram inseridos :" + event);
 																																																					};
 																																																				}
+
+																																																				MessageBox.show(
+																																																					"Tabelas carregadas com sucesso!", {
+																																																						icon: MessageBox.Icon.SUCCESS,
+																																																						title: "Carregamento Completo",
+																																																						actions: [
+																																																							MessageBox.Action.OK
+																																																						],
+																																																						onClose: function() {
+																																																							if (that._ItemDialog) {
+																																																								that._ItemDialog.destroy(true);
+																																																							}
+
+																																																							that.onUpdateDateTime();
+																																																						}
+																																																					});
 																																																			},
 																																																			error: function(error) {
 																																																				console.log(error);
@@ -1425,23 +1441,24 @@ sap.ui.define([
 																																																that.onMensagemErroODATA(error.statusCode);
 																																															}
 																																														}); // GetPedidoPrepostoTopo
+																																													} else {
+																																														MessageBox.show(
+																																															"Tabelas carregadas com sucesso!", {
+																																																icon: MessageBox.Icon.SUCCESS,
+																																																title: "Carregamento Completo",
+																																																actions: [
+																																																	MessageBox.Action.OK
+																																																],
+																																																onClose: function() {
+																																																	if (that._ItemDialog) {
+																																																		that._ItemDialog.destroy(true);
+																																																	}
+
+																																																	that.onUpdateDateTime();
+																																																}
+																																															});
 																																													}
 
-																																													MessageBox.show(
-																																														"Tabelas carregadas com sucesso!", {
-																																															icon: MessageBox.Icon.SUCCESS,
-																																															title: "Carregamento Completo",
-																																															actions: [
-																																																MessageBox.Action.OK
-																																															],
-																																															onClose: function() {
-																																																if (that._ItemDialog) {
-																																																	that._ItemDialog.destroy(true);
-																																																}
-
-																																																that.onUpdateDateTime();
-																																															}
-																																														});
 																																												},
 																																												error: function(error) {
 																																													console.log(error);
@@ -1665,7 +1682,7 @@ sap.ui.define([
 
 						// VERT -> Representante
 						// Diferente de VERT -> Aprovador
-						var bAprovador = result1.buGroup =! "VERT";
+						var bAprovador = result1.buGroup = !"VERT";
 						var bPreposto = sTipoUsuario == "2";
 						var bRepresentante = (sTipoUsuario == "1" && !bAprovador);
 
@@ -1678,7 +1695,6 @@ sap.ui.define([
 								}
 							}
 						}
-						
 
 						/*Preposto-> Oculto aprovações e entrega futura*/
 						if (bPreposto) {
