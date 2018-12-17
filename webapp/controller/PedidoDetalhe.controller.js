@@ -76,9 +76,17 @@ sap.ui.define([
 		},
 
 		onCarregaCliente: function() {
-
+				
+			var preposto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			
+			if(preposto == "1"){
+				var codUsr = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
+			}else if(preposto == "2"){
+				codUsr = this.getOwnerComponent().getModel("modelAux").getProperty("/Preposto");
+			}
+				
 			this.byId("idCodCliente").setValue(this.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + "-" +
-				this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres") + "-" + this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"));
+				this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres") + "-" + codUsr);
 			this.byId("idNome").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Name1"));
 			this.byId("idCNPJ").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Stcd1"));
 			this.byId("idEndereco").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Stras"));
@@ -402,6 +410,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oPrePedido.tabPreco);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oPrePedido.tipoNegociacao);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oPrePedido.tipoPedido);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Preposto", oPrePedido.codUsr);
 					
 					//Seleciona o valor do combo
 					that.byId("idTabelaPreco").setSelectedKey(oPrePedido.tabPreco);
@@ -2064,11 +2073,22 @@ sap.ui.define([
 
 									//Regra para totalizar o total do pedido.
 									if (vetorAux.length == 0) {
-
+										
+										if(objItensPedidoTemplate[i].kbetr == undefined){
+											objItensPedidoTemplate[i].kbetr = 0;
+										}
+										if(objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined){
+											objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										}
+										if(objItensPedidoTemplate[i].maxDescPermitido == undefined){
+											objItensPedidoTemplate[i].maxDescPermitido = 0;
+										}
 										var objAuxItem = {
 											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 											index: objItensPedidoTemplate[i].index,
 											knumh: objItensPedidoTemplate[i].knumh,
+											mtpos: objItensPedidoTemplate[i].mtpos,
+											kbetr: objItensPedidoTemplate[i].kbetr,
 											zzRegra: objItensPedidoTemplate[i].zzRegra,
 											zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
 											knumhExtra: objItensPedidoTemplate[i].knumhExtra,
@@ -2109,12 +2129,24 @@ sap.ui.define([
 									}
 
 									if (inseridoAux == false) {
+										
+										if(objItensPedidoTemplate[i].kbetr == undefined){
+											objItensPedidoTemplate[i].kbetr = 0;
+										}
+										if(objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined){
+											objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										}
+										if(objItensPedidoTemplate[i].maxDescPermitido == undefined){
+											objItensPedidoTemplate[i].maxDescPermitido = 0;
+										}
 
 										var objAuxItem1 = {
 											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 											index: objItensPedidoTemplate[i].index,
 											knumh: objItensPedidoTemplate[i].knumh,
 											zzRegra: objItensPedidoTemplate[i].zzRegra,
+											mtpos: objItensPedidoTemplate[i].mtpos,
+											kbetr: objItensPedidoTemplate[i].kbetr,
 											zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
 											knumhExtra: objItensPedidoTemplate[i].knumhExtra,
 											zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
@@ -2156,11 +2188,22 @@ sap.ui.define([
 									}
 
 									if (inseridoAuxDiluicao == false) {
-
+										
+										if(objItensPedidoTemplate[i].kbetr == undefined){
+											objItensPedidoTemplate[i].kbetr = 0;
+										}
+										if(objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined){
+											objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										}
+										if(objItensPedidoTemplate[i].maxDescPermitido == undefined){
+											objItensPedidoTemplate[i].maxDescPermitido = 0;
+										}
 										var objAuxItem2 = {
 											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 											index: objItensPedidoTemplate[i].index,
 											knumh: objItensPedidoTemplate[i].knumh,
+											mtpos: objItensPedidoTemplate[i].mtpos,
+											kbetr: objItensPedidoTemplate[i].kbetr,
 											zzRegra: objItensPedidoTemplate[i].zzRegra,
 											zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
 											knumhExtra: objItensPedidoTemplate[i].knumhExtra,

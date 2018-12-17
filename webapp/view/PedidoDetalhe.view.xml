@@ -255,10 +255,10 @@
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
-											<Label text="Valor campanha global (R$)" class="bold"  />
-											<Input id="idValTotCampGlobal" value="{modelDadosPedido>/ValTotalCampGlobal}" enabled="false" class="desabilitado" type="Number"/>
-											<Label text="Valor a ser utilizado (R$)"/>
-											<Input id="idValCampGlobal" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampGlobal}"/>
+											<Label text="Valor campanha global (R$)" class="bold" visible="false" />
+											<Input id="idValTotCampGlobal" value="{modelDadosPedido>/ValTotalCampGlobal}" enabled="false" visible="false" class="desabilitado" type="Number"/>
+											<Label text="Valor a ser utilizado (R$)" visible="false"/>
+											<Input id="idValCampGlobal" enabled="true" visible="false" value="{modelDadosPedido>/ValUtilizadoCampGlobal}"/>
 										</f:content>
 									</f:SimpleForm>
 									<Toolbar>
