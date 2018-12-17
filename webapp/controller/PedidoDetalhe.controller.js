@@ -35,7 +35,6 @@ sap.ui.define([
 			this.getView().setModel(this.getView().getModel("modelAux"));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
 
-			that.onCarregaCliente();
 			this.byId("tabItensPedidoStep").setProperty("enabled", false);
 			this.byId("tabBalancoVerbaStep").setProperty("enabled", false);
 			this.byId("tabTotalStep").setProperty("enabled", false);
@@ -67,6 +66,7 @@ sap.ui.define([
 						console.log("Carregando dados PrePedido");
 						that.onCarregaDadosPedido(db);
 					}
+					
 				});
 			};
 		},
@@ -77,14 +77,15 @@ sap.ui.define([
 
 		onCarregaCliente: function() {
 				
-			var preposto = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			// var sTipoUsuario = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			var sTipoUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario");
+
+			/* Se o usuário conectado for representante (sTipoUsuario = 1), exibo o código do preposto que consta no pedido*/
+			var codUsr = (sTipoUsuario == "1") ? 
+			this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/CodUsr") :
+			/* Se o usuário conectado for preposto (sTipoUsuario = 2), exibo o código do usuário que está conectado no sistema*/
+			this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr") ;
 			
-			if(preposto == "1"){
-				var codUsr = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
-			}else if(preposto == "2"){
-				codUsr = this.getOwnerComponent().getModel("modelAux").getProperty("/Preposto");
-			}
-				
 			this.byId("idCodCliente").setValue(this.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + "-" +
 				this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres") + "-" + codUsr);
 			this.byId("idNome").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Name1"));
@@ -311,6 +312,8 @@ sap.ui.define([
 
 			var numeroPed = CodRepres + "." + data + "." + horario;
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", numeroPed);
+			
+			this.onCarregaCliente();
 		},
 
 		onCarregaDadosPedido: function(db) {
@@ -410,7 +413,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oPrePedido.tabPreco);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oPrePedido.tipoNegociacao);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oPrePedido.tipoPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Preposto", oPrePedido.codUsr);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/CodUsr", oPrePedido.codUsr);
 					
 					//Seleciona o valor do combo
 					that.byId("idTabelaPreco").setSelectedKey(oPrePedido.tabPreco);
@@ -419,6 +422,8 @@ sap.ui.define([
 					that.byId("idTipoPedido").setSelectedKey(oPrePedido.tipoPedido);
 					
 					that.onBloqueioFormaPagamento(oPrePedido.tipoPedido);
+					
+					that.onCarregaCliente();
 					
 					var promise = new Promise(function(resolve, reject) {
 						that.onCarregaMateriais(db, oPrePedido.tipoPedido, resolve);
@@ -451,7 +456,7 @@ sap.ui.define([
 					
 					// var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
 					// that.getView().setModel(oModel, "materiaisCadastrados");
-					
+
 					var storeItensPedido = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
 					storeItensPedido.openCursor().onsuccess = function(event) {
 						// consulta resultado do event
