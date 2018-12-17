@@ -669,7 +669,6 @@ sap.ui.define([
 			} else {
 				this.byId("idPercEntrada").setEnabled(true);
 			}
-			
 		},
 
 		onBloqueiaValorEntrada: function(evt) {
@@ -861,6 +860,7 @@ sap.ui.define([
 							oItemPedido.maktx = oMaterial.maktx;
 							oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
 							oItemPedido.mtpos = oMaterial.mtpos;
+							oItemPedido.kbetr = 0;
 							oItemPedido.knumh = 0;
 							oItemPedido.zzRegra = 0;
 							oItemPedido.zzGrpmat = 0;
@@ -1168,6 +1168,7 @@ sap.ui.define([
 							oItemPedido.maktx = oMaterial.maktx;
 							oItemPedido.mtpos = oMaterial.mtpos;
 							oItemPedido.ntgew = oMaterial.ntgew;
+							oItemPedido.kbetr = 0;
 							oItemPedido.knumh = 0;
 							oItemPedido.zzRegra = 0;
 							oItemPedido.zzGrpmat = 0;
@@ -1678,9 +1679,7 @@ sap.ui.define([
 			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", valTotalExcedenteBonif.toFixed(2));
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
-				//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
-				TotalPedidoDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
-				Total += objItensPedidoTemplate[i].zzVprod * objItensPedidoTemplate[i].zzQnt;
+				
 				Qnt += objItensPedidoTemplate[i].zzQnt;
 				QntProdutos += 1;
 
@@ -1690,7 +1689,11 @@ sap.ui.define([
 				// >>>>>>>>>>>> PADRÃO PARA AMBOS OS TIPOS DE ITEM (NORMAL / DILUÍDO) >>>>>>>>>>>>
 
 				if (objItensPedidoTemplate[i].tipoItem == "Normal") {
-
+					
+					//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
+					TotalPedidoDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
+					Total += objItensPedidoTemplate[i].zzVprod * objItensPedidoTemplate[i].zzQnt;
+						
 					if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
 						//VALOR DE COMISSÃO GERADA NO PEDIDO
 						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
@@ -1731,7 +1734,11 @@ sap.ui.define([
 					totalExcedenteDescontosDiluicao += objItensPedidoTemplate[i].zzValorDiluido;
 
 					if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
-
+						
+						//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
+						TotalPedidoDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
+						Total += objItensPedidoTemplate[i].zzVprod * objItensPedidoTemplate[i].zzQnt;
+					
 						//VALOR DE COMISSÃO GERADA NO PEDIDO
 						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
 							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
@@ -2802,7 +2809,7 @@ sap.ui.define([
 			//Quando existe entrada
 			else if (existeEntrada === true) {
 
-				if (valorEntradaPedido > 0 || valorEntradaPedido != null || valorEntradaPedido != undefined) {
+				if (valorEntradaPedido > 0 && valorEntradaPedido != null && valorEntradaPedido != undefined) {
 
 					valorDasparcelas = Math.round(parseFloat((valTotPed - valorEntradaPedido) / quantidadeParcelas) * 100) / 100;
 					var base = 0;
@@ -2885,10 +2892,10 @@ sap.ui.define([
 							this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", 0);
 						}
 					}
-				} else if (percEntradaPedido > 0 || percEntradaPedido != null || percEntradaPedido != undefined) {
+				} else if (percEntradaPedido > 0 && percEntradaPedido != null && percEntradaPedido != undefined) {
 
 					// valorDasparcelas = (valTotPed - (percEntradaPedido * valTotPed)) / quantidadeParcelas;
-					valorEntradaPedido = percEntradaPedido * valTotPed;
+					valorEntradaPedido = percEntradaPedido * valTotPed / 100;
 					valorDasparcelas = Math.round(parseFloat((valTotPed - valorEntradaPedido) / quantidadeParcelas) * 100) / 100;
 
 					base = 0;
@@ -3801,7 +3808,7 @@ sap.ui.define([
 					title: "Corrigir o campo!",
 					actions: [MessageBox.Action.OK]
 				});
-			} else if (this.byId("idIntervaloParcelas").getValue() == "" || this.byId("idIntervaloParcelas").getValue() == undefined) {
+			} else if (this.byId("idIntervaloParcelas").getValue() == "" || this.byId("idIntervaloParcelas").getValue() == undefined || this.byId("idIntervaloParcelas").getValue() == "0") {
 				MessageBox.show("Preencher o intervalo entre as parcelas!", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Corrigir o campo!",
@@ -4307,6 +4314,29 @@ sap.ui.define([
 
 		onSubmitParcela2: function() {
 			this.byId("idIntervaloParcelas").focus();
+		},
+		
+		onSubmitParcela3: function() {
+			var that = this;
+			
+			if(this.byId("idIntervaloParcelas").getValue() > "1"){
+				
+				MessageBox.show("Colocar intervalo entre as parcelas maior que 0. ", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Parcelamento não permitido!",
+					actions: [MessageBox.Action.OK],
+					onClose: function(){
+						that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+						that.byId("idIntervaloParcelas").focus();
+						that.byId("idIntervaloParcelas").setValueState("Error");
+					}
+				});
+				
+			}else{
+				that.byId("idIntervaloParcelas").setValueState("None");
+				this.getOwnerComponent().getModel("modelAux").setProperty("/IntervaloParcelas", this.byId("idIntervaloParcelas").getValue());
+			}
+			
 		},
 
 		onFormatterzzVprodDesc: function(value) {

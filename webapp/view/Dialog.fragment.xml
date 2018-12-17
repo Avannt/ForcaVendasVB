@@ -10,7 +10,7 @@
 			<StandardListItem 
 				id="sliItens" 
 				title="{PedidosEF>Vbeln}" 
-				description="{PedidosEF>NameOrg1}"
+				description=""
 				iconDensityAware="false"
 				iconInset="false" 
 				type="Active"

@@ -74,7 +74,7 @@
 											<Label text="Quantidade de parcelas *"/>
 											<Input id="idQuantParcelas" type="Number" value="{modelDadosPedido>/QuantParcelas}" submit="onSubmitParcela2"/>
 											<Label text="Dias de intervalo entre as parcelas *"/>
-											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}" submit="onSubmitParcela3"/>
+											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}" />
 											<Label text="Existe entrada"/>
 											<CheckBox id="idCheckEntrada" select="onExisteEntrada" />
 											<Label text="Valor (R$)"/>
