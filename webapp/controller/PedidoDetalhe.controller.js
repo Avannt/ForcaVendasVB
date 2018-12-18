@@ -14,7 +14,7 @@ sap.ui.define([
 	var indexItem;
 	var verbaDisponivel;
 	var oVetorTabPreco = [];
-	var oVetorTipoTransporte = [];
+	var oVetorTipoTransporte = []; 
 	var oVetorTipoNegociacao = [];
 	var oVetorTiposPedidos = [];
 	var objPrePedidoTemplate = [];
