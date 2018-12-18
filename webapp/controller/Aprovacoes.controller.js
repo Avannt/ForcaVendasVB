@@ -149,7 +149,7 @@ sap.ui.define([
 					this.getView().addDependent(this._ItemDialog);
 				}
 
-				this.onBloquearVerbas();
+				// this.onBloquearVerbas();
 
 				this._ItemDialog.open();
 
@@ -555,7 +555,7 @@ sap.ui.define([
 				this.getView().addDependent(this._ItemDialog);
 			}
 
-			this.onBloquearCampos();
+			// this.onBloquearCampos();
 
 			this._ItemDialog.open();
 
@@ -751,6 +751,11 @@ sap.ui.define([
 				this._ItemDialog.destroy(true);
 			}
 		},
+<<<<<<< HEAD
+		
+		onBloquearVerbas: function() {
+
+=======
 
 		onExit: function() {
 
@@ -758,11 +763,21 @@ sap.ui.define([
 		
 		onBloquearVerbas: function(){
 			
+>>>>>>> refs/heads/master
 			var oModel = this.getView().getModel("ItemAprovar");
 			var nivelAprovacao = oModel.getProperty("/Bugruop");
+<<<<<<< HEAD
+
+			// nivelAprovacao = "ZCO";
+			// nivelAprovacao = "ZSN";
+			// nivelAprovacao = "ZSR";
+			nivelAprovacao = "ZPJ";
+
+=======
 			
 			nivelAprovacao = "ZCO";
 			
+>>>>>>> refs/heads/master
 			if (nivelAprovacao == "ZCO") {
 				
 				//Desc - dd
@@ -850,9 +865,15 @@ sap.ui.define([
 				//Amostra - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaAmostra").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setVisible(false);
+<<<<<<< HEAD
+
+			} else if (nivelAprovacao == "ZPJ") {
+
+=======
 				
 			} else if (nivelAprovacao == "ZVB") {
 				
+>>>>>>> refs/heads/master
 				//Desc - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(true);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(true);
@@ -901,9 +922,18 @@ sap.ui.define([
 
 			var oModel = this.getView().getModel("ItemAprovar");
 			var nivelAprovacao = oModel.getProperty("/Bugruop");
+<<<<<<< HEAD
+
+			// nivelAprovacao = "ZCO";
+			// nivelAprovacao = "ZSN";
+			// nivelAprovacao = "ZSR";
+			nivelAprovacao = "ZPJ";
+
+=======
 			
 			nivelAprovacao = "ZCO";
 			
+>>>>>>> refs/heads/master
 			if (nivelAprovacao == "ZCO") {
 
 				sap.ui.getCore().byId("idRepresentante").setEnabled(false);
@@ -950,7 +980,7 @@ sap.ui.define([
 				sap.ui.getCore().byId("idAprovador3").setVisible(true);
 				sap.ui.getCore().byId("idAprovador4").setVisible(false);
 
-			} else if (nivelAprovacao == "ZVB") {
+			} else if (nivelAprovacao == "ZPJ") {
 
 				sap.ui.getCore().byId("idRepresentante").setEnabled(false);
 				sap.ui.getCore().byId("idAprovador1").setEnabled(false);

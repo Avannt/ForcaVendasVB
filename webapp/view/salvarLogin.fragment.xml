@@ -11,7 +11,7 @@
 					<f:formElements>
 						<f:FormElement label="Usuário">
 							<f:fields>
-								<Input id="idUsuario" type="Numeric" placeholder="" submit="onLoginChange">
+								<Input id="idUsuario" submit="onLoginChange">
 									<layoutData>
 										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
 									</layoutData>
@@ -20,7 +20,7 @@
 						</f:FormElement>
 						<f:FormElement label="Senha">
 							<f:fields>
-								<Input id="idSenha" type="Password" placeholder="" submit="" class="">
+								<Input id="idSenha" type="Password" submit="onDialogChecarLoginsButton">
 									<layoutData>
 										<l:GridData span="XL8 L8 M8 S12" linebreakXL="false" linebreakS="true"/>
 									</layoutData>

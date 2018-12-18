@@ -2840,7 +2840,7 @@ sap.ui.define([
 
 					// mediaPonderada = ((1 * valorDasparcelas) + somatoriaParcelas) / valTotPed;
 					mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-
+					
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", mediaPonderada);
 
 					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
@@ -2919,15 +2919,17 @@ sap.ui.define([
 					}
 					mediaPonderada = (base + valorInterm) / valTotPed;
 					mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-
+						
 					// //COMEÇA EM 1 POR QUE A PRIMEIRA PARCELA É DEFINIDO.
 					// for (i = 1; i < quantidadeParcelas; i++) {
 					// 	somatoriaParcelas = (valorDasparcelas * intervaloParcelas);
 					// }
-
+						
 					// mediaPonderada = ((diasPrimeiraParcela * valorDasparcelas) + somatoriaParcelas) / valTotPed * quantidadeParcelas;
 					// mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-
+					
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", mediaPonderada);
+					
 					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 						if (valTotPed < valorPedMin && mediaPonderada >= prazoMinAvista) {
 
