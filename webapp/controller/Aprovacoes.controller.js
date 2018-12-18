@@ -19,59 +19,59 @@ sap.ui.define([
 		},
 
 		onCarregaExcedentes: function() {
-
+			
 			var Vlrdsc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
 			var Vlrdsccom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
 			var Vlrdscdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
 			var Vlrdscvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
 			var Vlrdscvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
 			var Valtotexcndirdesc = Vlrdsc - (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb);
-
+			
 			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
 			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
 			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
 			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
 			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
 			var Valtotexcndirprazo = Vlrprz - (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb);
-
+			
 			var Vlrbri = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbri"));
 			var Vlrbrivm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
 			var Vlrbricom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
 			var Vlrbridd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
 			var Vlrbrivvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
 			var ValtotexcndirBrinde = Vlrbri - (Vlrbrivm + Vlrbricom + Vlrbridd + Vlrbrivvb);
-
+			
 			var Vlramo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramo"));
 			var Vlramovm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
 			var Vlramocom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
 			var Vlramodd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
 			var Vlramovvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
 			var ValtotexcndirAmostra = Vlramo - (Vlramovm + Vlramocom + Vlramodd + Vlramovvb);
-
+			
 			var Vlrbon = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbon"));
 			var Vlrbonvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
 			var Vlrboncom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
 			var Vlrbondd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
 			var Vlrbonvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
 			var ValtotexcndirBonif = Vlrbon - (Vlrbonvm + Vlrboncom + Vlrbondd + Vlrbonvvb);
-
+			
 			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc.toFixed(2));
 			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirprazo", Valtotexcndirprazo.toFixed(2));
 			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBrinde", ValtotexcndirBrinde.toFixed(2));
 			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirAmostra", ValtotexcndirAmostra.toFixed(2));
 			this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif.toFixed(2));
-
+			
 			//Atualiza o total de excedente para ser destinado.
 			var totalExc = Vlramo + Vlrprz + Vlrbri + Vlrbon + Vlrdsc;
 			this.getView().getModel("ItemAprovar").setProperty("/Vlrexc", totalExc.toFixed(2));
-
+			
 		},
-
+		
 		onCarregaLimites: function() {
-
+			
 			var that = this;
 			this.byId("idTableEnvioPedidos").setBusy(true);
-
+			
 			var oModel = that.getView().getModel();
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
@@ -274,15 +274,15 @@ sap.ui.define([
 		onDestinaBonif: function(evt) {
 			var ValtotexcndirBonif = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif"));
 
-			var Vlrbon = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbon"));
-			var Vlrboncom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
-			var Vlrbondd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
-			var Vlrbonvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
-			var Vlrbonvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
-			var somaDosDestinados = Vlrboncom + Vlrbondd + Vlrbonvm + Vlrbonvvb;
-			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrbon + ")";
+			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
+			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
+			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
+			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
+			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
+			var somaDosDestinados = Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb;
+			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrprz + ")";
 
-			if (somaDosDestinados > Vlrbon) {
+			if (somaDosDestinados > Vlrprz) {
 				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueStateText(msg);
 
@@ -297,7 +297,7 @@ sap.ui.define([
 
 			} else {
 
-				ValtotexcndirBonif = Vlrbon - somaDosDestinados;
+				ValtotexcndirBonif = Vlrprz - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif.toFixed(2));
 
 				this.onCalculaTotalDestinar();
@@ -566,12 +566,12 @@ sap.ui.define([
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
 			var oModel = this.getView().getModel();
-			
+
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
-			
+
 			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
-			
+
 			var aux = {
 				Nrpedcli: String(itemAprovar.Nrpedcli),
 				Aprov: String(itemAprovar.Aprov),
@@ -601,83 +601,141 @@ sap.ui.define([
 				VlrbonVm: String(itemAprovar.Vlrbonvm),
 				VlrbonDd: String(itemAprovar.Vlrbondd),
 				VlrbonVvb: String(itemAprovar.Vlrbonvvb),
-				Obscom: String(itemAprovar.Obscom),
-				Obsdd: String(itemAprovar.Obsdd),
-				Obsvm: String(itemAprovar.Obsvm),
-				Obsvvb: String(itemAprovar.Obsvvb),
 				Vlrdst: String(itemAprovar.Vlrdst)
 			};
-			
+
 			oModel.create("/AprovarOV", aux, {
 				success: function(retorno) {
 					oItensAprovar = [];
-					
-					//Pedido enviado para o próximo aprovador
-					if (retorno.Number == "001") {
-						
-						sap.m.MessageBox.show(
-							retorno.EMessage, {
-								icon: sap.m.MessageBox.Icon.SUCCESS,
-								title: "Sucesso!",
-								actions: [sap.m.MessageBox.Action.OK],
-								onClose: function(oAction) {
-									
-									if (that._ItemDialog) {
-										that._ItemDialog.destroy(true);
-									}
-									
-									that.onBuscaPedidos();
-								}
-							}
-						);
-						//Pedido criado com sucesso
-					} else if (retorno.Number == "002") {
-						
-						sap.m.MessageBox.show(
-							retorno.EMessage, {
-								icon: sap.m.MessageBox.Icon.SUCCESS,
-								title: "Sucesso!",
-								actions: [sap.m.MessageBox.Action.OK],
-								onClose: function(oAction) {
-									
-									if (that._ItemDialog) {
-										that._ItemDialog.destroy(true);
-									}
-									
-									that.byId("idTableEnvioPedidos").setBusy(true);
-									that.onBuscaPedidos();
-								}
-							}
-						);
-						
-						//Valores precisam ser destinados
-					} else if (retorno.Number == "104") {
-						
-						sap.m.MessageBox.show(
-							retorno.EMessage, {
-								icon: sap.m.MessageBox.Icon.WARNING,
-								title: "O(s) Valor(es) precisa(m) ser destinados!",
-								actions: [sap.m.MessageBox.Action.OK],
-								onClose: function(oAction) {
-									that.onOpenDialog();
-								}
-							}
-						);
-						
-						//Alçada de aprovação não foi configurada.
-					} else if (retorno.Number == "102") {
 
-						sap.m.MessageBox.show(
-							retorno.EMessage + ". Entre em contato com o departamento comercial", {
-								icon: sap.m.MessageBox.Icon.WARNING,
-								title: "Cadastro não realizado!",
-								actions: [sap.m.MessageBox.Action.OK],
-								onClose: function(oAction) {
-									that.byId("idTableEnvioPedidos").setBusy(true);
-								}
-							}
-						);
+					if (that._ItemDialog) {
+						that._ItemDialog.destroy(true);
 					}
+
+					if (retorno.Message == "") {
+						var mensagem = "Pedido aprovado com sucesso!";
+					} else {
+						mensagem = retorno.Message;
+					}
+
+					sap.m.MessageBox.show(
+						mensagem, {
+							icon: sap.m.MessageBox.Icon.SUCCESS,
+							title: "Sucesso!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function(oAction) {
+								
+								that.byId("idTableEnvioPedidos").setBusy(true);
+								
+								oModel.read("/PedidosAprovar", {
+									urlParameters: {
+										"$filter": "IAprovador eq '" + codRepres + "'"
+									},
+									success: function(retorno) {
+										oItensAprovar = [];
+
+										for (var i = 0; i < retorno.results.length; i++) {
+
+											var data = retorno.results[i].Erdat;
+											data = data.substring(6, 8) + "/" + data.substring(4, 6) + "/" + data.substring(0, 4);
+
+											var hora = retorno.results[i].Horaped;
+											hora = hora.substring(0, 2) + ":" + hora.substring(2, 4);
+
+											var aux = {
+												IAprovador: retorno.results[i].IAprovador,
+												Nivel: retorno.results[i].Nivel,
+												Nrpedcli: retorno.results[i].Nrpedcli,
+												Idstatuspedido: retorno.results[i].Idstatuspedido,
+												Kunnr: retorno.results[i].Kunnr,
+												Werks: retorno.results[i].Werks,
+												Lifnr: retorno.results[i].Lifnr,
+												Auart: retorno.results[i].Auart,
+												Situacaopedido: retorno.results[i].Situacaopedido,
+												Ntgew: retorno.results[i].Ntgew,
+												Brgew: retorno.results[i].Brgew,
+												Pltyp: retorno.results[i].Pltyp,
+												Completo: retorno.results[i].Completo,
+												Valminped: retorno.results[i].Valminped,
+												Erdat: data,
+												Horaped: hora,
+												Valorcomissao: retorno.results[i].Valorcomissao,
+												Obsped: retorno.results[i].Obsped,
+												Obsaudped: retorno.results[i].Obsaudped,
+												Existeentradapedido: retorno.results[i].Existeentradapedido,
+												Percentradapedido: retorno.results[i].Percentradapedido,
+												Valorentradapedido: retorno.results[i].Valorentradapedido,
+												Inco1: retorno.results[i].Inco1,
+												Diasprimeiraparcela: retorno.results[i].Diasprimeiraparcela,
+												Quantparcelas: retorno.results[i].Quantparcelas,
+												Intervaloparcelas: retorno.results[i].Intervaloparcelas,
+												Tiponego: retorno.results[i].Tiponego,
+												Aprov: retorno.results[i].Aprov,
+												Provg: retorno.results[i].Provg,
+												Totitens: retorno.results[i].Totitens,
+												Valcomdesc: parseFloat(retorno.results[i].Valcomdesc),
+												Valcampbrinde: parseFloat(retorno.results[i].Valcampbrinde),
+												Valcomutdesc: parseFloat(retorno.results[i].Valcomutdesc),
+												Valverbautdesc: parseFloat(retorno.results[i].Valverbautdesc),
+												Valtotpedido: parseFloat(retorno.results[i].Valtotpedido),
+												Valtotabcampenx: parseFloat(retorno.results[i].Valtotabcampenx),
+												Valtotabcampglob: parseFloat(retorno.results[i].Valtotabcampglob),
+												Valtotabcamppa: parseFloat(retorno.results[i].Valtotabcamppa),
+												Valtotabcampbrinde: parseFloat(retorno.results[i].Valtotabcampbrinde),
+												Valtotexcdesc: parseFloat(retorno.results[i].Valtotexcdesc),
+												Valtotexcndirdesc: parseFloat(retorno.results[i].Valtotexcndirdesc),
+												Valtotexcndirprazo: parseFloat(retorno.results[i].Valtotexcndirprazo),
+												Valtotexcprazo: parseFloat(retorno.results[i].Valtotexcprazo),
+												Valverbapedido: parseFloat(retorno.results[i].Valverbapedido),
+												Valabverba: parseFloat(retorno.results[i].Valabverba),
+												Valcomutprazo: parseFloat(retorno.results[i].Valcomutprazo),
+												Valtotabcomissao: parseFloat(retorno.results[i].Valtotabcomissao),
+												Vlramo: retorno.results[i].Vlramo,
+												VlramoCom: retorno.results[i].VlramoCom,
+												VlramoDd: retorno.results[i].VlramoDd,
+												VlramoVm: retorno.results[i].VlramoVm,
+												VlramoVvb: retorno.results[i].VlramoVvb,
+												Vlrbon: retorno.results[i].Vlrbon,
+												VlrbonCom: retorno.results[i].VlrbonCom,
+												VlrbonDd: retorno.results[i].VlrbonDd,
+												VlrbonVm: retorno.results[i].VlrbonVm,
+												VlrbonVvb: retorno.results[i].VlrbonVvb,
+												Vlrbri: retorno.results[i].Vlrbri,
+												VlrbriCom: retorno.results[i].VlrbriCom,
+												VlrbriDd: retorno.results[i].VlrbriDd,
+												VlrbriVm: retorno.results[i].VlrbriVm,
+												VlrbriVvb: retorno.results[i].VlrbriVvb,
+												Vlrdsc: retorno.results[i].Vlrdsc,
+												VlrdscCom: retorno.results[i].VlrdscCom,
+												VlrdscDd: retorno.results[i].VlrdscDd,
+												VlrdscVm: retorno.results[i].VlrdscVm,
+												VlrdscVvb: retorno.results[i].VlrdscVvb,
+												Vlrdst: retorno.results[i].Vlrdst,
+												Vlrexc: retorno.results[i].Vlrexc,
+												Vlrprz: retorno.results[i].Vlrprz,
+												VlrprzCom: retorno.results[i].VlrprzCom,
+												VlrprzDd: retorno.results[i].VlrprzDd,
+												VlrprzVm: retorno.results[i].VlrprzVm,
+												VlrprzVvb: retorno.results[i].VlrprzVvb,
+											};
+
+											oItensAprovar.push(aux);
+										}
+
+										var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
+										that.getView().setModel(oModelAprovacoes, "PedidosAprovar");
+										that.byId("idTableEnvioPedidos").setBusy(false);
+									},
+									error: function(error) {
+										console.log(error);
+										that.byId("idTableEnvioPedidos").setBusy(false);
+										that.onMensagemErroODATA(error.statusCode);
+									}
+								});
+							}
+						}
+					);
+
 				},
 				error: function(error) {
 					console.log(error);
@@ -685,6 +743,7 @@ sap.ui.define([
 					that.onMensagemErroODATA(error.statusCode);
 				}
 			});
+
 		},
 
 		onCancelar: function() {
@@ -696,145 +755,142 @@ sap.ui.define([
 		onExit: function() {
 
 		},
-
-		onBloquearVerbas: function() {
-
+		
+		onBloquearVerbas: function(){
+			
 			var oModel = this.getView().getModel("ItemAprovar");
 			var nivelAprovacao = oModel.getProperty("/Bugruop");
-
-			// nivelAprovacao = "ZCO";
-			// nivelAprovacao = "ZSN";
-			// nivelAprovacao = "ZSR";
-			nivelAprovacao = "ZVB";
-
+			
+			nivelAprovacao = "ZCO";
+			
 			if (nivelAprovacao == "ZCO") {
-
+				
 				//Desc - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(false);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(false);
-
+				
 				//Prazo - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaPrazo").setVisible(false);
 				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setVisible(false);
-
+				
 				//Brinde - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBrinde").setVisible(false);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setVisible(false);
-
+				
 				//Bonif - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBonif").setVisible(false);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setVisible(false);
-
+				
 				//Amostra - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaAmostra").setVisible(false);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setVisible(false);
-
+				
 				//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+				
 				//Desc - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaDesconto").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setVisible(false);
-
+				
 				//Prazo - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaPrazo").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setVisible(false);
-
+				
 				//Brinde - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBrinde").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setVisible(false);
-
+				
 				//Bonif - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBonf").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setVisible(false);
-
+				
 				//Amostra - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaAmostra").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setVisible(false);
-
+				
 			} else if (nivelAprovacao == "ZSN" || nivelAprovacao == "ZSR") {
-
+				
 				//Desc - dd
-				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(true);
-				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(true);
-
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(false);
+				
 				//Prazo - dd
-				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaPrazo").setVisible(true);
-				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setVisible(true);
-
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaPrazo").setVisible(false);
+				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setVisible(false);
+				
 				//Brinde - dd
-				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBrinde").setVisible(true);
-				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setVisible(true);
-
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBrinde").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setVisible(false);
+				
 				//Bonif - dd
-				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBonif").setVisible(true);
-				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setVisible(true);
-
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBonif").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setVisible(false);
+				
 				//Amostra - dd
-				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaAmostra").setVisible(true);
-				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setVisible(true);
-
+				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaAmostra").setVisible(false);
+				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setVisible(false);
+				
 				//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+				
 				//Desc - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaDesconto").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setVisible(false);
-
+				
 				//Prazo - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaPrazo").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setVisible(false);
-
+				
 				//Brinde - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBrinde").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setVisible(false);
-
+				
 				//Bonif - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBonf").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setVisible(false);
-
+				
 				//Amostra - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaAmostra").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setVisible(false);
-
+				
 			} else if (nivelAprovacao == "ZVB") {
-
+				
 				//Desc - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(true);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(true);
-
+				
 				//Prazo - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaPrazo").setVisible(true);
 				sap.ui.getCore().byId("idComissaoUtilizadaPrazo").setVisible(true);
-
+				
 				//Brinde - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBrinde").setVisible(true);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBrinde").setVisible(true);
-
+				
 				//Bonif - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaBonif").setVisible(true);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaBonif").setVisible(true);
-
+				
 				//Amostra - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaAmostra").setVisible(true);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaAmostra").setVisible(true);
-
+				
 				//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+				
 				//Desc - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaDesconto").setVisible(true);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setVisible(true);
-
+				
 				//Prazo - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaPrazo").setVisible(true);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setVisible(true);
-
+				
 				//Brinde - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBrinde").setVisible(true);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBrinde").setVisible(true);
-
+				
 				//Bonif - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaBonf").setVisible(true);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setVisible(true);
-
+				
 				//Amostra - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaAmostra").setVisible(true);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setVisible(true);
@@ -845,12 +901,9 @@ sap.ui.define([
 
 			var oModel = this.getView().getModel("ItemAprovar");
 			var nivelAprovacao = oModel.getProperty("/Bugruop");
-
-			// nivelAprovacao = "ZCO";
-			// nivelAprovacao = "ZSN";
-			// nivelAprovacao = "ZSR";
-			nivelAprovacao = "ZVB";
-
+			
+			nivelAprovacao = "ZCO";
+			
 			if (nivelAprovacao == "ZCO") {
 
 				sap.ui.getCore().byId("idRepresentante").setEnabled(false);
@@ -875,8 +928,8 @@ sap.ui.define([
 				sap.ui.getCore().byId("idAprovador3").setEnabled(false);
 				sap.ui.getCore().byId("idAprovador4").setEnabled(false);
 
-				sap.ui.getCore().byId("idRepresentante").setVisible(true);
-				sap.ui.getCore().byId("idAprovador1").setVisible(true);
+				sap.ui.getCore().byId("idRepresentante").setVisible(false);
+				sap.ui.getCore().byId("idAprovador1").setVisible(false);
 				sap.ui.getCore().byId("idAprovador2").setVisible(true);
 				sap.ui.getCore().byId("idAprovador3").setVisible(false);
 				sap.ui.getCore().byId("idAprovador3").focus();
@@ -891,9 +944,9 @@ sap.ui.define([
 				sap.ui.getCore().byId("idAprovador4").setEnabled(false);
 				sap.ui.getCore().byId("idAprovador4").focus();
 
-				sap.ui.getCore().byId("idRepresentante").setVisible(true);
-				sap.ui.getCore().byId("idAprovador1").setVisible(true);
-				sap.ui.getCore().byId("idAprovador2").setVisible(true);
+				sap.ui.getCore().byId("idRepresentante").setVisible(false);
+				sap.ui.getCore().byId("idAprovador1").setVisible(false);
+				sap.ui.getCore().byId("idAprovador2").setVisible(false);
 				sap.ui.getCore().byId("idAprovador3").setVisible(true);
 				sap.ui.getCore().byId("idAprovador4").setVisible(false);
 

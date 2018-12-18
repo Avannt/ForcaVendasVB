@@ -144,17 +144,39 @@ sap.ui.define([
 				});
 			};
 
+			// open.onsuccess = function() {
+			// 	var db = open.result;
+
+			// 	var store = db.transaction("EntregaFutura2").objectStore("EntregaFutura2");
+			// 	var request = store.getAll();
+
+			// 	request.onsuccess = function(event) {
+			// 		oPedidoGrid = event.target.result;
+
+			// 		oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
+			// 		that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
+			// 	};
+			// };
 			open.onsuccess = function() {
 				var db = open.result;
 
 				var store = db.transaction("EntregaFutura2").objectStore("EntregaFutura2");
-				var request = store.getAll();
+				var ixEF2 = store.index("Vbeln");
+				var request = ixEF2.openCursor(undefined, "nextunique");
+
+				var oPedidosGrid = [];
 
 				request.onsuccess = function(event) {
 					oPedidoGrid = event.target.result;
 
-					oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-					that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
+					if (oPedidoGrid) {
+						oPedidosGrid.push(oPedidoGrid.value);
+
+						oPedidoGrid.continue();
+					} else {
+						oModel = new sap.ui.model.json.JSONModel(oPedidosGrid);
+						that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
+					}
 				};
 			};
 		},
@@ -168,7 +190,7 @@ sap.ui.define([
 		myFormatterDataImp: function(value) {
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
 				var data = value.split("-");
-				
+
 				var aux = data[0].split("/");
 				var hora = data[1].split(":");
 				// var aux2 = aux[2].substring(2, aux[2].length);
@@ -263,9 +285,9 @@ sap.ui.define([
 
 			var that = this;
 			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
-			
+
 			console.log("teste");
-			
+
 			for (var i = 0; i < oSelectedItems.length; i++) {
 				var nrPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
 
@@ -286,9 +308,9 @@ sap.ui.define([
 							var sMensagem = "Pedido " + sPedido + " necessita ser revisado antes do envio.";
 
 							oTable.setSelectedItem(oListItem, false);
-							
+
 							//sap.m.MessageToast.show(sMensagem);
-							
+
 							MessageBox.show("Pedido " + sPedido + " necessita ser revisado antes do envio.", {
 								icon: MessageBox.Icon.ERROR,
 								title: "Erro",
@@ -367,7 +389,7 @@ sap.ui.define([
 									Zzvproddesc2: String(oItensPedidoGridEnviar[j].zzVprodDesc2),
 									Zzvprodminpermitido: String(oItensPedidoGridEnviar[j].zzVprodMinPermitido),
 									Zzvalordiluido: String(oItensPedidoGridEnviar[j].zzValorDiluido),
-									Zzvalexcedidoitem: String(oItensPedidoGridEnviar[j].zzValExcedidoItem), 
+									Zzvalexcedidoitem: String(oItensPedidoGridEnviar[j].zzValExcedidoItem),
 									Zzqntdiluicao: String(oItensPedidoGridEnviar[j].zzQntDiluicao),
 									Tipoitem2: String(oItensPedidoGridEnviar[j].tipoItem2),
 									Maxdescpermitidoextra: String(oItensPedidoGridEnviar[j].maxDescPermitidoExtra),
@@ -375,7 +397,7 @@ sap.ui.define([
 									Mtpos: String(oItensPedidoGridEnviar[j].mtpos),
 									Kbetr: String(parseInt(oItensPedidoGridEnviar[j].kbetr))
 								};
-								
+
 								oModel.create("/InserirLinhaOV", objItensPedido, {
 									method: "POST",
 									success: function(data) {
@@ -406,9 +428,9 @@ sap.ui.define([
 									Pltyp: String(oPedidosEnviar[i].tabPreco),
 									Completo: oPedidosEnviar[i].completo,
 									Valminped: String(oPedidosEnviar[i].valMinPedido),
-									Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) + 
+									Erdat: String(oPedidosEnviar[i].dataImpl.substr(6, 4) + oPedidosEnviar[i].dataImpl.substr(3, 2) +
 										oPedidosEnviar[i].dataImpl.substr(0, 2)),
-									Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) + 
+									Horaped: String(oPedidosEnviar[i].dataImpl.substr(11, 2) + oPedidosEnviar[i].dataImpl.substr(14, 2) +
 										oPedidosEnviar[i].dataImpl.substr(17, 2)),
 									Obsped: oPedidosEnviar[i].observacaoPedido,
 									Obsaudped: oPedidosEnviar[i].observacaoAuditoriaPedido,
@@ -474,31 +496,31 @@ sap.ui.define([
 									Usuario: String(oPedidosEnviar[i].codUsr),
 									Tipousuario: String(oPedidosEnviar[i].tipoUsuario)
 								};
-								
+
 								oModel.create("/InserirOV", objPedido, {
 									method: "POST",
 									success: function(data) {
-										
+
 										var tx = db.transaction("PrePedidos", "readwrite");
 										var objPedido = tx.objectStore("PrePedidos");
-										
+
 										var requestPrePedidos = objPedido.get(data.Nrpedcli);
-										
+
 										requestPrePedidos.onsuccess = function(e) {
 											var oPrePedido = e.target.result;
-											
+
 											oPrePedido.idStatusPedido = 3;
 											oPrePedido.situacaoPedido = "FIN";
-											
+
 											var requestPutItens = objPedido.put(oPrePedido);
-											
+
 											requestPutItens.onsuccess = function() {
 												MessageBox.show("Pedido: " + data.Nrpedcli + " Enviado!", {
 													icon: MessageBox.Icon.SUCCESS,
 													title: "Pedido enviado!",
 													actions: [MessageBox.Action.OK],
 													onClose: function() {
-														
+
 														for (var o = 0; o < oPedidoGrid.length; o++) {
 															if (oPedidoGrid[o].nrPedCli == data.Nrpedcli) {
 																oPedidoGrid.splice(o, 1);
@@ -506,7 +528,7 @@ sap.ui.define([
 														}
 														// oModel = new sap.ui.model.json.JSONModel();
 														// that.getView().setModel(oModel, "PedidosEnviar");
-														
+
 														oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
 														that.getView().setModel(oModel, "PedidosEnviar");
 														that.byId("table_pedidos").setBusy(false);
@@ -521,7 +543,7 @@ sap.ui.define([
 									}
 								});
 							}
-							
+
 							oModel.submitChanges();
 						}
 					}
@@ -529,34 +551,34 @@ sap.ui.define([
 			};
 		},
 		/*FIM onEnviarPedido*/
-		
+
 		onEnviarEntrega: function(oEvent) {
 			var that = this;
 			var aIndices = this.byId("table_entregas").getSelectedContextPaths();
-			
+
 			if (aIndices.length === 0) {
 				MessageBox.show("Nenhuma linha foi selecionada.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Erro",
 					actions: [MessageBox.Action.OK]
 				});
-				
+
 				return;
 			}
-			
+
 			MessageBox.show("Deseja enviar os itens selecionados?", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Envio de itens",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
 				onClose: function(oAction) {
-					
+
 					if (oAction == sap.m.MessageBox.Action.YES) {
 						var oModel = that.getView().getModel();
 						oModel.setUseBatch(true);
 						oModel.refreshSecurityToken();
-						
+
 						var open = indexedDB.open("VB_DataBase");
-						
+
 						open.onerror = function() {
 							MessageBox.show(open.error.mensage, {
 								icon: MessageBox.Icon.ERROR,
@@ -564,139 +586,171 @@ sap.ui.define([
 								actions: [MessageBox.Action.OK]
 							});
 						};
-						
+
 						open.onsuccess = function() {
 							var db = open.result;
-							
+
 							var oModelEntregas = that.getView().getModel("EntregasEnviar").getData();
-							
-							var tx = db.transaction("EntregaFutura", "readwrite");
-							var objItensEntrega = tx.objectStore("EntregaFutura");
+
+							var vEntregasEnviar = [];
 							var vItensEntregar = [];
-							
+
 							// Separo todos os itens que devem ser entregues
 							for (var i = 0; i < aIndices.length; i++) {
 								var iIndex = aIndices[i].substring(1, 2);
-								
-								vItensEntregar.push(oModelEntregas[iIndex]);
+
+								vEntregasEnviar.push(oModelEntregas[iIndex]);
 							}
-							
-							// Ordeno os itens a entregar por pedido (Vbeln)
-							vItensEntregar.sort(function(a, b) {
-								if (a.Vbeln < b.Vbeln)
-									return -1;
-								if (a.Vbeln > b.Vbeln)
-									return 1;
-								return 0;
+
+							var p1 = new Promise(function(resolv1, reject) {
+								var tx = db.transaction("EntregaFutura2", "readwrite");
+								var objItensEntrega = tx.objectStore("EntregaFutura2");
+								var ixEF2 = objItensEntrega.index("Vbeln");
+
+								var tempItemEntregar = [];
+
+								/* Recupero todas as linhas escolhidas para envio futuro */
+								var req = ixEF2.getAll();
+								req.onsuccess = function(event) {
+									tempItemEntregar = event.target.result;
+
+									var vPromise = [];
+									
+									//  Para cada entrega escolhida pra enviar, percorro todos os itens pendentes para envio
+									for (var i = 0; i < vEntregasEnviar.length; i++) {
+										for (var j = 0; j < tempItemEntregar.length; j++) {
+											/* Verifo se a linha é do pedido em questão */
+											if (vEntregasEnviar[i].Vbeln == tempItemEntregar[j].Vbeln) {
+												vPromise.push(tempItemEntregar[j]);
+											}
+										}
+									}
+									
+									/* Retorno o vetor dos itens para a Promise */
+									resolv1(vPromise);
+								};
 							});
-							
-							// É necessário identificar o último item de cada pedido a ser enviado para fechar um doc
-							// de entrega no Sap.
-							for (var i = 0; i < vItensEntregar.length; i++) {
-								
-								// Verifico se o item atual é o último
-								if (i == vItensEntregar.length - 1) {
-									vItensEntregar[i].Ultitm = "X";
-									continue;
+
+							p1.then(function(vPromise) {
+								vItensEntregar = vPromise;
+
+								// É necessário identificar o último item de cada pedido a ser enviado para fechar um doc
+								// de entrega no Sap.
+								for (var i = 0; i < vItensEntregar.length; i++) {
+
+									// Verifico se o item atual é o último
+									if (i == vItensEntregar.length - 1) {
+										vItensEntregar[i].Ultitm = "X";
+										continue;
+									}
+
+									/* Comparo o elemento atual com o próximo, se o doc for diferente, identifico como sendo o último item*/
+									var iProximo = i + 1;
+									if (vItensEntregar[i].Vbeln !== vItensEntregar[iProximo].Vbeln) {
+										vItensEntregar[i].Ultitm = "X";
+									} else {
+										vItensEntregar[i].Ultitm = "";
+									}
 								}
-								
-								/* Comparo o elemento atual com o próximo, se o doc for diferente, identifico como sendo o último item*/
-								var iProximo = i + 1;
-								if (vItensEntregar[i].Vbeln !== vItensEntregar[iProximo].Vbeln) {
-									vItensEntregar[i].Ultitm = "X";
-								} else {
-									vItensEntregar[i].Ultitm = "X";
-								}
-							}
-							
-							var vetorPromise = [];
-							
-							/* Percorro o vetor para enviar ao Sap */
-							for (var i = 0; i < vItensEntregar.length; i++) {
-								vetorPromise.push(new Promise(function(resolve, reject) {
-									
-									var oItemEntregar = vItensEntregar[i];
-									var tmpItem = {
-										Arktx: oItemEntregar.Arktx,
-										Aubel: oItemEntregar.Aubel,
-										Aupos: oItemEntregar.Aupos,
-										Bstkd: oItemEntregar.Bstkd,
-										Fkimg: String(oItemEntregar.Fkimg),
-										Fkimg2: String(oItemEntregar.Fkimg2),
-										Kunrg: oItemEntregar.Kunrg,
-										Lifnr: oItemEntregar.Lifnr,
-										Matnr: oItemEntregar.Matnr,
-										NameOrg1: oItemEntregar.NameOrg1,
-										NameOrg2: oItemEntregar.NameOrg2,
-										Posnr: oItemEntregar.Posnr,
-										Sldfut: String(oItemEntregar.Sldfut),
-										Ultitm: oItemEntregar.Ultitm,
-										Vbeln: oItemEntregar.Vbeln,
-									};
-									
-									oModel.create("/EntregaFuturaRetorno", tmpItem, {
-										method: "POST",
-										success: function(data) {
-											tx = db.transaction("EntregaFutura", "readwrite");
-											objItensEntrega = tx.objectStore("EntregaFutura");
-											
-											var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
-											
-											requestGetEntrega.onsuccess = function(e) {
-												var oEntrega = e.target.result;
-												
-												oEntrega.Slddia = parseInt(oEntrega.Slddia) + parseInt(oItemEntregar.Fkimg2);
-												
+
+								var vetorPromise = [];
+
+								/* Percorro o vetor para enviar ao Sap */
+								for (var i = 0; i < vItensEntregar.length; i++) {
+									vetorPromise.push(new Promise(function(resolve, reject) {
+
+										var oItemEntregar = vItensEntregar[i];
+										var tmpItem = {
+											Arktx: oItemEntregar.Arktx,
+											Aubel: oItemEntregar.Aubel,
+											Aupos: oItemEntregar.Aupos,
+											Bstkd: oItemEntregar.Bstkd,
+											Fkimg: String(oItemEntregar.Fkimg),
+											Fkimg2: String(oItemEntregar.Fkimg2),
+											Kunrg: oItemEntregar.Kunrg,
+											Lifnr: oItemEntregar.Lifnr,
+											Matnr: oItemEntregar.Matnr,
+											NameOrg1: oItemEntregar.NameOrg1,
+											NameOrg2: oItemEntregar.NameOrg2,
+											Posnr: oItemEntregar.Posnr,
+											Sldfut: String(oItemEntregar.Sldfut),
+											Ultitm: oItemEntregar.Ultitm,
+											Vbeln: oItemEntregar.Vbeln,
+										};
+
+										that.byId("table_entregas").setBusy(true);
+
+										oModel.create("/EntregaFuturaRetorno", tmpItem, {
+											method: "POST",
+											success: function(data) {
+												var tx = db.transaction("EntregaFutura", "readwrite");
+												var objItensEntrega = tx.objectStore("EntregaFutura");
 												tx = db.transaction("EntregaFutura", "readwrite");
 												objItensEntrega = tx.objectStore("EntregaFutura");
-												var requestPutEntrega = objItensEntrega.put(oEntrega);
-												
-												requestPutEntrega.onsuccess = function(e) {
-													var sMensagem = "Item " + oItemEntregar.Matnr + " da Entrega " + oItemEntregar.Vbeln +
-														" enviado com sucesso.";
-													sap.m.MessageBox.show(
-														sMensagem, {
-															icon: sap.m.MessageBox.Icon.SUCCESS,
-															title: "Sucesso",
-															actions: [sap.m.MessageBox.Action.OK]
-														}
-													);
-													
-													var txEF2 = db.transaction("EntregaFutura2", "readwrite");
-													var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
-													var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
-													
-													requestDelEntrega2.onsuccess = function(e) {
-														console.info("item ef excluido");
-														resolve();
+
+												var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
+
+												requestGetEntrega.onsuccess = function(e) {
+													var oEntrega = e.target.result;
+
+													oEntrega.Slddia = parseInt(oEntrega.Slddia) + parseInt(oItemEntregar.Fkimg2);
+
+													tx = db.transaction("EntregaFutura", "readwrite");
+													objItensEntrega = tx.objectStore("EntregaFutura");
+													var requestPutEntrega = objItensEntrega.put(oEntrega);
+
+													requestPutEntrega.onsuccess = function(e) {
+														var sMensagem = "Item " + oItemEntregar.Matnr + " da Entrega " + oItemEntregar.Vbeln +
+															" enviado com sucesso.";
+														sap.m.MessageBox.show(
+															sMensagem, {
+																icon: sap.m.MessageBox.Icon.SUCCESS,
+																title: "Sucesso",
+																actions: [sap.m.MessageBox.Action.OK]
+															}
+														);
+
+														var txEF2 = db.transaction("EntregaFutura2", "readwrite");
+														var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+														var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
+
+														requestDelEntrega2.onsuccess = function(e) {
+															that.byId("table_entregas").setBusy(false);
+															console.info("item ef excluido");
+															resolve();
+														};
+
+														requestDelEntrega2.onerror = function(e) {
+															that.byId("table_entregas").setBusy(false);
+															console.info(e);
+															reject();
+														};
 													};
-													
-													requestDelEntrega2.onerror = function(e) {
-														console.info(e);
-														reject();
+
+													requestPutEntrega.onerror = function(e) {
+														sap.m.MessageBox.show(
+															"Erro ao enviar pedido.", {
+																icon: sap.m.MessageBox.Icon.ERROR,
+																title: "Erro no programa Fiori!",
+																actions: [sap.m.MessageBox.Action.OK],
+															}
+														);
 													};
-												};
-												
-												requestPutEntrega.onerror = function(e) {
-													sap.m.MessageBox.show(
-														"Erro ao enviar pedido.", {
-															icon: sap.m.MessageBox.Icon.ERROR,
-															title: "Erro no programa Fiori!",
-															actions: [sap.m.MessageBox.Action.OK],
-														}
-													);
-												};
-											}; /*requestGetEntrega*/
-										},
-										error: function(error) {
-											that.onMensagemErroODATA(error.statusCode);
-										}
-									});
-								})); /*vetorPromise*/
-							}
-							
-							Promise.all(vetorPromise).then(function(values) {
-								that.onLoadEntregas();
+												}; /*requestGetEntrega*/
+											},
+											error: function(error) {
+												that.onMensagemErroODATA(error.statusCode);
+											}
+										});
+
+									})); /*vetorPromise*/
+								}
+
+								Promise.all(vetorPromise).then(function(values) {
+									that.byId("table_entregas").setBusy(false);
+
+									that.onLoadEntregas();
+								});
 							});
 						};
 					}
@@ -704,19 +758,19 @@ sap.ui.define([
 			});
 		},
 		/*FIM onEnviarEntrega*/
-		
+
 		onMontarCabecalho: function(that, idPedido, dadosPedidoCab) {
-			
+
 		},
 		/*FIM onMontarCabecalho*/
-		
+
 		onMontarLinha: function() {
-			
+
 		},
 		/*FIM onMontarLinha*/
-		
+
 		onMensagemErroODATA: function(codigoErro) {
-			
+
 				if (codigoErro == 0) {
 					sap.m.MessageBox.show(
 						"Verifique a conexão com a internet!", {
@@ -724,7 +778,7 @@ sap.ui.define([
 							title: "Falha na Conexão!",
 							actions: [sap.m.MessageBox.Action.OK],
 							onClose: function(oAction) {
-								
+
 							}
 						}
 					);
@@ -735,7 +789,7 @@ sap.ui.define([
 							title: "Erro no programa Fiori!",
 							actions: [sap.m.MessageBox.Action.OK],
 							onClose: function(oAction) {
-								
+
 							}
 						}
 					);
@@ -757,7 +811,7 @@ sap.ui.define([
 							title: "Erro no programa Abap!",
 							actions: [sap.m.MessageBox.Action.OK],
 							onClose: function(oAction) {
-								
+
 							}
 						}
 					);
@@ -768,7 +822,7 @@ sap.ui.define([
 							title: "Erro no programa Abap!",
 							actions: [sap.m.MessageBox.Action.OK],
 							onClose: function(oAction) {
-								
+
 							}
 						}
 					);
@@ -779,13 +833,13 @@ sap.ui.define([
 							title: "Erro no programa Abap!",
 							actions: [sap.m.MessageBox.Action.OK],
 							onClose: function(oAction) {
-								
+
 							}
 						}
 					);
 				}
 			}
 			/*FIM onMensagemErroODATA*/
-			
+
 	});
 });

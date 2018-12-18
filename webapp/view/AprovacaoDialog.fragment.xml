@@ -91,13 +91,13 @@
 					<Label text="Valor sem destinar Bonificação (R$)" class="bold"/>
 					<Input id="idAbaterNaoDestinadoBonif" value="{path: 'ItemAprovar>/ValtotexcndirBonif'}" type="Number" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
-					<Input id="idVerbaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbonvm'}" change="onDestinaBonif" enabled="true" type="Number" />
+					<Input id="idVerbaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbonvm'}" enabled="true" type="Number" />
 					<Label id="idLabelComissaoUtilizadaBonif" text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrboncom'}" change="onDestinaBonif" enabled="true" type="Number" />
+					<Input id="idComissaoUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrboncom'}" enabled="true" type="Number" />
 					<Label id="idLabelVerbaDiaDiaUtilizadaBonif" text="Verba VB (R$)" />
-					<Input id="idVerbaDiaDiaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbondd'}" change="onDestinaBonif" enabled="true"  />
+					<Input id="idVerbaDiaDiaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbondd'}" enabled="true"  />
 					<Label id="idLabelVerbaVBUtilizadaBonf" text="Verba Institucional (R$)"/>
-					<Input id="idVerbaVBUtilizadaBonf" value="{path: 'ItemAprovar>/Vlrbonvvb'}" change="onDestinaBonif" enabled="true" type="Number" />
+					<Input id="idVerbaVBUtilizadaBonf" value="{path: 'ItemAprovar>/Vlrbonvvb'}" enabled="true" type="Number" />
 				</form:content>
 			</form:SimpleForm>
 		</content>

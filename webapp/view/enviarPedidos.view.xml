@@ -16,74 +16,74 @@
 						</Toolbar>
 					</headerToolbar>
 						<columns>
-							<Column minScreenWidth="2000px" demandPopin="true" hAlign="Left" popinDisplay="Inline" width="150px">
-								<Text text="Desc Item"/>
-							</Column>
-							<Column minScreenWidth="200px" hAlign="Left" width="auto" popinDisplay="Inline">
+							<!--<Column minScreenWidth="2000px" demandPopin="true" hAlign="Left" popinDisplay="Inline" width="150px">-->
+							<!--	<Text text="Desc Item"/>-->
+							<!--</Column>-->
+							<Column minScreenWidth="300px" hAlign="Left" width="auto" popinDisplay="Inline">
 								<Text text="Doc Vendas"/>
 							</Column>
-							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Item"/>
-							</Column>
-							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Linha"/>
-							</Column>
-							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Ref.cliente"/>
-							</Column>
-							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Qtde Faturada"/>
-							</Column>
-							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Saldo"/>
-							</Column>
-							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Representante"/>
-							</Column>
-							<Column minScreenWidth="2000px" hAlign="Center" width="auto" popinDisplay="Inline">
+							<!--<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">-->
+							<!--	<Text text="Item"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">-->
+							<!--	<Text text="Linha"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">-->
+							<!--	<Text text="Ref.cliente"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="Qtde Faturada"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="Saldo"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="Representante"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="2000px" hAlign="Center" width="auto" popinDisplay="Inline">-->
+							<!--	<Text text="Cliente"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="Representante"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="Material"/>-->
+							<!--</Column>-->
+							<Column minScreenWidth="600px" demandPopin="true" hAlign="Center" width="auto">
 								<Text text="Cliente"/>
 							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Representante"/>
-							</Column>
-							<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Material"/>
-							</Column>
-							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Nome Cliente"/>
-							</Column>
-							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Nome"/>
-							</Column>
-							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Nro Documento"/>
-							</Column>
-							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="idEntregaFutura"/>
-							</Column>
-							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Qtde Entregar"/>
-							</Column>					
+							<!--<Column minScreenWidth="200px" hAlign="Center" width="auto" popinDisplay="Inline">-->
+							<!--	<Text text="Nome"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="Nro Documento"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="idEntregaFutura"/>-->
+							<!--</Column>-->
+							<!--<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="Qtde Entregar"/>-->
+							<!--</Column>					-->
 						</columns>
 					<items>
 						<ColumnListItem type="Active">
 							<cells>
-								<Text text="{path : 'EntregasEnviar>Arktx'}"/>
+								<!--<Text text="{path : 'EntregasEnviar>Arktx'}"/>-->
 								<Text text="{path : 'EntregasEnviar>Vbeln'}"/>
-								<Text text="{path : 'EntregasEnviar>Posnr'}"/>
-								<Text text="{path : 'EntregasEnviar>Matnr'}"/>
-								<Text text="{path : 'EntregasEnviar>Bstkd'}"/>
-								<Text text="{path : 'EntregasEnviar>Fkimg'}"/>
-								<Text text="{path : 'EntregasEnviar>Sldfut'}"/>
-								<Text text="{path : 'EntregasEnviar>IRepresentante'}"/>
-								<Text text="{path : 'EntregasEnviar>Kunrg'}"/>
-								<Text text="{path : 'EntregasEnviar>Lifnr'}"/>
-								<Text text="{path : 'EntregasEnviar>Aupos'}"/>
-								<Text text="{path : 'EntregasEnviar>NameOrg1'}"/>
-								<Text text="{path : 'EntregasEnviar>NameOrg2'}"/>
-								<Text text="{path : 'EntregasEnviar>Aubel'}"/>
-								<Text text="{path : 'EntregasEnviar>idEntregaFutura'}"/>
-								<Text text="{path : 'EntregasEnviar>Fkimg2'}"/>
+								<!--<Text text="{path : 'EntregasEnviar>Posnr'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Matnr'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Bstkd'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Fkimg'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Sldfut'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>IRepresentante'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Kunrg'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Lifnr'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Aupos'}"/>-->
+								<Text text="{path : 'EntregasEnviar>NameOrg1'} {path : 'EntregasEnviar>NameOrg2'}"/>
+								<!--<Text text="{path : 'EntregasEnviar>NameOrg2'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Aubel'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>idEntregaFutura'}"/>-->
+								<!--<Text text="{path : 'EntregasEnviar>Fkimg2'}"/>-->
 							</cells>
 						</ColumnListItem>
 					</items>

@@ -7,9 +7,10 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/m/MessageBox"
-], function (jQuery, MessageToast, Fragment, BaseController, Filter, FilterOperator, MessageBox) {
+], function(jQuery, MessageToast, Fragment, BaseController, Filter, FilterOperator, MessageBox) {
 	"use strict";
 	var vetorCliente = [];
+	var vClientesUnicosEF = [];
 	var oItensEF = [];
 	var oItemEF2 = [];
 	var oPedEF = [];
@@ -18,15 +19,15 @@ sap.ui.define([
 
 	return BaseController.extend("testeui5.controller.entregaFutura", {
 
-		onInit: function () {
+		onInit: function() {
 			this.getRouter().getRoute("entregaFutura").attachPatternMatched(this._onLoadFields, this);
 		},
 
-		onNavBack: function () {
+		onNavBack: function() {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
 		},
 
-		onNavBack2: function () {
+		onNavBack2: function() {
 			var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
 
 			if (isTablet == true) {
@@ -39,14 +40,14 @@ sap.ui.define([
 		},
 		/* Fim navBack2*/
 
-		onPressDetailBack: function () {
+		onPressDetailBack: function() {
 			this.getSplitContObj().backDetail();
 			// this.getView().byId("ObjListCliente").removeSelections(true);
 			// this.byId("ObjListCliente").setProperty("/selected", false);
 		},
 		/* Fim onPressDetailBack*/
 
-		onSearch: function (oEvent) {
+		onSearch: function(oEvent) {
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.StartsWith, sValue),
@@ -60,16 +61,16 @@ sap.ui.define([
 		},
 		/* Fim onSearch*/
 
-		onExit: function () {
+		onExit: function() {
 			if (this._oDialog) {
 				this._oDialog.destroy();
 			}
 		},
 		/* Fim onExit*/
 
-		_onLoadFields: function () {
+		_onLoadFields: function() {
 			var that = this;
-			
+
 			this.onPressDetailBack();
 			oSF = this.byId("sfItem");
 
@@ -79,7 +80,7 @@ sap.ui.define([
 
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -87,26 +88,67 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
 
-				var transaction = db.transaction("Clientes", "readonly");
-				var objectStore = transaction.objectStore("Clientes");
+				/* Recupero uma lista de todos os clientes que possuem venda futura */
+				var transaction = db.transaction("EntregaFutura", "readonly");
+				var objectStore = transaction.objectStore("EntregaFutura");
+				var iKunrg = objectStore.index("Kunrg");
 
-				if ("getAll" in objectStore) {
-					objectStore.getAll().onsuccess = function (event) {
-						vetorCliente = event.target.result;
+				var pClientes = new Promise(function(resolv, rject) {
 
-						var oModel = new sap.ui.model.json.JSONModel(vetorCliente);
-						that.getView().setModel(oModel, "clientesCadastrados");
-					};
+					var reqEF = iKunrg.openCursor(undefined, "nextunique");
 
-				}
+					vetorCliente = [];
+					vClientesUnicosEF = [];
+					/* Recuperto todos os clientes únicos do processo de entrega futura */
+					reqEF.onsuccess = function(event) {
+						var cursor = event.target.result;
+
+						if (cursor) {
+							vClientesUnicosEF.push(cursor.value);
+							cursor.continue();
+						} else {
+							/* Percorro todos os clientes que possuem vendas futuras pra recupearar cada 1 
+							individualmente do cadastro de clientes */
+							for (var i = 0; i < vClientesUnicosEF.length; i++) {
+								var tCliente = db.transaction("Clientes", "readonly");
+								var osCliente = tCliente.objectStore("Clientes");
+
+								var reqClientes = osCliente.openCursor(vClientesUnicosEF[i].Kunrg);
+
+								reqClientes.onsuccess = function(event) {
+									var cursor = event.target.result;
+
+									if (cursor) {
+										vetorCliente.push(event.target.result.value);
+
+										cursor.continue();
+									} else {
+										resolv(vetorCliente);
+									}
+								};
+
+								reqClientes.onerror = function(event) {
+									console.log(event);
+								};
+							} /* for */
+						} /* if */
+					}; /* reqEF */
+
+				});
+
+				pClientes.then(function(vetorCliente) {
+					var oModel = new sap.ui.model.json.JSONModel(vetorCliente);
+					that.getView().setModel(oModel, "clientesCadastrados");
+				});
+
 			};
 		},
 		/*Fim _onLoadFields */
 
-		onSelectionChange: function (oEvent) {
+		onSelectionChange: function(oEvent) {
 			var that = this;
 			oItensEF = [];
 			oPedEF = [];
@@ -125,7 +167,7 @@ sap.ui.define([
 			this.onClearView();
 
 			var open = indexedDB.open("VB_DataBase");
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -133,19 +175,19 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
-				var promise = new Promise(function (resolve, reject) {
+				var promise = new Promise(function(resolve, reject) {
 					that.carregaModelCliente(db, resolve, reject);
 				});
 
-				promise.then(function () {
+				promise.then(function() {
 					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
 					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
 					var iVbeln = objectStorePedEF.index("Vbeln");
 
 					/* Cursor para percorrer todos os PEDIDOS ÚNICOS EF */
-					iVbeln.openCursor(undefined, "nextunique").onsuccess = function (event) {
+					iVbeln.openCursor(undefined, "nextunique").onsuccess = function(event) {
 						var cursor = event.target.result;
 
 						if (cursor) {
@@ -164,7 +206,7 @@ sap.ui.define([
 		},
 		/*Fim onSelectionChange */
 
-		getSplitContObj: function () {
+		getSplitContObj: function() {
 			var result = this.byId("SplitContDemo2");
 			if (!result) {
 				jQuery.sap.log.error("SplitApp object can't be found");
@@ -173,7 +215,7 @@ sap.ui.define([
 		},
 		/*Fim getSplitContObj*/
 
-		carregaModelCliente: function (db, resolve, reject) {
+		carregaModelCliente: function(db, resolve, reject) {
 			var that = this;
 
 			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
@@ -183,7 +225,7 @@ sap.ui.define([
 
 			var request = objClientes.get(codCliente);
 
-			request.onsuccess = function (e1) {
+			request.onsuccess = function(e1) {
 
 				var result = e1.target.result;
 
@@ -212,7 +254,7 @@ sap.ui.define([
 		},
 		/* Fim carregaModelCliente */
 
-		onSelectDialogPress: function (oEvent) {
+		onSelectDialogPress: function(oEvent) {
 			if (!this._oDialog) {
 				this._oDialog = sap.ui.xmlfragment("testeui5.view.Dialog", this);
 			}
@@ -234,7 +276,7 @@ sap.ui.define([
 		},
 		/* Fim onSelectDialogPress */
 
-		onDialogClose: function (oEvent) {
+		onDialogClose: function(oEvent) {
 			var that = this;
 			var aContexts = oEvent.getParameter("selectedContexts");
 
@@ -245,7 +287,7 @@ sap.ui.define([
 				that.getView().byId("ifVbeln").setValue(iVbeln);
 				var open = indexedDB.open("VB_DataBase");
 
-				open.onerror = function () {
+				open.onerror = function() {
 					MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Banco não encontrado!",
@@ -253,7 +295,7 @@ sap.ui.define([
 					});
 				};
 
-				open.onsuccess = function () {
+				open.onsuccess = function() {
 					var db = open.result;
 					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
 					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
@@ -262,7 +304,7 @@ sap.ui.define([
 
 					var request = ixVbeln.openCursor(keyRangeValue);
 
-					request.onsuccess = function (event) {
+					request.onsuccess = function(event) {
 						var cursor = event.target.result;
 
 						if (cursor) {
@@ -274,7 +316,7 @@ sap.ui.define([
 						}
 					};
 
-					request.onerror = function (event) {
+					request.onerror = function(event) {
 						MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
 							icon: MessageBox.Icon.ERROR,
 							title: "Banco não encontrado!",
@@ -292,7 +334,7 @@ sap.ui.define([
 		},
 		/* Fim onDialogClose */
 
-		onDialogSearch: function (oEvent) {
+		onDialogSearch: function(oEvent) {
 			var aFilters = [];
 			var sValue = oEvent.getParameter("value");
 			var oFilter = [new Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue),
@@ -306,7 +348,7 @@ sap.ui.define([
 		},
 		/* Fim onDialogSearch */
 
-		sfItemSearch: function (oEvent) {
+		sfItemSearch: function(oEvent) {
 			var that = this;
 			var sMatnr = oEvent.getParameter("query");
 			// var sMatnr = oEvent.getParameter("suggestionItem");
@@ -337,16 +379,16 @@ sap.ui.define([
 		},
 		/* Fim sfItemSearch */
 
-		sfItemSuggest: function (oEvent) {
+		sfItemSuggest: function(oEvent) {
 			var value = oEvent.getParameter("suggestValue");
 			var filters = [];
 			if (value) {
 				filters = [
 					new sap.ui.model.Filter([
-						new sap.ui.model.Filter("Matnr", function (sText) {
+						new sap.ui.model.Filter("Matnr", function(sText) {
 							return (sText || "").toUpperCase().indexOf(value.toUpperCase()) > -1;
 						}),
-						new sap.ui.model.Filter("Arktx", function (sDes) {
+						new sap.ui.model.Filter("Arktx", function(sDes) {
 							return (sDes || "").toUpperCase().indexOf(value.toUpperCase()) > -1;
 						})
 					], false)
@@ -358,7 +400,7 @@ sap.ui.define([
 		},
 		/* Fim sfItemSuggest */
 
-		onInserirItemPress: function (oEvent) {
+		onInserirItemPress: function(oEvent) {
 			var iVbeln = 0;
 			var iKunrg = 0;
 			var sMatnr = 0;
@@ -377,7 +419,7 @@ sap.ui.define([
 			idEntregaFutura = iVbeln.toString() + sMatnr;
 
 			var open = indexedDB.open("VB_DataBase");
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -385,7 +427,7 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
 
 				var store = db.transaction("EntregaFutura", "readwrite");
@@ -393,7 +435,7 @@ sap.ui.define([
 
 				var requestEF = objMaterial.get(idEntregaFutura);
 
-				requestEF.onsuccess = function (e) {
+				requestEF.onsuccess = function(e) {
 					var oItemEF = e.target.result;
 
 					if (oItemEF == undefined) {
@@ -436,19 +478,19 @@ sap.ui.define([
 
 							var requestAdd = objEF2.add(oItemEF2);
 
-							requestAdd.onsuccess = function (e) {
+							requestAdd.onsuccess = function(e) {
 								sap.m.MessageBox.success("Material inserido com sucesso!", {
 									icon: MessageBox.Icon.SUCCESS,
 									title: "Material inserido.",
 									actions: [sap.m.MessageBox.Action.OK],
-									onClose: function () {
+									onClose: function() {
 										that.onGetDataFromEF2(iKunrg);
 										that.onClearView();
 									}
 								});
 							};
 
-							requestAdd.onerror = function (e) {
+							requestAdd.onerror = function(e) {
 								var sMsgErro = "";
 
 								if (e.srcElement.error.message.includes("Key already exists")) {
@@ -470,11 +512,11 @@ sap.ui.define([
 		},
 		/* Fim onInserirItemPress */
 
-		onGetDataFromEF2: function (iKunrg) {
+		onGetDataFromEF2: function(iKunrg) {
 			var that = this;
 			var open = indexedDB.open("VB_DataBase");
 
-			open.onerror = function () {
+			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
 					title: "Banco não encontrado!",
@@ -482,7 +524,7 @@ sap.ui.define([
 				});
 			};
 
-			open.onsuccess = function () {
+			open.onsuccess = function() {
 				var db = open.result;
 				var store = db.transaction("EntregaFutura2", "readwrite");
 				var objEF2 = store.objectStore("EntregaFutura2");
@@ -490,7 +532,7 @@ sap.ui.define([
 
 				var request = ixKunrg.getAll(iKunrg);
 
-				request.onsuccess = function (event) {
+				request.onsuccess = function(event) {
 					var oVetorEF2 = event.target.result;
 
 					var oModel = new sap.ui.model.json.JSONModel(oVetorEF2);
@@ -500,7 +542,7 @@ sap.ui.define([
 		},
 		/* Fim onGetDataFromEF2 */
 
-		onExcluirItem: function (e) {
+		onExcluirItem: function(e) {
 			var idItem = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Matnr");
 			var idKunrg = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Kunrg");
 			var idBanco = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("idEntregaFutura");
@@ -510,11 +552,11 @@ sap.ui.define([
 				icon: MessageBox.Icon.WARNING,
 				title: "Exclusão de Item",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-				onClose: function (oAction) {
+				onClose: function(oAction) {
 					if (oAction === sap.m.MessageBox.Action.YES) {
 
 						var open = indexedDB.open("VB_DataBase");
-						open.onerror = function () {
+						open.onerror = function() {
 							MessageBox.show(open.error.mensage, {
 								icon: MessageBox.Icon.ERROR,
 								title: "Banco não encontrado!",
@@ -522,21 +564,21 @@ sap.ui.define([
 							});
 						};
 
-						open.onsuccess = function () {
+						open.onsuccess = function() {
 							var db = open.result;
 
 							var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
 							var objEF2 = storeEF2.objectStore("EntregaFutura2");
 
 							var request = objEF2.delete(idBanco);
-							request.onsuccess = function () {
+							request.onsuccess = function() {
 								console.log("Item com ID: " + idItem + " foi excluído!");
 
 								/* Após exluir o item, faço o get dos dados do banco para o modelo novamente. */
 								that.onGetDataFromEF2(idKunrg);
 								// that.onClearView();
 							};
-							request.onerror = function () {
+							request.onerror = function() {
 								console.log("ERRO!! Item: " + idItem + " não foi excluído!");
 							};
 						};
@@ -546,57 +588,43 @@ sap.ui.define([
 		},
 		/* Fim onExcluirItem */
 
-		onClearView: function () {
+		onClearView: function() {
 			this.getView().byId("ifQtde").setValue(1);
 			this.getView().byId("ifSaldo").setValue("");
 			this.getView().byId("ifVbeln").setValue("");
 			this.getView().byId("sfItem").setValue("");
-		}
+
+			this.getView().setModel(undefined, "ItensEF");
+		},
 		/* Fim onClearView */
 
-		// onGetQtdeHistoricoP: function (idEntregaFuturaH, resolv, reject) {
-		// 	var dRetorno = 0;
+		onEnviarItens: function() {
+				var that = this;
+				var iQtdeItens = this.getView().getModel("entregasEnviar").getData().length;
 
-		// 	var open = indexedDB.open("VB_DataBase");
-		// 	open.onsuccess = function () {
-		// 		var db = open.result;
+				if (iQtdeItens == 0) {
+					sap.m.MessageBox.error("Pelo menos 1 (uma) linha deve ser escolhida para envio.", {
+						title: "Erro",
+						actions: ["Ok"]
+					});
+				} else {
+					sap.m.MessageBox.warning("Gostaria de seguir para o envio de entrega?.", {
+						title: "Envio de documentos",
+						actions: ["Sim", sap.m.MessageBox.Action.CANCEL],
+						onClose: function(sAction) {
+							switch (sAction) {
+								case "Sim":
+									that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", false);
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
+									break;
+								case "CANCEL":
+									return;
+							}
+						}
+					});
 
-		// 		var store = db.transaction("EntregaFuturaHist");
-		// 		var objMaterial = store.objectStore("EntregaFuturaHist");
-
-		// 		var requestEFH = objMaterial.get(idEntregaFuturaH);
-
-		// 		requestEFH.onerror = function (e) {
-		// 			MessageBox.error("Erro ao localizar tabela de histórico de entrega futura.", {
-		// 				icon: MessageBox.Icon.ERROR,
-		// 				title: "Erro",
-		// 				actions: [MessageBox.Action.OK],
-		// 			});
-		// 		};
-
-		// 		requestEFH.onsuccess = function (e) {
-		// 			var oItemEFH = e.target.result;
-		// 			var dRetorno = 0;
-
-		// 			if (oItemEFH !== undefined) {
-
-		// 			}
-
-		// 			resolv(dRetorno);
-		// 		};
-		// 	};
-
-		// 	open.onerror = function (e) {
-		// 		MessageBox.error("Erro ao localizar o banco de dados.", {
-		// 			icon: MessageBox.Icon.ERROR,
-		// 			title: "Erro",
-		// 			actions: [MessageBox.Action.OK],
-		// 		});
-		// 	};
-
-		// 	return dRetorno;
-		// },
-		/* Fim onGetQtdeHistoricoP */
-
+				}
+			}
+			/* onEnviarItens */
 	});
 });
