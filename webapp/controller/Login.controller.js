@@ -1501,7 +1501,7 @@ sap.ui.define([
 																																																											};
 																																																										}
 																																																										
-																																																										/* Carrego os pedidos de vendas e itens somente para usuários do tipo Representante */
+																																																										/* Carrego os pedidos de vendas e itens somente para usuários do	tipo Representante */
 																																																										if (TipoUsuario == 1) {
 																																																											
 																																																											/* GetPedidoPrepostoTopo */
