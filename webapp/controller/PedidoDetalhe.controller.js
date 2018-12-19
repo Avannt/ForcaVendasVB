@@ -3706,8 +3706,11 @@ sap.ui.define([
 							if (oAction == sap.m.MessageBox.Action.YES) {
 								sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
 								that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
+								that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
 							}
+							
 							if (oAction == sap.m.MessageBox.Action.NO) {
+								that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
 								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
 								that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 							}
