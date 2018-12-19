@@ -139,6 +139,23 @@ sap.ui.define([
 							});
 						}
 
+						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE STATUS PEDIDO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+						if (!db.objectStoreNames.contains("StatusPedidos")) {
+							var objPedido = db.createObjectStore("StatusPedidos", {
+								keyPath: "nrPedCli",
+								unique: true
+							});
+							objPedido.createIndex("kunnr", "kunnr", {
+								unique: false
+							});
+							objPedido.createIndex("werks", "werks", {
+								unique: false
+							});
+							objPedido.createIndex("idStatusPedido", "idStatusPedido", {
+								unique: false
+							});
+						}
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE ITENSPEDIDO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("ItensPedido")) {
 							var objItensPedido = db.createObjectStore("ItensPedido", {
@@ -706,7 +723,7 @@ sap.ui.define([
 											that.getView().addDependent(that._ItemDialog);
 										}
 										that._ItemDialog.open();
-										
+
 										var tx = db.transaction("Usuarios", "readwrite");
 										var objUsuarios = tx.objectStore("Usuarios");
 
@@ -1021,7 +1038,7 @@ sap.ui.define([
 
 																												oModel.read("/A963 ", {
 																													urlParameters: {
-																														"$filter": "IRepresentante eq '" + CodRepres + "'"
+																														"$filter": "IRepres eq '" + CodRepres + "'"
 																													},
 																													success: function(retornoA963) {
 
@@ -1307,7 +1324,7 @@ sap.ui.define([
 																																																console.log("Dados CmpEnxoval não foram inseridos :" + event);
 																																															};
 																																														}
-																																														
+
 																																														oModel.read("/CmpGbGrpProdsAcabs", {
 																																															urlParameters: {
 																																																"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1412,9 +1429,9 @@ sap.ui.define([
 																																																					success: function(retornoCmpProdsAcabs) {
 																																																						var txCmpProdsAcabs = db.transaction("CmpProdsAcabs", "readwrite");
 																																																						var objCmpProdsAcabs = txCmpProdsAcabs.objectStore("CmpProdsAcabs");
-																																																						
+
 																																																						for (i = 0; i < retornoCmpProdsAcabs.results.length; i++) {
-																																																							
+
 																																																							var objBancoCmpProdsAcabs = {
 																																																								idCmpProdsAcabs: i,
 																																																								representante: retornoCmpProdsAcabs.results[i].Representante,
@@ -1425,7 +1442,7 @@ sap.ui.define([
 																																																								descricaoGrupo: retornoCmpProdsAcabs.results[i].DescricaoGrupo,
 																																																								descricaoRepresentante: retornoCmpProdsAcabs.results[i].DescricaoRepresentante
 																																																							};
-																																																							
+
 																																																							var requestCmpProdsAcabs = objCmpProdsAcabs.add(objBancoCmpProdsAcabs);
 
 																																																							requestCmpProdsAcabs.onsuccess = function(event) {
@@ -1468,17 +1485,17 @@ sap.ui.define([
 																																																										console.log("Dados CmpSldBrindes não foram inseridos :" + event);
 																																																									};
 																																																								}
-																																																								
+
 																																																								oModel.read("/CmpGbItensBrindes", {
 																																																									urlParameters: {
-																																																									"$filter": "IRepresentante eq '" + CodRepres + "'"
-																																																								},
+																																																										"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																									},
 																																																									success: function(retornoCmpGbItensBrindes) {
 																																																										var txCmpGbItensBrindes = db.transaction("CmpGbItensBrindes", "readwrite");
 																																																										var objCmpGbItensBrindes = txCmpGbItensBrindes.objectStore("CmpGbItensBrindes");
-																																																										
+
 																																																										for (i = 0; i < retornoCmpGbItensBrindes.results.length; i++) {
-																																																											
+
 																																																											var objBancoCmpProdAcab = {
 																																																												idCmpGbItensBrindes: i,
 																																																												representante: retornoCmpGbItensBrindes.results[i].Representante,
@@ -1489,21 +1506,21 @@ sap.ui.define([
 																																																												quantidadeTotal: retornoCmpGbItensBrindes.results[i].DescricaoMaterial,
 																																																												quantidadeMaxima: retornoCmpGbItensBrindes.results[i].Grupo
 																																																											};
-																																																											
+
 																																																											var requestCmpGbItensBrindes = objCmpGbItensBrindes.add(objBancoCmpProdAcab);
-																																																											
+
 																																																											requestCmpGbItensBrindes.onsuccess = function(event) {
 																																																												console.log("Dados CmpGbItensBrindes inseridos. " + event);
 																																																											};
-																																																											
+
 																																																											requestCmpGbItensBrindes.onerror = function(event) {
 																																																												console.log("Dados CmpGbItensBrindes não foram inseridos :" + event);
 																																																											};
 																																																										}
-																																																										
-																																																										/* Carrego os pedidos de vendas e itens somente para usuários do	tipo Representante */
+
+																																																										/* Carrego os pedidos de vendas e itens somente para usuários do tipo Representante */
 																																																										if (TipoUsuario == 1) {
-																																																											
+
 																																																											/* GetPedidoPrepostoTopo */
 																																																											oModel.read("/GetPedidoPrepostoTopo", {
 																																																												urlParameters: {
@@ -1512,7 +1529,7 @@ sap.ui.define([
 																																																												success: function(retornoPVPrepostoTopo) {
 																																																													var txPVPrepostoTopo = db.transaction("PrePedidos", "readwrite");
 																																																													var objPVPrepostoTopo = txPVPrepostoTopo.objectStore("PrePedidos");
-																																																													
+
 																																																													for (i = 0; i < retornoPVPrepostoTopo.results.length; i++) {
 																																																														var objBancoPVPrepostoTopo = {
 																																																															nrPedCli: retornoPVPrepostoTopo.results[i].Nrpedcli,
@@ -1697,22 +1714,59 @@ sap.ui.define([
 																																																																			console.log("Dados Entrega Futura não foram inseridos :" + event);
 																																																																		};
 																																																																	}
+																																																																	
+																																																																	oModel.read("/AcompPedidos", {
+																																																																		urlParameters: {
+																																																																			"$filter": "IRepres eq '" + CodRepres + "'"
+																																																																		},
+																																																																		success: function(retornoAcompPedidos) {
+																																																																			var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
+																																																																			var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
 
-																																																																	MessageBox.show(
-																																																																		"Tabelas carregadas com sucesso!", {
-																																																																			icon: MessageBox.Icon.SUCCESS,
-																																																																			title: "Carregamento Completo",
-																																																																			actions: [
-																																																																				MessageBox.Action.OK
-																																																																			],
-																																																																			onClose: function() {
-																																																																				if (that._ItemDialog) {
-																																																																					that._ItemDialog.destroy(true);
-																																																																				}
+																																																																			for (i = 0; i < retornoAcompPedidos.results.length; i++) {
 
-																																																																				that.onUpdateDateTime();
+																																																																				var objBancoAcompPedidos = {
+																																																																					Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
+																																																																					Kunnr: retornoAcompPedidos.results[i].Kunnr,
+																																																																					NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
+																																																																					Erdat: retornoAcompPedidos.results[i].Erdat,
+																																																																					Aprov: retornoAcompPedidos.results[i].Aprov,
+																																																																					AprovNome: retornoAcompPedidos.results[i].AprovNome,
+																																																																					Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
+																																																																					Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
+																																																																					Aprovado: retornoAcompPedidos.results[i].Aprovado
+																																																																				};
+
+																																																																				var requestAcompPedidos = objAcompPedidos.put(objBancoAcompPedidos);
+
+																																																																				requestAcompPedidos.onsuccess = function(event) {
+																																																																					console.log("Dados Status Pedido inseridos. " + event);
+																																																																				};
+
+																																																																				requestAcompPedidos.onerror = function(event) {
+																																																																					console.log("Dados Status Pedido não foram inseridos :" + event);
+																																																																				};
 																																																																			}
-																																																																		});
+
+																																																																			MessageBox.show(
+																																																																				"Tabelas carregadas com sucesso!", {
+																																																																					icon: MessageBox.Icon.SUCCESS,
+																																																																					title: "Carregamento Completo",
+																																																																					actions: [MessageBox.Action.OK],
+																																																																					onClose: function() {
+																																																																						if (that._ItemDialog) {
+																																																																							that._ItemDialog.destroy(true);
+																																																																						}
+
+																																																																						that.onUpdateDateTime();
+																																																																					}
+																																																																				});
+																																																																		},
+																																																																		error: function(error) {
+																																																																			console.log(error);
+																																																																			that.onMensagemErroODATA(error.statusCode);
+																																																																		}
+																																																																	});
 																																																																},
 																																																																error: function(error) {
 																																																																	console.log(error);

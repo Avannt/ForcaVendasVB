@@ -3003,10 +3003,11 @@ sap.ui.define([
 			sap.ui.getCore().byId("idComissao").setValue(oItemPedido.zzPercom);
 			sap.ui.getCore().byId("idPrecoCheio").setValue(oItemPedido.zzVprod);
 			sap.ui.getCore().byId("idDesconto").setValue(oItemPedido.zzDesitem);
-			
-			this.getView().getModel().setProperty("/precoVenda", 150.2);
-			// sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal)ç
+			sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal);
 			// sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal.toString().replace(".", ","));
+			
+			// this.getView().getModel().setProperty("/precoVenda", 150.2);
+			// sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal)ç
 
 			var oPanel = sap.ui.getCore().byId("idDialog");
 			oPanel.setBusy(false);
