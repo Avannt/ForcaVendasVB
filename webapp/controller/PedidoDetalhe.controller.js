@@ -3705,10 +3705,12 @@ sap.ui.define([
 						actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
 						onClose: function(oAction) {
 							if (oAction == sap.m.MessageBox.Action.YES) {
+								that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
 								sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
 								that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 							}
 							if (oAction == sap.m.MessageBox.Action.NO) {
+								that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
 								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
 								that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 							}
