@@ -645,13 +645,7 @@ sap.ui.define([
 				var NumVersao = this.getOwnerComponent().getModel("modelAux").getProperty("/VersaoApp");
 				var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 				var TipoUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario");
-				
-				var oModel = new sap.ui.model.odata.v2.ODataModel({
-					serviceUrl: "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
-					sUser: "appadmin",
-					sPassword: "sap123"
-				});
-				
+				var oModel = that.getView().getModel();
 				oModel.setUseBatch(false);
 
 				/* Verifico se exite algum docuemnto (pedido, entrega futura) pra enviar antes de atualizar a base */
@@ -1084,7 +1078,8 @@ sap.ui.define([
 
 																																	var objBancoA964 = {
 																																		idA964: retornoA964.results[i].Werks + "." +
-																																			retornoA964.results[i].ZzPerjur,
+																																			retornoA964.results[
+																																				i].ZzPerjur,
 																																		werks: retornoA964.results[i].Werks,
 																																		zzPerjur: retornoA964.results[i].ZzPerjur
 																																	};
@@ -1708,70 +1703,70 @@ sap.ui.define([
 																																																																			Sldfut: retornoEntregaFutura.results[i].Sldfut,
 																																																																			Slddia: "0"
 																																																																		};
-																																																																		
+
 																																																																		var requestEntregaFutura = objEntregaFutura.put(objBancoEntregaFutura);
-																																																																		
+
 																																																																		requestEntregaFutura.onsuccess = function(event) {
 																																																																			console.log("Dados Entrega Futura inseridos. " + event);
 																																																																		};
-																																																																		
+
 																																																																		requestEntregaFutura.onerror = function(event) {
 																																																																			console.log("Dados Entrega Futura não foram inseridos :" + event);
 																																																																		};
 																																																																	}
 																																																																	
-																																																																	MessageBox.show(
-																																																																		"Tabelas carregadas com sucesso!", {
-																																																																			icon: MessageBox.Icon.SUCCESS,
-																																																																			title: "Carregamento Completo",
-																																																																			actions: [MessageBox.Action.OK],
-																																																																			onClose: function() {
-																																																																				if (that._ItemDialog) {
-																																																																					that._ItemDialog.destroy(true);
-																																																																				}
+																																																																	oModel.read("/AcompPedidos", {
+																																																																		urlParameters: {
+																																																																			"$filter": "IRepres eq '" + CodRepres + "'"
+																																																																		},
+																																																																		success: function(retornoAcompPedidos) {
+																																																																			var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
+																																																																			var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidoss");
 
-																																																																				that.onUpdateDateTime();
+																																																																			for (i = 0; i < retornoAcompPedidos.results.length; i++) {
+
+																																																																				var objBancoAcompPedidos = {
+																																																																					Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
+																																																																					Kunnr: retornoAcompPedidos.results[i].Kunnr,
+																																																																					NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
+																																																																					Erdat: retornoAcompPedidos.results[i].Erdat,
+																																																																					Aprov: retornoAcompPedidos.results[i].Aprov,
+																																																																					AprovNome: retornoAcompPedidos.results[i].AprovNome,
+																																																																					Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
+																																																																					Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
+																																																																					Aprovado: retornoAcompPedidos.results[i].Aprovado
+																																																																				};
+
+																																																																				var requestAcompPedidos = objAcompPedidos.put(objBancoAcompPedidos);
+
+																																																																				requestAcompPedidos.onsuccess = function(event) {
+																																																																					console.log("Dados Status Pedido inseridos. " + event);
+																																																																				};
+
+																																																																				requestAcompPedidos.onerror = function(event) {
+																																																																					console.log("Dados Status Pedido não foram inseridos :" + event);
+																																																																				};
 																																																																			}
-																																																																		});
-																																																																	
-																																																																	// oModel.read("/AcompPedidos", {
-																																																																	// 	urlParameters: {
-																																																																	// 		"$filter": "IRepres eq '" + CodRepres + "'"
-																																																																	// 	},
-																																																																	// 	success: function(retornoAcompPedidos) {
-																																																																	// 		var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
-																																																																	// 		var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
 
-																																																																	// 		for (i = 0; i < retornoAcompPedidos.results.length; i++) {
+																																																																			MessageBox.show(
+																																																																				"Tabelas carregadas com sucesso!", {
+																																																																					icon: MessageBox.Icon.SUCCESS,
+																																																																					title: "Carregamento Completo",
+																																																																					actions: [MessageBox.Action.OK],
+																																																																					onClose: function() {
+																																																																						if (that._ItemDialog) {
+																																																																							that._ItemDialog.destroy(true);
+																																																																						}
 
-																																																																	// 			var objBancoAcompPedidos = {
-																																																																	// 				Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
-																																																																	// 				Kunnr: retornoAcompPedidos.results[i].Kunnr,
-																																																																	// 				NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
-																																																																	// 				Erdat: retornoAcompPedidos.results[i].Erdat,
-																																																																	// 				Aprov: retornoAcompPedidos.results[i].Aprov,
-																																																																	// 				AprovNome: retornoAcompPedidos.results[i].AprovNome,
-																																																																	// 				Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
-																																																																	// 				Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
-																																																																	// 				Aprovado: retornoAcompPedidos.results[i].Aprovado
-																																																																	// 			};
-
-																																																																	// 			var requestAcompPedidos = objAcompPedidos.put(objBancoAcompPedidos);
-
-																																																																	// 			requestAcompPedidos.onsuccess = function(event) {
-																																																																	// 				console.log("Dados Status Pedido inseridos. " + event);
-																																																																	// 			};
-
-																																																																	// 			requestAcompPedidos.onerror = function(event) {
-																																																																	// 				console.log("Dados Status Pedido não foram inseridos :" + event);
-																																																																	// 			};
-																																																																	// 		}
-																																																																	// 	},
-																																																																	// 	error: function(error) {
-																																																																	// 		console.log(error);
-																																																																	// 		that.onMensagemErroODATA(error.statusCode);
-																																																																	// 	}
-																																																																	// });
+																																																																						that.onUpdateDateTime();
+																																																																					}
+																																																																				});
+																																																																		},
+																																																																		error: function(error) {
+																																																																			console.log(error);
+																																																																			that.onMensagemErroODATA(error.statusCode);
+																																																																		}
+																																																																	});
 																																																																},
 																																																																error: function(error) {
 																																																																	console.log(error);
@@ -2394,13 +2389,6 @@ sap.ui.define([
 					var oModel = this.getView().getModel();
 					oModel.setProperty("user", "rcardilo");
 					oModel.setProperty("password", "sap123");
-					
-					// var oModel = new sap.ui.model.odata.v2.ODataModel({
-					// 	serviceUrl: "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
-					// 	sUser: "appadmin",
-					// 	sPassword: "sap123"
-					// });
-					
 					sap.ui.getCore().byId("idDialogLogin").setBusy(true);
 
 					oModel.read("/Login(IvCodRepres='" + codUsr + "',IvWerks='" + werks + "',IvSenha='" + senha +
