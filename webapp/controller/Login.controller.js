@@ -141,17 +141,17 @@ sap.ui.define([
 
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE STATUS PEDIDO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("StatusPedidos")) {
-							var objPedido = db.createObjectStore("StatusPedidos", {
+							var objStatusPedidos = db.createObjectStore("StatusPedidos", {
 								keyPath: "nrPedCli",
 								unique: true
 							});
-							objPedido.createIndex("kunnr", "kunnr", {
+							objStatusPedidos.createIndex("kunnr", "kunnr", {
 								unique: false
 							});
-							objPedido.createIndex("werks", "werks", {
+							objStatusPedidos.createIndex("werks", "werks", {
 								unique: false
 							});
-							objPedido.createIndex("idStatusPedido", "idStatusPedido", {
+							objStatusPedidos.createIndex("idStatusPedido", "idStatusPedido", {
 								unique: false
 							});
 						}
@@ -1721,11 +1721,12 @@ sap.ui.define([
 																																																																		},
 																																																																		success: function(retornoAcompPedidos) {
 																																																																			var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
-																																																																			var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidoss");
+																																																																			var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
 
 																																																																			for (i = 0; i < retornoAcompPedidos.results.length; i++) {
 
 																																																																				var objBancoAcompPedidos = {
+																																																																					idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
 																																																																					Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
 																																																																					Kunnr: retornoAcompPedidos.results[i].Kunnr,
 																																																																					NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
