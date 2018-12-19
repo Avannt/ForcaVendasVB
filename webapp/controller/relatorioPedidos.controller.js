@@ -18,17 +18,21 @@ sap.ui.define([
 			this.getRouter().getRoute("relatorioPedidos").attachPatternMatched(this._onLoadFields, this);
 		},
 		
+		fValMonetario: function(fnValue){
+			return parseFloat(fnValue).toFixed(2).toString().replace('.', ',');
+		},
+
 		formatRentabilidade: function(Value) {
 			if (Value > -3) {
 				this.byId("table_relatorio_pedidos").getColumns()[6].setVisible(false);
 				return "";
-				
-			} else{
+
+			} else {
 				this.byId("table_relatorio_pedidos").getColumns()[6].setVisible(true);
 				return Value;
 			}
 		},
-		
+
 		myFormatterCodEmpresa: function(value) {
 
 			if (value == 1) {
@@ -52,7 +56,7 @@ sap.ui.define([
 				return value;
 			}
 		},
-		
+
 		myFormatterDataImp: function(value) {
 
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
@@ -90,21 +94,21 @@ sap.ui.define([
 			}
 
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("DatImpl", sap.ui.model.FilterOperator.Contains, sValue)];
+			var oFilter = [new sap.ui.model.Filter("Erdat", sap.ui.model.FilterOperator.Contains, sValue)];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
 			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, "Application");
 
 		},
-		
-		myFormatterEmp: function(value){
+
+		myFormatterEmp: function(value) {
 			if (value !== undefined && value !== null && value !== "") {
-				if(value == 1){
+				if (value == 1) {
 					return "Pred.-SoFruta";
-				}else if(value == 2){
+				} else if (value == 2) {
 					return "Stella";
-				}else if(value == 3){
+				} else if (value == 3) {
 					return "Minas";
 				}
 			}
@@ -139,11 +143,13 @@ sap.ui.define([
 			open1.onsuccess = function() {
 				var db = open1.result;
 
-				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
+				var store = db.transaction("StatusPedidos").objectStore("StatusPedidos");
 				store.openCursor().onsuccess = function(event1) {
 					var cursor1 = event1.target.result;
 					if (cursor1 !== null) {
 						if (cursor1.value.IdBase === IdBase) {
+							
+							cursor1.value.pathImg = sap.ui.require.toUrl("testeui5/img/") + cursor1.value.Aprovado + ".png ";                         
 							oPrePedidoRelatorio.push(cursor1.value);
 						}
 						cursor1.continue();
@@ -212,11 +218,15 @@ sap.ui.define([
 				var db = open1.result;
 
 				//CARREGA OS CAMPOS DO LOCAL DE ENTREGA
-				var store = db.transaction("PrePedidos").objectStore("PrePedidos");
+				var store = db.transaction("StatusPedidos").objectStore("StatusPedidos");
 				store.openCursor().onsuccess = function(event) {
 					var cursor = event.target.result;
 					if (cursor != null) {
-						if (cursor.value.CodCliente == fValue && cursor.value.IdBase == IdBase) {
+
+						if (cursor.value.Kunnr == fValue) {
+							oPrePedidoRelatorio.push(cursor.value);
+						}
+						if (cursor.value.NameOrg1.toUpperCase().includes(fValue.toUpperCase())) {
 							oPrePedidoRelatorio.push(cursor.value);
 						}
 						if (fValue == "") {
