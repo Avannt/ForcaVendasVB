@@ -142,7 +142,7 @@ sap.ui.define([
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE STATUS PEDIDO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("StatusPedidos")) {
 							var objStatusPedidos = db.createObjectStore("StatusPedidos", {
-								keyPath: "nrPedCli",
+								keyPath: "Nrpedcli",
 								unique: true
 							});
 							objStatusPedidos.createIndex("kunnr", "kunnr", {
@@ -1714,7 +1714,7 @@ sap.ui.define([
 																																																																			console.log("Dados Entrega Futura não foram inseridos :" + event);
 																																																																		};
 																																																																	}
-																																																																	
+
 																																																																	oModel.read("/AcompPedidos", {
 																																																																		urlParameters: {
 																																																																			"$filter": "IRepres eq '" + CodRepres + "'"
@@ -1737,6 +1737,21 @@ sap.ui.define([
 																																																																					Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
 																																																																					Aprovado: retornoAcompPedidos.results[i].Aprovado
 																																																																				};
+
+																																																																				var sDescAprovado = "";
+
+																																																																				switch (retornoAcompPedidos.results[i].Aprovado) {
+																																																																					case "S":
+																																																																						sDescAprovado = "Aprovado";
+																																																																						break;
+																																																																					case "R":
+																																																																						sDescAprovado = "Reprovado";
+																																																																						break;
+																																																																					default:
+																																																																						sDescAprovado = "Pendente";
+																																																																				}
+																																																																				
+																																																																				objBancoAcompPedidos.AprovadoDesc = sDescAprovado;
 
 																																																																				var requestAcompPedidos = objAcompPedidos.put(objBancoAcompPedidos);
 
