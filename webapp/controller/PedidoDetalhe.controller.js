@@ -14,7 +14,7 @@ sap.ui.define([
 	var indexItem;
 	var verbaDisponivel;
 	var oVetorTabPreco = [];
-	var oVetorTipoTransporte = []; 
+	var oVetorTipoTransporte = [];
 	var oVetorTipoNegociacao = [];
 	var oVetorTiposPedidos = [];
 	var objPrePedidoTemplate = [];
@@ -32,10 +32,10 @@ sap.ui.define([
 		onInit: function() {
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this._onLoadFields, this);
 		},
-		
+
 		_onLoadFields: function() {
 			var aTemp = [];
-			
+
 			var oModel = new sap.ui.model.json.JSONModel(aTemp);
 			this.getView().setModel(oModel);
 
@@ -326,6 +326,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", numeroPed);
 
 			this.onCarregaCliente();
+			this.onBloqueiaPrePedidoTotal(true);
 		},
 
 		onCarregaDadosPedido: function(db) {
@@ -438,10 +439,12 @@ sap.ui.define([
 					that.onCarregaCliente();
 
 					var promise = new Promise(function(resolve, reject) {
-						that.onCarregaMateriais(db, oPrePedido.tipoPedido, resolve);
+						that.onCarregaMateriais(db, oPrePedido.tipoPedido, resolve, reject);
+						console.log("Carrega materiais sem preço");
 					});
 
-					promise.then(function() {
+					promise.then(function(resolve) {
+						console.log("Carrega materiais com preço");
 						that.onCarregaMateriaisComPreco(db, oPrePedido.tabPreco, oVetorMateriais);
 					});
 
@@ -485,8 +488,12 @@ sap.ui.define([
 							var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
-							that.onBloqueiaPrePedido();
-							that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
+							if (oPrePedido.idStatusPedido == 3) {
+								that.onBloqueiaPrePedidoTotal(false);
+							} else {
+								that.onBloqueiaPrePedido();
+								that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
+							}
 							// that.calculaTotalPedido();
 						}
 					};
@@ -558,10 +565,17 @@ sap.ui.define([
 		onCarregaMateriais: function(db, tipoPedido, resolve, reject) {
 			var that = this;
 
-			if (tipoPedido == "YVEF" || tipoPedido == "YVEN" || tipoPedido == "YVEX" || tipoPedido == "YTRO" ||
-				tipoPedido == "YBON") {
+			if (tipoPedido == "YVEF" || tipoPedido == "YVEN") {
 
-				var filtro = "NORM";
+				var filtro = "";
+
+			} else if (tipoPedido == "YBON") {
+
+				filtro = "";
+
+			} else if (tipoPedido == "YTRO") {
+
+				filtro = "NORM";
 
 			} else {
 
@@ -574,18 +588,29 @@ sap.ui.define([
 
 			var indexMtpos = objectStoreMaterial.index("mtpos");
 
-			var request = indexMtpos.getAll(filtro);
+			if (filtro != "") {
 
-			request.onsuccess = function(event) {
-				oVetorMateriais = event.target.result;
+				var request = indexMtpos.getAll(tipoPedido);
 
-				var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
-				that.getView().setModel(oModel, "materiaisCadastrados");
+				request.onsuccess = function(event) {
+					oVetorMateriais = event.target.result;
 
-				console.log("Materiais carregados: mtpos: " + tipoPedido);
-				resolve();
+					var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+					// that.getView().setModel(oModel, "materiaisCadastrados");
 
-			};
+					console.log("Materiais carregados: mtpos: " + tipoPedido);
+					resolve();
+				};
+
+			} else {
+				objectStoreMaterial.getAll().onsuccess = function(event) {
+					oVetorMateriais = event.target.result;
+
+					var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+					// that.getView().setModel(oModel, "materiaisCadastrados");
+					resolve();
+				};
+			}
 		},
 
 		onCarregaMateriaisComPreco: function(db, tabPreco, vetorMateriais) {
@@ -623,6 +648,7 @@ sap.ui.define([
 
 			//Toda vez tem que resetar a tabela de preço pra ativar novamente o evento e filtrar os materiais com preço.
 			this.byId("idTabelaPreco").setSelectedKey();
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", "");
 
 			var that = this;
 			var tipoPedido = "";
@@ -647,7 +673,9 @@ sap.ui.define([
 			open.onsuccess = function() {
 				var db = open.result;
 
-				that.onCarregaMateriais(db, tipoPedido);
+				var promise = new Promise(function(resolve, reject) {
+					that.onCarregaMateriais(db, tipoPedido, resolve);
+				});
 
 			};
 		},
@@ -825,6 +853,9 @@ sap.ui.define([
 			var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
 			var tabPreco = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco");
 
+			var vetorAuxFamilias = [];
+			var vetorAuxFamiliasExtra = [];
+
 			var open = indexedDB.open("VB_DataBase");
 
 			open.onerror = function() {
@@ -869,6 +900,9 @@ sap.ui.define([
 							oItemPedido.matnr = oMaterial.matnr;
 							oItemPedido.maktx = oMaterial.maktx;
 							oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
+							oItemPedido.zzValExcedidoItem = 0;
+							oItemPedido.kbetr = 0;
+							oItemPedido.maxdescpermitido = 0;
 							oItemPedido.mtpos = oMaterial.mtpos;
 							oItemPedido.knumh = 0;
 							oItemPedido.zzRegra = 0;
@@ -1050,15 +1084,34 @@ sap.ui.define([
 																						cursorA969.continue();
 
 																					} else {
+																						var auxRangeQuant = 0;
+																						var objKonm = db.transaction("Konm").objectStore("Konm");
+																						objKonm.openCursor().onsuccess = function(event2) {
+																							var cursor3 = event2.target.result;
 
-																						that.calculaPrecoItem();
-																						that.popularCamposItemPedido();
+																							if (cursor3) {
 
-																						sap.ui.getCore().byId("idQuantidade").focus();
-																						oPanel.setBusy(false);
+																								if (cursor3.value.knumh === oItemPedido.knumh && auxRangeQuant < parseFloat(cursor3.value.kbetr)) {
+
+																									auxRangeQuant = parseFloat(cursor3.value.kbetr); //Desconto total a aplicar
+
+																								}
+
+																								cursor3.continue();
+
+																							} else {
+
+																								oItemPedido.kbetr = auxRangeQuant;
+																								console.log("Percentual de Desconto Permitido: " + oItemPedido.kbetr);
+
+																								that.calculaPrecoItem();
+																								that.popularCamposItemPedido();
+																								sap.ui.getCore().byId("idQuantidade").focus();
+																								oPanel.setBusy(false);
+																							}
+																						};
 																					}
 																				};
-
 																			}
 																		};
 																	}
@@ -1071,7 +1124,6 @@ sap.ui.define([
 										};
 									}
 								};
-
 							} else {
 								MessageBox.show("Produto: " + codItem + " já inserido na lista de itens!", {
 									icon: MessageBox.Icon.ERROR,
@@ -1080,6 +1132,7 @@ sap.ui.define([
 									onClose: function() {
 
 										that.onResetaCamposDialog();
+										sap.ui.getCore().byId("idItemPedido").setValue();
 										sap.ui.getCore().byId("idItemPedido").focus();
 										oPanel.setBusy(false);
 
@@ -1093,7 +1146,6 @@ sap.ui.define([
 					oPanel.setBusy(false);
 					that.onResetaCamposDialog();
 				}
-
 			};
 		},
 
@@ -1380,7 +1432,7 @@ sap.ui.define([
 																	} else {
 
 																		oItemPedido.kbetr = auxRangeQuant;
-																		console.log("Percentual de Desconto Normal: " + oItemPedido.kbetr);
+																		console.log("Percentual de Desconto Permitido: " + oItemPedido.kbetr);
 
 																		//Buscando Familia de desconto extra
 
@@ -1435,6 +1487,7 @@ sap.ui.define([
 																								cursorA969.continue();
 
 																							} else {
+
 																								that.calculaPrecoItem();
 																								that.popularCamposItemPedido();
 
@@ -1566,61 +1619,64 @@ sap.ui.define([
 				});
 			}
 		},
-
+		
 		calculaPrecoItem: function() {
 			oItemPedido.zzPercDescTotal = 0;
+			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			
+			if (oItemPedido.mtpos != "YAMO") {
+				if ((oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr > 0) || (oItemPedido.mtpos == "YBRI" || oItemPedido.mtpos == "YTRO" || tipoPedido == "YBON")) {
 
-			if (oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr > 0) {
+					oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
+					oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
 
-				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
-				oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
+					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+					oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
+					oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
 
-				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-				oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
-				oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+				} else if (oItemPedido.tipoItem === "Diluicao") {
 
-			} else if (oItemPedido.tipoItem === "Diluicao") {
+					oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
+					oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
 
-				oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
-				oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+				} else {
 
-			} else {
+					//Inicialmente o valor cheio do produto é atribuido para o valor com desconto.
+					// 1º Aplicar - Preco Cheio do produto - tabela (avista -5%) a prazo sem desconto.
+					//Senão for desconto avista, criar o campo zzPercDescTotal do item do pedido com desconto zerado. 
+					if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 
-				//Inicialmente o valor cheio do produto é atribuido para o valor com desconto.
-				// 1º Aplicar - Preco Cheio do produto - tabela (avista -5%) a prazo sem desconto.
-				//Senão for desconto avista, criar o campo zzPercDescTotal do item do pedido com desconto zerado. 
-				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
+						oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
 
-					oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
+						//Desconto normal. *****
+						oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+
+					} else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
+
+						oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+
+						//Desconto normal. *****
+						oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+
+					}
+
+					//2º Aplicar o Desconto digitado na tela de digitação dos itens
+					oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
 
 					//Desconto normal. *****
 					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
 
-				} else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
+					// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
+					// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
+					// oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
 
-					oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
-
-					//Desconto normal. *****
-					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-
+					//SOMA TODOS OS DESCONTOS APLICADO NOS ITENS.
+					oItemPedido.zzPercDescTotal += oItemPedido.zzDesitem;
+					oItemPedido.zzQntDiluicao = 0;
+					oItemPedido.zzValorDiluido = 0;
 				}
-
-				//2º Aplicar o Desconto digitado na tela de digitação dos itens
-				oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
-
-				//Desconto normal. *****
-				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
-
-				// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
-				// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
-				// oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
-
-				//SOMA TODOS OS DESCONTOS APLICADO NOS ITENS.
-				oItemPedido.zzPercDescTotal += oItemPedido.zzDesitem;
-				oItemPedido.zzQntDiluicao = 0;
-				oItemPedido.zzValorDiluido = 0;
 			}
-
+			
 			//calcula a multiplicação pela quantidade depois que o valor unitário está calculado.
 			oItemPedido.zzVprodDescTotal = oItemPedido.zzVprodDesc * oItemPedido.zzQnt;
 			oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
@@ -1673,18 +1729,24 @@ sap.ui.define([
 
 			var valUtilizadoVerbaBrinde = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBrinde"));
 			var valUtilizadoComissaoBrinde = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBrinde"));
-			var valTotalExcedenteBrinde = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde"));
-			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBrinde", valTotalExcedenteBrinde.toFixed(2));
+
+			var valTotalExcedenteBrinde = 0;
+			// parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde"));
+			// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBrinde", valTotalExcedenteBrinde.toFixed(2));
 
 			var valUtilizadoVerbaAmostra = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaAmostra"));
 			var valUtilizadoComissaoAmostra = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoAmostra"));
-			var valTotalExcedenteAmostra = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteAmostra"));
-			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteAmostra", valTotalExcedenteAmostra.toFixed(2));
+
+			var valTotalExcedenteAmostra = 0;
+			// valTotalExcedenteAmostra = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteAmostra"));
+			// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteAmostra", valTotalExcedenteAmostra.toFixed(2));
 
 			var valUtilizadoVerbaBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif"));
 			var valUtilizadoComissaoBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"));
-			var valTotalExcedenteBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
-			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", valTotalExcedenteBonif.toFixed(2));
+
+			var valTotalExcedenteBonif = 0;
+			// valTotalExcedenteBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
+			// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", valTotalExcedenteBonif.toFixed(2));
 
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
@@ -1698,75 +1760,90 @@ sap.ui.define([
 				}
 				// >>>>>>>>>>>> PADRÃO PARA AMBOS OS TIPOS DE ITEM (NORMAL / DILUÍDO) >>>>>>>>>>>>
 
-				if (objItensPedidoTemplate[i].tipoItem == "Normal") {
+				if (objItensPedidoTemplate[i].mtpos == "YBRI") {
 
-					if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
-						//VALOR DE COMISSÃO GERADA NO PEDIDO
-						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
-							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+					valTotalExcedenteBrinde += objItensPedidoTemplate[i].zzVprodDesc2 * objItensPedidoTemplate[i].zzQnt;
 
-						//VALOR DE VERBA GERADA NO PEDIDO
-						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
-							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+				} else if (objItensPedidoTemplate[i].mtpos == "YAMO") {
 
-						//Calculo do acréscimo de prazo médio .
-						percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
-						valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
-							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao));
+					valTotalExcedenteAmostra += objItensPedidoTemplate[i].zzVprodDesc2 * objItensPedidoTemplate[i].zzQnt;
 
-						//calculo do desconto total retirando excluindo total diluido pra ele
-						var valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
-						objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
+				} else if (objItensPedidoTemplate[i].mtpos == "YBON") {
 
-						if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
-							//Negatvo .. excedeu o valor.
-							console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
-							totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt;
+					valTotalExcedenteBonif += objItensPedidoTemplate[i].zzVprodDesc2 * objItensPedidoTemplate[i].zzQnt;
+
+				} else if (objItensPedidoTemplate[i].mtpos == "NORM") {
+
+					if (objItensPedidoTemplate[i].tipoItem == "Normal") {
+
+						if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
+							//VALOR DE COMISSÃO GERADA NO PEDIDO
+							totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
+								(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+
+							//VALOR DE VERBA GERADA NO PEDIDO
+							totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
+								(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+
+							//Calculo do acréscimo de prazo médio .
+							percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
+							valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
+								(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao));
+
+							//calculo do desconto total retirando excluindo total diluido pra ele
+							var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) / 100;
+							objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
+
+							if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
+								//Negatvo .. excedeu o valor.
+								console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
+								totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt;
+							}
+
+						} else if (objItensPedidoTemplate[i].tipoItem2 == "Diluicao") {
+							//VALOR DE COMISSÃO GERADA NO PEDIDO
+							totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPercom / 100) *
+								(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+
+							//VALOR DE VERBA GERADA NO PEDIDO
+							totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) *
+								(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+
 						}
 
-					} else if (objItensPedidoTemplate[i].tipoItem2 == "Diluicao") {
-						//VALOR DE COMISSÃO GERADA NO PEDIDO
-						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPercom / 100) *
-							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+					} else if (objItensPedidoTemplate[i].tipoItem == "Diluido") {
 
-						//VALOR DE VERBA GERADA NO PEDIDO
-						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) *
-							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+						totalExcedenteDescontosDiluicao += objItensPedidoTemplate[i].zzValorDiluido;
 
-					}
+						if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
 
-				} else if (objItensPedidoTemplate[i].tipoItem == "Diluido") {
+							//VALOR DE COMISSÃO GERADA NO PEDIDO
+							totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
+								(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
 
-					totalExcedenteDescontosDiluicao += objItensPedidoTemplate[i].zzValorDiluido;
+							//VALOR DE VERBA GERADA NO PEDIDO
+							totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
+								(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
 
-					if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
+							//Calculo do acréscimo de prazo médio .
+							percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
+							valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
+								(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao));
 
-						//VALOR DE COMISSÃO GERADA NO PEDIDO
-						totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
-							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+							//calculo do desconto total retirando excluindo total diluido pra ele
+							valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) / 100;
+							objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
 
-						//VALOR DE VERBA GERADA NO PEDIDO
-						totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
-							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+							if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
+								//Negatvo .. excedeu o valor.
+								console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
+								totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * (objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+							}
 
-						//Calculo do acréscimo de prazo médio .
-						percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
-						valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
-							(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao));
-
-						//calculo do desconto total retirando excluindo total diluido pra ele
-						valorExcedido = objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido;
-						objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
-
-						if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
-							//Negatvo .. excedeu o valor.
-							console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
-							totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * (objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
 						}
+					} else if (objItensPedidoTemplate[i].tipoItem == "Diluicao") {
 
 					}
-				} else if (objItensPedidoTemplate[i].tipoItem == "Diluicao") {
-
 				}
 			}
 
@@ -1801,12 +1878,15 @@ sap.ui.define([
 
 			console.log("VALOR NÃO DIRECIONADO AMOSTRA.");
 			valorNaoDirecionadoAmostra = Math.round((valTotalExcedenteAmostra - (valUtilizadoVerbaAmostra + valUtilizadoComissaoAmostra)) * 100) / 100;
+			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteAmostra", valTotalExcedenteAmostra.toFixed(2));
 
 			console.log("VALOR NÃO DIRECIONADO BONIFICAÇÃO.");
 			valorNaoDirecionadoBonificacao = Math.round((valTotalExcedenteBonif - (valUtilizadoVerbaBonif + valUtilizadoComissaoBonif)) * 100) / 100;
+			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", valTotalExcedenteBonif.toFixed(2));
 
 			console.log("VALOR NÃO DIRECIONADO BRINDE.");
 			valorNaoDirecionadoBrinde = Math.round((valTotalExcedenteBrinde - (valUtilizadoVerbaBrinde + valUtilizadoComissaoBrinde)) * 100) / 100;
+			that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBrinde", valTotalExcedenteBrinde.toFixed(2));
 
 			//NÃO DIRECIONADO
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", parseFloat(valorNaoDirecionadoDesconto).toFixed(2));
@@ -1883,7 +1963,7 @@ sap.ui.define([
 
 			console.log("VALIDAÇÕES DE VALORES DIGITADOS MAIS QUE DEVERIAM.");
 			//DESCONTO
-			if ((comissaoUtilizadaDesconto + verbaUtilizadaDesconto) > totalExcedenteDescontos) {
+			if ((comissaoUtilizadaDesconto + verbaUtilizadaDesconto).toFixed(2) > totalExcedenteDescontos) {
 
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 				that.byId("idComissaoUtilizadaDesconto").setValueState("Error");
@@ -1908,12 +1988,12 @@ sap.ui.define([
 			comissaoUtilizadaPrazoMed = Math.round(comissaoUtilizadaPrazoMed * 100) / 100;
 
 			//PRAZO MÉDIO
-			if ((comissaoUtilizadaPrazoMed + valUtilizadoVerbaPrazoMed) > valorTotalAcresPrazoMed) {
+			if ((comissaoUtilizadaPrazoMed + valUtilizadoVerbaPrazoMed).toFixed(2) > valorTotalAcresPrazoMed) {
 
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 
 				that.byId("idComissaoUtilizadaPrazo").setValueState("Error");
-				that.byId("idComissaoUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" + +")");
+				that.byId("idComissaoUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" + valorTotalAcresPrazoMed + ")");
 				that.byId("idComissaoUtilizadaPrazo").focus();
 
 				that.byId("idVerbaUtilizadaPrazo").setValueState("Error");
@@ -1933,7 +2013,7 @@ sap.ui.define([
 			valTotalExcedenteBonif = Math.round(valTotalExcedenteBonif * 100) / 100;
 
 			//BONIFICAÇÃO
-			if (valTotalExcedenteBonif < valUtilizadoVerbaBonif + valUtilizadoComissaoBonif) {
+			if (valTotalExcedenteBonif < (valUtilizadoVerbaBonif + valUtilizadoComissaoBonif).toFixed(2)) {
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 
 				that.byId("idVerbaUtilizadaBonif").setValueState("Error");
@@ -1956,7 +2036,7 @@ sap.ui.define([
 			valUtilizadoComissaoAmostra = Math.round(valUtilizadoComissaoAmostra * 100) / 100;
 
 			//AMOSTRA
-			if (valTotalExcedenteAmostra < valUtilizadoVerbaAmostra + valUtilizadoComissaoAmostra) {
+			if (valTotalExcedenteAmostra < (valUtilizadoVerbaAmostra + valUtilizadoComissaoAmostra).toFixed(2)) {
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 
 				that.byId("idVerbaUtilizadaAmostra").setValueState("Error");
@@ -1979,7 +2059,7 @@ sap.ui.define([
 			valUtilizadoVerbaBrinde = Math.round(valUtilizadoVerbaBrinde * 100) / 100;
 
 			//BRINDE
-			if (valTotalExcedenteBrinde < valUtilizadoComissaoBrinde + valUtilizadoVerbaBrinde) {
+			if (valTotalExcedenteBrinde < (valUtilizadoComissaoBrinde + valUtilizadoVerbaBrinde).toFixed(2)) {
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 
 				that.byId("idVerbaUtilizadaBrinde").setValueState("Error");
@@ -2097,6 +2177,7 @@ sap.ui.define([
 										if (objItensPedidoTemplate[i].maxDescPermitido == undefined) {
 											objItensPedidoTemplate[i].maxDescPermitido = 0;
 										}
+
 										var objAuxItem = {
 											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
 											index: objItensPedidoTemplate[i].index,
@@ -2129,7 +2210,9 @@ sap.ui.define([
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
 											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
 											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
-											zzValorDiluido: 0
+											zzValorDiluido: 0,
+											zzValExcedidoItem: objItensPedidoTemplate[i].zzValExcedidoItem,
+											maxdescpermitido: objItensPedidoTemplate[i].maxdescpermitido
 										};
 
 										vetorAux.push(objAuxItem);
@@ -2185,7 +2268,9 @@ sap.ui.define([
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
 											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
 											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
-											zzValorDiluido: 0
+											zzValorDiluido: 0,
+											zzValExcedidoItem: objItensPedidoTemplate[i].zzValExcedidoItem,
+											maxdescpermitido: objItensPedidoTemplate[i].maxdescpermitido
 										};
 
 										vetorAux.push(objAuxItem1);
@@ -2439,7 +2524,7 @@ sap.ui.define([
 				var valorMinPermitido = valorProdutoCheio - (valorProdutoCheio * parseFloat(objItensPedidoTemplate[i].maxDescPermitido) / 100);
 				valorMinPermitido = valorMinPermitido - (valorMinPermitido * parseFloat(objItensPedidoTemplate[i].maxDescPermitidoExtra) / 100);
 
-				objItensPedidoTemplate[i].zzVprodMinPermitido = Math.round(valorMinPermitido * 100) / 100;
+				objItensPedidoTemplate[i].zzVprodMinPermitido = (valorMinPermitido).toFixed(3);
 				console.log("Item :" + objItensPedidoTemplate[i].matnr + ", Min Permitido: " + objItensPedidoTemplate[i].zzVprodMinPermitido);
 
 			}
@@ -2481,11 +2566,11 @@ sap.ui.define([
 						if (objItensPedidoTemplate[p].tipoItem2 == "Diluicao") {
 							objItensPedidoTemplate[p].zzValExcedidoItem = 0;
 						} else {
-							objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(objItensPedidoTemplate[p].zzValExcedidoItem * 100) / 100;
+							objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(objItensPedidoTemplate[p].zzValExcedidoItem * 1000) / 1000;
 						}
 
-						objItensPedidoTemplate[p].zzVprodDesc2 = Math.round(objItensPedidoTemplate[p].zzVprodDesc2 * 100) / 100;
-						objItensPedidoTemplate[p].zzVprodDesc = Math.round(objItensPedidoTemplate[p].zzVprodDesc * 100) / 100;
+						objItensPedidoTemplate[p].zzVprodDesc2 = (Math.round(objItensPedidoTemplate[p].zzVprodDesc2 * 1000) / 1000);
+						objItensPedidoTemplate[p].zzVprodDesc = (Math.round(objItensPedidoTemplate[p].zzVprodDesc * 1000) / 1000);
 
 						var requestADDItem = objItensPedido.put(objItensPedidoTemplate[p]);
 
@@ -2496,6 +2581,19 @@ sap.ui.define([
 						requestADDItem.onerror = function(e3) {
 							console.log("Falha ao atualizar os Itens");
 						};
+					}
+				}
+				if (item.selectedKey == "tab3") {
+					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco") == "") {
+						MessageBox.show("Escolha uma tabela de preço!", {
+							icon: MessageBox.Icon.ERROR,
+							title: "Falha ao inserir",
+							actions: [MessageBox.Action.OK],
+							onClose: function() {
+								that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+								that.byId("idTabelaPreco").focus();
+							}
+						});
 					}
 				}
 			};
@@ -2840,7 +2938,7 @@ sap.ui.define([
 
 					// mediaPonderada = ((1 * valorDasparcelas) + somatoriaParcelas) / valTotPed;
 					mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-					
+
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", mediaPonderada);
 
 					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
@@ -2919,17 +3017,17 @@ sap.ui.define([
 					}
 					mediaPonderada = (base + valorInterm) / valTotPed;
 					mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-						
+
 					// //COMEÇA EM 1 POR QUE A PRIMEIRA PARCELA É DEFINIDO.
 					// for (i = 1; i < quantidadeParcelas; i++) {
 					// 	somatoriaParcelas = (valorDasparcelas * intervaloParcelas);
 					// }
-						
+
 					// mediaPonderada = ((diasPrimeiraParcela * valorDasparcelas) + somatoriaParcelas) / valTotPed * quantidadeParcelas;
 					// mediaPonderada = Math.round(mediaPonderada * 100) / 100;
-					
+
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", mediaPonderada);
-					
+
 					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 						if (valTotPed < valorPedMin && mediaPonderada >= prazoMinAvista) {
 
@@ -3005,7 +3103,7 @@ sap.ui.define([
 			sap.ui.getCore().byId("idDesconto").setValue(oItemPedido.zzDesitem);
 			sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal);
 			// sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal.toString().replace(".", ","));
-			
+
 			// this.getView().getModel().setProperty("/precoVenda", 150.2);
 			// sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal)ç
 
@@ -3382,10 +3480,10 @@ sap.ui.define([
 
 		// EVENTOS DA TABLE 						<<<<<<<<<<<<
 		onNovoItem: function() {
-			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idSituacaoDadosPedido");
+			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			oItemPedido = [];
 
-			if (statusPedido > 2) {
+			if (statusPedido == 3) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
@@ -3411,10 +3509,10 @@ sap.ui.define([
 		},
 
 		onNovoItemDiluicao: function() {
-			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idSituacaoDadosPedido");
+			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			oItemPedido = [];
 
-			if (statusPedido > 2) {
+			if (statusPedido == 3) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
@@ -3443,49 +3541,59 @@ sap.ui.define([
 
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-
+			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			//VARIAVEL QUE MOSTRA UM ITEM ESTÁ SENDO EDITADO
 			var itemPedido = oItem.getBindingContext("ItensPedidoGrid").getProperty("idItemPedido");
 			that.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", itemPedido);
 
-			//TO DO SETAR TODOS OS CAMPOS COM OS DADOS DO oItemTemplate  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
+			if (statusPedido == 3) {
 
-				if (objItensPedidoTemplate[i].idItemPedido === itemPedido) {
-					oItemPedido = objItensPedidoTemplate[i];
-				}
-			}
-
-			if (that._ItemDialog) {
-				that._ItemDialog.destroy(true);
-			}
-
-			that._ItemDialog = sap.ui.xmlfragment(
-				"testeui5.view.ItemDialog",
-				that
-			);
-			that.getView().addDependent(that._ItemDialog);
-			
-			that._ItemDialog.setModel(that.getView().getModel());
-			that._ItemDialog.open();
-			that.popularCamposItemPedido();
-
-			if (oItemPedido.tipoItem == "Diluicao") {
-				sap.ui.getCore().byId("idDesconto").setEnabled(false);
+				MessageBox.show("Este pedido não pode mais ser alterado", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK]
+				});
 
 			} else {
-				sap.ui.getCore().byId("idDesconto").setEnabled(true);
+				//TO DO SETAR TODOS OS CAMPOS COM OS DADOS DO oItemTemplate  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+				for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 
+					if (objItensPedidoTemplate[i].idItemPedido === itemPedido) {
+						oItemPedido = objItensPedidoTemplate[i];
+					}
+				}
+
+				if (that._ItemDialog) {
+					that._ItemDialog.destroy(true);
+				}
+
+				that._ItemDialog = sap.ui.xmlfragment(
+					"testeui5.view.ItemDialog",
+					that
+				);
+				that.getView().addDependent(that._ItemDialog);
+
+				that._ItemDialog.setModel(that.getView().getModel());
+				that._ItemDialog.open();
+				that.popularCamposItemPedido();
+
+				if (oItemPedido.tipoItem == "Diluicao") {
+					sap.ui.getCore().byId("idDesconto").setEnabled(false);
+
+				} else {
+					sap.ui.getCore().byId("idDesconto").setEnabled(true);
+
+				}
+				sap.ui.getCore().byId("idItemPedido").setEnabled(false);
 			}
-			sap.ui.getCore().byId("idItemPedido").setEnabled(false);
 		},
 
 		onDeletarItemPedido: function(oEvent) {
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var idItemPedido = oItem.getBindingContext("ItensPedidoGrid").getProperty("idItemPedido");
 			var idItem = oItem.getBindingContext("ItensPedidoGrid").getProperty("matnr");
-			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/idSituacaoDadosPedido");
-			if (statusPedido > 2) {
+			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
+			if (statusPedido == 3) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
@@ -3564,542 +3672,523 @@ sap.ui.define([
 
 		onFinalizarPedido: function() {
 
-			//Percorre os itens do pedido para fazer uma verificação se realmente não tem produto repetido.
-			var i = 0;
-
+			//Percorre os itens do pesdido para fazer uma verificação se realmente não tem produto repetido.
 			var that = this;
-			//HRIMP E DATIMP
-			var data = this.onDataAtualizacao();
-			var horario = data[1];
+			var idStatusPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "PEN");
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 2);
-
-			var totalItens = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido");
-			var completoPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo");
-
-			if (totalItens <= 0 || totalItens === undefined) {
-				MessageBox.show("O pedido deve conter no mínimo 1 item.", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Falha ao Completar Pedido.",
+			if (idStatusPedido == 3) {
+				MessageBox.show("Este pedido não pode mais ser alterado", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
-			}
-			// else if (itemDuplicado == true) {
-			// 	MessageBox.show("O pedido possui itens duplicados. Favor rever sua lista de itens!", {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Falha ao Completar Pedido.",
-			// 		actions: [MessageBox.Action.OK]
-			// 	});
-			// } 
-			else {
-				//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Atualizando o PrePedido PEDIDO NO BANCO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-				var open = indexedDB.open("VB_DataBase");
+			} else {
+				//HRIMP E DATIMP
+				var data = this.onDataAtualizacao();
+				var horario = data[1];
 
-				open.onerror = function() {
-					MessageBox.show(open.error.mensage, {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "PEN");
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 2);
+
+				var totalItens = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido");
+				var completoPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo");
+				if (totalItens <= 0 || totalItens === undefined) {
+					MessageBox.show("O pedido deve conter no mínimo 1 item.", {
 						icon: MessageBox.Icon.ERROR,
-						title: "Falha ao abrir o banco para inserir os dados do pedido!",
+						title: "Falha ao Completar Pedido.",
 						actions: [MessageBox.Action.OK]
 					});
-				};
+				}
+				// else if (itemDuplicado == true) {
+				// 	MessageBox.show("O pedido possui itens duplicados. Favor rever sua lista de itens!", {
+				// 		icon: MessageBox.Icon.ERROR,
+				// 		title: "Falha ao Completar Pedido.",
+				// 		actions: [MessageBox.Action.OK]
+				// 	});
+				// } 
+				else {
+					//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Atualizando o PrePedido PEDIDO NO BANCO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+					var open = indexedDB.open("VB_DataBase");
 
-				open.onsuccess = function() {
-					var db = open.result;
+					open.onerror = function() {
+						MessageBox.show(open.error.mensage, {
+							icon: MessageBox.Icon.ERROR,
+							title: "Falha ao abrir o banco para inserir os dados do pedido!",
+							actions: [MessageBox.Action.OK]
+						});
+					};
 
-					if (completoPedido == "Não") {
+					open.onsuccess = function() {
+						var db = open.result;
 
-						if (that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == 2) {
-							that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 9);
-							that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "Preposto");
+						if (completoPedido == "Não") {
+
+							if (that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == 2) {
+								that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 9);
+								that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "Preposto");
+							}
+
+							var objBancoPrePedido = {
+								nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
+								kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
+								werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
+								codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
+								tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
+								idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
+								situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
+								tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
+								completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
+								valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
+								dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
+								dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
+								// valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
+								observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
+								observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
+								existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),
+								percEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido"),
+								valorEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido"),
+								tipoTransporte: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoTransporte"),
+								diasPrimeiraParcela: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasPrimeiraParcela"),
+								quantParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"),
+								intervaloParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"),
+								tipoNegociacao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao"),
+								ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
+								valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
+								valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
+								valTotalExcedentePrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedentePrazoMed"),
+								valTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
+								totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
+								valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
+								valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
+								valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
+								valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
+								valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
+								valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto"),
+								valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
+								valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed"),
+								valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoDesconto"),
+								valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed"),
+								valTotalExcedenteNaoDirecionadoBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoBrinde"),
+								valTotalExcedenteNaoDirecionadoAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoAmostra"),
+								valTotalExcedenteNaoDirecionadoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoBonif"),
+								valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
+								valTotalAbatidoVerba: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoVerba"),
+								valTotalCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampGlobal"),
+								valUtilizadoCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampBrinde"),
+								valUtilizadoCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampGlobal"),
+								valTotalCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval"),
+								valUtilizadoCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval"),
+								valTotalCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado"),
+								valUtilizadoCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampProdutoAcabado"),
+								valTotalExcedenteBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde"),
+								valUtilizadoVerbaBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBrinde"),
+								valUtilizadoVerbaPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaPrazoMed"),
+								valUtilizadoComissaoBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBrinde"),
+								valTotalExcedenteAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteAmostra"),
+								valUtilizadoVerbaAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaAmostra"),
+								valUtilizadoComissaoAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoAmostra"),
+								valTotalExcedenteBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"),
+								valUtilizadoVerbaBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif"),
+								valUtilizadoComissaoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"),
+								codUsr: that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"),
+								tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
+								verificadoPreposto: true
+							};
+
+							var store1 = db.transaction("PrePedidos", "readwrite");
+							var objPedido = store1.objectStore("PrePedidos");
+							var request = objPedido.put(objBancoPrePedido);
+
+							request.onsuccess = function() {
+								// that.atualizaMovtoVerba(db);
+								that.setaCompleto(db, "Sim");
+								that.onResetarCamposPrePedido();
+								oItemTemplate = [];
+								oItemTemplateTotal = [];
+								console.log("Pedido inserido");
+							};
+
+							request.onerror = function() {
+								console.log("Pedido não foi Inserido!");
+							};
 						}
 
-						var objBancoPrePedido = {
-							nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
-							kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
-							werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
-							codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
-							tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
-							idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
-							situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
-							tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
-							completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
-							valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
-							dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
-							dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
-							// valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
-							observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
-							observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
-							existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),
-							percEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido"),
-							valorEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido"),
-							tipoTransporte: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoTransporte"),
-							diasPrimeiraParcela: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasPrimeiraParcela"),
-							quantParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"),
-							intervaloParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"),
-							tipoNegociacao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao"),
-							ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
-							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
-							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
-							valTotalExcedentePrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedentePrazoMed"),
-							valTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
-							totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
-							valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
-							valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
-							valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
-							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
-							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
-							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto"),
-							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
-							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed"),
-							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoDesconto"),
-							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed"),
-							valTotalExcedenteNaoDirecionadoBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoBrinde"),
-							valTotalExcedenteNaoDirecionadoAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoAmostra"),
-							valTotalExcedenteNaoDirecionadoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoBonif"),
-							valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
-							valTotalAbatidoVerba: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoVerba"),
-							valTotalCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampGlobal"),
-							valUtilizadoCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampBrinde"),
-							valUtilizadoCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampGlobal"),
-							valTotalCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval"),
-							valUtilizadoCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval"),
-							valTotalCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado"),
-							valUtilizadoCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampProdutoAcabado"),
-							valTotalExcedenteBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde"),
-							valUtilizadoVerbaBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBrinde"),
-							valUtilizadoVerbaPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaPrazoMed"),
-							valUtilizadoComissaoBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBrinde"),
-							valTotalExcedenteAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteAmostra"),
-							valUtilizadoVerbaAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaAmostra"),
-							valUtilizadoComissaoAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoAmostra"),
-							valTotalExcedenteBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"),
-							valUtilizadoVerbaBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif"),
-							valUtilizadoComissaoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"),
-							codUsr: that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"),
-							tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
-							verificadoPreposto: true
-						};
-
-						var store1 = db.transaction("PrePedidos", "readwrite");
-						var objPedido = store1.objectStore("PrePedidos");
-						var request = objPedido.put(objBancoPrePedido);
-
-						request.onsuccess = function() {
-							// that.atualizaMovtoVerba(db);
-							that.setaCompleto(db, "Sim");
-							that.onResetarCamposPrePedido();
-							oItemTemplate = [];
-							oItemTemplateTotal = [];
-							console.log("Pedido inserido");
-						};
-
-						request.onerror = function() {
-							console.log("Pedido não foi Inserido!");
-						};
-					}
-
-					MessageBox.show("Deseja enviar o pedido agora ?", {
-						icon: MessageBox.Icon.ERROR,
-						title: "Atenção",
-						actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
-						onClose: function(oAction) {
-							if (oAction == sap.m.MessageBox.Action.YES) {
-								that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
-								sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
-								that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
+						MessageBox.show("Deseja enviar o pedido agora ?", {
+							icon: MessageBox.Icon.ERROR,
+							title: "Atenção",
+							actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
+							onClose: function(oAction) {
+								if (oAction == sap.m.MessageBox.Action.YES) {
+									that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
+									that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
+								}
+								if (oAction == sap.m.MessageBox.Action.NO) {
+									that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+									that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
+								}
 							}
-							if (oAction == sap.m.MessageBox.Action.NO) {
-								that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", true);
-								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
-								that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
-							}
-						}
-					});
-				};
+						});
+					};
+				}
 			}
 		},
 
 		onLiberarItensPedido: function() {
 			var that = this;
 
-			var date = new Date();
+			var idStatusPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 
-			var dia = String(date.getDate());
-			var tamanhoDia = parseInt(dia.length);
-			if (tamanhoDia == 1) {
-				dia = String("0" + dia);
-			}
-
-			var mes = String(date.getMonth() + 1);
-			var tamanhoMes = parseInt(mes.length);
-
-			if (tamanhoMes == 1) {
-				mes = String("0" + mes);
-			}
-
-			var ano = String(date.getFullYear());
-			var dataAtual = parseInt(ano + mes + dia);
-
-			if (this.byId("idTipoPedido").getSelectedKey() == "" || this.byId("idTipoPedido").getSelectedKey() == undefined) {
-				MessageBox.show("Preencher o tipo do pedido!", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Corrigir o campo!",
-					actions: [MessageBox.Action.OK]
-				});
-			} else if (this.byId("idTabelaPreco").getSelectedKey() == "" || this.byId("idTabelaPreco").getSelectedKey() == undefined) {
-				MessageBox.show("Preencher a tabela de preço!", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Corrigir o campo!",
-					actions: [MessageBox.Action.OK]
-				});
-			} else if (this.byId("idTipoNegociacao").getSelectedKey() == "" || this.byId("idTipoNegociacao").getSelectedKey() == undefined) {
-				MessageBox.show("Preencher o tipo do negociação!", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Corrigir o campo!",
-					actions: [MessageBox.Action.OK]
-				});
-			}
-			// else if (this.byId("idTipoTransporte").getSelectedKey() == "" || this.byId("idTipoTransporte").getSelectedKey() == undefined) {
-			// 	MessageBox.show("Preencher o tipo de transporte!", {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Corrigir o campo!",
-			// 		actions: [MessageBox.Action.OK]
-			// 	});
-			// } 
-			else if (this.byId("idQuantParcelas").getValue() <= 0) {
-				MessageBox.show("Quantidade de parcelas deve ser maior que 0.", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Corrigir o campo!",
-					actions: [MessageBox.Action.OK]
-				});
-			}
-			// else if (tamanhoDataEntrega < 10 || tamanhoDataEntrega > 10) {
-			// 	MessageBox.show("Data Entrega inválida. Informe a data no seguinte formato : dd/MM/aaaa", {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Corrigir o campo!",
-			// 		actions: [MessageBox.Action.OK]
-			// 	});
-			// } 
-			// else if (dataSplitDia > 31 || dataSplitDia <= 0) {
-			// 	MessageBox.show("Dia Entrega informado inválido.", {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Corrigir o campo!",
-			// 		actions: [MessageBox.Action.OK]
-			// 	});
-			// } 
-			// else if (dataSplitMes > 12 || dataSplitMes < 1) {
-			// 	MessageBox.show("Mês Entrega informado inválido.", {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Corrigir o campo!",
-			// 		actions: [MessageBox.Action.OK]
-			// 	});
-			// } 
-			// else if (dataSplitAno > 2100 || dataSplitAno < 2000) {
-			// 	MessageBox.show("Ano Entrega informado inválido.", {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Corrigir o campo!",
-			// 		actions: [MessageBox.Action.OK]
-			// 	});
-			// } 
-			// else if (dataAtual > dataSplit) {
-			// 	MessageBox.show("Data Entrega é menor que a data Atual!", {
-			// 		icon: MessageBox.Icon.ERROR,
-			// 		title: "Corrigir o campo!",
-			// 		actions: [MessageBox.Action.OK]
-			// 	});
-			// } 
-			else if (this.byId("idPrimeiraParcela").getValue() == "" || this.byId("idPrimeiraParcela").getValue() == undefined) {
-				MessageBox.show("Preencher a primeira parcela do pedido!", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Corrigir o campo!",
-					actions: [MessageBox.Action.OK]
-				});
-			} else if (this.byId("idQuantParcelas").getValue() == "" || this.byId("idPrimeiraParcela").getValue() == undefined) {
-				MessageBox.show("Preencher a quantidade de parcelas do pedido!", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Corrigir o campo!",
-					actions: [MessageBox.Action.OK]
-				});
-			} else if (this.byId("idIntervaloParcelas").getValue() == "" || this.byId("idIntervaloParcelas").getValue() == undefined) {
-				MessageBox.show("Preencher o intervalo entre as parcelas!", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Corrigir o campo!",
+			if (idStatusPedido == 3) {
+				MessageBox.show("Este pedido não pode mais ser alterado", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
 			} else {
-				// objItensPedidoTemplate = [];
-				// var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
-				// this.getView().setModel(oModel, "ItensPedidoGrid");
+				var date = new Date();
 
-				this.byId("tabItensPedidoStep").setProperty("enabled", true);
-				this.byId("tabBalancoVerbaStep").setProperty("enabled", true);
-				this.byId("tabTotalStep").setProperty("enabled", true);
-				// this.byId("tabItensDiluicaoPedidoStep").setProperty("enabled", true);
+				var dia = String(date.getDate());
+				var tamanhoDia = parseInt(dia.length);
+				if (tamanhoDia == 1) {
+					dia = String("0" + dia);
+				}
 
-				var open = indexedDB.open("VB_DataBase");
-				open.onerror = function(hxr) {
-					console.log("falha abrir tabela PrePedido as tabelas");
-				};
-				//Load tables
-				open.onsuccess = function() {
-					var db = open.result;
+				var mes = String(date.getMonth() + 1);
+				var tamanhoMes = parseInt(mes.length);
 
-					var tx = db.transaction("PrePedidos", "readwrite");
-					var objPrePedido = tx.objectStore("PrePedidos");
+				if (tamanhoMes == 1) {
+					mes = String("0" + mes);
+				}
 
-					var request = objPrePedido.get(that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"));
+				var ano = String(date.getFullYear());
+				var dataAtual = parseInt(ano + mes + dia);
 
-					request.onsuccess = function(e) {
-						var result = e.target.result;
+				if (this.byId("idTipoPedido").getSelectedKey() == "" || this.byId("idTipoPedido").getSelectedKey() == undefined) {
+					MessageBox.show("Preencher o tipo do pedido!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK]
+					});
+				} else if (this.byId("idTabelaPreco").getSelectedKey() == "" || this.byId("idTabelaPreco").getSelectedKey() == undefined) {
+					MessageBox.show("Preencher a tabela de preço!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK]
+					});
+				} else if (this.byId("idTipoNegociacao").getSelectedKey() == "" || this.byId("idTipoNegociacao").getSelectedKey() == undefined) {
+					MessageBox.show("Preencher o tipo do negociação!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK]
+					});
+				}
+				// else if (this.byId("idTipoTransporte").getSelectedKey() == "" || this.byId("idTipoTransporte").getSelectedKey() == undefined) {
+				// 	MessageBox.show("Preencher o tipo de transporte!", {
+				// 		icon: MessageBox.Icon.ERROR,
+				// 		title: "Corrigir o campo!",
+				// 		actions: [MessageBox.Action.OK]
+				// 	});
+				// } 
+				else if (this.byId("idQuantParcelas").getValue() <= 0) {
+					MessageBox.show("Quantidade de parcelas deve ser maior que 0.", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK]
+					});
+				} else if (this.byId("idPrimeiraParcela").getValue() == "" || this.byId("idPrimeiraParcela").getValue() == undefined) {
+					MessageBox.show("Preencher a primeira parcela do pedido!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK]
+					});
+				} else if (this.byId("idQuantParcelas").getValue() == "" || this.byId("idPrimeiraParcela").getValue() == undefined) {
+					MessageBox.show("Preencher a quantidade de parcelas do pedido!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK]
+					});
+				} else if (this.byId("idIntervaloParcelas").getValue() == "" || this.byId("idIntervaloParcelas").getValue() == undefined) {
+					MessageBox.show("Preencher o intervalo entre as parcelas!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK]
+					});
+				} else {
+					// objItensPedidoTemplate = [];
+					// var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+					// this.getView().setModel(oModel, "ItensPedidoGrid");
 
-						var objBancoPrePedido = {
-							nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
-							kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
-							werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
-							codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
-							tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
-							idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
-							situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
-							tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
-							completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
-							valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
-							dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
-							dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
-							// valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
-							observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
-							observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
-							existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),
-							percEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido"),
-							valorEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido"),
-							tipoTransporte: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoTransporte"),
-							diasPrimeiraParcela: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasPrimeiraParcela"),
-							quantParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"),
-							intervaloParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"),
-							tipoNegociacao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao"),
-							ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
-							valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
-							valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
-							valTotalExcedentePrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedentePrazoMed"),
-							valTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
-							totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
-							valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
-							valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
-							valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
-							valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
-							valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
-							valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto"),
-							valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
-							valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed"),
-							valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoDesconto"),
-							valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed"),
-							valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
-							valTotalAbatidoVerba: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoVerba"),
-							valTotalCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampGlobal"),
-							valUtilizadoCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampBrinde"),
-							valUtilizadoCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampGlobal"),
-							valTotalCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval"),
-							valUtilizadoCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval"),
-							valTotalCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado"),
-							valUtilizadoCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampProdutoAcabado"),
-							valTotalExcedenteBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde"),
-							valUtilizadoVerbaBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBrinde"),
-							valUtilizadoVerbaPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaPrazoMed"),
-							valUtilizadoComissaoBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBrinde"),
-							valTotalExcedenteAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteAmostra"),
-							valUtilizadoVerbaAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaAmostra"),
-							valUtilizadoComissaoAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoAmostra"),
-							valTotalExcedenteBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"),
-							valUtilizadoVerbaBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif"),
-							valUtilizadoComissaoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"),
-							codUsr: that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"),
-							tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
-							verificadoPreposto: false
+					this.byId("tabItensPedidoStep").setProperty("enabled", true);
+					this.byId("tabBalancoVerbaStep").setProperty("enabled", true);
+					this.byId("tabTotalStep").setProperty("enabled", true);
+					// this.byId("tabItensDiluicaoPedidoStep").setProperty("enabled", true);
+
+					var open = indexedDB.open("VB_DataBase");
+					open.onerror = function(hxr) {
+						console.log("falha abrir tabela PrePedido as tabelas");
+					};
+					//Load tables
+					open.onsuccess = function() {
+						var db = open.result;
+
+						var tx = db.transaction("PrePedidos", "readwrite");
+						var objPrePedido = tx.objectStore("PrePedidos");
+
+						var request = objPrePedido.get(that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"));
+
+						request.onsuccess = function(e) {
+							var result = e.target.result;
+
+							var objBancoPrePedido = {
+								nrPedCli: that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli"),
+								kunnr: that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"),
+								werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
+								codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
+								tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
+								idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
+								situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
+								tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
+								completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
+								valMinPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValMinPedido"),
+								dataPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataPedido"),
+								dataImpl: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DataImpl"),
+								// valComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissao"),
+								observacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoPedido"),
+								observacaoAuditoriaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ObservacaoAuditoriaPedido"),
+								existeEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido"),
+								percEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido"),
+								valorEntradaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido"),
+								tipoTransporte: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoTransporte"),
+								diasPrimeiraParcela: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasPrimeiraParcela"),
+								quantParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"),
+								intervaloParcelas: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"),
+								tipoNegociacao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao"),
+								ntgew: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Ntgew"),
+								valTotPed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotPed"),
+								valDescontoTotal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValDescontoTotal"),
+								valTotalExcedentePrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedentePrazoMed"),
+								valTotalExcedenteDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteDesconto"),
+								totalItensPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TotalItensPedido"),
+								valCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampEnxoval"),
+								valCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampBrinde"),
+								valCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValCampGlobal"),
+								valVerbaPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaPedido"),
+								valComissaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoPedido"),
+								valComissaoUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto"),
+								valVerbaUtilizadaDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto"),
+								valUtilizadoComissaoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed"),
+								valTotalExcedenteNaoDirecionadoDesconto: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoDesconto"),
+								valTotalExcedenteNaoDirecionadoPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed"),
+								valTotalAbatidoComissao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoComissao"),
+								valTotalAbatidoVerba: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalAbatidoVerba"),
+								valTotalCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampGlobal"),
+								valUtilizadoCampBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampBrinde"),
+								valUtilizadoCampGlobal: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampGlobal"),
+								valTotalCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval"),
+								valUtilizadoCampEnxoval: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval"),
+								valTotalCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado"),
+								valUtilizadoCampProdutoAcabado: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampProdutoAcabado"),
+								valTotalExcedenteBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde"),
+								valUtilizadoVerbaBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBrinde"),
+								valUtilizadoVerbaPrazoMed: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaPrazoMed"),
+								valUtilizadoComissaoBrinde: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBrinde"),
+								valTotalExcedenteAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteAmostra"),
+								valUtilizadoVerbaAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaAmostra"),
+								valUtilizadoComissaoAmostra: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoAmostra"),
+								valTotalExcedenteBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"),
+								valUtilizadoVerbaBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif"),
+								valUtilizadoComissaoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"),
+								codUsr: that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"),
+								tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
+								verificadoPreposto: false
+							};
+
+							//ADICIONAR O OBJ .. QND FOR UNDEFINED, POIS O OBJ NÃO FOI ENCONTRADO, ESTÁ VAZIO.
+							if (result == undefined || result == null) {
+
+								var request1 = objPrePedido.add(objBancoPrePedido);
+
+								objBancoPrePedido = {
+									nrPedCli: "",
+									kunnr: "",
+									werks: "",
+									codRepres: "",
+									tipoPedido: "",
+									idStatusPedido: "",
+									situacaoPedido: "",
+									tabPreco: "",
+									completo: "",
+									valMinPedido: "",
+									dataPedido: "",
+									dataImpl: "",
+									valComissao: "",
+									observacaoPedido: "",
+									observacaoAuditoriaPedido: "",
+									existeEntradaPedido: "",
+									percEntradaPedido: "",
+									valorEntradaPedido: "",
+									tipoTransporte: "",
+									diasPrimeiraParcela: "",
+									quantParcelas: "",
+									intervaloParcelas: "",
+									tipoNegociacao: "",
+									ntgew: "",
+									valTotPed: "",
+									valDescontoTotal: "",
+									valTotalExcedentePrazoMed: "",
+									valTotalExcedenteDesconto: "",
+									totalItensPedido: "",
+									valCampEnxoval: "",
+									valCampBrinde: "",
+									valCampGlobal: "",
+									valVerbaPedido: "",
+									valComissaoPedido: "",
+									valComissaoUtilizadaDesconto: "",
+									valVerbaUtilizadaDesconto: "",
+									valUtilizadoComissaoPrazoMed: "",
+									valTotalExcedenteNaoDirecionadoDesconto: "",
+									valTotalExcedenteNaoDirecionadoPrazoMed: "",
+									valTotalAbatidoComissao: "",
+									valTotalAbatidoVerba: "",
+									valTotalCampGlobal: "",
+									valUtilizadoCampBrinde: "",
+									valUtilizadoCampGlobal: "",
+									valTotalCampEnxoval: "",
+									valUtilizadoCampEnxoval: "",
+									valTotalCampProdutoAcabado: "",
+									valUtilizadoCampProdutoAcabado: "",
+									valTotalExcedenteBrinde: "",
+									valUtilizadoVerbaBrinde: "",
+									valUtilizadoVerbaPrazoMed: "",
+									valUtilizadoComissaoBrinde: "",
+									valTotalExcedenteAmostra: "",
+									valUtilizadoVerbaAmostra: "",
+									valUtilizadoComissaoAmostra: "",
+									valTotalExcedenteBonif: "",
+									valUtilizadoVerbaBonif: "",
+									valUtilizadoComissaoBonif: "",
+									codUsr: "",
+									tipoUsuario: "",
+									verificadoPreposto: ""
+								};
+
+								request1.onsuccess = function() {
+
+									that.setaCompleto(db, "Não");
+
+									MessageBox.show("Inclusão Efetivada com Sucesso!", {
+										icon: MessageBox.Icon.SUCCESS,
+										title: "Confirmação",
+										actions: [MessageBox.Action.OK],
+										onClose: function() {
+											that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
+											console.log("Dados PrePedido inseridos");
+										}
+									});
+
+								};
+
+								request1.onerror = function(event) {
+									console.log("Dados PrePedido não foram inseridos :" + event.Message);
+								};
+
+							} else {
+
+								// TODO: VERIFICAR METODO DE ATUALIZAR O PEDIDO JA CRIADO
+
+								request1 = objPrePedido.put(objBancoPrePedido);
+
+								objBancoPrePedido = {
+									nrPedCli: "",
+									kunnr: "",
+									werks: "",
+									codRepres: "",
+									tipoPedido: "",
+									idStatusPedido: "",
+									situacaoPedido: "",
+									tabPreco: "",
+									completo: "",
+									valMinPedido: "",
+									dataPedido: "",
+									dataImpl: "",
+									valComissao: "",
+									observacaoPedido: "",
+									observacaoAuditoriaPedido: "",
+									existeEntradaPedido: "",
+									percEntradaPedido: "",
+									valorEntradaPedido: "",
+									tipoTransporte: "",
+									diasPrimeiraParcela: "",
+									quantParcelas: "",
+									intervaloParcelas: "",
+									tipoNegociacao: "",
+									ntgew: "",
+									valTotPed: "",
+									valDescontoTotal: "",
+									valTotalExcedentePrazoMed: "",
+									valTotalExcedenteDesconto: "",
+									totalItensPedido: "",
+									valCampEnxoval: "",
+									valCampBrinde: "",
+									valCampGlobal: "",
+									valVerbaPedido: "",
+									valComissaoPedido: "",
+									valComissaoUtilizadaDesconto: "",
+									valVerbaUtilizadaDesconto: "",
+									valUtilizadoComissaoPrazoMed: "",
+									valTotalExcedenteNaoDirecionadoDesconto: "",
+									valTotalExcedenteNaoDirecionadoPrazoMed: "",
+									valTotalAbatidoComissao: "",
+									valTotalAbatidoVerba: "",
+									valTotalCampGlobal: "",
+									valUtilizadoCampBrinde: "",
+									valUtilizadoCampGlobal: "",
+									valTotalCampEnxoval: "",
+									valUtilizadoCampEnxoval: "",
+									valTotalCampProdutoAcabado: "",
+									valUtilizadoCampProdutoAcabado: "",
+									valTotalExcedenteBrinde: "",
+									valUtilizadoVerbaBrinde: "",
+									valUtilizadoVerbaPrazoMed: "",
+									valUtilizadoComissaoBrinde: "",
+									valTotalExcedenteAmostra: "",
+									valUtilizadoVerbaAmostra: "",
+									valUtilizadoComissaoAmostra: "",
+									valTotalExcedenteBonif: "",
+									valUtilizadoVerbaBonif: "",
+									valUtilizadoComissaoBonif: "",
+									codUsr: "",
+									tipoUsuario: "",
+									verificadoPreposto: ""
+								};
+
+								request1.onsuccess = function() {
+									that.setaCompleto(db, "Não");
+									MessageBox.show("Cabeçalho atualizado com Sucesso!", {
+										icon: MessageBox.Icon.SUCCESS,
+										title: "Concluido!",
+										actions: [MessageBox.Action.OK],
+										onClose: function() {
+											that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
+											console.log("Dados PrePedido Atualizados");
+										}
+									});
+								};
+
+								request1.onerror = function(event) {
+									console.log("Dados PrePedido não foram Atualizados :" + event.Message);
+								};
+							}
 						};
 
-						//ADICIONAR O OBJ .. QND FOR UNDEFINED, POIS O OBJ NÃO FOI ENCONTRADO, ESTÁ VAZIO.
-						if (result == undefined || result == null) {
-
-							var request1 = objPrePedido.add(objBancoPrePedido);
-
-							objBancoPrePedido = {
-								nrPedCli: "",
-								kunnr: "",
-								werks: "",
-								codRepres: "",
-								tipoPedido: "",
-								idStatusPedido: "",
-								situacaoPedido: "",
-								tabPreco: "",
-								completo: "",
-								valMinPedido: "",
-								dataPedido: "",
-								dataImpl: "",
-								valComissao: "",
-								observacaoPedido: "",
-								observacaoAuditoriaPedido: "",
-								existeEntradaPedido: "",
-								percEntradaPedido: "",
-								valorEntradaPedido: "",
-								tipoTransporte: "",
-								diasPrimeiraParcela: "",
-								quantParcelas: "",
-								intervaloParcelas: "",
-								tipoNegociacao: "",
-								ntgew: "",
-								valTotPed: "",
-								valDescontoTotal: "",
-								valTotalExcedentePrazoMed: "",
-								valTotalExcedenteDesconto: "",
-								totalItensPedido: "",
-								valCampEnxoval: "",
-								valCampBrinde: "",
-								valCampGlobal: "",
-								valVerbaPedido: "",
-								valComissaoPedido: "",
-								valComissaoUtilizadaDesconto: "",
-								valVerbaUtilizadaDesconto: "",
-								valUtilizadoComissaoPrazoMed: "",
-								valTotalExcedenteNaoDirecionadoDesconto: "",
-								valTotalExcedenteNaoDirecionadoPrazoMed: "",
-								valTotalAbatidoComissao: "",
-								valTotalAbatidoVerba: "",
-								valTotalCampGlobal: "",
-								valUtilizadoCampBrinde: "",
-								valUtilizadoCampGlobal: "",
-								valTotalCampEnxoval: "",
-								valUtilizadoCampEnxoval: "",
-								valTotalCampProdutoAcabado: "",
-								valUtilizadoCampProdutoAcabado: "",
-								valTotalExcedenteBrinde: "",
-								valUtilizadoVerbaBrinde: "",
-								valUtilizadoVerbaPrazoMed: "",
-								valUtilizadoComissaoBrinde: "",
-								valTotalExcedenteAmostra: "",
-								valUtilizadoVerbaAmostra: "",
-								valUtilizadoComissaoAmostra: "",
-								valTotalExcedenteBonif: "",
-								valUtilizadoVerbaBonif: "",
-								valUtilizadoComissaoBonif: "",
-								codUsr: "",
-								tipoUsuario: "",
-								verificadoPreposto: ""
-							};
-
-							request1.onsuccess = function() {
-
-								that.setaCompleto(db, "Não");
-
-								MessageBox.show("Inclusão Efetivada com Sucesso!", {
-									icon: MessageBox.Icon.SUCCESS,
-									title: "Confirmação",
-									actions: [MessageBox.Action.OK],
-									onClose: function() {
-										that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
-										console.log("Dados PrePedido inseridos");
-									}
-								});
-
-							};
-
-							request1.onerror = function(event) {
-								console.log("Dados PrePedido não foram inseridos :" + event.Message);
-							};
-
-						} else {
-
-							// TODO: VERIFICAR METODO DE ATUALIZAR O PEDIDO JA CRIADO
-
-							request1 = objPrePedido.put(objBancoPrePedido);
-
-							objBancoPrePedido = {
-								nrPedCli: "",
-								kunnr: "",
-								werks: "",
-								codRepres: "",
-								tipoPedido: "",
-								idStatusPedido: "",
-								situacaoPedido: "",
-								tabPreco: "",
-								completo: "",
-								valMinPedido: "",
-								dataPedido: "",
-								dataImpl: "",
-								valComissao: "",
-								observacaoPedido: "",
-								observacaoAuditoriaPedido: "",
-								existeEntradaPedido: "",
-								percEntradaPedido: "",
-								valorEntradaPedido: "",
-								tipoTransporte: "",
-								diasPrimeiraParcela: "",
-								quantParcelas: "",
-								intervaloParcelas: "",
-								tipoNegociacao: "",
-								ntgew: "",
-								valTotPed: "",
-								valDescontoTotal: "",
-								valTotalExcedentePrazoMed: "",
-								valTotalExcedenteDesconto: "",
-								totalItensPedido: "",
-								valCampEnxoval: "",
-								valCampBrinde: "",
-								valCampGlobal: "",
-								valVerbaPedido: "",
-								valComissaoPedido: "",
-								valComissaoUtilizadaDesconto: "",
-								valVerbaUtilizadaDesconto: "",
-								valUtilizadoComissaoPrazoMed: "",
-								valTotalExcedenteNaoDirecionadoDesconto: "",
-								valTotalExcedenteNaoDirecionadoPrazoMed: "",
-								valTotalAbatidoComissao: "",
-								valTotalAbatidoVerba: "",
-								valTotalCampGlobal: "",
-								valUtilizadoCampBrinde: "",
-								valUtilizadoCampGlobal: "",
-								valTotalCampEnxoval: "",
-								valUtilizadoCampEnxoval: "",
-								valTotalCampProdutoAcabado: "",
-								valUtilizadoCampProdutoAcabado: "",
-								valTotalExcedenteBrinde: "",
-								valUtilizadoVerbaBrinde: "",
-								valUtilizadoVerbaPrazoMed: "",
-								valUtilizadoComissaoBrinde: "",
-								valTotalExcedenteAmostra: "",
-								valUtilizadoVerbaAmostra: "",
-								valUtilizadoComissaoAmostra: "",
-								valTotalExcedenteBonif: "",
-								valUtilizadoVerbaBonif: "",
-								valUtilizadoComissaoBonif: "",
-								codUsr: "",
-								tipoUsuario: "",
-								verificadoPreposto: ""
-							};
-
-							request1.onsuccess = function() {
-								that.setaCompleto(db, "Não");
-								MessageBox.show("Cabeçalho atualizado com Sucesso!", {
-									icon: MessageBox.Icon.SUCCESS,
-									title: "Concluido!",
-									actions: [MessageBox.Action.OK],
-									onClose: function() {
-										that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
-										console.log("Dados PrePedido Atualizados");
-									}
-								});
-							};
-
-							request1.onerror = function(event) {
-								console.log("Dados PrePedido não foram Atualizados :" + event.Message);
-							};
-						}
+						request.onerror = function(e) {
+							console.log("Error");
+							console.dir(e);
+						};
 					};
-
-					request.onerror = function(e) {
-						console.log("Error");
-						console.dir(e);
-					};
-				};
+				}
 			}
 		},
 
@@ -4117,6 +4206,38 @@ sap.ui.define([
 			oItemTemplateTotal = [];
 
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
+		},
+
+		onBloqueiaPrePedidoTotal: function(habilitado) {
+
+			this.byId("idTabelaPreco").setEnabled(habilitado);
+			this.byId("idTipoTransporte").setEnabled(habilitado);
+			this.byId("idTipoNegociacao").setEnabled(habilitado);
+			this.byId("idTipoPedido").setEnabled(habilitado);
+			this.byId("idPrimeiraParcela").setEnabled(habilitado);
+			this.byId("idQuantParcelas").setEnabled(habilitado);
+			this.byId("idIntervaloParcelas").setEnabled(habilitado);
+			this.byId("idValorEntrada").setEnabled(habilitado);
+			this.byId("idPercEntrada").setEnabled(habilitado);
+			this.byId("idInserirItemDiluicao").setEnabled(habilitado);
+			this.byId("idInserirItem").setEnabled(habilitado);
+			this.byId("idObservacoesAuditoria").setEnabled(habilitado);
+			this.byId("idObservacoes").setEnabled(habilitado);
+
+			//Balanço verbas.
+			this.byId("idVerbaUtilizadaDesconto").setEnabled(habilitado);
+			this.byId("idComissaoUtilizadaDesconto").setEnabled(habilitado);
+			this.byId("idVerbaUtilizadaPrazo").setEnabled(habilitado);
+			this.byId("idComissaoUtilizadaPrazo").setEnabled(habilitado);
+			this.byId("idVerbaUtilizadaBrinde").setEnabled(habilitado);
+			this.byId("idComissaoUtilizadaBrinde").setEnabled(habilitado);
+			this.byId("idVerbaUtilizadaAmostra").setEnabled(habilitado);
+			this.byId("idComissaoUtilizadaAmostra").setEnabled(habilitado);
+			this.byId("idVerbaUtilizadaBonif").setEnabled(habilitado);
+			this.byId("idComissaoUtilizadaBonif").setEnabled(habilitado);
+			this.byId("idVerbaEnxoval").setEnabled(habilitado);
+			this.byId("idValCampProdAcabado").setEnabled(habilitado);
+			this.byId("idValCampGlobal").setEnabled(habilitado);
 		},
 
 		onBloqueiaPrePedido: function() {
@@ -4191,11 +4312,12 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", parseFloat(valor));
-			} else {
+			} else if (valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
-
 			}
 		},
 
@@ -4203,12 +4325,17 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
-
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0 && valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", parseFloat(valor));
-			} else {
+				oSource.setValueState("None");
+				oSource.setValueStateText("");
 
-				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", 0);
+			} else {
+				oSource.setValueState("Error");
+				oSource.setValueStateText("Inserir apenas numeros");
+				// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", 0);
 
 			}
 		},
@@ -4217,11 +4344,12 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", parseFloat(valor));
-			} else {
+			} else if (valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", 0);
-
 			}
 		},
 
@@ -4229,11 +4357,12 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", parseFloat(valor));
-			} else {
+			} else if (valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", 0);
-
 			}
 		},
 
@@ -4241,11 +4370,12 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", parseFloat(valor));
-			} else {
+			} else if (valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", 0);
-
 			}
 		},
 
@@ -4253,11 +4383,12 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", parseFloat(valor));
-			} else {
+			} else if (valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", 0);
-
 			}
 		},
 
@@ -4265,11 +4396,12 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", parseFloat(valor));
-			} else {
+			} else if (valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", 0);
-
 			}
 		},
 
@@ -4277,11 +4409,12 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", parseFloat(valor));
-			} else {
+			} else if (valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", 0);
-
 			}
 		},
 
@@ -4289,11 +4422,12 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
-				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", parseFloat(valor));
-			} else {
-				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", 0);
-
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+			} else if (valor >= 0) {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", parseFloat(valor));
+			} else if (valor != "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
 			}
 		},
 
@@ -4313,14 +4447,15 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			var valor = oSource.getValue();
 
-			if (valor >= 0) {
+			if (valor == "") {
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
+			} else if (valor >= 0) {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", parseFloat(valor));
-			} else {
-
+			} else if (valor != "") {
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
 			}
-
 		},
+
 		onSubmitParcela: function() {
 			this.byId("idQuantParcelas").focus();
 		},

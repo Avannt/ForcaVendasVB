@@ -253,233 +253,54 @@ sap.ui.define([
 		},
 
 		onAddPedido: function() {
-
+			var pedido = "";
 			var that = this;
+			var open1 = indexedDB.open("VB_DataBase");
 
-			var cliente = this.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
-			if(cliente == ""){
+			open1.onerror = function(hxr) {
+				console.log("Erro ao abrir tabelas.");
+				console.log(hxr.Message);
+			};
+			//Load tables
+			open1.onsuccess = function(e) {
+				var db = open1.result;
 				
-				MessageBox.show("Nenhum cliente selecionado! Selecione um cliente!", {
-					icon: sap.m.MessageBox.Icon.WARNING,
-					title: "Nenhum cliente selecionado",
-					actions: [MessageBox.Action.OK]
-				});
-				
-			}else {
-				sap.ui.core.UIComponent.getRouterFor(this).navTo("pedidoDetalhe");
-			}
+				var cliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+				if(cliente == ""){
+					
+					MessageBox.show("Nenhum cliente selecionado! Selecione um cliente!", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Nenhum cliente selecionado",
+						actions: [MessageBox.Action.OK]
+					});
+					
+				}else {
+					var store = db.transaction("PrePedidos").objectStore("PrePedidos");
+					store.openCursor().onsuccess = function(event) {
+						// consulta resultado do event
+						var cursor = event.target.result;
+	
+						if (cursor) {
+							if (cursor.value.idStatusPedido != 3 && cursor.value.completo != "Sim") {
+								cliente = cursor.value.kunnr;
+								pedido = cursor.value.nrPedCli;
+							}
+							cursor.continue();
+						} else {
+							if (cliente != "" && pedido != "") {
+								MessageBox.show("O pedido do cliente " + cliente + " está incompleto.", {
+									icon: MessageBox.Icon.ERROR,
+									title: "Falha iniciar do pedido",
+									actions: [MessageBox.Action.OK]
+								});
+							} else {
+								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+							}
+						}
+					};
+				}
+			};
 
-			// var open1 = indexedDB.open("VB_DataBase");
-
-			// open1.onerror = function(hxr) {
-			// 	console.log("Erro ao abrir tabelas.");
-			// 	console.log(hxr.Message);
-			// };
-			// //Load tables
-			// open1.onsuccess = function(e) {
-			// 	var db = open1.result;
-			// 	var empresaCorrente = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-			// 	var cliente = "";
-			// 	var pedido = "";
-			// 	var store = db.transaction("Clientes").objectStore("Clientes");
-			// 	//CARREGA TODOS OS ITENS DE UM DETERMINADO PEDIDO
-			// 	store.openCursor().onsuccess = function(event) {
-			// 		// consulta resultado do event
-			// 		var cursor = event.target.result;
-			// 		if (cursor) {
-			// 			if (cursor.value.CodCliente == variavelCodigoCliente && cursor.value.IdBase == empresaCorrente) {
-			// 				var nome = (cursor.value.NomeEmit);
-			// 				that.getOwnerComponent().getModel("modelAux").setProperty("/CodCliente", cursor.value.CodCliente);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/codigoRepresentante", cursor.value.CodigoRepresentante);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/codigoCliente", cursor.value.CodCliente);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/nomeCliente", nome);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/nomeAbrevCliente", cursor.value.NomeAbrev);
-			// 				//usado para popular o mov verba. pois naquele momento o programa reseta o modelCLIENTE antes usa-lo para popular o tal
-			// 				that.getOwnerComponent().getModel("modelAux").setProperty("/NomeAbrev", cursor.value.NomeAbrev);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/nomeCidadeCliente", cursor.value.Cidade);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/cepCliente", cursor.value.CEP);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/matrizCliente", cursor.value.Matriz);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/estadoCliente", cursor.value.Estado);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/cnpjCliente", cursor.value.CNPJ);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/emailCliente", cursor.value.Email);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/emailContasCliente", cursor.value.Email_ContasPagar);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/emailXMLCliente", cursor.value.Email_XML);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/snCliente", cursor.value.SN);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/statusCreditoCliente", cursor.value.StatusCredito);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/enderecoCliente", cursor.value.Endereco);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/telefoneCliente", cursor.value.Telefone);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/dataCadastroCliente", cursor.value.DataCadastro);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/limiteCreditoCliente", cursor.value.LimiteCredito);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/canalVendaCliente", cursor.value.CanalVenda);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/inscricaoEstadualCliente", cursor.value.InscricaoEstadual);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/inscricaoAuxSubsTribCliente", cursor.value.InscricaoAuxSubsTrib);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/grupoCliente", cursor.value.Grupo);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/codigoSuframaCliente", cursor.value.CodigoSuframa);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/dataLimiteCreditoCliente", cursor.value.DataLimiteCredito);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/valorUltimoTituloNFCliente", cursor.value.valorUltimoTituloNF);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/valorMaiorTituloNFCliente", cursor.value.ValorMaiorTituloNF);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/microrregiaoCliente", cursor.value.Microrregiao);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/faturarSaldoCliente", cursor.value.FaturaParcial);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/dataMaiorTituloNFCliente", cursor.value.DataMaiorTituloNF);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/dataUltimoTituloNFCliente", cursor.value.DataUltimoTituloNF);
-			// 				that.getOwnerComponent().getModel("modelCliente").setProperty("/DataVigenciaInscSTCliente", cursor.value.DataVigenciaInscST);
-			// 			}
-
-			// 			cursor.continue();
-
-			// 		}else{
-			// 			var tx = db.transaction("Usuarios", "readwrite");
-			// 			var objUsuarios = tx.objectStore("Usuarios");
-
-			// 			var request = objUsuarios.get(empresaCorrente);
-
-			// 			request.onsuccess = function(e1) {
-			// 				var result1 = e1.target.result;
-			// 				if (result1 !== null && result1 !== undefined) {
-			// 					if (empresaCorrente == 1) {
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/senha1", result1.senha);
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/userID", result1.codUsuario);
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/emailRepres", result1.email);
-			// 					}
-			// 					if (empresaCorrente == 2) {
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/senha2", result1.senha);
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/userID", result1.codUsuario);
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/emailRepres", result1.email);
-			// 					}
-			// 					if (empresaCorrente == 3) {
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/senha3", result1.senha);
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/userID", result1.codUsuario);
-			// 						that.getOwnerComponent().getModel("modelAux").setProperty("/emailRepres", result1.email);
-			// 					}
-
-			// 					if (that.getView().byId("objectHeader").getNumber() == "") {
-			// 						MessageBox.show("Nenhum cliente selecionado. Selecione um cliente na lista à esquerda.", {
-			// 							icon: MessageBox.Icon.ERROR,
-			// 							title: "Nenhum cliente selecionado",
-			// 							actions: [MessageBox.Action.OK]
-			// 						});
-			// 						return;
-			// 					} else if (that.getOwnerComponent().getModel("modelCliente").getProperty("inscricaoAuxSubsTribCliente") !== "" &&
-			// 						that.getOwnerComponent().getModel("modelCliente").getProperty("inscricaoAuxSubsTribCliente") !== null &&
-			// 						that.getOwnerComponent().getModel("modelCliente").getProperty("inscricaoAuxSubsTribCliente") !== undefined) {
-			// 						var dataVigencia = that.getOwnerComponent().getModel("modelCliente").getProperty("/DataVigenciaInscSTCliente");
-			// 						dataVigencia = dataVigencia.split("/");
-			// 						dataVigencia = String(dataVigencia[2]) + String(dataVigencia[1]) + String(dataVigencia[0]);
-			// 						dataVigencia = parseInt(dataVigencia);
-
-			// 						var date = new Date();
-			// 						var dia = String(date.getDate());
-			// 						var tamanhoDia = parseInt(dia.length);
-			// 						if (tamanhoDia == 1) {
-			// 							dia = String("0" + dia);
-			// 						}
-
-			// 						var mes = String(date.getMonth() + 1);
-			// 						var tamanhoMes = parseInt(mes.length);
-
-			// 						if (tamanhoMes == 1) {
-			// 							mes = String("0" + mes);
-			// 						}
-
-			// 						var ano = String(date.getFullYear());
-			// 						var dataAtual = parseInt(ano + mes + dia);
-			// 						if (dataVigencia < dataAtual) {
-
-			// 							MessageBox.show("Cliente está com a Inscr Aux Subst Tributária fora da vigência!", {
-			// 								icon: MessageBox.Icon.WARNING,
-			// 								title: "Não Permitido",
-			// 								actions: [MessageBox.Action.OK]
-			// 							});
-
-			// 						} else {
-			// 							var store = db.transaction("PrePedidos").objectStore("PrePedidos");
-			// 							store.openCursor().onsuccess = function(event) {
-			// 								// consulta resultado do event
-			// 								var cursor = event.target.result;
-
-			// 								if (cursor) {
-			// 									if (cursor.value.IdBase == empresaCorrente) {
-			// 										if (cursor.value.idStatus != 3 && cursor.value.Completo != "Sim") {
-			// 											cliente = cursor.value.CodCliente;
-			// 											pedido = cursor.value.NrPedcli;
-			// 										}
-			// 									}
-			// 									cursor.continue();
-			// 								} else {
-			// 									if (cliente != "" && pedido != "") {
-			// 										MessageBox.show("O pedido do cliente " + cliente + " está incompleto", {
-			// 											icon: MessageBox.Icon.ERROR,
-			// 											title: "Falha iniciar do pedido",
-			// 											actions: [MessageBox.Action.OK]
-			// 										});
-
-			// 									} else {
-
-			// 										//CARREGA OS DADOS DO CLIENTE QUE FOI SELECIONADO.
-			// 										// that.carregaModelCliente(variavelCodigoCliente, db);
-			// 										sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-			// 										that.checkOnline(db);
-			// 									}
-			// 								}
-			// 							};
-			// 						}
-			// 					}
-			// 					//VERIFICA O STATUS DO CLIENTE .. SE ELE ESTIVER 'Suspenso' NÃO IMPLANTAR PEDIDO.
-			// 					else if (that.getOwnerComponent().getModel("modelCliente").getProperty("/statusCreditoCliente") == "Suspenso") {
-
-			// 						MessageBox.show("Situação de Crédito do Cliente não Permite Manutenção de Pedidos!", {
-			// 							icon: MessageBox.Icon.WARNING,
-			// 							title: "Não Permitido",
-			// 							actions: [MessageBox.Action.OK]
-			// 						});
-
-			// 					} else if (result1.zeraVerba == "Sim") {
-			// 						MessageBox.show("A rotina de zerar verba foi ativa, favor envie todos os pedidos pendentes ou delete - os", {
-			// 							icon: MessageBox.Icon.WARNING,
-			// 							title: "Rotina Obrigatória!",
-			// 							actions: [MessageBox.Action.OK],
-			// 							onClose: function() {
-			// 								sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
-			// 							}
-			// 						});
-			// 					} else {
-
-			// 						var store = db.transaction("PrePedidos").objectStore("PrePedidos");
-			// 						store.openCursor().onsuccess = function(event) {
-			// 							// consulta resultado do event
-			// 							var cursor = event.target.result;
-
-			// 							if (cursor) {
-			// 								if (cursor.value.IdBase == empresaCorrente) {
-			// 									if (cursor.value.idStatus != 3 && cursor.value.Completo != "Sim") {
-			// 										cliente = cursor.value.CodCliente;
-			// 										pedido = cursor.value.NrPedcli;
-			// 									}
-			// 								}
-			// 								cursor.continue();
-			// 							} else {
-			// 								if (cliente != "" && pedido != "") {
-			// 									MessageBox.show("O pedido do cliente " + cliente + " está incompleto.", {
-			// 										icon: MessageBox.Icon.ERROR,
-			// 										title: "Falha iniciar do pedido",
-			// 										actions: [MessageBox.Action.OK]
-			// 									});
-
-			// 								} else {
-			// 									//CARREGA OS DADOS DO CLIENTE QUE FOI SELECIONADO.
-			// 									that.carregaModelCliente(variavelCodigoCliente, db);
-			// 									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-			// 									that.checkOnline(db);
-
-			// 								}
-			// 							}
-			// 						};
-			// 					}
-			// 				}
-			// 		};
-			// 		}
-			// 	};
-			// };
 		},
 
 		onItemPress: function(oEvent) {

@@ -751,33 +751,48 @@ sap.ui.define([
 				this._ItemDialog.destroy(true);
 			}
 		},
-<<<<<<< HEAD
 		
-		onBloquearVerbas: function() {
+		onReprovarPedido: function(){
+			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
+			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
+			
+			if (oSelectedItems.length == 0) {
+				MessageBox.show("Selecione um pedido para aprovar", {
+					icon: sap.m.MessageBox.Icon.INFORMATION,
+					title: "escolher um pedido!",
+					actions: [MessageBox.Action.OK],
+					onClose: function() {
 
-=======
+					}
+				});
+			} else {
+				var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-		onExit: function() {
+				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
 
+				console.log(itemAprovar);
+
+				var oModelAprovacoes = new sap.ui.model.json.JSONModel(itemAprovar);
+				this.getView().setModel(oModelAprovacoes, "ItemAprovar");
+				
+				sap.m.MessageBox.show(
+						"A rotina de reprovação significa a exclusão do pedido. Deseja mesmo reprovar o pedido?", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Reprovação do pedido!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function(oAction) {
+								
+							}
+						}
+				);
+					
+			}
 		},
 		
 		onBloquearVerbas: function(){
-			
->>>>>>> refs/heads/master
 			var oModel = this.getView().getModel("ItemAprovar");
 			var nivelAprovacao = oModel.getProperty("/Bugruop");
-<<<<<<< HEAD
-
-			// nivelAprovacao = "ZCO";
-			// nivelAprovacao = "ZSN";
-			// nivelAprovacao = "ZSR";
-			nivelAprovacao = "ZPJ";
-
-=======
 			
-			nivelAprovacao = "ZCO";
-			
->>>>>>> refs/heads/master
 			if (nivelAprovacao == "ZCO") {
 				
 				//Desc - dd
@@ -865,15 +880,9 @@ sap.ui.define([
 				//Amostra - vb
 				sap.ui.getCore().byId("idLabelVerbaVBUtilizadaAmostra").setVisible(false);
 				sap.ui.getCore().byId("idVerbaVBUtilizadaAmostra").setVisible(false);
-<<<<<<< HEAD
-
+				
 			} else if (nivelAprovacao == "ZPJ") {
-
-=======
 				
-			} else if (nivelAprovacao == "ZVB") {
-				
->>>>>>> refs/heads/master
 				//Desc - dd
 				sap.ui.getCore().byId("idLabelVerbaDiaDiaUtilizadaDesconto").setVisible(true);
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setVisible(true);
@@ -922,18 +931,7 @@ sap.ui.define([
 
 			var oModel = this.getView().getModel("ItemAprovar");
 			var nivelAprovacao = oModel.getProperty("/Bugruop");
-<<<<<<< HEAD
-
-			// nivelAprovacao = "ZCO";
-			// nivelAprovacao = "ZSN";
-			// nivelAprovacao = "ZSR";
-			nivelAprovacao = "ZPJ";
-
-=======
 			
-			nivelAprovacao = "ZCO";
-			
->>>>>>> refs/heads/master
 			if (nivelAprovacao == "ZCO") {
 
 				sap.ui.getCore().byId("idRepresentante").setEnabled(false);
