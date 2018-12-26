@@ -141,7 +141,18 @@ sap.ui.define([
 
 				pClientes.then(function(vetorCliente) {
 					var oModel = new sap.ui.model.json.JSONModel(vetorCliente);
+					var oAux = that.getOwnerComponent().getModel("modelAux");
 					that.getView().setModel(oModel, "clientesCadastrados");
+					
+					var sKunrg = oAux.getProperty("/KunrgEntrega");
+					
+					if(sKunrg){
+						oAux.setProperty("/KunrgEntrega", undefined);
+						
+						//that.getSplitContObj().toDetail(this.createId("detail"));
+						// that.byId("listClientes").attachItemPress(that.byId("listClientes").getItems()[0]);
+						that.byId("listClientes").attachSelectionChange(undefined, that.onSelectionChange, that.byId("listClientes").getItems()[0]);
+					}
 				});
 
 			};
@@ -358,15 +369,34 @@ sap.ui.define([
 			var iQtdeDia = 0;
 			var iSaldoSap = 0;
 
+			/* VOU TER QUE MUDAR A FORMA QUE PEGA O SALDO DIA, O SALDO DIA VAI TER
+			QUE SER UM SELECT NA ENTREGAFUTURA2 PARA O ITEM SELECIONADO */
 			if (sMatnr) {
 
+				/* Recupero o saldo do Sap do item escolhido. */
 				for (var i = 0; i < oModel.length; i++) {
 					if (oModel[i].Matnr == sMatnr) {
 						iQtdeFaturada = parseInt(oModel[i].Fkimg);
 						iSaldoSap = parseInt(oModel[i].Sldfut);
-						iQtdeDia = parseInt(oModel[i].Slddia);
+						// iQtdeDia = parseInt(oModel[i].Slddia);
 					}
 				}
+
+				/* Recupero o saldo do Sap do item escolhido. */
+				var open = indexedDB.open("VB_DataBase");
+				open.onsuccess = function(ev) {
+					var db = open.result;
+
+					var tEF2 = db.transaction("EntregaFutura2", "readonly");
+					var oEF2 = tEF2.objectStore("EntregaFutura2");
+					var ixVbeln = oEF2.index("Vbeln");
+
+					var reqEntrega2 = ixVbeln.getAll(); /*CONTINUARAQUI */
+
+					reqEntrega2.onsuccess = function(event) {
+						var vEntregas = event.result.value;
+					};
+				};
 
 				var saldo = 0;
 
@@ -454,6 +484,8 @@ sap.ui.define([
 								actions: [MessageBox.Action.OK],
 							});
 						} else {
+							var oModelAux = that.getOwnerComponent().getModel("modelAux");
+							
 							oItemEF2.Arktx = oItemEF.Arktx;
 							oItemEF2.Aubel = oItemEF.Aubel;
 							oItemEF2.Aupos = oItemEF.Aupos;
@@ -471,7 +503,14 @@ sap.ui.define([
 							oItemEF2.Sldfut = iSaldo;
 							// oItemEF2.Sldfut = oItemEF.Sldfut;
 							oItemEF2.Slddia = oItemEF.Slddia;
-							oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura;
+
+							oItemEF2.codRepres = oModelAux.getProperty("/CodRepres");
+							oItemEF2.codUsr = oModelAux.getProperty("/CodUsr");
+							oItemEF2.tipoUsuario = oModelAux.getProperty("/Tipousuario");
+							
+							var sDataHora = that.onDataAtualizacao();
+
+							oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura + '.' +  sDataHora;
 
 							var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
 							var objEF2 = storeEF2.objectStore("EntregaFutura2");
@@ -511,6 +550,40 @@ sap.ui.define([
 			};
 		},
 		/* Fim onInserirItemPress */
+
+		onDataAtualizacao: function() {
+			var date = new Date();
+			var dia = String(date.getDate());
+			var mes = String(date.getMonth() + 1);
+			var ano = String(date.getFullYear());
+			var minuto = String(date.getMinutes());
+			var hora = String(date.getHours());
+			var seg = String(date.getSeconds());
+
+			if (dia.length == 1) {
+				dia = String("0" + dia);
+			}
+			if (mes.length == 1) {
+				mes = String("0" + mes);
+			}
+			if (minuto.length == 1) {
+				minuto = String("0" + minuto);
+			}
+			if (hora.length == 1) {
+				hora = String("0" + hora);
+			}
+			if (seg.length == 1) {
+				seg = String("0" + seg);
+			}
+			//HRIMP E DATIMP
+			var data = String(dia + "/" + mes + "/" + ano);
+			var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
+			
+			var sRetorno = String(ano) + String(mes) + String(dia);
+			sRetorno += '.' + String(hora) + String(minuto) + String(seg);
+
+			return sRetorno;
+		},
 
 		onGetDataFromEF2: function(iKunrg) {
 			var that = this;

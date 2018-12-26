@@ -6,7 +6,7 @@
 			<semantic:content>
 				<Table id="table_entregas" width="100%" backgroundDesign="Translucent" visible="false"
 					items="{ path:'EntregasEnviar>/' }" mode="MultiSelect" selectionChange="onSelectionChange2"
-					itemPress="onItemPress2" growingThreshold="3" growingTriggerText="Proximas entregas >>" growing="true"
+					itemPress="onItemPressEF" growingThreshold="3" growingTriggerText="Proximas entregas >>" growing="true"
 					noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
 					<headerToolbar>
 						<Toolbar>

@@ -90,21 +90,11 @@ sap.ui.define([
 					var bPreposto = sTipoUsuario == "2";
 					var bRepresentante = (sTipoUsuario == "1" && !bAprovador);
 
-					/*Preposto-> Oculto aprovações e entrega futura*/
-					if (bRepresentante) {
+					/*Representante e Preposto -> Oculto aprovações */
+					if (bRepresentante || bPreposto) {
 						for (var i = 0; i < oPrincipal.length; i++) {
 
 							if (oPrincipal[i].id == "aprovacoes") {
-								oPrincipal[i].visible = false;
-							}
-						}
-					}
-
-					/*Preposto-> Oculto aprovações e entrega futura*/
-					if (bPreposto) {
-						for (var i = 0; i < oPrincipal.length; i++) {
-
-							if (oPrincipal[i].id == "aprovacoes" || oPrincipal[i].id == "entregaFutura") {
 								oPrincipal[i].visible = false;
 							}
 						}

@@ -43,6 +43,17 @@ sap.ui.define([
 		},
 		/*FIM _onLoadFields*/
 
+		onItemPressEF: function(oEvent) {
+			var oBd = oEvent.getParameter("listItem") || oEvent.getSource();
+			var sKunrg = oBd.getBindingContext("EntregasEnviar").getProperty("Kunrg");
+			
+			/* Gravo no ModelAux a propriedade Kunrg (Cod cliente) para receber lá na tela de entrega futura e 
+			selecionar o cliente automaticamente. */
+			this.getOwnerComponent().getModel("modelAux").setProperty("/KunrgEntrega", sKunrg);
+			sap.ui.core.UIComponent.getRouterFor(this).navTo("entregaFutura");
+		},
+		/* onItemPressEF */
+
 		onLoadPedidos: function() {
 			var open = indexedDB.open("VB_DataBase");
 			var that = this;
@@ -615,7 +626,7 @@ sap.ui.define([
 									tempItemEntregar = event.target.result;
 
 									var vPromise = [];
-									
+
 									//  Para cada entrega escolhida pra enviar, percorro todos os itens pendentes para envio
 									for (var i = 0; i < vEntregasEnviar.length; i++) {
 										for (var j = 0; j < tempItemEntregar.length; j++) {
@@ -625,7 +636,7 @@ sap.ui.define([
 											}
 										}
 									}
-									
+
 									/* Retorno o vetor dos itens para a Promise */
 									resolv1(vPromise);
 								};
