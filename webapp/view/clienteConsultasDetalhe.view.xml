@@ -4,7 +4,7 @@
 		<pages>
 			<Page title="Cliente" class="sapUiResponsivePadding" showNavButton="true" navButtonPress="onNavBack">
 				<content>
-					<IconTabBar id="idTopLevelIconTabBar" stretchContentHeight="true" key="tab1" class="">
+					<IconTabBar id="idTopLevelIconTabBar" stretchContentHeight="true" >
 						<items>
 							<IconTabFilter id="tabInfoCliente" text="Dados Cliente" icon="sap-icon://hint" key="tab1">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
@@ -56,39 +56,36 @@
 									</f:SimpleForm>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabInfoFinanceiro" text="Dados Financ." icon="sap-icon://lead" key="tab2">
-								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<f:SimpleForm id="simpleFormChange1" title="" editable="true" class="editableForm">
-										<f:content>
-											<Label text="Limite Crédito"/>
-											<Input id="idLimiteCredito" enabled="false"/>
-											<Label text="Data Lim. Crédito"/>
-											<Input id="idDataLimCredito" enabled="false"/>
-											<Label text="Maior Titulo_NF"/>
-											<Input id="idMaiorTitulo_NF" enabled="false"/>
-											<Label text="Data Maior Titulo/NF"/>
-											<Input id="idDataMaiorTitulo_NF" enabled="false"/>
-											<Label text="Valor Ultimo Titulo/NF"/>
-											<Input id="idUltimoTitulo_NF" enabled="false"/>
-											<Label text="Data Valor Ultimo Titulo/NF"/>
-											<Input id="idDataUltimoTitulo_NF" enabled="false"/>
-											<Label text="Simples Nacional"/>
-											<Input id="idSimplesNacional" enabled="false"/>
-										</f:content>
-									</f:SimpleForm>
-								</ScrollContainer>
-							</IconTabFilter>
+							<!--<IconTabFilter id="tabInfoFinanceiro" text="Dados Financ." icon="sap-icon://lead" key="tab2">-->
+							<!--	<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">-->
+							<!--		<f:SimpleForm id="simpleFormChange1" title="" editable="true" class="editableForm">-->
+							<!--			<f:content>-->
+							<!--				<Label text="Limite Crédito"/>-->
+							<!--				<Input id="idLimiteCredito" enabled="false"/>-->
+							<!--				<Label text="Data Lim. Crédito"/>-->
+							<!--				<Input id="idDataLimCredito" enabled="false"/>-->
+							<!--				<Label text="Maior Titulo_NF"/>-->
+							<!--				<Input id="idMaiorTitulo_NF" enabled="false"/>-->
+							<!--				<Label text="Data Maior Titulo/NF"/>-->
+							<!--				<Input id="idDataMaiorTitulo_NF" enabled="false"/>-->
+							<!--				<Label text="Valor Ultimo Titulo/NF"/>-->
+							<!--				<Input id="idUltimoTitulo_NF" enabled="false"/>-->
+							<!--				<Label text="Data Valor Ultimo Titulo/NF"/>-->
+							<!--				<Input id="idDataUltimoTitulo_NF" enabled="false"/>-->
+							<!--				<Label text="Simples Nacional"/>-->
+							<!--				<Input id="idSimplesNacional" enabled="false"/>-->
+							<!--			</f:content>-->
+							<!--		</f:SimpleForm>-->
+							<!--	</ScrollContainer>-->
+							<!--</IconTabFilter>-->
 							<IconTabFilter id="tabTabelaPrecos" text="Tabela Preços" icon="sap-icon://table-view" key="tab3">
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<Table id="table_TabelaPrecos" items="{ path: 'tabelaPrecoCliente>/' }" width="100%" updateFinished="onListUpdateFinished"
+									<Table id="table_TabelaPrecos" items="{ path: 'tabPreco>/' }" width="100%" updateFinished="onListUpdateFinished"
 										itemPress="onItemPress" noDataText="Nenhuma tabela de preços cadastrado para o cliente"
 										busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
 										<columns>
-											<Column minScreenWidth="Tablet" demandPopin="true">
-												<Text text="Est"/>
-											</Column>
 											<Column>
-												<Text text="Nome"/>
+												<Text text="Cliente"/>
 											</Column>
 											<Column>
 												<Text text="Tabela"/>
@@ -98,138 +95,137 @@
 											</Column>
 										</columns>
 										<items >
-											<ColumnListItem type="Active">
+											<ColumnListItem type="Inactive">
 												<cells>
-													<Text text="{tabelaPrecoCliente>CodEstabel}"/>
-													<Text text="{tabelaPrecoCliente>NomEstabel}"/>
-													<Text text="{tabelaPrecoCliente>NrTabPreco}"/>
-													<Text text="{tabelaPrecoCliente>DescTabela}"/>
+													<Text text="{tabPreco>kunnr}"/>
+													<Text text="{tabPreco>pltyp}"/>
+													<Text text="{tabPreco>ptext}"/>
 												</cells>
 											</ColumnListItem>
 										</items>
 									</Table>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabContratos" text="Contratos Ativos" icon="sap-icon://document-text" key="tab4">
-								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<Table id="table_ContratosAtivos" width="100%" items="{path: 'contratoCliente>/', sorter : { path : 'CodEstabel', ascending : true }}"
-										updateFinished="onListUpdateFinished" itemPress="onItemPress" noDataText="Nenhum contrato Ativo cadastrado para o cliente"
-										busyIndicatorDelay="{detailView>/lineItemTableDelay}">
-										<columns>
-											<Column minScreenWidth="Tablet" demandPopin="true">
-												<Text text="Est"/>
-											</Column>
-											<Column>
-												<Text text="Nome"/>
-											</Column>
-											<Column>
-												<Text text="Contrato"/>
-											</Column>
-											<Column minScreenWidth="Tablet" demandPopin="true">
-												<Text text="Unid. Negócio"/>
-											</Column>
-											<Column minScreenWidth="Tablet" demandPopin="true">
-												<Text text="Desc.Fin.(%)"/>
-											</Column>
-										</columns>
-										<items >
-											<ColumnListItem type="Active">
-												<cells>
-													<Text text="{contratoCliente>CodEstabel}"/>
-													<Text text="{contratoCliente>NomEstabel}"/>
-													<Text text="{contratoCliente>CodContrato}"/>
-													<Text text="{contratoCliente>UnidadeNegocio}"/>
-													<Text text="{contratoCliente>PctDescContrato}"/>
-												</cells>
-											</ColumnListItem>
-										</items>
-									</Table>
-								</ScrollContainer>
-							</IconTabFilter>
-							<IconTabFilter id="tabDuplicatas" text="Duplicatas Pendentes" icon="sap-icon://expense-report" key="tab5">
-								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
-									<Table id="table_DuplicatasAtivos" enableColumnFreeze="true" fixedLayout="false"
-										items="{ path: 'duplicataCliente>/', sorter: { path : 'CodEstabel', ascending: 'true'}}" updateFinished="onListUpdateFinished"
-										noDataText="Nenhum duplicata em aberto para o cliente" width="100%" busyIndicatorDelay="{detailView>/lineItemTableDelay}">
-										<columns>
-											<Column minScreenWidth="320px">
-												<Text text="Estab"/>
-											</Column>
-											<Column minScreenWidth="320px">
-												<Text text="Nr Doc."/>
-											</Column>
-											<Column minScreenWidth="550px" demandPopin="true">
-												<Text text="Ped Venda"/>
-											</Column>
-											<Column minScreenWidth="460px">
-												<Text text="Emissão"/>
-											</Column>
-											<Column minScreenWidth="400px">
-												<Text text="Venc."/>
-											</Column>
-											<Column minScreenWidth="320px">
-												<Text text="Valor Orig."/>
-											</Column>
-											<Column minScreenWidth="650px" demandPopin="true">
-												<Text text="Saldo"/>
-											</Column>
-											<Column minScreenWidth="720px" demandPopin="true">
-												<Text text="Dias Atrs."/>
-											</Column>
-											<Column minScreenWidth="780px" demandPopin="true">
-												<Text text="Historico"/>
-											</Column>
-										</columns>
-										<items >
-											<ColumnListItem type="Active">
-												<cells>
-													<Text text="{duplicataCliente>NomeEstabel}"/>
-													<Text text="{duplicataCliente>CodTitAcr}"/>
-													<Text text="{duplicataCliente>CodPedVda}"/>
-													<Text text="{duplicataCliente>DatEmisDocto}"/>
-													<Text text="{duplicataCliente>DatVenctoTitAcr}"/>
-													<Text text="{duplicataCliente>ValOriginTitAcr}"/>
-													<Text text="{duplicataCliente>ValSdoTitAcr}"/>
-													<Text text="{duplicataCliente>DiasAtraso}"/>
-													<Text text="{duplicataCliente>Historico}"/>
-												</cells>
-											</ColumnListItem>
-										</items>
-									</Table>
-									<Table id="table_DuplicatasAtivosTotal" items="{ path: 'duplicataClienteTotal>/', sorter: { path : 'CodEstabel', ascending: 'true'}}"
-										width="100%" updateFinished="onListUpdateFinished" fixedLayout="false" noDataText="Nenhum duplicata em aberto para o cliente"
-										busyIndicatorDelay="{detailView>/lineItemTableDelay}">
-										<headerToolbar>
-											<ToolbarSpacer/>
-											<ToolbarSpacer/>
-											<ToolbarSpacer/>
-											<Toolbar id="lineItemsToolbar">
-												<Title id="lineItemsHeader" text="Total Duplicatas em Aberto" class="bold"/>
-											</Toolbar>
-										</headerToolbar>
-										<columns>
-											<Column minScreenWidth="320px">
-												<Text text="Estab"/>
-											</Column>
-											<Column minScreenWidth="320px">
-												<Text text="Valor Orig."/>
-											</Column>
-											<Column minScreenWidth="320px">
-												<Text text="Saldo"/>
-											</Column>
-										</columns>
-										<items >
-											<ColumnListItem type="Active">
-												<cells>
-													<Text text="{duplicataClienteTotal>NomeEstabel}"/>
-													<Text text="R$: {duplicataClienteTotal>ValOriginTitAcr}"/>
-													<Text text="R$: {duplicataClienteTotal>ValSdoTitAcr}"/>
-												</cells>
-											</ColumnListItem>
-										</items>
-									</Table>
-								</ScrollContainer>
-							</IconTabFilter>
+							<!--<IconTabFilter id="tabContratos" text="Contratos Ativos" icon="sap-icon://document-text" key="tab4">-->
+							<!--	<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">-->
+							<!--		<Table id="table_ContratosAtivos" width="100%" items="{path: 'contratoCliente>/', sorter : { path : 'CodEstabel', ascending : true }}"-->
+							<!--			updateFinished="onListUpdateFinished" itemPress="onItemPress" noDataText="Nenhum contrato Ativo cadastrado para o cliente"-->
+							<!--			busyIndicatorDelay="{detailView>/lineItemTableDelay}">-->
+							<!--			<columns>-->
+							<!--				<Column minScreenWidth="Tablet" demandPopin="true">-->
+							<!--					<Text text="Est"/>-->
+							<!--				</Column>-->
+							<!--				<Column>-->
+							<!--					<Text text="Nome"/>-->
+							<!--				</Column>-->
+							<!--				<Column>-->
+							<!--					<Text text="Contrato"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="Tablet" demandPopin="true">-->
+							<!--					<Text text="Unid. Negócio"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="Tablet" demandPopin="true">-->
+							<!--					<Text text="Desc.Fin.(%)"/>-->
+							<!--				</Column>-->
+							<!--			</columns>-->
+							<!--			<items >-->
+							<!--				<ColumnListItem type="Active">-->
+							<!--					<cells>-->
+							<!--						<Text text="{contratoCliente>CodEstabel}"/>-->
+							<!--						<Text text="{contratoCliente>NomEstabel}"/>-->
+							<!--						<Text text="{contratoCliente>CodContrato}"/>-->
+							<!--						<Text text="{contratoCliente>UnidadeNegocio}"/>-->
+							<!--						<Text text="{contratoCliente>PctDescContrato}"/>-->
+							<!--					</cells>-->
+							<!--				</ColumnListItem>-->
+							<!--			</items>-->
+							<!--		</Table>-->
+							<!--	</ScrollContainer>-->
+							<!--</IconTabFilter>-->
+							<!--<IconTabFilter id="tabDuplicatas" text="Duplicatas Pendentes" icon="sap-icon://expense-report" key="tab5">-->
+							<!--	<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">-->
+							<!--		<Table id="table_DuplicatasAtivos" fixedLayout="false"-->
+							<!--			items="{ path: 'duplicataCliente>/', sorter: { path : 'CodEstabel', ascending: 'true'}}" updateFinished="onListUpdateFinished"-->
+							<!--			noDataText="Nenhum duplicata em aberto para o cliente" width="100%" busyIndicatorDelay="{detailView>/lineItemTableDelay}">-->
+							<!--			<columns>-->
+							<!--				<Column minScreenWidth="320px">-->
+							<!--					<Text text="Estab"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="320px">-->
+							<!--					<Text text="Nr Doc."/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="550px" demandPopin="true">-->
+							<!--					<Text text="Ped Venda"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="460px">-->
+							<!--					<Text text="Emissão"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="400px">-->
+							<!--					<Text text="Venc."/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="320px">-->
+							<!--					<Text text="Valor Orig."/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="650px" demandPopin="true">-->
+							<!--					<Text text="Saldo"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="720px" demandPopin="true">-->
+							<!--					<Text text="Dias Atrs."/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="780px" demandPopin="true">-->
+							<!--					<Text text="Historico"/>-->
+							<!--				</Column>-->
+							<!--			</columns>-->
+							<!--			<items >-->
+							<!--				<ColumnListItem type="Active">-->
+							<!--					<cells>-->
+							<!--						<Text text="{duplicataCliente>NomeEstabel}"/>-->
+							<!--						<Text text="{duplicataCliente>CodTitAcr}"/>-->
+							<!--						<Text text="{duplicataCliente>CodPedVda}"/>-->
+							<!--						<Text text="{duplicataCliente>DatEmisDocto}"/>-->
+							<!--						<Text text="{duplicataCliente>DatVenctoTitAcr}"/>-->
+							<!--						<Text text="{duplicataCliente>ValOriginTitAcr}"/>-->
+							<!--						<Text text="{duplicataCliente>ValSdoTitAcr}"/>-->
+							<!--						<Text text="{duplicataCliente>DiasAtraso}"/>-->
+							<!--						<Text text="{duplicataCliente>Historico}"/>-->
+							<!--					</cells>-->
+							<!--				</ColumnListItem>-->
+							<!--			</items>-->
+							<!--		</Table>-->
+							<!--		<Table id="table_DuplicatasAtivosTotal" items="{ path: 'duplicataClienteTotal>/', sorter: { path : 'CodEstabel', ascending: 'true'}}"-->
+							<!--			width="100%" updateFinished="onListUpdateFinished" fixedLayout="false" noDataText="Nenhum duplicata em aberto para o cliente"-->
+							<!--			busyIndicatorDelay="{detailView>/lineItemTableDelay}">-->
+							<!--			<headerToolbar>-->
+							<!--				<ToolbarSpacer/>-->
+							<!--				<ToolbarSpacer/>-->
+							<!--				<ToolbarSpacer/>-->
+							<!--				<Toolbar id="lineItemsToolbar">-->
+							<!--					<Title id="lineItemsHeader" text="Total Duplicatas em Aberto" class="bold"/>-->
+							<!--				</Toolbar>-->
+							<!--			</headerToolbar>-->
+							<!--			<columns>-->
+							<!--				<Column minScreenWidth="320px">-->
+							<!--					<Text text="Estab"/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="320px">-->
+							<!--					<Text text="Valor Orig."/>-->
+							<!--				</Column>-->
+							<!--				<Column minScreenWidth="320px">-->
+							<!--					<Text text="Saldo"/>-->
+							<!--				</Column>-->
+							<!--			</columns>-->
+							<!--			<items >-->
+							<!--				<ColumnListItem type="Active">-->
+							<!--					<cells>-->
+							<!--						<Text text="{duplicataClienteTotal>NomeEstabel}"/>-->
+							<!--						<Text text="R$: {duplicataClienteTotal>ValOriginTitAcr}"/>-->
+							<!--						<Text text="R$: {duplicataClienteTotal>ValSdoTitAcr}"/>-->
+							<!--					</cells>-->
+							<!--				</ColumnListItem>-->
+							<!--			</items>-->
+							<!--		</Table>-->
+							<!--	</ScrollContainer>-->
+							<!--</IconTabFilter>-->
 						</items>
 					</IconTabBar>
 				</content>

@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/core/routing/History"
@@ -30,11 +31,9 @@ sap.ui.define([
 		},
 
 		_onLoadFields: function() {
-			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
 			var that = this;
-
-			var oModel = this.getView();
-
+			var oVetorTabPreco = [];
+			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
 			var codigoCliente = this.getOwnerComponent().getModel("modelCliente").getProperty("/codigoCliente");
 
 			var open = indexedDB.open("VB_DataBase");
@@ -55,6 +54,27 @@ sap.ui.define([
 					oModelCliente.setData(vCliente);
 
 					that.getView().setModel(oModelCliente, "clienteModel");
+					
+					var transactionA961 = db.transaction(["A961"], "readonly");
+					var objectStoreA961 = transactionA961.objectStore("A961");
+		
+					objectStoreA961.openCursor().onsuccess = function(event) {
+						var cursor = event.target.result;
+						if (cursor) {
+							
+							if (cursor.value.kunnr == codigoCliente) {
+		
+								oVetorTabPreco.push(cursor.value);
+							}
+		
+							cursor.continue();
+		
+						} else {
+		
+							var oModelTabPreco = new sap.ui.model.json.JSONModel(oVetorTabPreco);
+							that.getView().setModel(oModelTabPreco, "tabPreco");
+						}
+					};
 				};
 			};
 		}

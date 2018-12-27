@@ -10,25 +10,25 @@
 			</Toolbar>
 		</subHeader>
 		<content>
-			<Table noDataText="Sem dados." id="tableProdutos" width="100%"
+			<Table noDataText="Sem dados." id="tableProdutos" width="100%" alternateRowColors="true"
 				items="{ path: 'consultasProdutos>/', sorter: { path: 'matnr', descending: false, parameter: 'matnr'}}">
 				<columns>
 					<Column minScreenWidth="320px" hAlign="Left" demandPopin="false">
 						<Text text="Código"/>
 					</Column>
-					<Column minScreenWidth="320px" hAlign="Right" demandPopin="false">
+					<Column minScreenWidth="320px" hAlign="Left" demandPopin="false">
 						<Text text="Descrição"/>
 					</Column>
-					<Column minScreenWidth="320px" hAlign="Right" demandPopin="false">
-						<Text text="Estoque"/>
-					</Column>
+					<!--<Column minScreenWidth="320px" hAlign="Right" demandPopin="false">-->
+					<!--	<Text text="Estoque"/>-->
+					<!--</Column>-->
 				</columns>
 				<items>
-					<ColumnListItem type="Active" id="item1">
+					<ColumnListItem type="Inactive" id="item1">
 						<cells>
-							<Text text="{consultasProdutos>matnr}" hAlign="Left"/>
-							<Text text="{consultasProdutos>maktx}" hAlign="Left"/>
-							<Text text="10000" hAlign="Right"/>
+							<Text text="{consultasProdutos>matnr}" />
+							<Text text="{consultasProdutos>maktx}" />
+							<!--<Text text="10000" />-->
 						</cells>
 					</ColumnListItem>
 				</items>

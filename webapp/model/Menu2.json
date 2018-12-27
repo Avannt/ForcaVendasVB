@@ -27,6 +27,13 @@
 		"info": "Consultas",
 		"visible": true,
 		"number": ""
+	}, {
+		"id": "relatorios",
+		"icon": "manager-insight",
+		"title": "Relatórios",
+		"info": "Relatórios",
+		"visible": true,
+		"number": ""
 	}],
 	"Consultas": [{
 			"id": "clienteConsultas",
@@ -42,7 +49,14 @@
 			"info": "Descr. dos Produtos",
 			"visible": true,
 			"number": ""
-	}, 
+	}, {
+			"id": "verbaConsultas",
+			"icon": "waiver",
+			"title": "Verbas",
+			"info": "Movim. e Saldo",
+			"visible": false,
+			"number": ""
+	},
 		{
 			"id": "relatorioPedidos",
 			"icon": "expense-report",
@@ -57,5 +71,28 @@
 			"info": "Levant. de Titulos",
 			"visible": true,
 			"number": ""
+	}],
+
+	"Relatorios": [{
+		"id": "relatorioPedidos",
+		"icon": "expense-report",
+		"title": "Pedidos",
+		"info": "Levant. dos Pedidos",
+		"visible": true,
+		"number": ""
+	}, {
+		"id": "relatorioTitulos",
+		"icon": "activity-individual",
+		"title": "Títulos",
+		"info": "Levant. de Titulos",
+		"visible": false,
+		"number": ""
+	}, {
+		"id": "relatorioTabelas",
+		"icon": "sales-quote",
+		"title": "Tab Preços",
+		"info": "Preço dos Prod.",
+		"visible": false,
+		"number": ""
 	}]
 }

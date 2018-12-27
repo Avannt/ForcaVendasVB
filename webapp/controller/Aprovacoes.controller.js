@@ -101,6 +101,32 @@ sap.ui.define([
 			}
 		},
 
+		myFormatterName: function(value) {
+
+			if (value.length > 30) {
+				
+				return value.substring(0, 28) + "...";
+				
+			} else {
+				
+				return value;
+			}
+		},
+
+		onItemChange: function(oEvent) {
+
+			var sValue = oEvent.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+			aFilters.push(allFilters);
+			//oEvent.getSource().getBinding("items").filter(aFilters, "Application");
+			this.byId("idTableEnvioPedidos").getBinding("items").filter(aFilters, "Application");
+		},
+
 		onNavBack: function() {
 
 			if (this._ItemDialog) {
@@ -137,21 +163,21 @@ sap.ui.define([
 
 				this.onCarregaExcedentes();
 				this.onCalculaTotalDestinar();
-				
+
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-				
+
 				if (!this._CreateMaterialFragment) {
-					
+
 					this._ItemDialog = sap.ui.xmlfragment(
 						"testeui5.view.AprovacaoDialog",
 						this
 					);
-					
+
 					this.getView().addDependent(this._ItemDialog);
 				}
-				
+
 				this.onBloquearVerbas();
 
 				this._ItemDialog.open();
@@ -206,24 +232,24 @@ sap.ui.define([
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueStateText(msg);
 
 			} else {
-				
+
 				Valtotexcndirdesc = vlrTotalDesc - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc.toFixed(2));
-				
+
 				this.onCalculaTotalDestinar();
-				
+
 				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueState("None");
 				sap.ui.getCore().byId("idComissaoUtilizadaDesconto").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueState("None");
 				sap.ui.getCore().byId("idVerbaUtilizadaDesconto").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueState("None");
 				sap.ui.getCore().byId("idVerbaDiaDiaUtilizadaDesconto").setValueStateText();
-				
+
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueState("None");
 				sap.ui.getCore().byId("idVerbaVBUtilizadaDesconto").setValueStateText();
-				
+
 			}
 		},
 
@@ -412,7 +438,7 @@ sap.ui.define([
 		},
 
 		onCalculaTotalDestinar: function() {
-			
+
 			var var1 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc");
 			var var2 = this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo");
 			var var3 = this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde");
@@ -525,7 +551,9 @@ sap.ui.define([
 							Obsdd: retorno.results[i].Obsdd,
 							Obscom: retorno.results[i].Obscom,
 							Obsvm: retorno.results[i].Obsvm,
-							Bugruop: retorno.results[i].BuGruop
+							Bugruop: retorno.results[i].BuGruop,
+							Namecli: retorno.results[i].Namecli,
+							Namerep: retorno.results[i].Namerep
 						};
 
 						oItensAprovar.push(aux);
@@ -737,11 +765,11 @@ sap.ui.define([
 						);
 
 					} else {
-						
+
 						if (that._ItemDialog) {
 							that._ItemDialog.destroy(true);
 						}
-						
+
 						sap.m.MessageBox.show(
 							retorno.Message, {
 								icon: sap.m.MessageBox.Icon.SUCCESS,
