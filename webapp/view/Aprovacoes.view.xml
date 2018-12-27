@@ -50,8 +50,8 @@
 								<Text text="{PedidosAprovar>Kunnr}" />
 								<Text text="{PedidosAprovar>Lifnr}" />
 								<Text text="{path : 'PedidosAprovar>Erdat', formatter:'.myFormatterDataImp'} - {PedidosAprovar>Horaped}" />
-								<Text text="R$: {path :'PedidosAprovar>Vlrexc'}" />
-								<Text text="R$: {PedidosAprovar>Valtotpedido}" />
+								<Text text="R$: {path :'PedidosAprovar>Vlrexc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
+								<Text text="R$: {path: 'PedidosAprovar>Valtotpedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 								<Text text="{PedidosAprovar>NrPedcli}" visible="false"/>
 								<!--<Text text="{PedidosEnviar>ValVerbaPedido}"/>-->
 								<!--<Text text="{PedidosEnviar>Rentabilidade}"/>-->

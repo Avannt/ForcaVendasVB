@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/core/mvc/Controller"
@@ -96,6 +97,8 @@ sap.ui.define([
 
 							if (oPrincipal[i].id == "aprovacoes") {
 								oPrincipal[i].visible = false;
+							}else if (oPrincipal[i].id == "pedido" || oPrincipal[i].id == "entregaFutura") {
+								oPrincipal[i].visible = true;
 							}
 						}
 					}
@@ -113,6 +116,8 @@ sap.ui.define([
 								var oMenuAprovar = oPrincipal[i];
 								var oModel = that.getView().getModel();
 								var codRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
+								oMenuAprovar.visible = true;
+								oMenuAprovar.busy = true;
 
 								oModel.read("/PedidosAprovar/$count", {
 									urlParameters: {
@@ -121,11 +126,13 @@ sap.ui.define([
 									success: function(retorno) {
 										// oMenuAprovar.number = retorno;
 										oMenuAprovar.number = retorno;
+										oMenuAprovar.busy = false;
 										that.getView().getModel("menu").refresh();
 									},
 									error: function(error) {
+										oMenuAprovar.busy = false;
+										that.getView().getModel("menu").refresh();
 										console.log(error);
-										that.byId("idTableEnvioPedidos").setBusy(false);
 										that.onMensagemErroODATA(error.statusCode);
 									}
 								});
@@ -133,7 +140,7 @@ sap.ui.define([
 						}
 					}/*if bAprovador*/
 					
-					that.getView().getModel("menu").refresh(true);
+					that.getView().getModel("menu").refresh();
 				};
 			};
 		},
@@ -173,6 +180,90 @@ sap.ui.define([
 			// this.getOwnerComponent().getModel("modelAux").setProperty("/nomeEmpresa", nomeEmpresa);
 			// this.getOwnerComponent().getModel("modelAux").setProperty("/iconeEmpresa", icone);
 			// this.getOwnerComponent().getModel("helper").setProperty("/showShellHeader", true);
+		},
+		
+		onMensagemErroODATA: function(codigoErro) {
+			var that = this;
+
+			if (codigoErro == 0) {
+				sap.m.MessageBox.show(
+					"Verifique a conexão com a internet!", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Falha na Conexão!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function(oAction) {
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+						}
+					}
+				);
+			} else if (codigoErro == 400) {
+				sap.m.MessageBox.show(
+					"Url mal formada! Contate a consultoria!", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Erro no programa Fiori!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function(oAction) {
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+						}
+					}
+				);
+			} else if (codigoErro == 403) {
+				sap.m.MessageBox.show(
+					"Usuário sem autorização para executar a função (403)! Contate a consultoria!", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Erro no programa Abap!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function(oAction) {
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+						}
+					}
+				);
+			} else if (codigoErro == 404) {
+				sap.m.MessageBox.show(
+					"Função não encontrada e/ou Parâmentros inválidos  (404)! Contate a consultoria!", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Erro no programa Abap!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function(oAction) {
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+						}
+					}
+				);
+			} else if (codigoErro == 500) {
+				sap.m.MessageBox.show(
+					"Ocorreu uma falha com a comunicação do servidor (500). Refaça a operação.", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Falha de comunicação!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function(oAction) {
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+						}
+					}
+				);
+			} else if (codigoErro == 501) {
+				sap.m.MessageBox.show(
+					"Função não implementada (501)! Contate a consultoria!", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Erro no programa Abap!",
+						actions: [sap.m.MessageBox.Action.OK],
+						onClose: function(oAction) {
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+						}
+					}
+				);
+			}
 		}
 
 	});

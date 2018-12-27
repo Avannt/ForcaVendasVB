@@ -7,7 +7,8 @@
 				<ToolbarSpacer/>
 				<ToolbarSpacer/>
 				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-				<DatePicker visible="false" id="DP6" valueFormat="dd/MM/yyyy" placeholder="Digite Data .." displayFormat="long" change="handleChange" width="50%"/>
+				<DatePicker visible="false" id="DP6" valueFormat="dd/MM/yyyy" placeholder="Digite Data .." displayFormat="long" change="handleChange"
+					width="50%"/>
 				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite cód/ Nome .." enableSuggestions="true" search="onItemChange"
 					suggest="_handleValueHelpSearch" width="100%"
 					suggestionItems="{ path: 'cliRelatorio>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'}}">
@@ -20,51 +21,49 @@
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
 				<Table id="table_relatorio_pedidos" busyIndicatorDelay="2000" growing="true" growingThreshold="5" growingScrollToLoad="false"
-						noDataText="Nenhum pedido encontrado" updateFinished="onUpdateFinished" width="100%" selectionChange="onSelectionChange999"
-					items="{ path: 'pedidoRelatorio>/', sorter: { path: 'NrPedCliDTS', descending: true}}">
+					noDataText="Nenhum pedido encontrado" updateFinished="onUpdateFinished" width="100%" selectionChange="onSelectionChange999"
+					items="{ path: 'pedidoRelatorio>/', sorter: { path: 'Nrpedcli', descending: true}}">
 					<columns>
-						<Column minScreenWidth="320px" demandPopin="false" popinDisplay="Inline" hAlign="Left" width="100px">
+						<Column minScreenWidth="320px" demandPopin="false" popinDisplay="Inline" hAlign="Left" width="auto">
 							<Text text="N°Ped"/>
 						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline">
-							<Text text="Valor total"/>
+						<!--<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">-->
+						<!--	<Text text="Cód.Cliente"/>-->
+						<!--</Column>-->
+						<!--<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">-->
+						<!--	<Text text="Cód.Aprovador"/>-->
+						<!--</Column>-->
+						<Column minScreenWidth="360px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+							<Text text="Data"/>
 						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline">
-							<Text text="Valor excedente"/>
-						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
-							<Text text="Cód.Cliente"/>
-						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
-							<Text text="Cliente"/>
-						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
-							<Text text="Cód.Aprovador"/>
-						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
-							<Text text="Aprovador"/>
-						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
+						<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="70px">
 							<Text text="Status"/>
 						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left" width="70px" >
-							<Text text="Data"/>
+						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+							<Text text="Cliente"/>
+						</Column>
+						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+							<Text text="Aprovador"/>
+						</Column>
+						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="100px">
+							<Text text="Valor total"/>
+						</Column>
+						<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="100px">
+							<Text text="Valor excedente"/>
 						</Column>
 					</columns>
 					<items>
 						<ColumnListItem press="onSelectionChange999" type="Navigation">
 							<cells>
-								<Text text="{path : 'pedidoRelatorio>Nrpedcli'}" />
+								<Text text="{path : 'pedidoRelatorio>Nrpedcli'}"/>
+								<!--<Text text="{path : 'pedidoRelatorio>Kunnr'}"/>-->
+								<Text text="{path : 'pedidoRelatorio>Erdat', type: 'sap.ui.model.type.Date'}"/>
+								<Image src="{path : 'pedidoRelatorio>pathImg'}" width="18%" tooltip="{path : 'pedidoRelatorio>AprovadoDesc'}"/>
+								<Text text="{path : 'pedidoRelatorio>Kunnr'} - {path : 'pedidoRelatorio>NameOrg1'}"/>
+								<!--<Text text="{path : 'pedidoRelatorio>Aprov'}"/>-->
+								<Text text="{path : 'pedidoRelatorio>Aprov'} - {path : 'pedidoRelatorio>AprovNome'}"/>
 								<Text text="R$: {path :'pedidoRelatorio>Valtotpedido', formatter: '.fValMonetario'}"/>
 								<Text text="R$: {path :'pedidoRelatorio>Vlrexc', formatter: '.fValMonetario'}"/>
-								<Text text="{path : 'pedidoRelatorio>Kunnr'}"/>
-								<Text text="{path : 'pedidoRelatorio>NameOrg1'}" />
-								<Text text="{path : 'pedidoRelatorio>Aprov'}"/>
-								<Text text="{path : 'pedidoRelatorio>AprovNome'}"/>
-								<Image src="{path : 'pedidoRelatorio>pathImg'}" 
-									width="18%"
-									tooltip="{path : 'pedidoRelatorio>AprovadoDesc'}"/>
-								<Text text="{path : 'pedidoRelatorio>Erdat', type: 'sap.ui.model.type.Date'}"/>
 							</cells>
 						</ColumnListItem>
 					</items>
