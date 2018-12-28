@@ -1803,7 +1803,7 @@ sap.ui.define([
 																																																																							Sldfut: retornoEFPendentes.results[i].Sldfut,
 																																																																							Vbeln: retornoEFPendentes.results[i].Vbeln,
 																																																																							codRepres: retornoEFPendentes.results[i].Codrepres,
-																																																																							codUsr: retornoEFPendentes.results[i].Codusr,
+																																																																							codUsr: parseInt(retornoEFPendentes.results[i].Codusr).toString(),
 																																																																							idEntregaFutura: retornoEFPendentes.results[i].Identregafutura,
 																																																																							tipoUsuario: retornoEFPendentes.results[i].Tipousuario
 																																																																						};
