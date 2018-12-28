@@ -44,30 +44,16 @@ sap.ui.define([
 			}
 		},
 
-		myFormatterEmp: function(value) {
-			if (value !== undefined && value !== null && value !== "") {
-				if (value == 1) {
-					return "Pred.-SoFruta";
-				} else if (value == 2) {
-					return "Stella";
-				} else if (value == 3) {
-					return "Minas";
-				}
-			}
-		},
-
 		_onLoadFields: function() {
 
 			var that = this;
 			var oClientes = [];
 			var oTitulos = [];
+			var oClientesGrid = [];
 			oDuplicataRelatorio = [];
-			this.byId("idtableTitulos").setGrowingTriggerText("Próximo >>>");
-			this.byId("idClientesRelatorio").setValue("");
+
 			this.byId("idtableTitulos").setBusy(true);
 
-			var oModel = new sap.ui.model.json.JSONModel();
-			this.getView().setModel(oModel);
 			var open1 = indexedDB.open("VB_DataBase");
 
 			open1.onerror = function() {
@@ -77,15 +63,40 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 			};
+			
 			open1.onsuccess = function() {
 				var db = open1.result;
 
 				//CARREGA OS CAMPOS DO LOCAL DE ENTREGA
 				var sTitulos = db.transaction("TitulosAbertos").objectStore("TitulosAbertos");
-				var sClientes = db.transaction("TitulosAbertos").objectStore("TitulosAbertos");
 
-				sClientes.getAll().onsuccess = function(event) {
-					oClientes = event.target.result;
+				sTitulos.getAll().onsuccess = function(event) {
+					oTitulos = event.target.result;
+
+					var store = db.transaction("Clientes").objectStore("Clientes");
+					store.openCursor().onsuccess = function(event) {
+						var cursor = event.target.result;
+						if (cursor) {
+
+							oClientes.push(cursor.value);
+
+							cursor.continue();
+						} else {
+
+							for (var a = 0; a < oTitulos.length; a++) {
+								for (var b = 0; b < oClientes.length; b++) {
+									if (oTitulos[a].kunnr == oClientes[b].kunnr) {
+										oTitulos[a].NomeCliente = oClientes[b].NomeAbrev;
+									}
+								}
+							}
+
+							var oModel = new sap.ui.model.json.JSONModel(oTitulos);
+							that.getView().setModel(oModel, "TitulosAbertos");
+
+							that.byId("idtableTitulos").setBusy(false);
+						}
+					};
 				};
 			};
 		},

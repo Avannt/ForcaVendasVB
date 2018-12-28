@@ -236,27 +236,27 @@ sap.ui.define([
 				}
 			};
 		},
-
+		
 		onSearch: function(oEvent) {
-
+			
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue)
 			];
-
+			
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
 			//oEvent.getSource().getBinding("items").filter(aFilters, "Application");
 			this.byId("listClientes").getBinding("items").filter(aFilters, "Application");
-
+			
 		},
-
+		
 		onAddPedido: function() {
 			var pedido = "";
 			var that = this;
 			var open1 = indexedDB.open("VB_DataBase");
-
+			
 			open1.onerror = function(hxr) {
 				console.log("Erro ao abrir tabelas.");
 				console.log(hxr.Message);
@@ -279,7 +279,7 @@ sap.ui.define([
 					store.openCursor().onsuccess = function(event) {
 						// consulta resultado do event
 						var cursor = event.target.result;
-	
+						
 						if (cursor) {
 							if (cursor.value.idStatusPedido != 3 && cursor.value.completo != "Sim") {
 								cliente = cursor.value.kunnr;
@@ -300,14 +300,13 @@ sap.ui.define([
 					};
 				}
 			};
-
 		},
 
 		onItemPress: function(oEvent) {
 			var that = this;
 			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
 			var open1 = indexedDB.open("VB_DataBase");
-
+			
 			open1.onerror = function(hxr) {
 				console.log("Erro ao abrir tabelas.");
 				console.log(hxr.Message);
@@ -315,10 +314,10 @@ sap.ui.define([
 			//Load tables
 			open1.onsuccess = function(e) {
 				var db = open1.result;
-
+				
 				var NrPedido = oNumeroPedido.getBindingContext("pedidosCadastrados").getProperty("nrPedCli");
 				that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", NrPedido);
-
+				
 				var promise = new Promise(function(resolve, reject) {
 					that.carregaModelCliente(db, resolve, reject);
 				});
@@ -326,17 +325,14 @@ sap.ui.define([
 				promise.then(function() {
 					sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 				});
-
 			};
-
 		},
-
 		onExcluirPedido: function(oEvent) {
 			var that = this;
 			var naoDeletar = false;
 			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
 			var NrPedido = oNumeroPedido.getBindingContext("pedidosCadastrados").getProperty("nrPedCli");
-
+			
 			MessageBox.show("Deseja mesmo excluir o pedido?.", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Exclusão de Pedidos",
@@ -344,7 +340,7 @@ sap.ui.define([
 				onClose: function(oAction) {
 					if (oAction == sap.m.MessageBox.Action.YES) {
 						var open = indexedDB.open("VB_DataBase");
-
+						
 						open.onerror = function() {
 							MessageBox.show(open.error.mensage, {
 								icon: MessageBox.Icon.ERROR,
@@ -352,7 +348,7 @@ sap.ui.define([
 								actions: [MessageBox.Action.OK]
 							});
 						};
-
+						
 						open.onsuccess = function() {
 							for (var i = 0; i < oPrePedidos.length; i++) {
 								if (oPrePedidos[i].nrPedCli == NrPedido) {
@@ -365,30 +361,30 @@ sap.ui.define([
 							}
 							var oModel = new sap.ui.model.json.JSONModel(oPrePedidos);
 							that.getView().setModel(oModel, "pedidosCadastrados");
-
+							
 							if (naoDeletar === true) {
 								MessageBox.show("Esse Pedido está com status Finalizado e não pode ser deletado.", {
 									icon: MessageBox.Icon.WARNING,
 									title: "Impossivel Excluir",
 									actions: [MessageBox.Action.OK]
 								});
-
+								
 							} else {
 								var db = open.result;
 								var store1 = db.transaction("PrePedidos", "readwrite");
 								var objPedido = store1.objectStore("PrePedidos");
 								var request = objPedido.delete(NrPedido);
-
+								
 								request.onsuccess = function() {
-
+									
 									that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 									console.log("Pedido deletado!");
-
+									
 								};
 								request.onerror = function() {
 									console.log("Pedido não foi deletado!");
 								};
-
+								
 								var store = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
 								store.openCursor().onsuccess = function(event) {
 									// consulta resultado do event
@@ -417,7 +413,7 @@ sap.ui.define([
 				}
 			});
 		},
-
+		
 		onBusyDialogClosed: function() {
 			var call = ajaxCall;
 			call.abort();

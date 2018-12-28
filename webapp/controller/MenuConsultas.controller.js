@@ -56,8 +56,11 @@ sap.ui.define([
 				case "produtoConsultas":
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("produtoConsultas");
 					break;
-				case "verbaConsultas":
-					sap.ui.core.UIComponent.getRouterFor(this).navTo("verbaConsultas");
+				case "relatorioPedidos":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioPedidos");
+					break;
+				case "relatorioTitulos":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");
 					break;
 			}
 		}

@@ -1,3 +1,4 @@
+/*eslint-disable no-console, no-alert */
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/model/Filter",
@@ -18,7 +19,7 @@ sap.ui.define([
 			var open = indexedDB.open("VB_DataBase");
 
 			open.onerror = function() {
-				alert(open.error.mensage);
+				console.log(open.error.mensage);
 			};
 
 			open.onsuccess = function() {

@@ -3,14 +3,14 @@
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Aprovações">
 		<subHeader>
 			<Toolbar>
-				<DatePicker id="DP6" valueFormat="dd/MM/yyyy" placeholder="Digite Data .." displayFormat="long" change="handleChange" width="50%"/>
-				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite cód/ Nome .." enableSuggestions="true" search="onItemChange"
-					suggest="_handleValueHelpSearch" width="50%"
-					suggestionItems="{ path: 'cliRelatorio>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'}}">
-					<suggestionItems>
-						<SuggestionItem text="{cliRelatorio>CodCliente}" description="{cliRelatorio>NomeEmit}" key="{cliRelatorio>CodCliente}"/>
-					</suggestionItems>
-				</SearchField>
+				<!--<DatePicker id="DP6" valueFormat="dd/MM/yyyy" placeholder="Digite Data .." displayFormat="long" change="handleChange" width="50%"/>-->
+				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite Repres / Cliente" enableSuggestions="true" search="onItemChange"
+					 width="100%"></SearchField>
+					<!--suggestionItems="{ path: 'cliRelatorio>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'}}">-->
+					<!--<suggestionItems>-->
+					<!--	<SuggestionItem text="{cliRelatorio>CodCliente}" description="{cliRelatorio>NomeEmit}" key="{cliRelatorio>CodCliente}"/>-->
+					<!--</suggestionItems>-->
+				<!--</SearchField>-->
 			</Toolbar>
 		</subHeader>
 		<semantic:FullscreenPage id="page">
@@ -19,19 +19,19 @@
 					noDataText="Nenhum Pedido Pendente" updateFinished="onUpdateFinished" width="100%" alternateRowColors="true"
 					items="{ path: 'PedidosAprovar>/', sorter: { path: 'Cliente', descending: false, parameter: 'Codigo'}}">
 					<columns>
-						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
+						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left" width="auto">
 							<Text text="Cliente"/>
 						</Column>
-						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
+						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
 							<Text text="Repres"/>
 						</Column>
-						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" hAlign="Left">
+						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
 							<Text text="Data"/>
 						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left" popinDisplay="Inline">
+						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left" popinDisplay="Inline"  width="100px">
 							<Text text="Tot Exc"/>
 						</Column>
-						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left" popinDisplay="Inline">
+						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left" popinDisplay="Inline"  width="100px">
 							<Text text="Tot. Ped."/>
 						</Column>
 						<!--<Column minScreenWidth="380px" visible="false" demandPopin="true">-->
@@ -47,11 +47,11 @@
 					<items>
 						<ColumnListItem type="Inactive">
 							<cells>
-								<Text text="{PedidosAprovar>Kunnr}" />
-								<Text text="{PedidosAprovar>Lifnr}" />
+								<Text text="{PedidosAprovar>Kunnr}- {path: 'PedidosAprovar>Namecli', formatter:'.myFormatterName'}" />
+								<Text text="{PedidosAprovar>Lifnr} - {path: 'PedidosAprovar>Namerep', formatter:'.myFormatterName'}" />
 								<Text text="{path : 'PedidosAprovar>Erdat', formatter:'.myFormatterDataImp'} - {PedidosAprovar>Horaped}" />
-								<Text text="R$: {path :'PedidosAprovar>Vlrexc'}" />
-								<Text text="R$: {PedidosAprovar>Valtotpedido}" />
+								<Text text="R$: {path :'PedidosAprovar>Vlrexc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
+								<Text text="R$: {path: 'PedidosAprovar>Valtotpedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 								<Text text="{PedidosAprovar>NrPedcli}" visible="false"/>
 								<!--<Text text="{PedidosEnviar>ValVerbaPedido}"/>-->
 								<!--<Text text="{PedidosEnviar>Rentabilidade}"/>-->

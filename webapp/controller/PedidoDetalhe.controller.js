@@ -565,17 +565,9 @@ sap.ui.define([
 		onCarregaMateriais: function(db, tipoPedido, resolve, reject) {
 			var that = this;
 
-			if (tipoPedido == "YVEF" || tipoPedido == "YVEN") {
+			if (tipoPedido == "YVEF" || tipoPedido == "YVEN" || tipoPedido == "YBON" || tipoPedido == "YTRO"){
 
 				var filtro = "";
-
-			} else if (tipoPedido == "YBON") {
-
-				filtro = "";
-
-			} else if (tipoPedido == "YTRO") {
-
-				filtro = "NORM";
 
 			} else {
 
@@ -1624,70 +1616,130 @@ sap.ui.define([
 			oItemPedido.zzPercDescTotal = 0;
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			
-			if (oItemPedido.mtpos != "YAMO") {
-				if (oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr > 0) {
+			//Preço cheio sem descontos
+			if (oItemPedido.mtpos == "YBRI" || oItemPedido.mtpos == "YAMO" || tipoPedido == "YTRO"){
+				
+				oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+				
+			} else if(tipoPedido == "YBON"){
+				
+				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
+				oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
+				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;	
+				
+			} else if(oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr >= 0){
+				
+				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
+				oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
 
-					oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
-					oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
-
-					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-					oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
-					oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
-
-				} else if (oItemPedido.tipoItem === "Diluicao") {
-
-					oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
-					oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
-
-				} else if(oItemPedido.mtpos == "YBRI" || oItemPedido.mtpos == "YTRO"){
+				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+				oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
+				oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+				
+			} else {
+				
+				//Inicialmente o valor cheio do produto é atribuido para o valor com desconto.
+				// 1º Aplicar - Preco Cheio do produto - tabela (avista -5%) a prazo sem desconto.
+				//Senão for desconto avista, criar o campo zzPercDescTotal do item do pedido com desconto zerado. 
+				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 					
-				} else if (tipoPedido == "YBON"){
-					
-					oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
-					oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
-					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
-				}
-				else {
-
-					//Inicialmente o valor cheio do produto é atribuido para o valor com desconto.
-					// 1º Aplicar - Preco Cheio do produto - tabela (avista -5%) a prazo sem desconto.
-					//Senão for desconto avista, criar o campo zzPercDescTotal do item do pedido com desconto zerado. 
-					if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
-
-						oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
-
-						//Desconto normal. *****
-						oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
-
-					} else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
-
-						oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
-
-						//Desconto normal. *****
-						oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-
-					}
-
-					//2º Aplicar o Desconto digitado na tela de digitação dos itens
-					oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
-
+					oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
 					//Desconto normal. *****
 					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
-
-					// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
-					// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
-					// oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
-
-					//SOMA TODOS OS DESCONTOS APLICADO NOS ITENS.
-					oItemPedido.zzPercDescTotal += oItemPedido.zzDesitem;
-					oItemPedido.zzQntDiluicao = 0;
-					oItemPedido.zzValorDiluido = 0;
+					
+				} else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
+					
+					oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+					//Desconto normal. *****
+					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+					
 				}
+				
+				//2º Aplicar o Desconto digitado na tela de digitação dos itens
+				oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
+
+				//Desconto normal. *****
+				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+
+				// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
+				// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
+				// oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
+
+				//SOMA TODOS OS DESCONTOS APLICADO NOS ITENS.
+				oItemPedido.zzPercDescTotal += oItemPedido.zzDesitem;
+				oItemPedido.zzQntDiluicao = 0;
+				oItemPedido.zzValorDiluido = 0;
 			}
 			
-			//calcula a multiplicação pela quantidade depois que o valor unitário está calculado.
 			oItemPedido.zzVprodDescTotal = oItemPedido.zzVprodDesc * oItemPedido.zzQnt;
 			oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
+			
+			// if (oItemPedido.mtpos != "YAMO") {
+			// 	if (oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr >= 0) {
+
+			// 		oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
+			// 		oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
+
+			// 		oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+			// 		oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
+			// 		oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+
+			// 	} else if (oItemPedido.tipoItem === "Diluicao") {
+
+			// 		oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
+			// 		oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+					
+			// 	} else if(oItemPedido.mtpos == "YBRI" || oItemPedido.mtpos == "YTRO" || oItemPedido.mtpos == "YAMO"){
+					
+			// 		oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+			// 		oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+					
+			// 	} else if (tipoPedido == "YBON"){
+					
+			// 		oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
+			// 		oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
+			// 		oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+					
+			// 	} else {
+					
+			// 		//Inicialmente o valor cheio do produto é atribuido para o valor com desconto.
+			// 		// 1º Aplicar - Preco Cheio do produto - tabela (avista -5%) a prazo sem desconto.
+			// 		//Senão for desconto avista, criar o campo zzPercDescTotal do item do pedido com desconto zerado. 
+			// 		if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
+						
+			// 			oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
+			// 			//Desconto normal. *****
+			// 			oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+						
+			// 		} else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
+						
+			// 			oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+			// 			//Desconto normal. *****
+			// 			oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+						
+			// 		}
+					
+			// 		//2º Aplicar o Desconto digitado na tela de digitação dos itens
+			// 		oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
+
+			// 		//Desconto normal. *****
+			// 		oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+
+			// 		// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
+			// 		// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
+			// 		// oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
+
+			// 		//SOMA TODOS OS DESCONTOS APLICADO NOS ITENS.
+			// 		oItemPedido.zzPercDescTotal += oItemPedido.zzDesitem;
+			// 		oItemPedido.zzQntDiluicao = 0;
+			// 		oItemPedido.zzValorDiluido = 0;
+			// 	}
+			// }
+			
+			//calcula a multiplicação pela quantidade depois que o valor unitário está calculado.
+			// oItemPedido.zzVprodDescTotal = oItemPedido.zzVprodDesc * oItemPedido.zzQnt;
+			// oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
 
 			// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc;
 
@@ -1779,7 +1831,7 @@ sap.ui.define([
 
 				} else if (objItensPedidoTemplate[i].mtpos == "NORM") {
 					
-					if (tipoPedido == "YBON") {
+					if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
 						
 						valTotalExcedenteBonif += objItensPedidoTemplate[i].zzVprodDesc2 * objItensPedidoTemplate[i].zzQnt;
 						
@@ -3522,9 +3574,9 @@ sap.ui.define([
 				this._ItemDialog.open();
 				sap.ui.getCore().byId("idItemPedido").focus();
 				if(tipoPedido == "YBON"){
-					sap.ui.getCore().byId("idDdesconto").enabled(false);
+					sap.ui.getCore().byId("idDesconto").setEnabled(false);
 				}else{
-					sap.ui.getCore().byId("idDdesconto").enabled(true);
+					sap.ui.getCore().byId("idDesconto").setEnabled(true);
 				}
 			}
 		},
@@ -4262,7 +4314,8 @@ sap.ui.define([
 		},
 
 		onBloqueiaPrePedido: function() {
-
+			var tipoPed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			
 			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
 				if (objItensPedidoTemplate[i].tipoItem == "Diluicao") {
 					this.byId("idDiluirItens").setEnabled(true);
@@ -4296,6 +4349,18 @@ sap.ui.define([
 				this.byId("idInserirItemDiluicao").setEnabled(true);
 				this.byId("idInserirItem").setEnabled(true);
 
+			}
+			
+			if(tipoPed == "YTRO"){
+				
+				this.byId("idInserirItemDiluicao").setEnabled(false);
+				
+			} else if(tipoPed == "YBON"){
+				
+				this.byId("idInserirItemDiluicao").setEnabled(false);
+				
+			}else {
+				this.byId("idInserirItemDiluicao").setEnabled(true);
 			}
 		},
 
