@@ -143,15 +143,42 @@ sap.ui.define([
 					var oModel = new sap.ui.model.json.JSONModel(vetorCliente);
 					var oAux = that.getOwnerComponent().getModel("modelAux");
 					that.getView().setModel(oModel, "clientesCadastrados");
-					
+
 					var sKunrg = oAux.getProperty("/KunrgEntrega");
-					
-					if(sKunrg){
+
+					if (sKunrg) {
 						oAux.setProperty("/KunrgEntrega", undefined);
-						
-						//that.getSplitContObj().toDetail(this.createId("detail"));
+
 						// that.byId("listClientes").attachItemPress(that.byId("listClientes").getItems()[0]);
-						that.byId("listClientes").attachSelectionChange(undefined, that.onSelectionChange, that.byId("listClientes").getItems()[0]);
+						that.getSplitContObj().toDetail(that.createId("detail"));
+						var oItem = that.byId("listClientes").getItems();
+
+						var sTempCliente = "";
+						var iIdItem = -1;
+						/* Descubro qual o cliente em questão */
+						for (var i = 0; i < oItem.length; i++) {
+							sTempCliente = oItem[i].getNumber();
+
+							if (sKunrg == sTempCliente) {
+								iIdItem = i;
+								break;
+							}
+						}
+
+						/* Verifico se foi possível encontrar o cliente */
+						if (iIdItem == -1) {
+							MessageBox.show("Não foi possivel localizar o cliente.", {
+								icon: MessageBox.Icon.ERROR,
+								title: "Cliente não localizado.",
+								actions: [MessageBox.Action.OK]
+							});
+							
+							return;
+						}
+
+						that.onOpenFormDetail(oItem[iIdItem]);
+
+						// that.byId("listClientes").attachSelectionChange(undefined, that.onSelectionChange, that.byId("listClientes").getItems()[0]);
 					}
 				});
 
@@ -160,12 +187,19 @@ sap.ui.define([
 		/*Fim _onLoadFields */
 
 		onSelectionChange: function(oEvent) {
-			var that = this;
 			oItensEF = [];
 			oPedEF = [];
 
 			//filtra somente os pedidos do cliente e vai pra detail
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
+
+			this.onOpenFormDetail(oItem);
+		},
+		/*Fim onSelectionChange */
+
+		onOpenFormDetail: function(oItem) {
+			var that = this;
+
 			//seta os dados da objectHeader
 			this.getView().byId("objectHeader").setTitle(oItem.getTitle());
 			this.getView().byId("objectHeader").setNumber(oItem.getNumber());
@@ -215,7 +249,7 @@ sap.ui.define([
 				});
 			};
 		},
-		/*Fim onSelectionChange */
+		/*Fim onOpenForm */
 
 		getSplitContObj: function() {
 			var result = this.byId("SplitContDemo2");
@@ -366,7 +400,6 @@ sap.ui.define([
 			var oModel = this.getView().getModel("ItensEF").getData();
 			var sVbeln = this.getView().byId("ifVbeln").getValue();
 			var iQtdeFaturada = 0;
-			var iQtdeDia = 0;
 			var iSaldoSap = 0;
 
 			/* VOU TER QUE MUDAR A FORMA QUE PEGA O SALDO DIA, O SALDO DIA VAI TER
@@ -391,18 +424,25 @@ sap.ui.define([
 					var oEF2 = tEF2.objectStore("EntregaFutura2");
 					var ixVbeln = oEF2.index("Vbeln");
 
-					var reqEntrega2 = ixVbeln.getAll(); /*CONTINUARAQUI */
+					var reqEntrega2 = ixVbeln.getAll(sVbeln); /*CONTINUARAQUI */
 
 					reqEntrega2.onsuccess = function(event) {
-						var vEntregas = event.result.value;
+						var vEntregas = event.target.result;
+						var iQtdeDia = 0;
+						
+						for (var i = 0; i < vEntregas.length; i++){
+							if (vEntregas[i].Matnr == sMatnr){
+								iQtdeDia += parseInt(vEntregas[i].Fkimg2);
+							}
+						}
+						
+						var saldo = 0;
+						saldo = iSaldoSap - iQtdeDia;
+		
+						that.byId("ifSaldo").setValue(saldo);
 					};
 				};
 
-				var saldo = 0;
-
-				saldo = iSaldoSap - iQtdeDia;
-
-				that.byId("ifSaldo").setValue(saldo);
 			} else {
 				this.getView().byId("ifSaldo").setValue("");
 			}
@@ -485,7 +525,7 @@ sap.ui.define([
 							});
 						} else {
 							var oModelAux = that.getOwnerComponent().getModel("modelAux");
-							
+
 							oItemEF2.Arktx = oItemEF.Arktx;
 							oItemEF2.Aubel = oItemEF.Aubel;
 							oItemEF2.Aupos = oItemEF.Aupos;
@@ -507,10 +547,10 @@ sap.ui.define([
 							oItemEF2.codRepres = oModelAux.getProperty("/CodRepres");
 							oItemEF2.codUsr = oModelAux.getProperty("/CodUsr");
 							oItemEF2.tipoUsuario = oModelAux.getProperty("/Tipousuario");
-							
+
 							var sDataHora = that.onDataAtualizacao();
 
-							oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura + '.' +  sDataHora;
+							oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura + '.' + sDataHora;
 
 							var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
 							var objEF2 = storeEF2.objectStore("EntregaFutura2");
@@ -578,7 +618,7 @@ sap.ui.define([
 			//HRIMP E DATIMP
 			var data = String(dia + "/" + mes + "/" + ano);
 			var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
-			
+
 			var sRetorno = String(ano) + String(mes) + String(dia);
 			sRetorno += '.' + String(hora) + String(minuto) + String(seg);
 

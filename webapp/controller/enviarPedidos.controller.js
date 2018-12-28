@@ -44,13 +44,25 @@ sap.ui.define([
 		/*FIM _onLoadFields*/
 
 		onItemPressEF: function(oEvent) {
-			var oBd = oEvent.getParameter("listItem") || oEvent.getSource();
+			var that = this;
+			var oEvItemPressed = oEvent;
+			var oBd = oEvItemPressed.getParameter("listItem") || oEvent.getSource();
 			var sKunrg = oBd.getBindingContext("EntregasEnviar").getProperty("Kunrg");
-			
-			/* Gravo no ModelAux a propriedade Kunrg (Cod cliente) para receber lá na tela de entrega futura e 
-			selecionar o cliente automaticamente. */
-			this.getOwnerComponent().getModel("modelAux").setProperty("/KunrgEntrega", sKunrg);
-			sap.ui.core.UIComponent.getRouterFor(this).navTo("entregaFutura");
+
+			MessageBox.show("Deseja abrir o item selecionado?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Editar",
+				actions: ["Sim", "Cancelar"],
+				onClose: function(oAction) {
+					if (oAction == "Sim") {
+						/* Gravo no ModelAux a propriedade Kunrg (Cod cliente) para receber lá na tela de entrega futura e 
+						selecionar o cliente automaticamente. */
+						that.getOwnerComponent().getModel("modelAux").setProperty("/KunrgEntrega", sKunrg);
+						sap.ui.core.UIComponent.getRouterFor(that).navTo("entregaFutura");
+					}
+				}
+			});
+
 		},
 		/* onItemPressEF */
 
@@ -687,67 +699,62 @@ sap.ui.define([
 											Sldfut: String(oItemEntregar.Sldfut),
 											Ultitm: oItemEntregar.Ultitm,
 											Vbeln: oItemEntregar.Vbeln,
+											Identregafutura: oItemEntregar.idEntregaFutura,
+											Codrepres: oItemEntregar.codRepres,
+											Codusr: oItemEntregar.codUsr,
+											Tipousuario: oItemEntregar.tipoUsuario,
 										};
 
 										that.byId("table_entregas").setBusy(true);
 
-										oModel.create("/EntregaFuturaRetorno", tmpItem, {
+										oModel.create("/EntregaFuturaGravar", tmpItem, {
 											method: "POST",
 											success: function(data) {
-												var tx = db.transaction("EntregaFutura", "readwrite");
-												var objItensEntrega = tx.objectStore("EntregaFutura");
-												tx = db.transaction("EntregaFutura", "readwrite");
-												objItensEntrega = tx.objectStore("EntregaFutura");
+												var oModelAux = that.getOwnerComponent().getModel("modelAux");
+												var sTipoUsuario = oModelAux.getProperty("/Tipousuario");
 
-												var requestGetEntrega = objItensEntrega.get(oItemEntregar.idEntregaFutura);
+												var sMensagem = "Item " + oItemEntregar.Matnr + " da Entrega " + oItemEntregar.Vbeln +
+													" enviado com sucesso.";
+												sap.m.MessageBox.show(
+													sMensagem, {
+														icon: sap.m.MessageBox.Icon.SUCCESS,
+														title: "Sucesso",
+														actions: [sap.m.MessageBox.Action.OK]
+													}
+												);
 
-												requestGetEntrega.onsuccess = function(e) {
-													var oEntrega = e.target.result;
+												var txEF2 = db.transaction("EntregaFutura2", "readwrite");
+												var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+												var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
 
-													oEntrega.Slddia = parseInt(oEntrega.Slddia) + parseInt(oItemEntregar.Fkimg2);
+												requestDelEntrega2.onsuccess = function(e) {
+													that.byId("table_entregas").setBusy(false);
+													console.info("item ef excluido");
 
-													tx = db.transaction("EntregaFutura", "readwrite");
-													objItensEntrega = tx.objectStore("EntregaFutura");
-													var requestPutEntrega = objItensEntrega.put(oEntrega);
-
-													requestPutEntrega.onsuccess = function(e) {
-														var sMensagem = "Item " + oItemEntregar.Matnr + " da Entrega " + oItemEntregar.Vbeln +
-															" enviado com sucesso.";
-														sap.m.MessageBox.show(
-															sMensagem, {
-																icon: sap.m.MessageBox.Icon.SUCCESS,
-																title: "Sucesso",
-																actions: [sap.m.MessageBox.Action.OK]
-															}
-														);
-
-														var txEF2 = db.transaction("EntregaFutura2", "readwrite");
-														var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
-														var requestDelEntrega2 = objItensEntrega2.delete(oItemEntregar.idEntregaFutura);
-
-														requestDelEntrega2.onsuccess = function(e) {
-															that.byId("table_entregas").setBusy(false);
-															console.info("item ef excluido");
-															resolve();
+													/*	Se for o último item E o usuário conectado for representante, envio o encerramento 
+														para chamar a BAPI de criação da ordem de entrega
+													*/
+													if (tmpItem.Ultitm == "X" && sTipoUsuario == "1") {
+														var sPostValue = {
+															IEntrega: tmpItem.Identregafutura
 														};
 
-														requestDelEntrega2.onerror = function(e) {
-															that.byId("table_entregas").setBusy(false);
-															console.info(e);
-															reject();
-														};
-													};
-
-													requestPutEntrega.onerror = function(e) {
-														sap.m.MessageBox.show(
-															"Erro ao enviar pedido.", {
-																icon: sap.m.MessageBox.Icon.ERROR,
-																title: "Erro no programa Fiori!",
-																actions: [sap.m.MessageBox.Action.OK],
+														oModel.create("/EntregaFuturaGerar", sPostValue, {
+															method: "POST",
+															success: function(data) {
+																console.log("Encerrou o pedido e enviou a ordem de geração da entrega. ");
 															}
-														);
-													};
-												}; /*requestGetEntrega*/
+														});
+													} /* fim if */
+
+													resolve();
+												};
+
+												requestDelEntrega2.onerror = function(e) {
+													that.byId("table_entregas").setBusy(false);
+													console.info(e);
+													reject();
+												};
 											},
 											error: function(error) {
 												that.onMensagemErroODATA(error.statusCode);
@@ -769,6 +776,91 @@ sap.ui.define([
 			});
 		},
 		/*FIM onEnviarEntrega*/
+
+		onExcluirEntregas: function(oEvent) {
+			var that = this;
+			var aIndices = this.byId("table_entregas").getSelectedContextPaths();
+
+			if (aIndices.length === 0) {
+				MessageBox.show("Nenhuma linha foi selecionada.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Erro",
+					actions: [MessageBox.Action.OK]
+				});
+
+				return;
+			}
+
+			MessageBox.show("Deseja excluir os itens selecionados?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Exclusão de itens",
+				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+				onClose: function(oAction) {
+
+					if (oAction == sap.m.MessageBox.Action.YES) {
+						var oModel = that.getView().getModel();
+						oModel.setUseBatch(true);
+						oModel.refreshSecurityToken();
+
+						var open = indexedDB.open("VB_DataBase");
+
+						open.onerror = function() {
+							MessageBox.show(open.error.mensage, {
+								icon: MessageBox.Icon.ERROR,
+								title: "Banco não encontrado!",
+								actions: [MessageBox.Action.OK]
+							});
+						};
+
+						open.onsuccess = function() {
+							var db = open.result;
+
+							var oModelEntregas = that.getView().getModel("EntregasEnviar").getData();
+
+							var vEntregasExcluir = [];
+
+							// Separo todos os itens que devem ser excluidos
+							for (var i = 0; i < aIndices.length; i++) {
+								var iIndex = aIndices[i].substring(1, 2);
+
+								vEntregasExcluir.push(oModelEntregas[iIndex]);
+							}
+
+							for (var i = 0; i < vEntregasExcluir.length; i++) {
+								var txEF2 = db.transaction("EntregaFutura2", "readwrite");
+								var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+								var requestDelEntrega2 = objItensEntrega2.delete(vEntregasExcluir[i].idEntregaFutura);
+
+								var oModelAux = that.getOwnerComponent().getModel("modelAux");
+								var sTipoUsuario = oModelAux.getProperty("/Tipousuario");
+								
+								requestDelEntrega2.onsuccess = function(e) {
+									that.byId("table_entregas").setBusy(false);
+									console.info("item ef excluido do banco local.");
+								};
+
+								/*	Se o usuário em questão for representante e o pedido for do preposto, é necessário
+									chamar uma RFC para excluir esse pedido do Sap
+								*/
+								if (sTipoUsuario == "1" && vEntregasExcluir[i].idEntregaFutura == "2") {
+									var sPostValue = {
+										IEntrega: vEntregasExcluir[i].idEntregaFutura
+									};
+
+									oModel.create("/EntregaFuturaExcluir", sPostValue, {
+										method: "POST",
+										success: function(data) {
+											console.log("Excluiu o PV no SAP.");
+										}
+									});
+								} /* if */
+							} /* for */
+						};
+					}
+				}
+			});
+		},
+		/*FIM onExcluirEntregas*/
 
 		onMontarCabecalho: function(that, idPedido, dadosPedidoCab) {
 

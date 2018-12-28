@@ -797,6 +797,9 @@ sap.ui.define([
 																}
 
 																oModel.read("/TitulosAbertos", {
+																	urlParameters: {
+																		"$filter": "IvRepres eq '" + CodRepres + "'"
+																	},
 																	success: function(retornoTitulosAbertos) {
 
 																		var txTitulosAbertos = db.transaction("TitulosAbertos", "readwrite");
@@ -1740,7 +1743,8 @@ sap.ui.define([
 																																																																					AprovNome: retornoAcompPedidos.results[i].AprovNome,
 																																																																					Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
 																																																																					Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
-																																																																					Aprovado: retornoAcompPedidos.results[i].Aprovado
+																																																																					Aprovado: retornoAcompPedidos.results[i].Aprovado,
+																																																																					PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png "
 																																																																				};
 
 																																																																				var sDescAprovado = "";
@@ -1769,19 +1773,71 @@ sap.ui.define([
 																																																																				};
 																																																																			}
 
-																																																																			MessageBox.show(
-																																																																				"Tabelas carregadas com sucesso!", {
-																																																																					icon: MessageBox.Icon.SUCCESS,
-																																																																					title: "Carregamento Completo",
-																																																																					actions: [MessageBox.Action.OK],
-																																																																					onClose: function() {
-																																																																						if (that._ItemDialog) {
-																																																																							that._ItemDialog.destroy(true);
-																																																																						}
+																																																																			oModel.read("/EntregaFuturaPendentes", {
+																																																																				urlParameters: {
+																																																																					"$filter": "ICodrepres eq '" + CodRepres + "'"
+																																																																				},
+																																																																				success: function(retornoEFPendentes) {
+																																																																					var txEFPendentes = db.transaction("EntregaFutura2", "readwrite");
+																																																																					var objEFPendentes = txEFPendentes.objectStore("EntregaFutura2");
 
-																																																																						that.onUpdateDateTime();
+																																																																					for (i = 0; i < retornoEFPendentes.results.length; i++) {
+																																																																						txEFPendentes = db.transaction("EntregaFutura2", "readwrite");
+																																																																						objEFPendentes = txEFPendentes.objectStore("EntregaFutura2");
+
+																																																																						var objBancoEFPendentes = {
+																																																																							Arktx: retornoEFPendentes.results[i].Arktx,
+																																																																							Aubel: retornoEFPendentes.results[i].Aubel,
+																																																																							Aupos: retornoEFPendentes.results[i].Aupos,
+																																																																							Bstkd: retornoEFPendentes.results[i].Bstkd,
+																																																																							Fkimg: retornoEFPendentes.results[i].Fkimg,
+																																																																							Fkimg2: retornoEFPendentes.results[i].Fkimg2,
+																																																																							IRepresentante: retornoEFPendentes.results[i].ICodrepres,
+																																																																							Kunrg: retornoEFPendentes.results[i].Kunrg,
+																																																																							Lifnr: retornoEFPendentes.results[i].Lifnr,
+																																																																							Matnr: retornoEFPendentes.results[i].Matnr,
+																																																																							NameOrg1: retornoEFPendentes.results[i].NameOrg1,
+																																																																							NameOrg2: retornoEFPendentes.results[i].NameOrg2,
+																																																																							Posnr: retornoEFPendentes.results[i].Posnr,
+																																																																							// Slddia: retornoEFPendentes.results[i].Sldfut,
+																																																																							Sldfut: retornoEFPendentes.results[i].Sldfut,
+																																																																							Vbeln: retornoEFPendentes.results[i].Vbeln,
+																																																																							codRepres: retornoEFPendentes.results[i].Codrepres,
+																																																																							codUsr: retornoEFPendentes.results[i].Codusr,
+																																																																							idEntregaFutura: retornoEFPendentes.results[i].Identregafutura,
+																																																																							tipoUsuario: retornoEFPendentes.results[i].Tipousuario
+																																																																						};
+
+																																																																						var requestEFPendentes = objEFPendentes.put(objBancoEFPendentes);
+
+																																																																						requestEFPendentes.onsuccess = function(event) {
+																																																																							console.log("Dados EF Pendentes inseridos. " + event);
+																																																																						};
+
+																																																																						requestEFPendentes.onerror = function(event) {
+																																																																							console.log("Dados EF Pendentes não foram inseridos :" + event);
+																																																																						};
 																																																																					}
-																																																																				});
+
+																																																																					MessageBox.show(
+																																																																						"Tabelas carregadas com sucesso!", {
+																																																																							icon: MessageBox.Icon.SUCCESS,
+																																																																							title: "Carregamento Completo",
+																																																																							actions: [MessageBox.Action.OK],
+																																																																							onClose: function() {
+																																																																								if (that._ItemDialog) {
+																																																																									that._ItemDialog.destroy(true);
+																																																																								}
+
+																																																																								that.onUpdateDateTime();
+																																																																							}
+																																																																						});
+																																																																				},
+																																																																				error: function(error) {
+																																																																					console.log(error);
+																																																																					that.onMensagemErroODATA(error.statusCode);
+																																																																				}
+																																																																			});
 																																																																		},
 																																																																		error: function(error) {
 																																																																			console.log(error);
