@@ -25,6 +25,10 @@ tr[data-mydata="Diluicao"]{
   background:  #FF8484 !important;
 }
 
+tr[data-mydataEF="2"], tr[data-mydataEF="2"] + tr.sapMListTblSubRow, tr[data-mydataPED="9"], tr[data-mydataPED="9"] + tr.sapMListTblSubRow {	
+  background:  #fff10d7d !important;
+}
+
 tr[data-mydata="Diluido"]{	
   background:  #C1FFAD !important;
 }

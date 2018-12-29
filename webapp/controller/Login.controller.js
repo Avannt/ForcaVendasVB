@@ -711,7 +711,7 @@ sap.ui.define([
 									if (oAction === sap.m.MessageBox.Action.YES) {
 
 										var vTables = ["Clientes", "A969", "A959", "A960", "A961", "A962", "A963", "A964", "A965", "A966", "A967", "A968",
-											"Materiais", "TitulosAbertos", "Konm", "TiposPedidos"
+											"Materiais", "TitulosAbertos", "Konm", "TiposPedidos", "EntregaFutura"
 										];
 
 										that.DropDBTables(vTables);

@@ -1,8 +1,10 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:html="http://www.w3.org/1999/xhtml" controllerName="testeui5.controller.entregaFutura">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:form="sap.ui.layout.form"
+	xmlns:html="http://www.w3.org/1999/xhtml" controllerName="testeui5.controller.entregaFutura">
 	<SplitContainer id="SplitContDemo2" initialDetail="detail" initialMaster="master" mode="ShowHideMode">
 		<detailPages>
 			<Page id="detail" title="Entrega futura" showNavButton="{device>/system/phone}" navButtonPress="onNavBack2" class="sapUiStdPage">
-				<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4" emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+				<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+					emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 					<form:content>
 						<ObjectHeader id="objectHeader" title="Nenhum cliente selecionado">
 							<statuses>
@@ -21,9 +23,11 @@
 							</customData>
 						</Button>
 						<Label text="Nro Documento" labelFor="ifVbeln"/>
-						<Input id="ifVbeln" width="100%" type="Number" class="sapUiSmallMarginBottom" enabled="true" editable="false" placeholder="Informe o documento ..."/>
+						<Input id="ifVbeln" width="100%" type="Number" class="sapUiSmallMarginBottom" enabled="true" editable="false"
+							placeholder="Informe o documento ..."/>
 						<Label text="Material" labelFor="sfItem"/>
-						<SearchField id="sfItem" width="100%" placeholder="Pesquisar item..." enableSuggestions="true" search="sfItemSearch" suggest="sfItemSuggest" suggestionItems="{ path: 'ItensEF>/' }">
+						<SearchField id="sfItem" width="100%" placeholder="Pesquisar item..." enableSuggestions="true" search="sfItemSearch" suggest="sfItemSuggest"
+							suggestionItems="{ path: 'ItensEF>/' }">
 							<suggestionItems>
 								<SuggestionItem text="{ItensEF>Matnr}" description="{ItensEF>Arktx}" key="{ItensEF>Matnr}"/>
 							</suggestionItems>
@@ -36,7 +40,9 @@
 					</form:content>
 				</form:SimpleForm>
 				<content>
-					<Table id="tEntregas" width="100%" backgroundDesign="Translucent" items="{ path:'entregasEnviar>/' }" mode="Delete" growingThreshold="3" growingTriggerText="Proximos Itens &gt;&gt;" growing="true" noDataText="Nenhum item de entrega inserido ..." busyIndicatorDelay="0" fixedLayout="false" itemPress="onItemPress" delete="onExcluirItem">
+					<Table id="tEntregas" width="100%" backgroundDesign="Translucent" items="{ path:'entregasEnviar>/' }" mode="Delete" growingThreshold="3"
+						growingTriggerText="Proximos Itens &gt;&gt;" growing="true" noDataText="Nenhum item de entrega inserido ..." busyIndicatorDelay="0"
+						fixedLayout="false" itemPress="onItemPress" delete="onExcluirItem">
 						<headerToolbar>
 							<Toolbar id="lineItemsToolbar">
 								<Title id="lineItemsHeader" text="Itens para entregar"/>
@@ -95,6 +101,9 @@
 						</columns>
 						<items>
 							<ColumnListItem type="Active">
+								<customData>
+									<core:CustomData key="mydataEF" value="{entregasEnviar>tipoUsuario}" writeToDom="true"/>
+								</customData>
 								<cells>
 									<Text text="{path : 'entregasEnviar>Arktx'}"/>
 									<Text text="{path : 'entregasEnviar>Vbeln'}"/>
@@ -117,13 +126,13 @@
 						</items>
 					</Table>
 				</content>
-			<footer>
-			    <Bar id="bar0_1545129589646">
-			        <contentRight>
-			            <Button id="btnEnviar" class="sapUiSmallMarginBottom" text="ENVIAR ITENS" press="onEnviarItens" width="100%"/>
-			        </contentRight>
-			    </Bar>
-			</footer>
+				<footer>
+					<Bar id="bar0_1545129589646">
+						<contentRight>
+							<Button id="btnEnviar" class="sapUiSmallMarginBottom" text="ENVIAR ITENS" press="onEnviarItens" width="100%"/>
+						</contentRight>
+					</Bar>
+				</footer>
 			</Page>
 		</detailPages>
 		<masterPages>
@@ -131,13 +140,16 @@
 				<headerContent/>
 				<subHeader>
 					<Toolbar id="searchBar">
-						<SearchField id="searchField" showRefreshButton="false" placeholder="Pesquisar Nome/Cod" tooltip="Pesquisar Clientes pelo Nome" width="100%" liveChange="onSearch" search="onSearch"/>
+						<SearchField id="searchField" showRefreshButton="false" placeholder="Pesquisar Nome/Cod" tooltip="Pesquisar Clientes pelo Nome" width="100%"
+							liveChange="onSearch" search="onSearch"/>
 					</Toolbar>
 				</subHeader>
 				<content>
-					<List id="listClientes" items="{ path: 'clientesCadastrados>/' }" busyIndicatorDelay="0" noDataText="Nenhum Cliente Encontrado!" mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
+					<List id="listClientes" items="{ path: 'clientesCadastrados>/' }" busyIndicatorDelay="0" noDataText="Nenhum Cliente Encontrado!"
+						mode="SingleSelectMaster" growing="true" growingScrollToLoad="true" updateFinished="onUpdateFinished" selectionChange="onSelectionChange">
 						<items>
-							<ObjectListItem id="ObjListCliente" type="Active" press="onSelectionChange" title="{clientesCadastrados>name1}" number="{clientesCadastrados>kunnr}" intro="CPF / CNPJ: {clientesCadastrados>stcd1}"/>
+							<ObjectListItem id="ObjListCliente" type="Active" press="onSelectionChange" title="{clientesCadastrados>name1}"
+								number="{clientesCadastrados>kunnr}" intro="CPF / CNPJ: {clientesCadastrados>stcd1}"/>
 						</items>
 					</List>
 				</content>

@@ -172,7 +172,7 @@ sap.ui.define([
 								title: "Cliente não localizado.",
 								actions: [MessageBox.Action.OK]
 							});
-							
+
 							return;
 						}
 
@@ -406,12 +406,14 @@ sap.ui.define([
 			QUE SER UM SELECT NA ENTREGAFUTURA2 PARA O ITEM SELECIONADO */
 			if (sMatnr) {
 
+				var iQtdeDia = 0;
+				
 				/* Recupero o saldo do Sap do item escolhido. */
 				for (var i = 0; i < oModel.length; i++) {
 					if (oModel[i].Matnr == sMatnr) {
 						iQtdeFaturada = parseInt(oModel[i].Fkimg);
 						iSaldoSap = parseInt(oModel[i].Sldfut);
-						// iQtdeDia = parseInt(oModel[i].Slddia);
+						iQtdeDia = parseInt(oModel[i].Slddia);
 					}
 				}
 
@@ -424,21 +426,20 @@ sap.ui.define([
 					var oEF2 = tEF2.objectStore("EntregaFutura2");
 					var ixVbeln = oEF2.index("Vbeln");
 
-					var reqEntrega2 = ixVbeln.getAll(sVbeln); /*CONTINUARAQUI */
+					var reqEntrega2 = ixVbeln.getAll(sVbeln); /* CONTINUARAQUI */
 
 					reqEntrega2.onsuccess = function(event) {
 						var vEntregas = event.target.result;
-						var iQtdeDia = 0;
-						
-						for (var i = 0; i < vEntregas.length; i++){
-							if (vEntregas[i].Matnr == sMatnr){
+
+						for (var i = 0; i < vEntregas.length; i++) {
+							if (vEntregas[i].Matnr == sMatnr) {
 								iQtdeDia += parseInt(vEntregas[i].Fkimg2);
 							}
 						}
-						
+
 						var saldo = 0;
 						saldo = iSaldoSap - iQtdeDia;
-		
+
 						that.byId("ifSaldo").setValue(saldo);
 					};
 				};
@@ -660,6 +661,27 @@ sap.ui.define([
 			var idKunrg = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("Kunrg");
 			var idBanco = e.getParameter("listItem").getBindingContext("entregasEnviar").getProperty("idEntregaFutura");
 			var that = this;
+			var oModelAux = this.getOwnerComponent().getModel("modelAux");
+
+			/* Recupero do CustomData, se for 2 significa que é um item digitado pelo Preposto*/
+			var sTipoLinha = e.getParameter("listItem").data("mydataEF");
+
+			/* Usuário conectado */
+			var sTipoUsuario = oModelAux.getProperty("/Tipousuario");
+
+			/* Se o usuário atual for Representante e estiver tentando excluir uma linha digitada pelo Preposto,
+			mando uma mensagem de erro pois a nesse cenário só é possível a exclusão pela tela de envio. (Somente
+			é possível excluir o pedido inteiro para eliminição do registro no Sap)
+			*/
+			if (sTipoLinha == "2" && sTipoUsuario == "1") {
+				MessageBox.error("Faça a exclusão pela tela de envios.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Envio de saldo de Preposto",
+					actions: [MessageBox.Action.OK]
+				});
+
+				return;
+			}
 
 			MessageBox.show("Deseja excluir a entrega do item " + idItem + "?", {
 				icon: MessageBox.Icon.WARNING,

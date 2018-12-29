@@ -1,8 +1,12 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" height="100%" controllerName="testeui5.controller.enviarPedidos">
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic"
+	height="100%" controllerName="testeui5.controller.enviarPedidos">
 	<Page id="master" navButtonPress="onNavBack" showNavButton="true" title="Envio de Pedidos">
 		<!--<subHeader></subHeader>-->
 		<content>
-			<Table id="table_entregas" width="100%" backgroundDesign="Translucent" visible="false" items="{ path:'EntregasEnviar>/' }" mode="MultiSelect" selectionChange="onSelectionChange2" itemPress="onItemPressEF" growingThreshold="3" growingTriggerText="Proximas entregas &gt;&gt;" growing="true" noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
+			<Table id="table_entregas" width="100%" backgroundDesign="Translucent" visible="false" items="{ path:'EntregasEnviar>/' }"
+				mode="MultiSelect" selectionChange="onSelectionChange2" itemPress="onItemPressEF" growingThreshold="3"
+				growingTriggerText="Proximas entregas &gt;&gt;" growing="true" noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0"
+				fixedLayout="false">
 				<headerToolbar>
 					<Toolbar>
 						<Title text="Pedidos Entrega Futura"/>
@@ -10,79 +14,38 @@
 					</Toolbar>
 				</headerToolbar>
 				<columns>
-					<!--<Column minScreenWidth="2000px" demandPopin="true" hAlign="Left" popinDisplay="Inline" width="150px">-->
-					<!--	<Text text="Desc Item"/>-->
+					<!--<Column minScreenWidth="300px" hAlign="Left" width="auto" popinDisplay="Inline">-->
+					<!--	<Text text="ID"/>-->
 					<!--</Column>-->
 					<Column minScreenWidth="300px" hAlign="Left" width="auto" popinDisplay="Inline">
 						<Text text="Doc Vendas"/>
 					</Column>
-					<!--<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">-->
-					<!--	<Text text="Item"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">-->
-					<!--	<Text text="Linha"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">-->
-					<!--	<Text text="Ref.cliente"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">-->
-					<!--	<Text text="Qtde Faturada"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">-->
-					<!--	<Text text="Saldo"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">-->
-					<!--	<Text text="Representante"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="2000px" hAlign="Center" width="auto" popinDisplay="Inline">-->
-					<!--	<Text text="Cliente"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">-->
-					<!--	<Text text="Representante"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">-->
-					<!--	<Text text="Material"/>-->
-					<!--</Column>-->
+					<Column minScreenWidth="300px" hAlign="Left" width="auto" popinDisplay="Inline">
+						<Text text="Usuário"/>
+					</Column>
 					<Column minScreenWidth="600px" demandPopin="true" hAlign="Center" width="auto">
 						<Text text="Cliente"/>
 					</Column>
-					<!--<Column minScreenWidth="200px" hAlign="Center" width="auto" popinDisplay="Inline">-->
-					<!--	<Text text="Nome"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">-->
-					<!--	<Text text="Nro Documento"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">-->
-					<!--	<Text text="idEntregaFutura"/>-->
-					<!--</Column>-->
-					<!--<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">-->
-					<!--	<Text text="Qtde Entregar"/>-->
-					<!--</Column>					-->
 				</columns>
 				<items>
 					<ColumnListItem type="Active">
+						<customData>
+							<core:CustomData key="mydataEF" value="{EntregasEnviar>tipoUsuario}" writeToDom="true"/>
+						</customData>
 						<cells>
-							<!--<Text text="{path : 'EntregasEnviar>Arktx'}"/>-->
-							<Text text="{path : 'EntregasEnviar>Vbeln'}"/>
-							<!--<Text text="{path : 'EntregasEnviar>Posnr'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Matnr'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Bstkd'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Fkimg'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Sldfut'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>IRepresentante'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Kunrg'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Lifnr'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Aupos'}"/>-->
-							<Text text="{path : 'EntregasEnviar>NameOrg1'} {path : 'EntregasEnviar&gt;NameOrg2'}"/>
-							<!--<Text text="{path : 'EntregasEnviar>NameOrg2'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Aubel'}"/>-->
 							<!--<Text text="{path : 'EntregasEnviar>idEntregaFutura'}"/>-->
-							<!--<Text text="{path : 'EntregasEnviar>Fkimg2'}"/>-->
+							<Text text="{path : 'EntregasEnviar>Vbeln'}"/>
+							<Text text="{path : 'EntregasEnviar>codUsr'}"/>
+							<Text text="{path : 'EntregasEnviar>NameOrg1'} {path : 'EntregasEnviar&gt;NameOrg2'}"/>
 						</cells>
 					</ColumnListItem>
 				</items>
 			</Table>
-			<Table id="table_pedidos" width="100%" backgroundDesign="Translucent" items="{ path:'PedidosEnviar>/', sorter: { path: 'NrPedCli', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange" itemPress="onItemPress" growingThreshold="3" growingTriggerText="Proximos Pedidos &gt;&gt;" growing="true" noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
+			
+			<Table id="table_pedidos" width="100%" backgroundDesign="Translucent"
+				items="{ path:'PedidosEnviar>/', sorter: { path: 'NrPedCli', descending: true}}" mode="MultiSelect" selectionChange="onSelectionChange"
+				itemPress="onItemPress" growingThreshold="3" growingTriggerText="Proximos Pedidos &gt;&gt;" growing="true"
+				noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0" fixedLayout="false">
 				<headerToolbar>
 					<Toolbar>
 						<Title text="Pedidos de Venda"/>
@@ -111,6 +74,9 @@
 				</columns>
 				<items>
 					<ColumnListItem type="Active">
+						<customData>
+							<core:CustomData key="mydataPED" value="{PedidosEnviar>idStatusPedido}" writeToDom="true"/>
+						</customData>
 						<cells>
 							<Text text="{path : 'PedidosEnviar>kunnr'}"/>
 							<Text text="{path : 'PedidosEnviar>nrPedCli'}"/>
@@ -123,13 +89,17 @@
 				</items>
 			</Table>
 		</content>
-	<footer>
-	    <Bar id="bar0">
-	        <contentRight>
-	            <Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m" text="Enviar" press="onEnviarEntrega" icon="sap-icon://upload" type="Accept" id="btnEnviar"/>
-	            <Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m" text="Excluir" press="onExcluirEntregas" icon="sap-icon://delete" type="Reject" id="btnExcluir"/>
-	        </contentRight>
-	    </Bar>
-	</footer>
+		<footer>
+			<Bar id="bar0">
+				<contentRight>
+					<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m"
+						text="Enviar" press="onEnviarEntrega" icon="sap-icon://upload" type="Accept" id="btnEnviarEntrega"/>
+					<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m"
+						text="Enviar" press="onEnviarPedido" icon="sap-icon://upload" type="Accept" id="btnEnviarPedido"/>
+					<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m"
+						text="Excluir" press="onExcluirEntregas" icon="sap-icon://delete" type="Reject" id="btnExcluir"/>
+				</contentRight>
+			</Bar>
+		</footer>
 	</Page>
 </mvc:View>

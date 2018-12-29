@@ -33,6 +33,8 @@ sap.ui.define([
 
 			that.byId("table_pedidos").setVisible(envioPedidos);
 			that.byId("table_entregas").setVisible(!envioPedidos);
+			that.byId("btnEnviarPedido").setVisible(envioPedidos);
+			that.byId("btnEnviarEntrega").setVisible(!envioPedidos);
 
 			if (envioPedidos) {
 				this.onLoadPedidos();
@@ -155,6 +157,8 @@ sap.ui.define([
 		/*FIM onLoadPedidos*/
 
 		onLoadEntregas: function() {
+			this.byId("table_entregas").setBusy(true);
+
 			var that = this;
 			var oModel = new sap.ui.model.json.JSONModel();
 			var open = indexedDB.open("VB_DataBase");
@@ -167,19 +171,6 @@ sap.ui.define([
 				});
 			};
 
-			// open.onsuccess = function() {
-			// 	var db = open.result;
-
-			// 	var store = db.transaction("EntregaFutura2").objectStore("EntregaFutura2");
-			// 	var request = store.getAll();
-
-			// 	request.onsuccess = function(event) {
-			// 		oPedidoGrid = event.target.result;
-
-			// 		oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
-			// 		that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
-			// 	};
-			// };
 			open.onsuccess = function() {
 				var db = open.result;
 
@@ -199,6 +190,8 @@ sap.ui.define([
 					} else {
 						oModel = new sap.ui.model.json.JSONModel(oPedidosGrid);
 						that.getOwnerComponent().setModel(oModel, "EntregasEnviar");
+
+						that.byId("table_entregas").setBusy(false);
 					}
 				};
 			};
@@ -517,7 +510,8 @@ sap.ui.define([
 									Vlrutilcampenx: String(oPedidosEnviar[i].valCampEnxoval),
 									Valcampbrinde: String(oPedidosEnviar[i].valCampBrinde),
 									Usuario: String(oPedidosEnviar[i].codUsr),
-									Tipousuario: String(oPedidosEnviar[i].tipoUsuario)
+									Tipousuario: String(oPedidosEnviar[i].tipoUsuario),
+									Zlsch: String(oPedidosEnviar[i].zlsch)
 								};
 
 								oModel.create("/InserirOV", objPedido, {
@@ -747,7 +741,53 @@ sap.ui.define([
 														});
 													} /* fim if */
 
-													resolve();
+													/* Se o item em questão for do representante, 
+													então acumulo o saldo diário para controle local,
+													esse controle serve até o momento que o usuário atualizar
+													as tabelas, depois ele é zerado pois o saldo do Sap 
+													vem atualizado
+													*/
+													if (sTipoUsuario == "1") {
+														var txEF = db.transaction("EntregaFutura", "readwrite");
+														var objItensEntrega = txEF.objectStore("EntregaFutura");
+
+														var pGetItem = new Promise(function(rsGetItem, rjGetItem) {
+															var requestDelEntrega = objItensEntrega.get(oItemEntregar.Vbeln + oItemEntregar.Matnr);
+	
+															requestDelEntrega.onsuccess = function(retorno) {
+																var oItem = retorno.target.result;
+																
+																rsGetItem(oItem);
+															};
+														});
+														
+														pGetItem.then(function(oItem){
+															/* Somo a quantidade digitada com a quantidade que o usuário tá enviando nesse
+															momento. */
+															oItem.Slddia = parseInt(oItem.Slddia) + parseInt(oItemEntregar.Fkimg2);
+															
+															var txEF = db.transaction("EntregaFutura", "readwrite");
+															var objItensEntrega = txEF.objectStore("EntregaFutura");
+															
+															var pSetItem = new Promise(function(rsSetItem){
+																var requestDelEntrega = objItensEntrega.put(oItem);
+																
+																requestDelEntrega.onsuccess = function(e){
+																	console.log("[Promise] saldo do dia acumulado!");
+																	rsSetItem();
+																};
+															});
+															
+															pSetItem.then(function(){
+																console.log("[Efetivada] saldo do dia acumulado!");
+																
+																resolve();
+															});
+														});
+													}else{
+														resolve();
+													}
+
 												};
 
 												requestDelEntrega2.onerror = function(e) {
@@ -826,35 +866,73 @@ sap.ui.define([
 								vEntregasExcluir.push(oModelEntregas[iIndex]);
 							}
 
-							for (var i = 0; i < vEntregasExcluir.length; i++) {
-								var txEF2 = db.transaction("EntregaFutura2", "readwrite");
-								var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
-								var requestDelEntrega2 = objItensEntrega2.delete(vEntregasExcluir[i].idEntregaFutura);
+							var p1 = new Promise(function(resolv1, reject) {
+								var tx = db.transaction("EntregaFutura2", "readwrite");
+								var objItensEntrega = tx.objectStore("EntregaFutura2");
+								var ixEF2 = objItensEntrega.index("Vbeln");
 
-								var oModelAux = that.getOwnerComponent().getModel("modelAux");
-								var sTipoUsuario = oModelAux.getProperty("/Tipousuario");
-								
-								requestDelEntrega2.onsuccess = function(e) {
-									that.byId("table_entregas").setBusy(false);
-									console.info("item ef excluido do banco local.");
+								var tempItemEntregar = [];
+
+								/* Recupero todas as linhas escolhidas para envio futuro */
+								var req = ixEF2.getAll();
+								req.onsuccess = function(event) {
+									tempItemEntregar = event.target.result;
+
+									var vPromise = [];
+
+									//  Para cada entrega escolhida pra enviar, percorro todos os itens pendentes para envio
+									for (var i = 0; i < vEntregasExcluir.length; i++) {
+										for (var j = 0; j < tempItemEntregar.length; j++) {
+											/* Verifo se a linha é do pedido em questão */
+											if (vEntregasExcluir[i].Vbeln == tempItemEntregar[j].Vbeln) {
+												vPromise.push(tempItemEntregar[j]);
+											}
+										}
+									}
+
+									/* Retorno o vetor dos itens para a Promise */
+									resolv1(vPromise);
 								};
+							});
 
-								/*	Se o usuário em questão for representante e o pedido for do preposto, é necessário
-									chamar uma RFC para excluir esse pedido do Sap
-								*/
-								if (sTipoUsuario == "1" && vEntregasExcluir[i].idEntregaFutura == "2") {
-									var sPostValue = {
-										IEntrega: vEntregasExcluir[i].idEntregaFutura
+							p1.then(function(vPromisse) {
+								vEntregasExcluir = vPromisse;
+
+								for (var i = 0; i < vEntregasExcluir.length; i++) {
+									var txEF2 = db.transaction("EntregaFutura2", "readwrite");
+									var objItensEntrega2 = txEF2.objectStore("EntregaFutura2");
+									var requestDelEntrega2 = objItensEntrega2.delete(vEntregasExcluir[i].idEntregaFutura);
+
+									var oModelAux = that.getOwnerComponent().getModel("modelAux");
+									var sTipoUsuario = oModelAux.getProperty("/Tipousuario");
+
+									requestDelEntrega2.onsuccess = function(e) {
+										that.byId("table_entregas").setBusy(false);
+										console.info("item ef excluido do banco local.");
 									};
 
-									oModel.create("/EntregaFuturaExcluir", sPostValue, {
-										method: "POST",
-										success: function(data) {
-											console.log("Excluiu o PV no SAP.");
-										}
-									});
-								} /* if */
-							} /* for */
+									/*	Se o usuário em questão for representante e o pedido for do preposto, é necessário
+										chamar uma RFC para excluir esse pedido do Sap
+									*/
+									if (sTipoUsuario == "1" && vEntregasExcluir[i].tipoUsuario == "2") {
+										var sPostValue = {
+											IEntrega: vEntregasExcluir[i].idEntregaFutura
+										};
+
+										oModel.create("/EntregaFuturaExcluir", sPostValue, {
+											method: "POST",
+											success: function(data) {
+												that.onLoadEntregas();
+												console.log("Excluiu o PV no SAP.");
+											}
+										});
+									} /* if */
+									else {
+										that.onLoadEntregas();
+									}
+								} /* for */
+							});
+
 						};
 					}
 				}
