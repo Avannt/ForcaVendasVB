@@ -54,7 +54,7 @@ sap.ui.define([
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
-			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, "Application");
+			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, sap.ui.model.FilterType.Application);
 
 		},
 

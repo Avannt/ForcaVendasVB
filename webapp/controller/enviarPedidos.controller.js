@@ -369,6 +369,13 @@ sap.ui.define([
 						if (oAction == "Enviar") {
 
 							var oModel = that.getView().getModel();
+							
+							// var oModel = new sap.ui.model.odata.v2.ODataModel({
+							// 	serviceUrl: "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
+							// 	sUser: "appadmin",
+							// 	sPassword: "sap123"
+							// });
+							
 							oModel.setUseBatch(true);
 							oModel.refreshSecurityToken();
 							that.byId("table_pedidos").setBusy(true);
@@ -590,7 +597,15 @@ sap.ui.define([
 				onClose: function(oAction) {
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
+						
 						var oModel = that.getView().getModel();
+						
+						// var oModel = new sap.ui.model.odata.v2.ODataModel({
+						// 	serviceUrl: "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
+						// 	sUser: "appadmin",
+						// 	sPassword: "sap123"
+						// });
+						
 						oModel.setUseBatch(true);
 						oModel.refreshSecurityToken();
 
@@ -838,7 +853,15 @@ sap.ui.define([
 				onClose: function(oAction) {
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
+						
 						var oModel = that.getView().getModel();
+						
+						// var oModel = new sap.ui.model.odata.v2.ODataModel({
+						// 	serviceUrl: "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
+						// 	sUser: "appadmin",
+						// 	sPassword: "sap123"
+						// });
+						
 						oModel.setUseBatch(true);
 						oModel.refreshSecurityToken();
 

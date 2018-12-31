@@ -15,6 +15,7 @@ sap.ui.define([
 	var verbaDisponivel;
 	var oVetorTabPreco = [];
 	var oVetorTipoTransporte = [];
+	var oVetorFormasPagamentos = [];
 	var oVetorTipoNegociacao = [];
 	var oVetorTiposPedidos = [];
 	var objPrePedidoTemplate = [];
@@ -165,11 +166,13 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/FormaPagamento", "");
 
 			this.byId("idTabelaPreco").setSelectedKey();
 			this.byId("idTipoTransporte").setSelectedKey();
 			this.byId("idTipoNegociacao").setSelectedKey();
 			this.byId("idTipoPedido").setSelectedKey();
+			this.byId("idFormaPagamento").setSelectedKey();
 
 			objItensPedidoTemplate = [];
 			var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
@@ -186,6 +189,7 @@ sap.ui.define([
 			oVetorTipoTransporte = [];
 			oVetorTipoNegociacao = [];
 			objItensPedidoTemplate = [];
+			oVetorFormasPagamentos = [];
 
 			var data = this.onDataAtualizacao();
 
@@ -243,6 +247,18 @@ sap.ui.define([
 			}, {
 				idTransporte: "FOB"
 			}];
+			
+			var transactionFormasPagamentos = db.transaction("FormasPagamentos", "readonly");
+			var objectStoreFormasPagamentos = transactionFormasPagamentos.objectStore("FormasPagamentos");
+
+			if ("getAll" in objectStoreFormasPagamentos) {
+				objectStoreFormasPagamentos.getAll().onsuccess = function(event) {
+					oVetorFormasPagamentos = event.target.result;
+
+					var oModel = new sap.ui.model.json.JSONModel(oVetorFormasPagamentos);
+					that.getView().setModel(oModel, "formasPagamentos");
+				};
+			}
 
 			var oModel = new sap.ui.model.json.JSONModel(oVetorTipoTransporte);
 			that.getView().setModel(oModel, "tipoTransporte");
@@ -427,12 +443,14 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oPrePedido.tipoNegociacao);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", oPrePedido.tipoPedido);
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/CodUsr", oPrePedido.codUsr);
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/FormaPagamento", oPrePedido.zlsch);
 
 					//Seleciona o valor do combo
 					that.byId("idTabelaPreco").setSelectedKey(oPrePedido.tabPreco);
 					that.byId("idTipoTransporte").setSelectedKey(oPrePedido.tipoTransporte);
 					that.byId("idTipoNegociacao").setSelectedKey(oPrePedido.tipoNegociacao);
 					that.byId("idTipoPedido").setSelectedKey(oPrePedido.tipoPedido);
+					that.byId("idFormaPagamento").setSelectedKey(oPrePedido.zlsch);
 
 					that.onBloqueioFormaPagamento(oPrePedido.tipoPedido);
 
@@ -761,6 +779,11 @@ sap.ui.define([
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oSource.getSelectedKey());
 		},
+		
+		onChangeFormaPagamento: function(evt) {
+			var oSource = evt.getSource();
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/FormaPagamento", oSource.getSelectedKey());
+		},
 
 		onChangeDataPedido: function() {
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", this.byId("idDataPedido").getValue());
@@ -788,6 +811,7 @@ sap.ui.define([
 			this.byId("idVencimento2").setProperty("enabled", false);
 			this.byId("idVencimento3").setProperty("enabled", false);
 			this.byId("idTabelaPreco").setProperty("enabled", false);
+			this.byId("idFormaPagamento").setProperty("enabled", false);
 			this.byId("idTipoTransporte").setProperty("enabled", false);
 
 		},
@@ -799,6 +823,7 @@ sap.ui.define([
 			this.byId("idVencimento2").setProperty("enabled", true);
 			this.byId("idVencimento3").setProperty("enabled", true);
 			this.byId("idTabelaPreco").setProperty("enabled", true);
+			this.byId("idFormaPagamento").setProperty("enabled", true);
 			this.byId("idTipoTransporte").setProperty("enabled", true);
 
 		},
@@ -811,6 +836,7 @@ sap.ui.define([
 			this.byId("idTipoPedido").setSelectedKey("");
 			this.byId("idTipoNegociacao").setSelectedKey("");
 			this.byId("idTabelaPreco").setSelectedKey("");
+			this.byId("idFormaPagamento").setSelectedKey("");
 			this.byId("idTipoTransporte").setSelectedKey("");
 			// this.byId("idDataEntrega").setSelectedKey("");
 			// this.byId("idLocalEntrega").setSelectedKey("");
@@ -2480,6 +2506,7 @@ sap.ui.define([
 
 							that.byId("idTipoNegociacao").setProperty("enabled", false);
 							that.byId("idTabelaPreco").setProperty("enabled", false);
+							that.byId("idFormaPagamento").setProperty("enabled", false);
 							that.byId("idTipoTransporte").setProperty("enabled", false);
 							that.byId("idPrimeiraParcela").setProperty("enabled", false);
 							that.byId("idQuantParcelas").setProperty("enabled", false);
@@ -3690,6 +3717,7 @@ sap.ui.define([
 
 										that.byId("idTipoNegociacao").setProperty("enabled", true);
 										that.byId("idTabelaPreco").setProperty("enabled", true);
+										that.byId("idFormaPagamento").setProperty("enabled", true);
 										that.byId("idTipoTransporte").setProperty("enabled", true);
 										that.byId("idPrimeiraParcela").setProperty("enabled", true);
 										that.byId("idQuantParcelas").setProperty("enabled", true);
@@ -3865,13 +3893,14 @@ sap.ui.define([
 								valUtilizadoComissaoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"),
 								codUsr: that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"),
 								tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
-								verificadoPreposto: true
+								verificadoPreposto: true,
+								zlsch: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento"),
 							};
-
+							
 							var store1 = db.transaction("PrePedidos", "readwrite");
 							var objPedido = store1.objectStore("PrePedidos");
 							var request = objPedido.put(objBancoPrePedido);
-
+							
 							request.onsuccess = function() {
 								// that.atualizaMovtoVerba(db);
 								that.setaCompleto(db, "Sim");
@@ -3880,12 +3909,12 @@ sap.ui.define([
 								oItemTemplateTotal = [];
 								console.log("Pedido inserido");
 							};
-
+							
 							request.onerror = function() {
 								console.log("Pedido não foi Inserido!");
 							};
 						}
-
+						
 						MessageBox.show("Deseja enviar o pedido agora ?", {
 							icon: MessageBox.Icon.ERROR,
 							title: "Atenção",
@@ -3949,6 +3978,15 @@ sap.ui.define([
 						icon: MessageBox.Icon.ERROR,
 						title: "Corrigir o campo!",
 						actions: [MessageBox.Action.OK]
+					});
+				} else if (this.byId("idFormaPagamento").getSelectedKey() == "" || this.byId("idFormaPagamento").getSelectedKey() == undefined) {
+					MessageBox.show("Preencher o forma de pagamento!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK],
+						onClose: function(){
+							this.byId("idFormaPagamento").focus();
+						}
 					});
 				} else if (this.byId("idTipoNegociacao").getSelectedKey() == "" || this.byId("idTipoNegociacao").getSelectedKey() == undefined) {
 					MessageBox.show("Preencher o tipo do negociação!", {
@@ -4075,7 +4113,8 @@ sap.ui.define([
 								valUtilizadoComissaoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"),
 								codUsr: that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"),
 								tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
-								verificadoPreposto: false
+								verificadoPreposto: false,
+								zlsch: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento")
 							};
 
 							//ADICIONAR O OBJ .. QND FOR UNDEFINED, POIS O OBJ NÃO FOI ENCONTRADO, ESTÁ VAZIO.
@@ -4144,7 +4183,8 @@ sap.ui.define([
 									valUtilizadoComissaoBonif: "",
 									codUsr: "",
 									tipoUsuario: "",
-									verificadoPreposto: ""
+									verificadoPreposto: "",
+									zlsch: ""
 								};
 
 								request1.onsuccess = function() {
@@ -4234,7 +4274,8 @@ sap.ui.define([
 									valUtilizadoComissaoBonif: "",
 									codUsr: "",
 									tipoUsuario: "",
-									verificadoPreposto: ""
+									verificadoPreposto: "",
+									zlsch: ""
 								};
 
 								request1.onsuccess = function() {
@@ -4284,6 +4325,7 @@ sap.ui.define([
 		onBloqueiaPrePedidoTotal: function(habilitado) {
 
 			this.byId("idTabelaPreco").setEnabled(habilitado);
+			this.byId("idFormaPagamento").setEnabled(habilitado);
 			this.byId("idTipoTransporte").setEnabled(habilitado);
 			this.byId("idTipoNegociacao").setEnabled(habilitado);
 			this.byId("idTipoPedido").setEnabled(habilitado);
@@ -4331,6 +4373,7 @@ sap.ui.define([
 
 			if (objItensPedidoTemplate.length > 0) {
 				this.byId("idTabelaPreco").setEnabled(false);
+				this.byId("idFormaPagamento").setEnabled(false);
 				this.byId("idTipoTransporte").setEnabled(false);
 				this.byId("idTipoNegociacao").setEnabled(false);
 				this.byId("idTipoPedido").setEnabled(false);
@@ -4338,6 +4381,7 @@ sap.ui.define([
 			} else {
 
 				this.byId("idTabelaPreco").setEnabled(true);
+				this.byId("idFormaPagamento").setEnabled(true);
 				this.byId("idTipoTransporte").setEnabled(true);
 				this.byId("idTipoNegociacao").setEnabled(true);
 				this.byId("idTipoPedido").setEnabled(true);

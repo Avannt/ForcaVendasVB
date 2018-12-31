@@ -53,7 +53,7 @@
 						<cells>
 							<Text text="{path : 'pedidoRelatorio>Nrpedcli'}"/>
 							<!--<Text text="{path : 'pedidoRelatorio>Kunnr'}"/>-->
-							<Text text="{path : 'pedidoRelatorio>Erdat', type: 'sap.ui.model.type.Date', formatOptions: {style: 'short'}}"/>
+							<Text text="{path : 'pedidoRelatorio>Erdat', type: 'sap.ui.model.type.Date', formatOptions: {style: 'short', strictParsing: true}}"/>
 							<Text text="{path : 'pedidoRelatorio>AprovadoDesc'}"/>
 							<Image src="{path : 'pedidoRelatorio>PathImg'}" width="50%" tooltip="{path : 'pedidoRelatorio>AprovadoDesc'}"/>
 							<Text text="{path : 'pedidoRelatorio>Kunnr'} - {path : 'pedidoRelatorio>NameOrg1', formatter:'.myFormatterName'}"/>

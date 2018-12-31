@@ -9,14 +9,12 @@
 		<footer>
 			<Bar>
 				<contentLeft>
-					<Text id="idAtualizacao" text="{modelAux>/dataUltimoUpdate}"/>
+					<Text id="idAtualizacao" text="Atualização: {modelAux>/DataAtualizacao}" class="sapUiMediumMarginBegin"/>
+					<!--{modelAux>/dataUltimoUpdate}-->
 				</contentLeft>
-				<!--<contentRight>-->
-				<!--	<Image width="40px" height="40px" src="{modelAux>/iconeEmpresa}" class="sapUiSmallMarginEnd"></Image>-->
-					<!--<Label text="{modelAux>/nomeEmpresa}"/>-->
-				<!--</contentRight>-->
 				<contentRight>
-					<Label text="v2.15" class="sapUiMediumMarginEnd"></Label>
+					<Label text="Versão App: {modelAux>/VersaoApp}" class="sapUiMediumMarginEnd"></Label>
+					<!--<Label text="{modelAux>/nomeEmpresa}"/>-->
 				</contentRight>
 			</Bar>
 		</footer>
