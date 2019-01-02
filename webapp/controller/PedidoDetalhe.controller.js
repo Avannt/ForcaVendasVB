@@ -3,24 +3,12 @@ sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
-	"testeui5/model/formatter"
+	"testeui5/model/formatter",
+	"testeui5/controller/PedidoDetalheEnxoval"
 
-], function(BaseController, JSONModel, MessageBox, formatter) {
+], function(BaseController, JSONModel, MessageBox, formatter, PedidoDetalheEnxoval) {
 	"use strict";
 	//variavel para salvar o obj ATUAL do item do pedido E obj pra salvar TODOS os items do pedido
-	var oItemTemplate = [];
-	var oVetorMateriais = [];
-	var oItemTemplateTotal = [];
-	var indexItem;
-	var verbaDisponivel;
-	var oVetorTabPreco = [];
-	var oVetorTipoTransporte = [];
-	var oVetorFormasPagamentos = [];
-	var oVetorTipoNegociacao = [];
-	var oVetorTiposPedidos = [];
-	var objPrePedidoTemplate = [];
-	var objItensPedidoTemplate = [];
-	var oItemPedido = [];
 
 	return BaseController.extend("testeui5.controller.PedidoDetalhe", {
 
@@ -35,12 +23,27 @@ sap.ui.define([
 		},
 
 		_onLoadFields: function() {
+			var that = this;
+			
+			 var pedidoDetalheEnxoval  = new PedidoDetalheEnxoval();
+			 pedidoDetalheEnxoval.getView(that);
+			
+			 that.oItemTemplate = [];
+			 that.oVetorMateriais = [];
+			 that.indexItem = 0;
+			 that.oVetorTabPreco = [];
+			 that.oVetorTipoTransporte = [];
+			 that.oVetorFormasPagamentos = [];
+			 that.oVetorTipoNegociacao = [];
+			 that.oVetorTiposPedidos = [];
+			 that.objItensPedidoTemplate = [];
+			 that.oItemPedido = [];
+				
 			var aTemp = [];
 
 			var oModel = new sap.ui.model.json.JSONModel(aTemp);
 			this.getView().setModel(oModel);
 
-			var that = this;
 			this.getView().setModel(this.getView().getModel("modelCliente"));
 			this.getView().setModel(this.getView().getModel("modelAux"));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
@@ -110,6 +113,8 @@ sap.ui.define([
 		},
 
 		onResetaCamposPrePedido: function() {
+			var that = this;
+			
 			//*modelDadosPedido
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", "");
@@ -174,8 +179,8 @@ sap.ui.define([
 			this.byId("idTipoPedido").setSelectedKey();
 			this.byId("idFormaPagamento").setSelectedKey();
 
-			objItensPedidoTemplate = [];
-			var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+			that.objItensPedidoTemplate = [];
+			var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 			this.getView().setModel(oModel, "ItensPedidoGrid");
 
 			this.onBloqueiaPrePedido();
@@ -184,12 +189,12 @@ sap.ui.define([
 		//CARREGA OS CAMPOS, POPULANDO OS COMBO BOX
 		onCarregaCampos: function(db, resolve, reject) {
 			var that = this;
-			oVetorTabPreco = [];
-			oVetorMateriais = [];
-			oVetorTipoTransporte = [];
-			oVetorTipoNegociacao = [];
-			objItensPedidoTemplate = [];
-			oVetorFormasPagamentos = [];
+			that.oVetorTabPreco = [];
+			that.oVetorMateriais = [];
+			that.oVetorTipoTransporte = [];
+			that.oVetorTipoNegociacao = [];
+			that.objItensPedidoTemplate = [];
+			that.oVetorFormasPagamentos = [];
 
 			var data = this.onDataAtualizacao();
 
@@ -209,9 +214,9 @@ sap.ui.define([
 
 			// if ("getAll" in objectStore) {
 			// 	objectStore.getAll().onsuccess = function(event) {
-			// 		oVetorMateriais = event.target.result;
+			// 		that.oVetorMateriais = event.target.result;
 
-			// 		var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+			// 		var oModel = new sap.ui.model.json.JSONModel(that.oVetorMateriais);
 			// 		that.getView().setModel(oModel, "materiaisCadastrados");
 			// 	};
 			// }
@@ -222,15 +227,15 @@ sap.ui.define([
 
 			if ("getAll" in objectStoreTiposPedidos) {
 				objectStoreTiposPedidos.getAll().onsuccess = function(event) {
-					oVetorTiposPedidos = event.target.result;
+					that.oVetorTiposPedidos = event.target.result;
 
-					var oModel = new sap.ui.model.json.JSONModel(oVetorTiposPedidos);
+					var oModel = new sap.ui.model.json.JSONModel(that.oVetorTiposPedidos);
 					that.getView().setModel(oModel, "tiposPedidos");
 				};
 			}
 
 			//CARREGA NEGOCIOAÇÃO
-			oVetorTipoNegociacao = [{
+			that.oVetorTipoNegociacao = [{
 				idNegociacao: "01",
 				descNegociacao: "À vista"
 			}, {
@@ -238,11 +243,11 @@ sap.ui.define([
 				descNegociacao: "À prazo"
 			}];
 
-			var oModelNegociacao = new sap.ui.model.json.JSONModel(oVetorTipoNegociacao);
+			var oModelNegociacao = new sap.ui.model.json.JSONModel(that.oVetorTipoNegociacao);
 			that.getView().setModel(oModelNegociacao, "tipoNegociacao");
 
 			//CARREGA TIPO DE TRANSPORTE
-			oVetorTipoTransporte = [{
+			that.oVetorTipoTransporte = [{
 				idTransporte: "CIF"
 			}, {
 				idTransporte: "FOB"
@@ -253,14 +258,14 @@ sap.ui.define([
 
 			if ("getAll" in objectStoreFormasPagamentos) {
 				objectStoreFormasPagamentos.getAll().onsuccess = function(event) {
-					oVetorFormasPagamentos = event.target.result;
+					that.oVetorFormasPagamentos = event.target.result;
 
-					var oModel = new sap.ui.model.json.JSONModel(oVetorFormasPagamentos);
+					var oModel = new sap.ui.model.json.JSONModel(that.oVetorFormasPagamentos);
 					that.getView().setModel(oModel, "formasPagamentos");
 				};
 			}
 
-			var oModel = new sap.ui.model.json.JSONModel(oVetorTipoTransporte);
+			var oModel = new sap.ui.model.json.JSONModel(that.oVetorTipoTransporte);
 			that.getView().setModel(oModel, "tipoTransporte");
 
 			var transactionA961 = db.transaction(["A961"], "readonly");
@@ -271,17 +276,17 @@ sap.ui.define([
 				if (cursor) {
 					if (cursor.value.kunnr == Kunnr) {
 
-						oVetorTabPreco.push(cursor.value);
+						that.oVetorTabPreco.push(cursor.value);
 					}
 
 					cursor.continue();
 
 				} else {
 
-					var oModelTabPreco = new sap.ui.model.json.JSONModel(oVetorTabPreco);
+					var oModelTabPreco = new sap.ui.model.json.JSONModel(that.oVetorTabPreco);
 					that.getView().setModel(oModelTabPreco, "tabPreco");
 
-					if (oVetorTabPreco.length == 0) {
+					if (that.oVetorTabPreco.length == 0) {
 
 						var CodRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
@@ -292,10 +297,10 @@ sap.ui.define([
 							objectStoreA963.getAll().onsuccess = function(event) {
 
 								for (var j = 0; j < event.target.result.length; j++) {
-									oVetorTabPreco.push(event.target.result[j]);
+									that.oVetorTabPreco.push(event.target.result[j]);
 								}
 
-								oModelTabPreco = new sap.ui.model.json.JSONModel(oVetorTabPreco);
+								oModelTabPreco = new sap.ui.model.json.JSONModel(that.oVetorTabPreco);
 								that.getView().setModel(oModelTabPreco, "tabPreco");
 							};
 						}
@@ -347,7 +352,7 @@ sap.ui.define([
 
 		onCarregaDadosPedido: function(db) {
 			var that = this;
-			objItensPedidoTemplate = [];
+			that.objItensPedidoTemplate = [];
 			var vetorAux = [];
 
 			this.byId("tabItensPedidoStep").setProperty("enabled", true);
@@ -463,31 +468,31 @@ sap.ui.define([
 
 					promise.then(function(resolve) {
 						console.log("Carrega materiais com preço");
-						that.onCarregaMateriaisComPreco(db, oPrePedido.tabPreco, oVetorMateriais);
+						that.onCarregaMateriaisComPreco(db, oPrePedido.tabPreco, that.oVetorMateriais);
 					});
 
 					//FILTRA ITENS PARA APARECER NO COMBO PARA SELECIONAR DE ACORDO COM O TIPO DE PEDIDO JÁ EXISTENTE.
 					//AMOSTRA
 					// if (oPrePedido.tipoPedido == "YBRI") {
-					// 	for (var i = 0; i < oVetorMateriais.length; i++) {
-					// 		if (oVetorMateriais[i].mtpos == "YAMO") {
-					// 			vetorAux.push(oVetorMateriais[i]);
+					// 	for (var i = 0; i < that.oVetorMateriais.length; i++) {
+					// 		if (that.oVetorMateriais[i].mtpos == "YAMO") {
+					// 			vetorAux.push(that.oVetorMateriais[i]);
 					// 		}
 					// 	}
-					// 	oVetorMateriais = vetorAux;
+					// 	that.oVetorMateriais = vetorAux;
 					// }
 					// //BRINDES
 					// if (oPrePedido.tipoPedido == "YBRI") {
-					// 	for (i = 0; i < oVetorMateriais.length; i++) {
-					// 		if (oVetorMateriais[i].mtpos == "YBRI") {
-					// 			vetorAux.push(oVetorMateriais[i]);
+					// 	for (i = 0; i < that.oVetorMateriais.length; i++) {
+					// 		if (that.oVetorMateriais[i].mtpos == "YBRI") {
+					// 			vetorAux.push(that.oVetorMateriais[i]);
 					// 		}
 					// 	}
 
-					// 	oVetorMateriais = vetorAux;
+					// 	that.oVetorMateriais = vetorAux;
 					// }
 
-					// var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+					// var oModel = new sap.ui.model.json.JSONModel(that.oVetorMateriais);
 					// that.getView().setModel(oModel, "materiaisCadastrados");
 
 					var storeItensPedido = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
@@ -497,13 +502,13 @@ sap.ui.define([
 						if (cursor) {
 							if (cursor.value.nrPedCli === that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli")) {
 
-								objItensPedidoTemplate.push(cursor.value);
+								that.objItensPedidoTemplate.push(cursor.value);
 
 							}
 							cursor.continue();
 						} else {
 
-							var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+							var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
 							if (oPrePedido.idStatusPedido == 3) {
@@ -603,9 +608,9 @@ sap.ui.define([
 				var request = indexMtpos.getAll(tipoPedido);
 
 				request.onsuccess = function(event) {
-					oVetorMateriais = event.target.result;
+					that.oVetorMateriais = event.target.result;
 
-					var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+					var oModel = new sap.ui.model.json.JSONModel(that.oVetorMateriais);
 					// that.getView().setModel(oModel, "materiaisCadastrados");
 
 					console.log("Materiais carregados: mtpos: " + tipoPedido);
@@ -614,9 +619,9 @@ sap.ui.define([
 
 			} else {
 				objectStoreMaterial.getAll().onsuccess = function(event) {
-					oVetorMateriais = event.target.result;
+					that.oVetorMateriais = event.target.result;
 
-					var oModel = new sap.ui.model.json.JSONModel(oVetorMateriais);
+					var oModel = new sap.ui.model.json.JSONModel(that.oVetorMateriais);
 					// that.getView().setModel(oModel, "materiaisCadastrados");
 					resolve();
 				};
@@ -770,7 +775,7 @@ sap.ui.define([
 
 				} else {
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", oSource.getSelectedKey());
-					that.onCarregaMateriaisComPreco(db, oSource.getSelectedKey(), oVetorMateriais);
+					that.onCarregaMateriaisComPreco(db, oSource.getSelectedKey(), that.oVetorMateriais);
 				}
 			};
 		},
@@ -914,31 +919,31 @@ sap.ui.define([
 
 						} else {
 
-							oItemPedido.zzQnt = 1;
-							oItemPedido.matnr = oMaterial.matnr;
-							oItemPedido.maktx = oMaterial.maktx;
-							oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
-							oItemPedido.zzValExcedidoItem = 0;
-							oItemPedido.kbetr = 0;
-							oItemPedido.maxdescpermitido = 0;
-							oItemPedido.mtpos = oMaterial.mtpos;
-							oItemPedido.knumh = 0;
-							oItemPedido.zzRegra = 0;
-							oItemPedido.zzGrpmat = 0;
-							oItemPedido.knumhExtra = 0;
-							oItemPedido.zzRegraExtra = 0;
-							oItemPedido.zzGrpmatExtra = 0;
-							oItemPedido.tipoItem = "Normal";
-							oItemPedido.tipoItem2 = "Normal";
-							oItemPedido.zzQntDiluicao = 0;
-							oItemPedido.zzValorDiluido = 0;
-							oItemPedido.zzPercDescDiluicao = 0;
+							that.oItemPedido.zzQnt = 1;
+							that.oItemPedido.matnr = oMaterial.matnr;
+							that.oItemPedido.maktx = oMaterial.maktx;
+							that.oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
+							that.oItemPedido.zzValExcedidoItem = 0;
+							that.oItemPedido.kbetr = 0;
+							that.oItemPedido.maxdescpermitido = 0;
+							that.oItemPedido.mtpos = oMaterial.mtpos;
+							that.oItemPedido.knumh = 0;
+							that.oItemPedido.zzRegra = 0;
+							that.oItemPedido.zzGrpmat = 0;
+							that.oItemPedido.knumhExtra = 0;
+							that.oItemPedido.zzRegraExtra = 0;
+							that.oItemPedido.zzGrpmatExtra = 0;
+							that.oItemPedido.tipoItem = "Normal";
+							that.oItemPedido.tipoItem2 = "Normal";
+							that.oItemPedido.zzQntDiluicao = 0;
+							that.oItemPedido.zzValorDiluido = 0;
+							that.oItemPedido.zzPercDescDiluicao = 0;
 
 							//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
-							oItemPedido.zzValorDiluido = 0;
+							that.oItemPedido.zzValorDiluido = 0;
 
-							for (var j = 0; j < objItensPedidoTemplate.length; j++) {
-								if (oItemPedido.matnr == objItensPedidoTemplate[j].matnr && objItensPedidoTemplate[j].tipoItem == "Normal") {
+							for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
+								if (that.oItemPedido.matnr == that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem == "Normal") {
 									itemExistente = true;
 									break;
 								}
@@ -983,17 +988,17 @@ sap.ui.define([
 										}
 
 										// Desconto Extra aplicado depois do dento digitado no item
-										oItemPedido.zzPervm = oA960.zzPervm; //Verba
-										oItemPedido.zzPercom = oA960.zzPercom; //Comissão
-										oItemPedido.zzVprod = oA960.zzVprod;
-										oItemPedido.knumh = 0; //Desconto familia
-										oItemPedido.zzDesext = 0;
-										oItemPedido.zzDesitem = 0;
-										oItemPedido.zzVprodMinPermitido = 0;
+										that.oItemPedido.zzPervm = oA960.zzPervm; //Verba
+										that.oItemPedido.zzPercom = oA960.zzPercom; //Comissão
+										that.oItemPedido.zzVprod = oA960.zzVprod;
+										that.oItemPedido.knumh = 0; //Desconto familia
+										that.oItemPedido.zzDesext = 0;
+										that.oItemPedido.zzDesitem = 0;
+										that.oItemPedido.zzVprodMinPermitido = 0;
 										//De inicio atribuir zzVprodDesc COM O VALOR CHEIO. DAI DIRECIONAR PARA O DESCONTO DE DILUIÇÃO
-										oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+										that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
 										//De inicio atribuir zzVprodDesc2 COM O VALOR CHEIO. DAI DIRECIONAR PARA O DESCONTO DE NORMAL
-										oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+										that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 
 										var vetorAuxFamilias = [];
 										var vetorAuxFamiliasExtra = [];
@@ -1004,7 +1009,7 @@ sap.ui.define([
 											var cursor = event.target.result;
 
 											if (cursor) {
-												if (cursor.value.matnr === oItemPedido.matnr && cursor.value.werks === werks) {
+												if (cursor.value.matnr === that.oItemPedido.matnr && cursor.value.werks === werks) {
 
 													vetorAuxFamilias.push(cursor.value);
 													console.log("Familia: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
@@ -1023,9 +1028,9 @@ sap.ui.define([
 
 															if (cursor2.value.zzGrpmat === vetorAuxFamilias[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-																oItemPedido.zzGrpmat = cursor2.value.zzGrpmat; //Código Familia
-																oItemPedido.zzRegra = cursor2.value.zzRegra; //Grupo de preço 
-																console.log("Grupo de Preço:" + oItemPedido.zzRegra + " do grupo da familia: " + cursor2.value.zzGrpmat);
+																that.oItemPedido.zzGrpmat = cursor2.value.zzGrpmat; //Código Familia
+																that.oItemPedido.zzRegra = cursor2.value.zzRegra; //Grupo de preço 
+																console.log("Grupo de Preço:" + that.oItemPedido.zzRegra + " do grupo da familia: " + cursor2.value.zzGrpmat);
 															}
 														}
 														cursor2.continue();
@@ -1038,11 +1043,11 @@ sap.ui.define([
 
 															if (cursorA967) {
 
-																if (cursorA967.value.zzRegra === oItemPedido.zzRegra) {
+																if (cursorA967.value.zzRegra === that.oItemPedido.zzRegra) {
 
-																	oItemPedido.knumh = cursorA967.value.knumh; // Registro de condição 
+																	that.oItemPedido.knumh = cursorA967.value.knumh; // Registro de condição 
 
-																	console.log("Registro de condição :" + oItemPedido.knumh);
+																	console.log("Registro de condição :" + that.oItemPedido.knumh);
 																}
 
 																cursorA967.continue();
@@ -1057,7 +1062,7 @@ sap.ui.define([
 																	var cursor = event.target.result;
 
 																	if (cursor) {
-																		if (cursor.value.matnr === oItemPedido.matnr && cursor.value.werks === werks) {
+																		if (cursor.value.matnr === that.oItemPedido.matnr && cursor.value.werks === werks) {
 
 																			vetorAuxFamiliasExtra.push(cursor.value);
 																			console.log("Familia Extra: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
@@ -1076,10 +1081,10 @@ sap.ui.define([
 
 																					if (cursor2.value.zzGrpmat === vetorAuxFamiliasExtra[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-																						oItemPedido.zzGrpmatExtra = cursor2.value.zzGrpmat; //Código Familia Extra
-																						oItemPedido.zzRegraExtra = cursor2.value.zzRegra; //Grupo de preço Extra
-																						console.log("Grupo de Preço Extra:" + oItemPedido.zzRegraExtra + " do grupo da familia Extra: " +
-																							oItemPedido.zzGrpmatExtra);
+																						that.oItemPedido.zzGrpmatExtra = cursor2.value.zzGrpmat; //Código Familia Extra
+																						that.oItemPedido.zzRegraExtra = cursor2.value.zzRegra; //Grupo de preço Extra
+																						console.log("Grupo de Preço Extra:" + that.oItemPedido.zzRegraExtra + " do grupo da familia Extra: " +
+																							that.oItemPedido.zzGrpmatExtra);
 																					}
 																				}
 																				cursor2.continue();
@@ -1092,11 +1097,11 @@ sap.ui.define([
 
 																					if (cursorA969) {
 
-																						if (cursorA969.value.zzRegra === oItemPedido.zzRegraExtra) {
+																						if (cursorA969.value.zzRegra === that.oItemPedido.zzRegraExtra) {
 
-																							oItemPedido.knumhExtra = cursorA969.value.knumh; // Registro de condição 
+																							that.oItemPedido.knumhExtra = cursorA969.value.knumh; // Registro de condição 
 
-																							console.log("Registro de condição :" + oItemPedido.knumhExtra);
+																							console.log("Registro de condição :" + that.oItemPedido.knumhExtra);
 																						}
 
 																						cursorA969.continue();
@@ -1109,7 +1114,7 @@ sap.ui.define([
 
 																							if (cursor3) {
 
-																								if (cursor3.value.knumh === oItemPedido.knumh && auxRangeQuant < parseFloat(cursor3.value.kbetr)) {
+																								if (cursor3.value.knumh === that.oItemPedido.knumh && auxRangeQuant < parseFloat(cursor3.value.kbetr)) {
 
 																									auxRangeQuant = parseFloat(cursor3.value.kbetr); //Desconto total a aplicar
 
@@ -1119,8 +1124,8 @@ sap.ui.define([
 
 																							} else {
 
-																								oItemPedido.kbetr = auxRangeQuant;
-																								console.log("Percentual de Desconto Permitido: " + oItemPedido.kbetr);
+																								that.oItemPedido.kbetr = auxRangeQuant;
+																								console.log("Percentual de Desconto Permitido: " + that.oItemPedido.kbetr);
 
 																								that.calculaPrecoItem();
 																								that.popularCamposItemPedido();
@@ -1168,28 +1173,30 @@ sap.ui.define([
 		},
 
 		onCriarIndexItemPedido: function() {
+			var that = this;
+			
 			//Define o index do produto a ser inserido
-			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
+			for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 				if (i === 0) {
-					var aux = objItensPedidoTemplate[i].idItemPedido.split("/");
-					indexItem = parseInt(aux[1]);
+					var aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
+					that.indexItem = parseInt(aux[1]);
 
 				} else if (i > 0) {
-					aux = objItensPedidoTemplate[i].idItemPedido.split("/");
+					aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
 
-					if (indexItem < parseInt(aux[1])) {
-						indexItem = parseInt(aux[1]);
+					if (that.indexItem < parseInt(aux[1])) {
+						that.indexItem = parseInt(aux[1]);
 
 					}
 				}
 			}
-			if (objItensPedidoTemplate.length === 0) {
-				indexItem = 1;
+			if (that.objItensPedidoTemplate.length === 0) {
+				that.indexItem = 1;
 			} else {
-				indexItem += 1;
+				that.indexItem += 1;
 			}
 
-			return indexItem;
+			return that.indexItem;
 		},
 
 		onItemChangeDiluicao: function(oEvent) {
@@ -1242,49 +1249,49 @@ sap.ui.define([
 
 						} else {
 
-							oItemPedido.zzQnt = 1;
-							oItemPedido.matnr = oMaterial.matnr;
-							oItemPedido.maktx = oMaterial.maktx;
-							oItemPedido.mtpos = oMaterial.mtpos;
-							oItemPedido.ntgew = oMaterial.ntgew;
-							oItemPedido.knumh = 0;
-							oItemPedido.zzRegra = 0;
-							oItemPedido.zzGrpmat = 0;
-							oItemPedido.knumhExtra = 0;
-							oItemPedido.zzRegraExtra = 0;
-							oItemPedido.zzGrpmatExtra = 0;
-							oItemPedido.zzPercDescDiluicao = 0;
+							that.oItemPedido.zzQnt = 1;
+							that.oItemPedido.matnr = oMaterial.matnr;
+							that.oItemPedido.maktx = oMaterial.maktx;
+							that.oItemPedido.mtpos = oMaterial.mtpos;
+							that.oItemPedido.ntgew = oMaterial.ntgew;
+							that.oItemPedido.knumh = 0;
+							that.oItemPedido.zzRegra = 0;
+							that.oItemPedido.zzGrpmat = 0;
+							that.oItemPedido.knumhExtra = 0;
+							that.oItemPedido.zzRegraExtra = 0;
+							that.oItemPedido.zzGrpmatExtra = 0;
+							that.oItemPedido.zzPercDescDiluicao = 0;
 
-							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
-								if (objItensPedidoTemplate[i].matnr === codItem && objItensPedidoTemplate[i].tipoItem === "Normal") {
+							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
+								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Normal") {
 
 									objAuxItem = {
 										idItemPedido: "",
 										index: "",
-										knumh: objItensPedidoTemplate[i].knumh,
-										zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
-										zzRegra: objItensPedidoTemplate[i].zzRegra,
-										knumhExtra: objItensPedidoTemplate[i].knumhExtra,
-										zzGrpmatExtra: objItensPedidoTemplate[i].zzGrpmatExtra,
-										zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
-										maktx: objItensPedidoTemplate[i].maktx,
-										mtpos: objItensPedidoTemplate[i].mtpos,
-										matnr: objItensPedidoTemplate[i].matnr,
-										nrPedCli: objItensPedidoTemplate[i].nrPedCli,
-										tipoItem: objItensPedidoTemplate[i].tipoItem,
-										zzDesext: objItensPedidoTemplate[i].zzDesext,
-										zzDesitem: objItensPedidoTemplate[i].zzDesitem,
-										zzPercom: objItensPedidoTemplate[i].zzPercom,
-										zzPervm: objItensPedidoTemplate[i].zzPervm,
-										zzQnt: objItensPedidoTemplate[i].zzQnt,
-										zzVprod: objItensPedidoTemplate[i].zzVprod,
-										zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
-										zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDescTotal,
-										zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
+										knumh: that.objItensPedidoTemplate[i].knumh,
+										zzGrpmat: that.objItensPedidoTemplate[i].zzGrpmat,
+										zzRegra: that.objItensPedidoTemplate[i].zzRegra,
+										knumhExtra: that.objItensPedidoTemplate[i].knumhExtra,
+										zzGrpmatExtra: that.objItensPedidoTemplate[i].zzGrpmatExtra,
+										zzRegraExtra: that.objItensPedidoTemplate[i].zzRegraExtra,
+										maktx: that.objItensPedidoTemplate[i].maktx,
+										mtpos: that.objItensPedidoTemplate[i].mtpos,
+										matnr: that.objItensPedidoTemplate[i].matnr,
+										nrPedCli: that.objItensPedidoTemplate[i].nrPedCli,
+										tipoItem: that.objItensPedidoTemplate[i].tipoItem,
+										zzDesext: that.objItensPedidoTemplate[i].zzDesext,
+										zzDesitem: that.objItensPedidoTemplate[i].zzDesitem,
+										zzPercom: that.objItensPedidoTemplate[i].zzPercom,
+										zzPervm: that.objItensPedidoTemplate[i].zzPervm,
+										zzQnt: that.objItensPedidoTemplate[i].zzQnt,
+										zzVprod: that.objItensPedidoTemplate[i].zzVprod,
+										zzVprodDesc: that.objItensPedidoTemplate[i].zzVprodDesc,
+										zzVprodDescTotal: that.objItensPedidoTemplate[i].zzVprodDescTotal,
+										zzPercDescTotal: that.objItensPedidoTemplate[i].zzPercDescTotal,
 										zzVprodMinPermitido: 0,
-										ntgew: objItensPedidoTemplate[i].ntgew,
+										ntgew: that.objItensPedidoTemplate[i].ntgew,
 										//Desconto normal. *****
-										zzVprodDesc2: objItensPedidoTemplate[i].zzVprodDesc,
+										zzVprodDesc2: that.objItensPedidoTemplate[i].zzVprodDesc,
 										tipoItem2: "Diluicao",
 										zzQntDiluicao: 0,
 										zzValorDiluido: 0
@@ -1292,7 +1299,7 @@ sap.ui.define([
 
 									itemEncontradoDiluicao = true;
 								}
-								if (objItensPedidoTemplate[i].matnr === codItem && objItensPedidoTemplate[i].tipoItem === "Diluicao") {
+								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Diluicao") {
 									itemJaInseridoDiluicao = true;
 									break;
 								}
@@ -1352,32 +1359,32 @@ sap.ui.define([
 										}
 
 										// Desconto Extra aplicado depois do dento digitado no item
-										oItemPedido.zzDesext = 0;
-										oItemPedido.zzPervm = oA960.zzPervm; //Verba
-										oItemPedido.zzPercom = oA960.zzPercom; //Comissão
-										oItemPedido.zzVprod = oA960.zzVprod;
-										oItemPedido.knumh = 0;
-										oItemPedido.zzRegra = 0;
-										oItemPedido.zzGrpmat = 0;
+										that.oItemPedido.zzDesext = 0;
+										that.oItemPedido.zzPervm = oA960.zzPervm; //Verba
+										that.oItemPedido.zzPercom = oA960.zzPercom; //Comissão
+										that.oItemPedido.zzVprod = oA960.zzVprod;
+										that.oItemPedido.knumh = 0;
+										that.oItemPedido.zzRegra = 0;
+										that.oItemPedido.zzGrpmat = 0;
 
-										oItemPedido.knumhExtra = 0;
-										oItemPedido.zzRegraExtra = 0;
-										oItemPedido.zzGrpmatExtra = 0;
+										that.oItemPedido.knumhExtra = 0;
+										that.oItemPedido.zzRegraExtra = 0;
+										that.oItemPedido.zzGrpmatExtra = 0;
 
-										oItemPedido.zzDesitem = 0;
-										oItemPedido.zzPercDescTotal = 0;
-										oItemPedido.zzVprodMinPermitido = 0;
-										oItemPedido.tipoItem = "Diluicao";
+										that.oItemPedido.zzDesitem = 0;
+										that.oItemPedido.zzPercDescTotal = 0;
+										that.oItemPedido.zzVprodMinPermitido = 0;
+										that.oItemPedido.tipoItem = "Diluicao";
 
 										//De inicio atribuir zzVprodDesc COM O VALOR CHEIO. DAI DIRECIONAR PARA OS DESCONTOS
-										oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+										that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
 
 										//Desconto normal. *****
-										oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+										that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 
-										oItemPedido.tipoItem2 = "Diluicao";
-										oItemPedido.zzQntDiluicao = 0;
-										oItemPedido.zzValorDiluido = 0;
+										that.oItemPedido.tipoItem2 = "Diluicao";
+										that.oItemPedido.zzQntDiluicao = 0;
+										that.oItemPedido.zzValorDiluido = 0;
 
 										var vetorAuxFamilias = [];
 										var vetorAuxFamiliasExtra = [];
@@ -1387,7 +1394,7 @@ sap.ui.define([
 											var cursor = event.target.result;
 
 											if (cursor) {
-												if (cursor.value.matnr === oItemPedido.matnr && cursor.value.werks === werks) {
+												if (cursor.value.matnr === that.oItemPedido.matnr && cursor.value.werks === werks) {
 
 													vetorAuxFamilias.push(cursor.value);
 													console.log("Familia: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
@@ -1406,9 +1413,9 @@ sap.ui.define([
 
 															if (cursor2.value.zzGrpmat === vetorAuxFamilias[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-																oItemPedido.zzGrpmat = cursor2.value.zzGrpmat; //Código Familia
-																oItemPedido.zzRegra = cursor2.value.zzRegra; //Grupo de preço 
-																console.log("Grupo de Preço:" + oItemPedido.zzRegra + " do grupo da familia: " + cursor2.value.zzGrpmat);
+																that.oItemPedido.zzGrpmat = cursor2.value.zzGrpmat; //Código Familia
+																that.oItemPedido.zzRegra = cursor2.value.zzRegra; //Grupo de preço 
+																console.log("Grupo de Preço:" + that.oItemPedido.zzRegra + " do grupo da familia: " + cursor2.value.zzGrpmat);
 															}
 														}
 														cursor2.continue();
@@ -1421,11 +1428,11 @@ sap.ui.define([
 
 															if (cursorA967) {
 
-																if (cursorA967.value.zzRegra === oItemPedido.zzRegra) {
+																if (cursorA967.value.zzRegra === that.oItemPedido.zzRegra) {
 
-																	oItemPedido.knumh = cursorA967.value.knumh; // Registro de condição 
+																	that.oItemPedido.knumh = cursorA967.value.knumh; // Registro de condição 
 
-																	console.log("Registro de condição :" + oItemPedido.knumh);
+																	console.log("Registro de condição :" + that.oItemPedido.knumh);
 																}
 
 																cursorA967.continue();
@@ -1439,7 +1446,7 @@ sap.ui.define([
 
 																	if (cursor3) {
 
-																		if (cursor3.value.knumh === oItemPedido.knumh && auxRangeQuant < parseFloat(cursor3.value.kbetr)) {
+																		if (cursor3.value.knumh === that.oItemPedido.knumh && auxRangeQuant < parseFloat(cursor3.value.kbetr)) {
 
 																			auxRangeQuant = parseFloat(cursor3.value.kbetr); //Desconto total a aplicar
 
@@ -1449,8 +1456,8 @@ sap.ui.define([
 
 																	} else {
 
-																		oItemPedido.kbetr = auxRangeQuant;
-																		console.log("Percentual de Desconto Permitido: " + oItemPedido.kbetr);
+																		that.oItemPedido.kbetr = auxRangeQuant;
+																		console.log("Percentual de Desconto Permitido: " + that.oItemPedido.kbetr);
 
 																		//Buscando Familia de desconto extra
 
@@ -1460,7 +1467,7 @@ sap.ui.define([
 																			var cursor = event.target.result;
 
 																			if (cursor) {
-																				if (cursor.value.matnr === oItemPedido.matnr && cursor.value.werks === werks) {
+																				if (cursor.value.matnr === that.oItemPedido.matnr && cursor.value.werks === werks) {
 
 																					vetorAuxFamiliasExtra.push(cursor.value);
 																					console.log("Familia Extra: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
@@ -1479,10 +1486,10 @@ sap.ui.define([
 
 																							if (cursor2.value.zzGrpmat === vetorAuxFamiliasExtra[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-																								oItemPedido.zzGrpmatExtra = cursor2.value.zzGrpmat; //Código Familia Extra
-																								oItemPedido.zzRegraExtra = cursor2.value.zzRegra; //Grupo de preço Extra
-																								console.log("Grupo de Preço Extra:" + oItemPedido.zzRegraExtra + " do grupo da familia Extra: " +
-																									oItemPedido.zzGrpmatExtra);
+																								that.oItemPedido.zzGrpmatExtra = cursor2.value.zzGrpmat; //Código Familia Extra
+																								that.oItemPedido.zzRegraExtra = cursor2.value.zzRegra; //Grupo de preço Extra
+																								console.log("Grupo de Preço Extra:" + that.oItemPedido.zzRegraExtra + " do grupo da familia Extra: " +
+																									that.oItemPedido.zzGrpmatExtra);
 																							}
 																						}
 																						cursor2.continue();
@@ -1495,11 +1502,11 @@ sap.ui.define([
 
 																							if (cursorA969) {
 
-																								if (cursorA969.value.zzRegra === oItemPedido.zzRegraExtra) {
+																								if (cursorA969.value.zzRegra === that.oItemPedido.zzRegraExtra) {
 
-																									oItemPedido.knumhExtra = cursorA969.value.knumh; // Registro de condição 
+																									that.oItemPedido.knumhExtra = cursorA969.value.knumh; // Registro de condição 
 
-																									console.log("Registro de condição :" + oItemPedido.knumhExtra);
+																									console.log("Registro de condição :" + that.oItemPedido.knumhExtra);
 																								}
 
 																								cursorA969.continue();
@@ -1535,7 +1542,9 @@ sap.ui.define([
 		},
 
 		onResetaCamposDialog: function() {
-			oItemPedido = [];
+			var that = this;
+			
+			that.oItemPedido = [];
 			sap.ui.getCore().byId("idItemPedido").setValue();
 			sap.ui.getCore().byId("idDesconto").setValue();
 			sap.ui.getCore().byId("idPrecoCheio").setValue();
@@ -1589,7 +1598,7 @@ sap.ui.define([
 
 						if (sap.ui.getCore().byId("idQuantidade").getValue() > 0) {
 
-							oItemPedido.zzQnt = parseInt(quantidade);
+							that.oItemPedido.zzQnt = parseInt(quantidade);
 							that.calculaPrecoItem();
 							that.popularCamposItemPedido();
 
@@ -1615,6 +1624,8 @@ sap.ui.define([
 		},
 
 		onDescontoChange: function() {
+			var that = this;
+			
 			var desconto = sap.ui.getCore().byId("idDesconto").getValue();
 			if (desconto === "") {
 				desconto = 0;
@@ -1622,7 +1633,7 @@ sap.ui.define([
 
 			if (desconto >= 0) {
 
-				oItemPedido.zzDesitem = parseFloat(desconto);
+				that.oItemPedido.zzDesitem = parseFloat(desconto);
 				this.calculaPrecoItem();
 				this.popularCamposItemPedido();
 
@@ -1639,29 +1650,31 @@ sap.ui.define([
 		},
 		
 		calculaPrecoItem: function() {
-			oItemPedido.zzPercDescTotal = 0;
+			var that = this;
+			
+			that.oItemPedido.zzPercDescTotal = 0;
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			
 			//Preço cheio sem descontos
-			if (oItemPedido.mtpos == "YBRI" || oItemPedido.mtpos == "YAMO" || tipoPedido == "YTRO"){
+			if (that.oItemPedido.mtpos == "YBRI" || that.oItemPedido.mtpos == "YAMO" || tipoPedido == "YTRO"){
 				
-				oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
-				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
+				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 				
 			} else if(tipoPedido == "YBON"){
 				
-				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
-				oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
-				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;	
+				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod - (that.oItemPedido.zzVprod * that.oItemPedido.kbetr / 100);
+				that.oItemPedido.zzPercDescTotal = that.oItemPedido.kbetr;
+				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;	
 				
-			} else if(oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr >= 0){
+			} else if(that.oItemPedido.tipoItem === "Diluicao" && that.oItemPedido.kbetr >= 0){
 				
-				oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
-				oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
+				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod - (that.oItemPedido.zzVprod * that.oItemPedido.kbetr / 100);
+				that.oItemPedido.zzPercDescTotal = that.oItemPedido.kbetr;
 
-				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-				oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
-				oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
+				that.oItemPedido.zzQntDiluicao = that.oItemPedido.zzQnt;
+				that.oItemPedido.zzValorDiluido = that.oItemPedido.zzQnt * that.oItemPedido.zzVprodDesc;
 				
 			} else {
 				
@@ -1670,62 +1683,62 @@ sap.ui.define([
 				//Senão for desconto avista, criar o campo zzPercDescTotal do item do pedido com desconto zerado. 
 				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 					
-					oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
+					that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
 					//Desconto normal. *****
-					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+					that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;
 					
 				} else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
 					
-					oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+					that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
 					//Desconto normal. *****
-					oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+					that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 					
 				}
 				
 				//2º Aplicar o Desconto digitado na tela de digitação dos itens
-				oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
+				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc) * (that.oItemPedido.zzDesitem / 100);
 
 				//Desconto normal. *****
-				oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;
 
 				// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
-				// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
-				// oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
+				// that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - ((that.oItemPedido.zzVprodDesc) * (that.oItemPedido.zzDesext / 100));
+				// that.oItemPedido.zzVprodDesc = Math.round(parseFloat(that.oItemPedido.zzVprodDesc * 100)) / 100;
 
 				//SOMA TODOS OS DESCONTOS APLICADO NOS ITENS.
-				oItemPedido.zzPercDescTotal += oItemPedido.zzDesitem;
-				oItemPedido.zzQntDiluicao = 0;
-				oItemPedido.zzValorDiluido = 0;
+				that.oItemPedido.zzPercDescTotal += that.oItemPedido.zzDesitem;
+				that.oItemPedido.zzQntDiluicao = 0;
+				that.oItemPedido.zzValorDiluido = 0;
 			}
 			
-			oItemPedido.zzVprodDescTotal = oItemPedido.zzVprodDesc * oItemPedido.zzQnt;
-			oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
+			that.oItemPedido.zzVprodDescTotal = that.oItemPedido.zzVprodDesc * that.oItemPedido.zzQnt;
+			that.oItemPedido.zzVprodDescTotal = Math.round(parseFloat(that.oItemPedido.zzVprodDescTotal * 100)) / 100;
 			
-			// if (oItemPedido.mtpos != "YAMO") {
-			// 	if (oItemPedido.tipoItem === "Diluicao" && oItemPedido.kbetr >= 0) {
+			// if (that.oItemPedido.mtpos != "YAMO") {
+			// 	if (that.oItemPedido.tipoItem === "Diluicao" && that.oItemPedido.kbetr >= 0) {
 
-			// 		oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
-			// 		oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
+			// 		that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod - (that.oItemPedido.zzVprod * that.oItemPedido.kbetr / 100);
+			// 		that.oItemPedido.zzPercDescTotal = that.oItemPedido.kbetr;
 
-			// 		oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
-			// 		oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
-			// 		oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+			// 		that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
+			// 		that.oItemPedido.zzQntDiluicao = that.oItemPedido.zzQnt;
+			// 		that.oItemPedido.zzValorDiluido = that.oItemPedido.zzQnt * that.oItemPedido.zzVprodDesc;
 
-			// 	} else if (oItemPedido.tipoItem === "Diluicao") {
+			// 	} else if (that.oItemPedido.tipoItem === "Diluicao") {
 
-			// 		oItemPedido.zzQntDiluicao = oItemPedido.zzQnt;
-			// 		oItemPedido.zzValorDiluido = oItemPedido.zzQnt * oItemPedido.zzVprodDesc;
+			// 		that.oItemPedido.zzQntDiluicao = that.oItemPedido.zzQnt;
+			// 		that.oItemPedido.zzValorDiluido = that.oItemPedido.zzQnt * that.oItemPedido.zzVprodDesc;
 					
-			// 	} else if(oItemPedido.mtpos == "YBRI" || oItemPedido.mtpos == "YTRO" || oItemPedido.mtpos == "YAMO"){
+			// 	} else if(that.oItemPedido.mtpos == "YBRI" || that.oItemPedido.mtpos == "YTRO" || that.oItemPedido.mtpos == "YAMO"){
 					
-			// 		oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
-			// 		oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+			// 		that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
+			// 		that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 					
 			// 	} else if (tipoPedido == "YBON"){
 					
-			// 		oItemPedido.zzVprodDesc = oItemPedido.zzVprod - (oItemPedido.zzVprod * oItemPedido.kbetr / 100);
-			// 		oItemPedido.zzPercDescTotal = oItemPedido.kbetr;
-			// 		oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+			// 		that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod - (that.oItemPedido.zzVprod * that.oItemPedido.kbetr / 100);
+			// 		that.oItemPedido.zzPercDescTotal = that.oItemPedido.kbetr;
+			// 		that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;
 					
 			// 	} else {
 					
@@ -1734,43 +1747,43 @@ sap.ui.define([
 			// 		//Senão for desconto avista, criar o campo zzPercDescTotal do item do pedido com desconto zerado. 
 			// 		if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
 						
-			// 			oItemPedido.zzVprodDesc = (oItemPedido.zzVprod) - ((oItemPedido.zzVprod) * (5 / 100));
+			// 			that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
 			// 			//Desconto normal. *****
-			// 			oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+			// 			that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;
 						
 			// 		} else if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
 						
-			// 			oItemPedido.zzVprodDesc = oItemPedido.zzVprod;
+			// 			that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
 			// 			//Desconto normal. *****
-			// 			oItemPedido.zzVprodDesc2 = oItemPedido.zzVprod;
+			// 			that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 						
 			// 		}
 					
 			// 		//2º Aplicar o Desconto digitado na tela de digitação dos itens
-			// 		oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - (oItemPedido.zzVprodDesc) * (oItemPedido.zzDesitem / 100);
+			// 		that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc) * (that.oItemPedido.zzDesitem / 100);
 
 			// 		//Desconto normal. *****
-			// 		oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+			// 		that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;
 
 			// 		// 3º Aplicar o desconto extra do item cadastrado na tabela (TabPrecoItem - zzDesext).
-			// 		// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (oItemPedido.zzDesext / 100));
-			// 		// oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
+			// 		// that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - ((that.oItemPedido.zzVprodDesc) * (that.oItemPedido.zzDesext / 100));
+			// 		// that.oItemPedido.zzVprodDesc = Math.round(parseFloat(that.oItemPedido.zzVprodDesc * 100)) / 100;
 
 			// 		//SOMA TODOS OS DESCONTOS APLICADO NOS ITENS.
-			// 		oItemPedido.zzPercDescTotal += oItemPedido.zzDesitem;
-			// 		oItemPedido.zzQntDiluicao = 0;
-			// 		oItemPedido.zzValorDiluido = 0;
+			// 		that.oItemPedido.zzPercDescTotal += that.oItemPedido.zzDesitem;
+			// 		that.oItemPedido.zzQntDiluicao = 0;
+			// 		that.oItemPedido.zzValorDiluido = 0;
 			// 	}
 			// }
 			
 			//calcula a multiplicação pela quantidade depois que o valor unitário está calculado.
-			// oItemPedido.zzVprodDescTotal = oItemPedido.zzVprodDesc * oItemPedido.zzQnt;
-			// oItemPedido.zzVprodDescTotal = Math.round(parseFloat(oItemPedido.zzVprodDescTotal * 100)) / 100;
+			// that.oItemPedido.zzVprodDescTotal = that.oItemPedido.zzVprodDesc * that.oItemPedido.zzQnt;
+			// that.oItemPedido.zzVprodDescTotal = Math.round(parseFloat(that.oItemPedido.zzVprodDescTotal * 100)) / 100;
 
-			// oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc;
+			// that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc;
 
 			// //Desconto normal. *****
-			// oItemPedido.zzVprodDesc2 = oItemPedido.zzVprodDesc;
+			// that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;
 		},
 
 		calculaTotalPedido: function() {
@@ -1835,101 +1848,101 @@ sap.ui.define([
 			// valTotalExcedenteBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
 			// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", valTotalExcedenteBonif.toFixed(2));
 
-			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
+			for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 				//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
-				TotalPedidoDesc += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
-				Total += objItensPedidoTemplate[i].zzVprod * objItensPedidoTemplate[i].zzQnt;
-				Qnt += objItensPedidoTemplate[i].zzQnt;
+				TotalPedidoDesc += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
+				Total += that.objItensPedidoTemplate[i].zzVprod * that.objItensPedidoTemplate[i].zzQnt;
+				Qnt += that.objItensPedidoTemplate[i].zzQnt;
 				QntProdutos += 1;
 
-				if (objItensPedidoTemplate[i].ntgew > 0) {
-					Ntgew += objItensPedidoTemplate[i].ntgew * objItensPedidoTemplate[i].zzQnt;
+				if (that.objItensPedidoTemplate[i].ntgew > 0) {
+					Ntgew += that.objItensPedidoTemplate[i].ntgew * that.objItensPedidoTemplate[i].zzQnt;
 				}
 				// >>>>>>>>>>>> PADRÃO PARA AMBOS OS TIPOS DE ITEM (NORMAL / DILUÍDO) >>>>>>>>>>>>
 
-				if (objItensPedidoTemplate[i].mtpos == "YBRI") {
+				if (that.objItensPedidoTemplate[i].mtpos == "YBRI") {
 
-					valTotalExcedenteBrinde += objItensPedidoTemplate[i].zzVprodDesc2 * objItensPedidoTemplate[i].zzQnt;
+					valTotalExcedenteBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
 
-				} else if (objItensPedidoTemplate[i].mtpos == "YAMO") {
+				} else if (that.objItensPedidoTemplate[i].mtpos == "YAMO") {
 
-					valTotalExcedenteAmostra += objItensPedidoTemplate[i].zzVprodDesc2 * objItensPedidoTemplate[i].zzQnt;
+					valTotalExcedenteAmostra += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
 
-				} else if (objItensPedidoTemplate[i].mtpos == "NORM") {
+				} else if (that.objItensPedidoTemplate[i].mtpos == "NORM") {
 					
 					if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
 						
-						valTotalExcedenteBonif += objItensPedidoTemplate[i].zzVprodDesc2 * objItensPedidoTemplate[i].zzQnt;
+						valTotalExcedenteBonif += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
 						
 					} else{
-						if (objItensPedidoTemplate[i].tipoItem == "Normal") {
+						if (that.objItensPedidoTemplate[i].tipoItem == "Normal") {
 	
-							if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
+							if (that.objItensPedidoTemplate[i].tipoItem2 == "Normal") {
 								//VALOR DE COMISSÃO GERADA NO PEDIDO
-								totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
-									(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+								totalComissaoGerada += that.objItensPedidoTemplate[i].zzVprodDesc2 * (that.objItensPedidoTemplate[i].zzPercom / 100) *
+									(that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao);
 	
 								//VALOR DE VERBA GERADA NO PEDIDO
-								totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
-									(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+								totalVerbaGerada += that.objItensPedidoTemplate[i].zzVprodDesc2 * (that.objItensPedidoTemplate[i].zzPervm / 100) *
+									(that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao);
 	
 								//Calculo do acréscimo de prazo médio .
 								percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
-								valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
-									(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao));
+								valorTotalAcresPrazoMed += parseFloat(that.objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
+									(that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao));
 	
 								//calculo do desconto total retirando excluindo total diluido pra ele
-								var valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) / 100;
-								objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
+								var valorExcedido = Math.round((that.objItensPedidoTemplate[i].zzVprodDesc2 - that.objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) / 100;
+								that.objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
 	
-								if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
+								if (that.objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
 									//Negatvo .. excedeu o valor.
-									console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
-									totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * objItensPedidoTemplate[i].zzQnt;
+									console.log("Produto: " + that.objItensPedidoTemplate[i].matnr + " excedeu: " + that.objItensPedidoTemplate[i].zzValExcedidoItem);
+									totalExcedenteDescontos += that.objItensPedidoTemplate[i].zzValExcedidoItem * that.objItensPedidoTemplate[i].zzQnt;
 								}
 	
-							} else if (objItensPedidoTemplate[i].tipoItem2 == "Diluicao") {
+							} else if (that.objItensPedidoTemplate[i].tipoItem2 == "Diluicao") {
 								//VALOR DE COMISSÃO GERADA NO PEDIDO
-								totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPercom / 100) *
-									(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+								totalComissaoGerada += that.objItensPedidoTemplate[i].zzVprodDesc * (that.objItensPedidoTemplate[i].zzPercom / 100) *
+									(that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao);
 	
 								//VALOR DE VERBA GERADA NO PEDIDO
-								totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc * (objItensPedidoTemplate[i].zzPervm / 100) *
-									(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+								totalVerbaGerada += that.objItensPedidoTemplate[i].zzVprodDesc * (that.objItensPedidoTemplate[i].zzPervm / 100) *
+									(that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao);
 	
 							}
 	
-						} else if (objItensPedidoTemplate[i].tipoItem == "Diluido") {
+						} else if (that.objItensPedidoTemplate[i].tipoItem == "Diluido") {
 	
-							totalExcedenteDescontosDiluicao += objItensPedidoTemplate[i].zzValorDiluido;
+							totalExcedenteDescontosDiluicao += that.objItensPedidoTemplate[i].zzValorDiluido;
 	
-							if (objItensPedidoTemplate[i].tipoItem2 == "Normal") {
+							if (that.objItensPedidoTemplate[i].tipoItem2 == "Normal") {
 	
 								//VALOR DE COMISSÃO GERADA NO PEDIDO
-								totalComissaoGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPercom / 100) *
-									(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+								totalComissaoGerada += that.objItensPedidoTemplate[i].zzVprodDesc2 * (that.objItensPedidoTemplate[i].zzPercom / 100) *
+									(that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao);
 	
 								//VALOR DE VERBA GERADA NO PEDIDO
-								totalVerbaGerada += objItensPedidoTemplate[i].zzVprodDesc2 * (objItensPedidoTemplate[i].zzPervm / 100) *
-									(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+								totalVerbaGerada += that.objItensPedidoTemplate[i].zzVprodDesc2 * (that.objItensPedidoTemplate[i].zzPervm / 100) *
+									(that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao);
 	
 								//Calculo do acréscimo de prazo médio .
 								percAcresPrazoMed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
-								valorTotalAcresPrazoMed += parseFloat(objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
-									(objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao));
+								valorTotalAcresPrazoMed += parseFloat(that.objItensPedidoTemplate[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
+									(that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao));
 	
 								//calculo do desconto total retirando excluindo total diluido pra ele
-								valorExcedido = Math.round((objItensPedidoTemplate[i].zzVprodDesc2 - objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) / 100;
-								objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
+								valorExcedido = Math.round((that.objItensPedidoTemplate[i].zzVprodDesc2 - that.objItensPedidoTemplate[i].zzVprodMinPermitido) * 100) / 100;
+								that.objItensPedidoTemplate[i].zzValExcedidoItem = valorExcedido;
 	
-								if (objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
+								if (that.objItensPedidoTemplate[i].zzValExcedidoItem < 0) {
 									//Negatvo .. excedeu o valor.
-									console.log("Produto: " + objItensPedidoTemplate[i].matnr + " excedeu: " + objItensPedidoTemplate[i].zzValExcedidoItem);
-									totalExcedenteDescontos += objItensPedidoTemplate[i].zzValExcedidoItem * (objItensPedidoTemplate[i].zzQnt - objItensPedidoTemplate[i].zzQntDiluicao);
+									console.log("Produto: " + that.objItensPedidoTemplate[i].matnr + " excedeu: " + that.objItensPedidoTemplate[i].zzValExcedidoItem);
+									totalExcedenteDescontos += that.objItensPedidoTemplate[i].zzValExcedidoItem * (that.objItensPedidoTemplate[i].zzQnt - that.objItensPedidoTemplate[i].zzQntDiluicao);
 								}
 	
 							}
-						} else if (objItensPedidoTemplate[i].tipoItem == "Diluicao") {
+						} else if (that.objItensPedidoTemplate[i].tipoItem == "Diluicao") {
 	
 						}
 					}
@@ -2192,18 +2205,18 @@ sap.ui.define([
 				var TotalDiluicao = 0;
 				var TotalNormal = 0;
 
-				objItensPedidoTemplate.sort(function(a, b) {
+				that.objItensPedidoTemplate.sort(function(a, b) {
 					var x = a.tipoItem2.toLowerCase();
 					var y = b.tipoItem2.toLowerCase();
 					return x > y ? -1 : x < y ? 1 : 0;
 				});
 
-				for (var i = 0; i < objItensPedidoTemplate.length; i++) {
-					if (objItensPedidoTemplate[i].tipoItem === "Diluicao") {
-						TotalDiluicao += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
+				for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
+					if (that.objItensPedidoTemplate[i].tipoItem === "Diluicao") {
+						TotalDiluicao += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
 					}
-					if (objItensPedidoTemplate[i].tipoItem === "Normal") {
-						TotalNormal += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
+					if (that.objItensPedidoTemplate[i].tipoItem === "Normal") {
+						TotalNormal += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
 					}
 				}
 
@@ -2251,61 +2264,61 @@ sap.ui.define([
 							var inseridoAuxDiluicao = false;
 
 							//ACHA O PERCENTUAL DE DESCONTO
-							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
+							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								inseridoAux = false;
 								inseridoAuxDiluicao = false;
 
-								if (objItensPedidoTemplate[i].tipoItem === "Normal") {
-									TotalNormal += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
+								if (that.objItensPedidoTemplate[i].tipoItem === "Normal") {
+									TotalNormal += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
 
 									//Regra para totalizar o total do pedido.
 									if (vetorAux.length == 0) {
 
-										if (objItensPedidoTemplate[i].kbetr == undefined) {
-											objItensPedidoTemplate[i].kbetr = 0;
+										if (that.objItensPedidoTemplate[i].kbetr == undefined) {
+											that.objItensPedidoTemplate[i].kbetr = 0;
 										}
-										if (objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
-											objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										if (that.objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
+											that.objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
 										}
-										if (objItensPedidoTemplate[i].maxDescPermitido == undefined) {
-											objItensPedidoTemplate[i].maxDescPermitido = 0;
+										if (that.objItensPedidoTemplate[i].maxDescPermitido == undefined) {
+											that.objItensPedidoTemplate[i].maxDescPermitido = 0;
 										}
 
 										var objAuxItem = {
-											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
-											index: objItensPedidoTemplate[i].index,
-											knumh: objItensPedidoTemplate[i].knumh,
-											mtpos: objItensPedidoTemplate[i].mtpos,
-											kbetr: objItensPedidoTemplate[i].kbetr,
-											zzRegra: objItensPedidoTemplate[i].zzRegra,
-											zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
-											knumhExtra: objItensPedidoTemplate[i].knumhExtra,
-											zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
-											zzGrpmatExtra: objItensPedidoTemplate[i].zzGrpmatExtra,
-											maktx: objItensPedidoTemplate[i].maktx,
-											matnr: objItensPedidoTemplate[i].matnr,
-											nrPedCli: objItensPedidoTemplate[i].nrPedCli,
+											idItemPedido: that.objItensPedidoTemplate[i].idItemPedido,
+											index: that.objItensPedidoTemplate[i].index,
+											knumh: that.objItensPedidoTemplate[i].knumh,
+											mtpos: that.objItensPedidoTemplate[i].mtpos,
+											kbetr: that.objItensPedidoTemplate[i].kbetr,
+											zzRegra: that.objItensPedidoTemplate[i].zzRegra,
+											zzGrpmat: that.objItensPedidoTemplate[i].zzGrpmat,
+											knumhExtra: that.objItensPedidoTemplate[i].knumhExtra,
+											zzRegraExtra: that.objItensPedidoTemplate[i].zzRegraExtra,
+											zzGrpmatExtra: that.objItensPedidoTemplate[i].zzGrpmatExtra,
+											maktx: that.objItensPedidoTemplate[i].maktx,
+											matnr: that.objItensPedidoTemplate[i].matnr,
+											nrPedCli: that.objItensPedidoTemplate[i].nrPedCli,
 											tipoItem: "Diluido",
-											ntgew: objItensPedidoTemplate[i].ntgew,
-											zzDesext: objItensPedidoTemplate[i].zzDesext,
-											zzDesitem: objItensPedidoTemplate[i].zzDesitem,
-											zzPercom: objItensPedidoTemplate[i].zzPercom,
-											zzPervm: objItensPedidoTemplate[i].zzPervm,
+											ntgew: that.objItensPedidoTemplate[i].ntgew,
+											zzDesext: that.objItensPedidoTemplate[i].zzDesext,
+											zzDesitem: that.objItensPedidoTemplate[i].zzDesitem,
+											zzPercom: that.objItensPedidoTemplate[i].zzPercom,
+											zzPervm: that.objItensPedidoTemplate[i].zzPervm,
 											zzQnt: 0,
-											zzVprod: objItensPedidoTemplate[i].zzVprod,
-											zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
+											zzVprod: that.objItensPedidoTemplate[i].zzVprod,
+											zzVprodDesc: that.objItensPedidoTemplate[i].zzVprodDesc,
 											zzPercDescDiluicao: PercDescDiluicao,
 											zzVprodMinPermitido: 0,
-											zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
-											zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt,
+											zzPercDescTotal: that.objItensPedidoTemplate[i].zzPercDescTotal,
+											zzVprodDescTotal: that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt,
 											//Desconto normal. *****
-											zzVprodDesc2: objItensPedidoTemplate[i].zzVprodDesc,
+											zzVprodDesc2: that.objItensPedidoTemplate[i].zzVprodDesc,
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
-											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
-											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
+											tipoItem2: that.objItensPedidoTemplate[i].tipoItem2,
+											zzQntDiluicao: that.objItensPedidoTemplate[i].zzQntDiluicao,
 											zzValorDiluido: 0,
-											zzValExcedidoItem: objItensPedidoTemplate[i].zzValExcedidoItem,
-											maxdescpermitido: objItensPedidoTemplate[i].maxdescpermitido
+											zzValExcedidoItem: that.objItensPedidoTemplate[i].zzValExcedidoItem,
+											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido
 										};
 
 										vetorAux.push(objAuxItem);
@@ -2313,114 +2326,114 @@ sap.ui.define([
 
 									for (var t = 0; t < vetorAux.length; t++) {
 
-										if (vetorAux[t].matnr == objItensPedidoTemplate[i].matnr) {
+										if (vetorAux[t].matnr == that.objItensPedidoTemplate[i].matnr) {
 											inseridoAux = true;
 										}
 									}
 
 									if (inseridoAux == false) {
 
-										if (objItensPedidoTemplate[i].kbetr == undefined) {
-											objItensPedidoTemplate[i].kbetr = 0;
+										if (that.objItensPedidoTemplate[i].kbetr == undefined) {
+											that.objItensPedidoTemplate[i].kbetr = 0;
 										}
-										if (objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
-											objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										if (that.objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
+											that.objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
 										}
-										if (objItensPedidoTemplate[i].maxDescPermitido == undefined) {
-											objItensPedidoTemplate[i].maxDescPermitido = 0;
+										if (that.objItensPedidoTemplate[i].maxDescPermitido == undefined) {
+											that.objItensPedidoTemplate[i].maxDescPermitido = 0;
 										}
 
 										var objAuxItem1 = {
-											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
-											index: objItensPedidoTemplate[i].index,
-											knumh: objItensPedidoTemplate[i].knumh,
-											zzRegra: objItensPedidoTemplate[i].zzRegra,
-											mtpos: objItensPedidoTemplate[i].mtpos,
-											kbetr: objItensPedidoTemplate[i].kbetr,
-											zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
-											knumhExtra: objItensPedidoTemplate[i].knumhExtra,
-											zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
-											zzGrpmatExtra: objItensPedidoTemplate[i].zzGrpmatExtra,
-											maktx: objItensPedidoTemplate[i].maktx,
-											matnr: objItensPedidoTemplate[i].matnr,
-											nrPedCli: objItensPedidoTemplate[i].nrPedCli,
+											idItemPedido: that.objItensPedidoTemplate[i].idItemPedido,
+											index: that.objItensPedidoTemplate[i].index,
+											knumh: that.objItensPedidoTemplate[i].knumh,
+											zzRegra: that.objItensPedidoTemplate[i].zzRegra,
+											mtpos: that.objItensPedidoTemplate[i].mtpos,
+											kbetr: that.objItensPedidoTemplate[i].kbetr,
+											zzGrpmat: that.objItensPedidoTemplate[i].zzGrpmat,
+											knumhExtra: that.objItensPedidoTemplate[i].knumhExtra,
+											zzRegraExtra: that.objItensPedidoTemplate[i].zzRegraExtra,
+											zzGrpmatExtra: that.objItensPedidoTemplate[i].zzGrpmatExtra,
+											maktx: that.objItensPedidoTemplate[i].maktx,
+											matnr: that.objItensPedidoTemplate[i].matnr,
+											nrPedCli: that.objItensPedidoTemplate[i].nrPedCli,
 											tipoItem: "Diluido",
-											ntgew: objItensPedidoTemplate[i].ntgew,
-											zzDesext: objItensPedidoTemplate[i].zzDesext,
-											zzDesitem: objItensPedidoTemplate[i].zzDesitem,
-											zzPercom: objItensPedidoTemplate[i].zzPercom,
-											zzPervm: objItensPedidoTemplate[i].zzPervm,
+											ntgew: that.objItensPedidoTemplate[i].ntgew,
+											zzDesext: that.objItensPedidoTemplate[i].zzDesext,
+											zzDesitem: that.objItensPedidoTemplate[i].zzDesitem,
+											zzPercom: that.objItensPedidoTemplate[i].zzPercom,
+											zzPervm: that.objItensPedidoTemplate[i].zzPervm,
 											zzQnt: 0,
-											zzVprod: objItensPedidoTemplate[i].zzVprod,
-											zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
+											zzVprod: that.objItensPedidoTemplate[i].zzVprod,
+											zzVprodDesc: that.objItensPedidoTemplate[i].zzVprodDesc,
 											zzPercDescDiluicao: PercDescDiluicao,
 											zzVprodMinPermitido: 0,
-											zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
-											zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt,
-											zzVprodDesc2: objItensPedidoTemplate[i].zzVprodDesc,
+											zzPercDescTotal: that.objItensPedidoTemplate[i].zzPercDescTotal,
+											zzVprodDescTotal: that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt,
+											zzVprodDesc2: that.objItensPedidoTemplate[i].zzVprodDesc,
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
-											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
-											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
+											tipoItem2: that.objItensPedidoTemplate[i].tipoItem2,
+											zzQntDiluicao: that.objItensPedidoTemplate[i].zzQntDiluicao,
 											zzValorDiluido: 0,
-											zzValExcedidoItem: objItensPedidoTemplate[i].zzValExcedidoItem,
-											maxdescpermitido: objItensPedidoTemplate[i].maxdescpermitido
+											zzValExcedidoItem: that.objItensPedidoTemplate[i].zzValExcedidoItem,
+											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido
 										};
 
 										vetorAux.push(objAuxItem1);
 									}
 
-								} else if (objItensPedidoTemplate[i].tipoItem === "Diluicao") {
-									TotalDiluicao += objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt;
+								} else if (that.objItensPedidoTemplate[i].tipoItem === "Diluicao") {
+									TotalDiluicao += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
 
 									for (t = 0; t < vetorAux.length; t++) {
 
-										if (vetorAux[t].matnr == objItensPedidoTemplate[i].matnr) {
+										if (vetorAux[t].matnr == that.objItensPedidoTemplate[i].matnr) {
 											inseridoAuxDiluicao = true;
 										}
 									}
 
 									if (inseridoAuxDiluicao == false) {
 
-										if (objItensPedidoTemplate[i].kbetr == undefined) {
-											objItensPedidoTemplate[i].kbetr = 0;
+										if (that.objItensPedidoTemplate[i].kbetr == undefined) {
+											that.objItensPedidoTemplate[i].kbetr = 0;
 										}
-										if (objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
-											objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										if (that.objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
+											that.objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
 										}
-										if (objItensPedidoTemplate[i].maxDescPermitido == undefined) {
-											objItensPedidoTemplate[i].maxDescPermitido = 0;
+										if (that.objItensPedidoTemplate[i].maxDescPermitido == undefined) {
+											that.objItensPedidoTemplate[i].maxDescPermitido = 0;
 										}
 										var objAuxItem2 = {
-											idItemPedido: objItensPedidoTemplate[i].idItemPedido,
-											index: objItensPedidoTemplate[i].index,
-											knumh: objItensPedidoTemplate[i].knumh,
-											mtpos: objItensPedidoTemplate[i].mtpos,
-											kbetr: objItensPedidoTemplate[i].kbetr,
-											zzRegra: objItensPedidoTemplate[i].zzRegra,
-											zzGrpmat: objItensPedidoTemplate[i].zzGrpmat,
-											knumhExtra: objItensPedidoTemplate[i].knumhExtra,
-											zzRegraExtra: objItensPedidoTemplate[i].zzRegraExtra,
-											zzGrpmatExtra: objItensPedidoTemplate[i].zzGrpmatExtra,
-											maktx: objItensPedidoTemplate[i].maktx,
-											matnr: objItensPedidoTemplate[i].matnr,
-											nrPedCli: objItensPedidoTemplate[i].nrPedCli,
+											idItemPedido: that.objItensPedidoTemplate[i].idItemPedido,
+											index: that.objItensPedidoTemplate[i].index,
+											knumh: that.objItensPedidoTemplate[i].knumh,
+											mtpos: that.objItensPedidoTemplate[i].mtpos,
+											kbetr: that.objItensPedidoTemplate[i].kbetr,
+											zzRegra: that.objItensPedidoTemplate[i].zzRegra,
+											zzGrpmat: that.objItensPedidoTemplate[i].zzGrpmat,
+											knumhExtra: that.objItensPedidoTemplate[i].knumhExtra,
+											zzRegraExtra: that.objItensPedidoTemplate[i].zzRegraExtra,
+											zzGrpmatExtra: that.objItensPedidoTemplate[i].zzGrpmatExtra,
+											maktx: that.objItensPedidoTemplate[i].maktx,
+											matnr: that.objItensPedidoTemplate[i].matnr,
+											nrPedCli: that.objItensPedidoTemplate[i].nrPedCli,
 											tipoItem: "Diluido",
-											ntgew: objItensPedidoTemplate[i].ntgew,
-											zzDesext: objItensPedidoTemplate[i].zzDesext,
-											zzDesitem: objItensPedidoTemplate[i].zzDesitem,
-											zzPercom: objItensPedidoTemplate[i].zzPercom,
-											zzPervm: objItensPedidoTemplate[i].zzPervm,
+											ntgew: that.objItensPedidoTemplate[i].ntgew,
+											zzDesext: that.objItensPedidoTemplate[i].zzDesext,
+											zzDesitem: that.objItensPedidoTemplate[i].zzDesitem,
+											zzPercom: that.objItensPedidoTemplate[i].zzPercom,
+											zzPervm: that.objItensPedidoTemplate[i].zzPervm,
 											zzQnt: 0,
-											zzVprod: objItensPedidoTemplate[i].zzVprod,
-											zzVprodDesc: objItensPedidoTemplate[i].zzVprodDesc,
+											zzVprod: that.objItensPedidoTemplate[i].zzVprod,
+											zzVprodDesc: that.objItensPedidoTemplate[i].zzVprodDesc,
 											zzPercDescDiluicao: PercDescDiluicao,
 											zzVprodMinPermitido: 0,
-											zzPercDescTotal: objItensPedidoTemplate[i].zzPercDescTotal,
-											zzVprodDescTotal: objItensPedidoTemplate[i].zzVprodDesc * objItensPedidoTemplate[i].zzQnt,
-											zzVprodDesc2: objItensPedidoTemplate[i].zzVprodDesc,
+											zzPercDescTotal: that.objItensPedidoTemplate[i].zzPercDescTotal,
+											zzVprodDescTotal: that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt,
+											zzVprodDesc2: that.objItensPedidoTemplate[i].zzVprodDesc,
 											//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
-											zzQntDiluicao: objItensPedidoTemplate[i].zzQntDiluicao,
-											tipoItem2: objItensPedidoTemplate[i].tipoItem2,
+											zzQntDiluicao: that.objItensPedidoTemplate[i].zzQntDiluicao,
+											tipoItem2: that.objItensPedidoTemplate[i].tipoItem2,
 											zzValorDiluido: 0,
 										};
 
@@ -2435,10 +2448,10 @@ sap.ui.define([
 							console.log("Perc. de desconto para ser aplicado nos itens na regra de Diluição " + PercDescDiluicao);
 
 							//APLICA O DESCONTO
-							// for (var j = 0; j < objItensPedidoTemplate.length; j++) {
+							// for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
 
-							// 	oItemPedido.zzVprodDesc = oItemPedido.zzVprodDesc - ((oItemPedido.zzVprodDesc) * (PercDescDiluicao / 100));
-							// 	oItemPedido.zzVprodDesc = Math.round(parseFloat(oItemPedido.zzVprodDesc * 100)) / 100;
+							// 	that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - ((that.oItemPedido.zzVprodDesc) * (PercDescDiluicao / 100));
+							// 	that.oItemPedido.zzVprodDesc = Math.round(parseFloat(that.oItemPedido.zzVprodDesc * 100)) / 100;
 
 							// }
 
@@ -2447,14 +2460,14 @@ sap.ui.define([
 								// vetorAux[j].zzVprodDesc = Math.round(parseFloat(vetorAux[j].zzVprodDesc * 100)) / 100;
 							}
 
-							for (var l = 0; l < objItensPedidoTemplate.length; l++) {
+							for (var l = 0; l < that.objItensPedidoTemplate.length; l++) {
 								for (var m = 0; m < vetorAux.length; m++) {
-									if (vetorAux[m].matnr === objItensPedidoTemplate[l].matnr) {
-										vetorAux[m].zzQnt += objItensPedidoTemplate[l].zzQnt;
+									if (vetorAux[m].matnr === that.objItensPedidoTemplate[l].matnr) {
+										vetorAux[m].zzQnt += that.objItensPedidoTemplate[l].zzQnt;
 										vetorAux[m].zzVprodDescTotal = vetorAux[m].zzVprodDesc * vetorAux[m].zzQnt;
 										vetorAux[m].zzVprodDesc = vetorAux[m].zzVprodDesc;
-										vetorAux[m].zzQntDiluicao = objItensPedidoTemplate[l].zzQntDiluicao;
-										vetorAux[m].zzValorDiluido = (Math.round(objItensPedidoTemplate[l].zzQntDiluicao * objItensPedidoTemplate[l].zzVprodDesc * 100) / 100).toFixed(2);
+										vetorAux[m].zzQntDiluicao = that.objItensPedidoTemplate[l].zzQntDiluicao;
+										vetorAux[m].zzValorDiluido = (Math.round(that.objItensPedidoTemplate[l].zzQntDiluicao * that.objItensPedidoTemplate[l].zzVprodDesc * 100) / 100).toFixed(2);
 									}
 									vetorAux[m].zzValorDiluido = parseFloat(vetorAux[m].zzValorDiluido);
 								}
@@ -2471,9 +2484,9 @@ sap.ui.define([
 								//Calculo do percentual Desc Dado
 							}
 
-							objItensPedidoTemplate = [];
-							objItensPedidoTemplate = vetorAux;
-							var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+							that.objItensPedidoTemplate = [];
+							that.objItensPedidoTemplate = vetorAux;
+							var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
 							that.onBloqueiaPrePedido();
@@ -2484,9 +2497,9 @@ sap.ui.define([
 							var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 							var objItensPedido = storeItensPedido.objectStore("ItensPedido");
 
-							for (var p = 0; p < objItensPedidoTemplate.length; p++) {
+							for (var p = 0; p < that.objItensPedidoTemplate.length; p++) {
 
-								var requestADDItem = objItensPedido.put(objItensPedidoTemplate[p]);
+								var requestADDItem = objItensPedido.put(that.objItensPedidoTemplate[p]);
 
 								requestADDItem.onsuccess = function(e3) {
 									console.log("Item adicionado com sucesso");
@@ -2512,7 +2525,7 @@ sap.ui.define([
 							that.byId("idQuantParcelas").setProperty("enabled", false);
 							that.byId("idIntervaloParcelas").setProperty("enabled", false);
 
-							oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+							oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 						}
 					};
@@ -2590,7 +2603,7 @@ sap.ui.define([
 
 										//Fazer o calculo do que foi excedido
 										//Neste momento tenho os percentuais do max permitido de cada item de acordo com as familias cadastradas
-										that.onPrecoMinPermitido(objItensPedidoTemplate);
+										that.onPrecoMinPermitido(that.objItensPedidoTemplate);
 										resolve();
 										console.log("resolve Perc Descontos");
 
@@ -2604,9 +2617,10 @@ sap.ui.define([
 		},
 
 		onPrecoMinPermitido: function(objItensPedidoTemplate) {
+			var that = this;
 
-			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
-				var valorProdutoCheio = objItensPedidoTemplate[i].zzVprod;
+			for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
+				var valorProdutoCheio = that.objItensPedidoTemplate[i].zzVprod;
 
 				//VALOR DO PRODUTO INICIAL É DESCONTADO O PERCENTUAL DA TABELA AVISTA QUANDO TIVER
 				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
@@ -2615,11 +2629,11 @@ sap.ui.define([
 
 				}
 
-				var valorMinPermitido = valorProdutoCheio - (valorProdutoCheio * parseFloat(objItensPedidoTemplate[i].maxDescPermitido) / 100);
-				valorMinPermitido = valorMinPermitido - (valorMinPermitido * parseFloat(objItensPedidoTemplate[i].maxDescPermitidoExtra) / 100);
+				var valorMinPermitido = valorProdutoCheio - (valorProdutoCheio * parseFloat(that.objItensPedidoTemplate[i].maxDescPermitido) / 100);
+				valorMinPermitido = valorMinPermitido - (valorMinPermitido * parseFloat(that.objItensPedidoTemplate[i].maxDescPermitidoExtra) / 100);
 
-				objItensPedidoTemplate[i].zzVprodMinPermitido = (valorMinPermitido).toFixed(3);
-				console.log("Item :" + objItensPedidoTemplate[i].matnr + ", Min Permitido: " + objItensPedidoTemplate[i].zzVprodMinPermitido);
+				that.objItensPedidoTemplate[i].zzVprodMinPermitido = (valorMinPermitido).toFixed(3);
+				console.log("Item :" + that.objItensPedidoTemplate[i].matnr + ", Min Permitido: " + that.objItensPedidoTemplate[i].zzVprodMinPermitido);
 
 			}
 		},
@@ -2655,18 +2669,18 @@ sap.ui.define([
 					var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 					var objItensPedido = storeItensPedido.objectStore("ItensPedido");
 
-					for (var p = 0; p < objItensPedidoTemplate.length; p++) {
+					for (var p = 0; p < that.objItensPedidoTemplate.length; p++) {
 
-						if (objItensPedidoTemplate[p].tipoItem2 == "Diluicao") {
-							objItensPedidoTemplate[p].zzValExcedidoItem = 0;
+						if (that.objItensPedidoTemplate[p].tipoItem2 == "Diluicao") {
+							that.objItensPedidoTemplate[p].zzValExcedidoItem = 0;
 						} else {
-							objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(objItensPedidoTemplate[p].zzValExcedidoItem * 1000) / 1000;
+							that.objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(that.objItensPedidoTemplate[p].zzValExcedidoItem * 1000) / 1000;
 						}
 
-						objItensPedidoTemplate[p].zzVprodDesc2 = (Math.round(objItensPedidoTemplate[p].zzVprodDesc2 * 1000) / 1000);
-						objItensPedidoTemplate[p].zzVprodDesc = (Math.round(objItensPedidoTemplate[p].zzVprodDesc * 1000) / 1000);
+						that.objItensPedidoTemplate[p].zzVprodDesc2 = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc2 * 1000) / 1000);
+						that.objItensPedidoTemplate[p].zzVprodDesc = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc * 1000) / 1000);
 
-						var requestADDItem = objItensPedido.put(objItensPedidoTemplate[p]);
+						var requestADDItem = objItensPedido.put(that.objItensPedidoTemplate[p]);
 
 						requestADDItem.onsuccess = function(e3) {
 							console.log("Itens atualizados com sucesso");
@@ -2694,8 +2708,10 @@ sap.ui.define([
 		},
 
 		onDefineFamilias: function(vetorRange, tipoDesconto) {
-			var vetorGeral = objItensPedidoTemplate;
-			var vetorGeralExtra = objItensPedidoTemplate;
+			var that = this;
+			
+			var vetorGeral = that.objItensPedidoTemplate;
+			var vetorGeralExtra = that.objItensPedidoTemplate;
 			var vetorFamilia = [];
 			var proximoItemDiferente = false;
 			var percDescPermitido = 0;
@@ -2751,7 +2767,7 @@ sap.ui.define([
 						}
 					}
 				}
-				console.log(objItensPedidoTemplate);
+				console.log(that.objItensPedidoTemplate);
 			} else if (tipoDesconto == "Extra") {
 
 				//Ordenando para desconto Familia normal
@@ -2803,12 +2819,13 @@ sap.ui.define([
 						}
 					}
 				}
-				console.log(objItensPedidoTemplate);
+				console.log(that.objItensPedidoTemplate);
 			}
 		},
 
 		//Calcula se o item entra no desconto extra e calcula o desconto normal
 		onBuscaPorcentagem: function(vetorFamilia, vetorDescontos, tipoDesconto) {
+			var that = this;
 
 			var auxRangeQuant = 0;
 			var auxRangeQuantExtra = 0;
@@ -2847,7 +2864,7 @@ sap.ui.define([
 					}
 				}
 
-				oItemPedido.kbetr = auxRangeQuant;
+				that.oItemPedido.kbetr = auxRangeQuant;
 				console.log("Percentual de Desconto Permitido : " + percDescPermitido + ", Quantidade: " + auxRangeQuant);
 
 				for (u = 0; u < vetorFamilia.length; u++) {
@@ -2886,7 +2903,7 @@ sap.ui.define([
 					}
 				}
 
-				oItemPedido.kbetr = auxRangeQuantExtra;
+				that.oItemPedido.kbetr = auxRangeQuantExtra;
 				console.log("Percentual de Desconto Extra: " + percDescPermitidoExtra + ", Quantidade: " + auxRangeQuantExtra);
 
 				for (u = 0; u < vetorFamilia.length; u++) {
@@ -3187,19 +3204,23 @@ sap.ui.define([
 		},
 
 		popularCamposItemPedido: function() {
+			var that = this;
 
-			sap.ui.getCore().byId("idItemPedido").setValue(oItemPedido.matnr);
-			sap.ui.getCore().byId("idDescricao").setValue(oItemPedido.maktx);
-			sap.ui.getCore().byId("idQuantidade").setValue(oItemPedido.zzQnt);
-			sap.ui.getCore().byId("idVerba").setValue(oItemPedido.zzPervm);
-			sap.ui.getCore().byId("idComissao").setValue(oItemPedido.zzPercom);
-			sap.ui.getCore().byId("idPrecoCheio").setValue(oItemPedido.zzVprod);
-			sap.ui.getCore().byId("idDesconto").setValue(oItemPedido.zzDesitem);
-			sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal);
-			// sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal.toString().replace(".", ","));
+			sap.ui.getCore().byId("idItemPedido").setValue(that.oItemPedido.matnr);
+			sap.ui.getCore().byId("idDescricao").setValue(that.oItemPedido.maktx);
+			sap.ui.getCore().byId("idQuantidade").setValue(that.oItemPedido.zzQnt);
+			sap.ui.getCore().byId("idVerba").setValue(that.oItemPedido.zzPervm);
+			sap.ui.getCore().byId("idComissao").setValue(that.oItemPedido.zzPercom);
+			sap.ui.getCore().byId("idPrecoCheio").setValue(that.oItemPedido.zzVprod);
+			sap.ui.getCore().byId("idDesconto").setValue(that.oItemPedido.zzDesitem);
+			// sap.ui.getCore().byId("idPrecoDesconto").setValue(that.oItemPedido.zzVprodDescTotal);
+			// this.getView().setModel(this.getOwnerComponent().setModel("modelItemPedido").setProperty("/valorTotal", that.oItemPedido.zzVprodDescTotal);
+			this.getOwnerComponent().getModel("modelItemPedido").setProperty("/valorTotal", that.oItemPedido.zzVprodDescTotal);
+			// sap.ui.getCore().byId("idPrecoDesconto").setValue(that.oItemPedido.zzVprodDescTotal);
+			// sap.ui.getCore().byId("idPrecoDesconto").setValue(that.oItemPedido.zzVprodDescTotal.toString().replace(".", ","));
 
 			// this.getView().getModel().setProperty("/precoVenda", 150.2);
-			// sap.ui.getCore().byId("idPrecoDesconto").setValue(oItemPedido.zzVprodDescTotal)ç
+			// sap.ui.getCore().byId("idPrecoDesconto").setValue(that.oItemPedido.zzVprodDescTotal)ç
 
 			var oPanel = sap.ui.getCore().byId("idDialog");
 			oPanel.setBusy(false);
@@ -3219,7 +3240,6 @@ sap.ui.define([
 
 		onDialogCancelButton: function() {
 			var that = this;
-			oItemTemplateTotal = [];
 
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
@@ -3236,7 +3256,7 @@ sap.ui.define([
 			};
 
 			open.onsuccess = function() {
-				objItensPedidoTemplate = [];
+				that.objItensPedidoTemplate = [];
 				var db = open.result;
 				var numeroPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
 
@@ -3246,19 +3266,19 @@ sap.ui.define([
 
 					if (cursor) {
 						if (cursor.value.nrPedCli === numeroPedido) {
-							objItensPedidoTemplate.push(cursor.value);
+							that.objItensPedidoTemplate.push(cursor.value);
 						}
 						cursor.continue();
 					} else {
 
-						var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+						var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 						that.getView().setModel(oModel, "ItensPedidoGrid");
 
 						that.onBloqueiaPrePedido();
 						that.calculaTotalPedido();
 
 						//Clicou no editar item .. mas cancelou .. dai tem que resetar a variavel que identifica que é um edit
-						that.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
+						that.getOwnerComponent().getModel("modelAux").setProperty("/Editarthat.indexItem", 0);
 					}
 				};
 			};
@@ -3268,35 +3288,35 @@ sap.ui.define([
 
 			var that = this;
 			var aux = [];
-			var indexEdit = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarIndexItem");
+			var indexEdit = that.getOwnerComponent().getModel("modelAux").getProperty("/Editarthat.indexItem");
 			var nrPedCli = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
 			var oPanel = sap.ui.getCore().byId("idDialog");
 			var oButtonSalvar = sap.ui.getCore().byId("idButtonSalvarDialog");
 			oButtonSalvar.setEnabled(false);
 
 			//Define o index do produto a ser inserido
-			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
+			for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 				if (i == 0) {
-					aux = objItensPedidoTemplate[i].idItemPedido.split("/");
-					indexItem = parseInt(aux[1]);
+					aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
+					that.indexItem = parseInt(aux[1]);
 
 				} else if (i > 0) {
-					aux = objItensPedidoTemplate[i].idItemPedido.split("/");
+					aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
 
-					if (indexItem < parseInt(aux[1])) {
-						indexItem = parseInt(aux[1]);
+					if (that.indexItem < parseInt(aux[1])) {
+						that.indexItem = parseInt(aux[1]);
 
 					}
 				}
 			}
-			if (objItensPedidoTemplate.length === 0) {
-				indexItem = 1;
+			if (that.objItensPedidoTemplate.length === 0) {
+				that.indexItem = 1;
 			} else {
-				indexItem += 1;
+				that.indexItem += 1;
 			}
 
 			// if(indexEdit !== "" && indexEdit !== undefined){
-			// 	indexItem = indexEdit;
+			// 	that.indexItem = indexEdit;
 			// }
 
 			if (sap.ui.getCore().byId("idItemPedido").getValue() === "") {
@@ -3318,7 +3338,7 @@ sap.ui.define([
 					onClose: function() {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
-						sap.ui.getCore().byId("idQuantidade").setValue(oItemTemplate.QtdPedida);
+						sap.ui.getCore().byId("idQuantidade").setValue(that.oItemTemplate.QtdPedida);
 
 					}
 				});
@@ -3373,30 +3393,30 @@ sap.ui.define([
 								//preparar o obj a ser adicionado ou editado
 								if (result2 == undefined) {
 
-									that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoIndexItem", nrPedCli + "/" + (indexItem));
-									oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoIndexItem");
-									oItemPedido.index = indexItem;
-									oItemPedido.nrPedCli = nrPedCli;
-									var requestADDItem = objItensPedido.add(oItemPedido);
+									that.getOwnerComponent().getModel("modelAux").setProperty("/Ultimothat.indexItem", nrPedCli + "/" + (that.indexItem));
+									that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/Ultimothat.indexItem");
+									that.oItemPedido.index = that.indexItem;
+									that.oItemPedido.nrPedCli = nrPedCli;
+									var requestADDItem = objItensPedido.add(that.oItemPedido);
 									requestADDItem.onsuccess = function(e3) {
 
-										objItensPedidoTemplate.push(oItemPedido);
-										// indexItem = indexItem + 1;
+										that.objItensPedidoTemplate.push(that.oItemPedido);
+										// that.indexItem = that.indexItem + 1;
 										that.setaCompleto(db, "Não");
 
-										var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+										var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 										that.getView().setModel(oModel, "ItensPedidoGrid");
 
 										that.onBloqueiaPrePedido();
 
-										console.log("Item: " + oItemPedido.index + " adicionado com sucesso");
+										console.log("Item: " + that.oItemPedido.index + " adicionado com sucesso");
 
 										that.calculaTotalPedido();
 
 									};
 									requestADDItem.onerror = function(e3) {
 										oButtonSalvar.setEnabled(true);
-										console.log("Falha ao adicionar o Item: " + oItemPedido.index);
+										console.log("Falha ao adicionar o Item: " + that.oItemPedido.index);
 									};
 
 									if (that._ItemDialog) {
@@ -3405,13 +3425,13 @@ sap.ui.define([
 									}
 								} else {
 									//OBJ ENCONTRADO NO BANCO... ATUALIZA ELE.
-									oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarIndexItem");
+									that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/Editarthat.indexItem");
 
-									var requestPutItens = objItensPedido.put(oItemPedido);
+									var requestPutItens = objItensPedido.put(that.oItemPedido);
 									requestPutItens.onsuccess = function() {
-										for (var j = 0; j < objItensPedidoTemplate.length; j++) {
-											if (objItensPedidoTemplate[j].idItemPedido === oItemPedido.idItemPedido) {
-												objItensPedidoTemplate[j] = oItemPedido;
+										for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
+											if (that.objItensPedidoTemplate[j].idItemPedido === that.oItemPedido.idItemPedido) {
+												that.objItensPedidoTemplate[j] = that.oItemPedido;
 											}
 										}
 
@@ -3419,21 +3439,21 @@ sap.ui.define([
 
 										that.calculaTotalPedido();
 
-										oItemTemplate = [];
+										that.oItemTemplate = [];
 
 										if (that._ItemDialog) {
 											that._ItemDialog.destroy(true);
 										}
 										oButtonSalvar.setEnabled(true);
 
-										that.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
+										that.getOwnerComponent().getModel("modelAux").setProperty("/Editarthat.indexItem", 0);
 
-										var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+										var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 										that.getView().setModel(oModel, "ItensPedidoGrid");
 
 										that.onBloqueiaPrePedido();
 
-										console.log("Item: " + oItemPedido.index + " foi Atualizado");
+										console.log("Item: " + that.oItemPedido.index + " foi Atualizado");
 
 									};
 									requestPutItens.onerror = function(event) {
@@ -3461,7 +3481,7 @@ sap.ui.define([
 			var oButtonSalvar = sap.ui.getCore().byId("idButtonSalvarDiluicaoDialog");
 			oButtonSalvar.setEnabled(false);
 
-			indexItem = this.onCriarIndexItemPedido();
+			that.indexItem = this.onCriarthat.indexItemPedido();
 
 			if (sap.ui.getCore().byId("idItemPedido").getValue() === "") {
 				MessageBox.show("Selecione um produto.", {
@@ -3482,7 +3502,7 @@ sap.ui.define([
 					onClose: function() {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
-						sap.ui.getCore().byId("idQuantidade").setValue(oItemTemplate.QtdPedida);
+						sap.ui.getCore().byId("idQuantidade").setValue(that.oItemTemplate.QtdPedida);
 
 					}
 				});
@@ -3532,32 +3552,32 @@ sap.ui.define([
 							var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 							var objItensPedido = storeItensPedido.objectStore("ItensPedido");
 
-							that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoIndexItem", nrPedCli + "/" + (indexItem));
-							oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoIndexItem");
-							oItemPedido.index = indexItem;
-							oItemPedido.nrPedCli = nrPedCli;
-							var requestADDItem = objItensPedido.add(oItemPedido);
+							that.getOwnerComponent().getModel("modelAux").setProperty("/Ultimothat.indexItem", nrPedCli + "/" + (that.indexItem));
+							that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/Ultimothat.indexItem");
+							that.oItemPedido.index = that.indexItem;
+							that.oItemPedido.nrPedCli = nrPedCli;
+							var requestADDItem = objItensPedido.add(that.oItemPedido);
 							requestADDItem.onsuccess = function(e3) {
 
-								objItensPedidoTemplate.push(oItemPedido);
-								// indexItem = indexItem + 1;
+								that.objItensPedidoTemplate.push(that.oItemPedido);
+								// that.indexItem = that.indexItem + 1;
 								that.setaCompleto(db, "Não");
 
-								var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+								var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 								that.getView().setModel(oModel, "ItensPedidoGrid");
 
 								that.onBloqueiaPrePedido();
 
 								that.byId("idDiluirItens").setEnabled(true);
 
-								console.log("Item: " + oItemPedido.index + " adicionado com sucesso, tipo Item: " + oItemPedido.tipoItem);
+								console.log("Item: " + that.oItemPedido.index + " adicionado com sucesso, tipo Item: " + that.oItemPedido.tipoItem);
 
 								that.calculaTotalPedido();
 
 							};
 							requestADDItem.onerror = function(e3) {
 								oButtonSalvar.setEnabled(true);
-								console.log("Falha ao adicionar o Item: " + oItemPedido.index);
+								console.log("Falha ao adicionar o Item: " + that.oItemPedido.index);
 							};
 
 							if (that._ItemDialog) {
@@ -3574,9 +3594,11 @@ sap.ui.define([
 
 		// EVENTOS DA TABLE 						<<<<<<<<<<<<
 		onNovoItem: function() {
+			var that = this;
+			
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
-			oItemPedido = [];
+			that.oItemPedido = [];
 
 			if (statusPedido == 3) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
@@ -3600,7 +3622,7 @@ sap.ui.define([
 				/*set model para o dialog*/
 				this._ItemDialog.open();
 				sap.ui.getCore().byId("idItemPedido").focus();
-				if(tipoPedido == "YBON"){
+				if(tipoPedido == "YBON" || tipoPedido == "YTRO"){
 					sap.ui.getCore().byId("idDesconto").setEnabled(false);
 				}else{
 					sap.ui.getCore().byId("idDesconto").setEnabled(true);
@@ -3609,8 +3631,10 @@ sap.ui.define([
 		},
 
 		onNovoItemDiluicao: function() {
+			var that = this;
+			
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
-			oItemPedido = [];
+			that.oItemPedido = [];
 
 			if (statusPedido == 3) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
@@ -3644,7 +3668,7 @@ sap.ui.define([
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			//VARIAVEL QUE MOSTRA UM ITEM ESTÁ SENDO EDITADO
 			var itemPedido = oItem.getBindingContext("ItensPedidoGrid").getProperty("idItemPedido");
-			that.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", itemPedido);
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Editarthat.indexItem", itemPedido);
 
 			if (statusPedido == 3) {
 
@@ -3655,11 +3679,11 @@ sap.ui.define([
 				});
 
 			} else {
-				//TO DO SETAR TODOS OS CAMPOS COM OS DADOS DO oItemTemplate  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-				for (var i = 0; i < objItensPedidoTemplate.length; i++) {
+				//TO DO SETAR TODOS OS CAMPOS COM OS DADOS DO that.oItemTemplate  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+				for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 
-					if (objItensPedidoTemplate[i].idItemPedido === itemPedido) {
-						oItemPedido = objItensPedidoTemplate[i];
+					if (that.objItensPedidoTemplate[i].idItemPedido === itemPedido) {
+						that.oItemPedido = that.objItensPedidoTemplate[i];
 					}
 				}
 
@@ -3677,7 +3701,7 @@ sap.ui.define([
 				that._ItemDialog.open();
 				that.popularCamposItemPedido();
 
-				if (oItemPedido.tipoItem == "Diluicao") {
+				if (that.oItemPedido.tipoItem == "Diluicao") {
 					sap.ui.getCore().byId("idDesconto").setEnabled(false);
 
 				} else {
@@ -3708,12 +3732,12 @@ sap.ui.define([
 					onClose: function(oAction) {
 						if (oAction === "Excluir") {
 
-							for (var i = 0; i < objItensPedidoTemplate.length; i++) {
-								if (objItensPedidoTemplate[i].idItemPedido === idItemPedido) {
+							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
+								if (that.objItensPedidoTemplate[i].idItemPedido === idItemPedido) {
 
-									objItensPedidoTemplate.splice(i, 1);
+									that.objItensPedidoTemplate.splice(i, 1);
 
-									if (objItensPedidoTemplate.length === 0) {
+									if (that.objItensPedidoTemplate.length === 0) {
 
 										that.byId("idTipoNegociacao").setProperty("enabled", true);
 										that.byId("idTabelaPreco").setProperty("enabled", true);
@@ -3730,7 +3754,7 @@ sap.ui.define([
 									}
 								}
 							}
-							var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+							var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
 							that.onBloqueiaPrePedido();
@@ -3905,8 +3929,7 @@ sap.ui.define([
 								// that.atualizaMovtoVerba(db);
 								that.setaCompleto(db, "Sim");
 								that.onResetarCamposPrePedido();
-								oItemTemplate = [];
-								oItemTemplateTotal = [];
+								that.oItemTemplate = [];
 								console.log("Pedido inserido");
 							};
 							
@@ -4027,8 +4050,8 @@ sap.ui.define([
 						actions: [MessageBox.Action.OK]
 					});
 				} else {
-					// objItensPedidoTemplate = [];
-					// var oModel = new sap.ui.model.json.JSONModel(objItensPedidoTemplate);
+					// that.objItensPedidoTemplate = [];
+					// var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 					// this.getView().setModel(oModel, "ItensPedidoGrid");
 
 					this.byId("tabItensPedidoStep").setProperty("enabled", true);
@@ -4315,9 +4338,10 @@ sap.ui.define([
 		},
 
 		onCancelarPedido: function() {
+			var that = this;
+			
 			this.onResetarCamposPrePedido();
-			oItemTemplate = [];
-			oItemTemplateTotal = [];
+			that.oItemTemplate = [];
 
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("pedido");
 		},
@@ -4356,14 +4380,16 @@ sap.ui.define([
 		},
 
 		onBloqueiaPrePedido: function() {
+			var that = this;
+			
 			var tipoPed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			
-			for (var i = 0; i < objItensPedidoTemplate.length; i++) {
-				if (objItensPedidoTemplate[i].tipoItem == "Diluicao") {
+			for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
+				if (that.objItensPedidoTemplate[i].tipoItem == "Diluicao") {
 					this.byId("idDiluirItens").setEnabled(true);
 					this.byId("idInserirItemDiluicao").setEnabled(true);
 					break;
-				} else if (objItensPedidoTemplate[i].tipoItem == "Diluido") {
+				} else if (that.objItensPedidoTemplate[i].tipoItem == "Diluido") {
 					this.byId("idDiluirItens").setEnabled(false);
 					this.byId("idInserirItemDiluicao").setEnabled(false);
 					this.byId("idInserirItem").setEnabled(false);
@@ -4371,7 +4397,7 @@ sap.ui.define([
 				}
 			}
 
-			if (objItensPedidoTemplate.length > 0) {
+			if (that.objItensPedidoTemplate.length > 0) {
 				this.byId("idTabelaPreco").setEnabled(false);
 				this.byId("idFormaPagamento").setEnabled(false);
 				this.byId("idTipoTransporte").setEnabled(false);

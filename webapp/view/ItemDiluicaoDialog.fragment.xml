@@ -66,7 +66,7 @@
 							<layout:GridData span="L2 M2"/>
 						</layoutData>
 					</Label>
-					<Input id="idPrecoDesconto" class="desabilitado" editable="false" change="onPrecoDeVendaChange" submit="onFocusVenda" type="Number">
+					<Input id="idPrecoDesconto" class="desabilitado" value="{path: 'modelItemPedido>/valorTotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" editable="false" change="onPrecoDeVendaChange" submit="onFocusVenda" type="Text">
 						<layoutData>
 							<layout:GridData span="L4 M2"/>
 						</layoutData>
