@@ -1330,13 +1330,12 @@ sap.ui.define([
 
 																																															var objBancoCmpEnxoval = {
 																																																idCmpEnxoval: i,
-																																																grupo: retornoCmpEnxoval.results[i].Grupo,
-																																																descricaoGrupo: retornoCmpEnxoval.results[i].DescricaoGrupo,
-																																																representante: retornoCmpEnxoval.results[i].Representante,
-																																																descricaoRepresentante: retornoCmpEnxoval.results[i].DescricaoRepresentante,
-																																																quantidade: retornoCmpEnxoval.results[i].Quantidade,
-																																																dataInicio: retornoCmpEnxoval.results[i].DataInicio,
-																																																dataFim: retornoCmpEnxoval.results[i].DataFim
+																																																ValorTotal: retornoCmpEnxoval.results[i].ValorTotal,
+																																																ValorLimite: retornoCmpEnxoval.results[i].ValorLimite,
+																																																Representante: retornoCmpEnxoval.results[i].Representante,
+																																																DescricaoRepresentante: retornoCmpEnxoval.results[i].DescricaoRepresentante,
+																																																DataInicio: retornoCmpEnxoval.results[i].DataInicio,
+																																																DataFim: retornoCmpEnxoval.results[i].DataFim
 																																															};
 
 																																															var requestCmpEnxoval = objCmpEnxoval.add(objBancoCmpEnxoval);
