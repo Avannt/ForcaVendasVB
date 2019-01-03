@@ -4,7 +4,8 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"testeui5/model/formatter",
-	"testeui5/controller/PedidoDetalheEnxoval.controller"
+	"testeui5/controller/PedidoDetalheEnxoval.controller",
+	"testeui5/controller/PedidoDetalheGlobal.controller"
 
 ], function(BaseController, JSONModel, MessageBox, formatter) {
 	"use strict";
@@ -26,6 +27,7 @@ sap.ui.define([
 			var that = this;
 			
 			 var pedidoDetalheEnxoval  = new testeui5.controller.PedidoDetalheEnxoval(that);
+			 var pedidoDetalheGlobal   = new testeui5.controller.PedidoDetalheGlobal(that);
 			 
 			 that.oItemTemplate = [];
 			 that.oVetorMateriais = [];
