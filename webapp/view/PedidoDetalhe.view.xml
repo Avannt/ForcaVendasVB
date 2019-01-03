@@ -289,7 +289,7 @@
 											<Label text="Total Itens"/>
 											<Input id="idTotalItensAbaTotal" value="{path: 'modelDadosPedido>/TotalItensPedido'}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Peso Total dos Itens"/>
-											<Input id="idPesoPedidoAbaTotal" value="{path: 'modelDadosPedido>/Ntgew', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
+											<Input id="idPesoPedidoAbaTotal" value="{path: 'modelDadosPedido>/Ntgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Verba Pedido (R$)"/>
 											<Input id="idVerbaAbaTotal" value="{path: 'modelDadosPedido>/ValVerbaPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Comissão (R$)"/>

@@ -46,7 +46,7 @@ sap.ui.define([
 								unique: false
 							});
 						}
-
+						
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE CLIENTES >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("Clientes")) {
 							var objCliente = db.createObjectStore("Clientes", {
@@ -57,7 +57,7 @@ sap.ui.define([
 								unique: false
 							});
 						}
-
+						
 						if (!db.objectStoreNames.contains("TiposPedidos")) {
 							var objTiposPedidos = db.createObjectStore("TiposPedidos", {
 								keyPath: "idTipoPedido",

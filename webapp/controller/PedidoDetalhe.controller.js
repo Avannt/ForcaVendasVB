@@ -12,22 +12,22 @@ sap.ui.define([
 	//variavel para salvar o obj ATUAL do item do pedido E obj pra salvar TODOS os items do pedido
 
 	return BaseController.extend("testeui5.controller.PedidoDetalhe", {
-	
+			
 		formatter: formatter,
-		
+			
 		_data: {
 			"precoVendas": ["99"]
 		},
-		
+			
 		onInit: function() {
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this._onLoadFields, this);
 		},
-		
+			
 		_onLoadFields: function() {
 			var that = this;
 			
-			 var pedidoDetalheEnxoval  = new testeui5.controller.PedidoDetalheEnxoval(that);
-			 var pedidoDetalheGlobal   = new testeui5.controller.PedidoDetalheGlobal(that);
+			 this.pedidoDetalheEnxoval  = new testeui5.controller.PedidoDetalheEnxoval(that);
+			 //this.pedidoDetalheGlobal   = new testeui5.controller.PedidoDetalheGlobal(that);
 			 
 			 that.oItemTemplate = [];
 			 that.oVetorMateriais = [];
@@ -703,6 +703,11 @@ sap.ui.define([
 
 			};
 		},
+		
+		onBuscaGrupoCampanhaGlobal: function(db, oItem) {
+			
+			
+		},
 
 		onExisteEntrada: function(evt) {
 
@@ -926,9 +931,9 @@ sap.ui.define([
 									sap.ui.getCore().byId("idItemPedido").focus();
 								}
 							});
-
+							
 						} else {
-
+							
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
 							that.oItemPedido.maktx = oMaterial.maktx;
@@ -1153,22 +1158,20 @@ sap.ui.define([
 																								if(tipoPedido == "YBON"){
 																									
 																									if(that.oItemPedido.mtpos == "NORM"){
-																										
 																										tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
 																										idA960ABB = werks + "." + tabPreco2 + "." + oMaterial.matnr;
-																										
 																									} 
+																									
 																								} else{
 																									idA960ABB = 0;
 																								}
-																								
 																								
 																								//verificação para definir o preço do brinde / amostra / bonificação para efeito de nota
 																								var storeoA960ABB = db.transaction("A960", "readwrite");
 																								var objA960ABB = storeoA960ABB.objectStore("A960");
 																								
 																								var requesA960ABB = objA960ABB.get(idA960ABB);
-																
+																								
 																								requesA960ABB.onsuccess = function(e) {
 																									var oA960ABB = e.target.result;
 																									
@@ -1179,6 +1182,8 @@ sap.ui.define([
 																										that.popularCamposItemPedido();
 																										sap.ui.getCore().byId("idQuantidade").focus();
 																										oPanel.setBusy(false);
+																										
+																										
 																										
 																									} else{
 																										
@@ -1211,25 +1216,22 @@ sap.ui.define([
 									title: "Produto já inserido.",
 									actions: [MessageBox.Action.YES],
 									onClose: function() {
-
 										that.onResetaCamposDialog();
 										sap.ui.getCore().byId("idItemPedido").setValue();
 										sap.ui.getCore().byId("idItemPedido").focus();
 										oPanel.setBusy(false);
-
 									}
 								});
 							}
 						}
 					};
 				} else {
-
 					oPanel.setBusy(false);
 					that.onResetaCamposDialog();
 				}
 			};
 		},
-
+		
 		onCriarIndexItemPedido: function() {
 			var that = this;
 			
@@ -3749,7 +3751,9 @@ sap.ui.define([
 					
 					this.getView().addDependent(this._ItemDialog);
 				}
-
+				
+				this.pedidoDetalheGlobal.onInicializarEventosPedidoDetalheGlobal();
+				
 				/*set model para o dialog*/
 				this._ItemDialog.open();
 				sap.ui.getCore().byId("idItemPedido").focus();

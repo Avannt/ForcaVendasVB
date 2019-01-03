@@ -95,17 +95,17 @@ sap.ui.define([
 				var transaction = db.transaction("EntregaFutura", "readonly");
 				var objectStore = transaction.objectStore("EntregaFutura");
 				var iKunrg = objectStore.index("Kunrg");
-
+				
 				var pClientes = new Promise(function(resolv, rject) {
-
+					
 					var reqEF = iKunrg.openCursor(undefined, "nextunique");
-
+					
 					vetorCliente = [];
 					vClientesUnicosEF = [];
 					/* Recuperto todos os clientes únicos do processo de entrega futura */
 					reqEF.onsuccess = function(event) {
 						var cursor = event.target.result;
-
+						
 						if (cursor) {
 							vClientesUnicosEF.push(cursor.value);
 							cursor.continue();

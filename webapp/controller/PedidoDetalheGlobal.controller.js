@@ -8,19 +8,18 @@ sap.ui.define([
 		
 		constructor: function(sView){
 			this.PDController = sView;
-			
-			this.onInicializarEventosPedidoDetalheGlobal();
 		},
 
 		onInit: function() {
+			
 		},
 		
 		onInicializarEventosPedidoDetalheGlobal: function(){
-			this.PDController.byId("idItemPedido").attachSearch(this.onBuscaGrupoGlobal);
+			sap.ui.getCore().byId("idItemPedido").attachSearch(this.onBuscaGrupoGlobal);
 		},
 		
-		onBuscaGrupoGlobal: function(){
-			alert();
+		onBuscaGrupoGlobal: function(sView){
+			alert(this.oItemPedido.tipoItem2);
 		}
 	});
 });
