@@ -194,6 +194,9 @@ sap.ui.define([
 			that.oVetorTipoNegociacao = [];
 			that.objItensPedidoTemplate = [];
 			that.oVetorFormasPagamentos = [];
+			var tabbri = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbri;
+			var tabamo = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabamo;
+			var tabbon = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
 
 			var data = this.onDataAtualizacao();
 
@@ -294,11 +297,13 @@ sap.ui.define([
 
 						if ("getAll" in objectStoreA963) {
 							objectStoreA963.getAll().onsuccess = function(event) {
-
+								
 								for (var j = 0; j < event.target.result.length; j++) {
-									that.oVetorTabPreco.push(event.target.result[j]);
+									if(event.target.result[j].pltyp != tabbon &&  event.target.result[j].pltyp != tabbri && event.target.result[j].pltyp != tabamo){
+										that.oVetorTabPreco.push(event.target.result[j]);
+									}
 								}
-
+								
 								oModelTabPreco = new sap.ui.model.json.JSONModel(that.oVetorTabPreco);
 								that.getView().setModel(oModelTabPreco, "tabPreco");
 							};
