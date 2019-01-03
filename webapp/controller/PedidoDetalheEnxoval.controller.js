@@ -5,20 +5,22 @@ sap.ui.define([
 	"use strict";
 	
 	return BaseController.extend("testeui5.controller.PedidoDetalheEnxoval", {
-
-		// onInit: function() {
-		// 	this.getRouter().getRoute("PedidoDetalheEnxoval").attachPatternMatched(this._onLoadFields, this);
-		// },
-			
-		// _onLoadFields: function() {
-			
-		// 	var that = this;
-			
-		// },
 		
-		getView: function(sView){
+		constructor: function(sView){
+			this.PDController = sView;
 			
-			this.pedidoController = sView;
+			this.onInicializarEventosCampEnxoval();
+		},
+
+		onInit: function() {
+		},
+		
+		onInicializarEventosCampEnxoval: function(){
+			// this.PDController.byId("idObservacoesAuditoria").attachLiveChange(this.onLiveChangeIdCodCliente);
+		},
+		
+		onAtivarCampanhaEnxoval: function(){
+			
 		}
 	});
 });
