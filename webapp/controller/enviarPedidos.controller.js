@@ -418,7 +418,8 @@ sap.ui.define([
 									Maxdescpermitidoextra: String(oItensPedidoGridEnviar[j].maxDescPermitidoExtra),
 									Maxdescpermitido: String(oItensPedidoGridEnviar[j].maxDescPermitido),
 									Mtpos: String(oItensPedidoGridEnviar[j].mtpos),
-									Kbetr: String(parseInt(oItensPedidoGridEnviar[j].kbetr))
+									Kbetr: String(oItensPedidoGridEnviar[j].kbetr),
+									Zzvprodabb: String(oItensPedidoGridEnviar[j].zzVProdABB),
 								};
 
 								oModel.create("/InserirLinhaOV", objItensPedido, {

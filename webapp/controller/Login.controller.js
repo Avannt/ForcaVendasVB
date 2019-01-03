@@ -2546,7 +2546,10 @@ sap.ui.define([
 												utilverbBri: retorno.UtilverbBri == "S",
 												utilverbDesc: retorno.UtilverbDesc == "S",
 												utilverbPrz: retorno.UtilverbPrz == "S",
-												buGroup: retorno.BuGroup
+												buGroup: retorno.BuGroup,
+												tabbon: retorno.Tabbon,
+												tabamo: retorno.Tabamo,
+												tabbri: retorno.Tabbri
 											};
 
 											if (result == null || result == undefined) {
@@ -2579,8 +2582,6 @@ sap.ui.define([
 												};
 
 											} else {
-												6
-
 												var requestUsuariosUpdate = objectStoreUsuarios.put(entryUsuario);
 
 												requestUsuariosUpdate.onsuccess = function() {
