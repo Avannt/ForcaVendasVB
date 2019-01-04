@@ -1,4 +1,5 @@
 /*eslint-disable no-console, no-alert */
+/*eslint-disable sap-no-ui5base-prop*/
 sap.ui.define([
 	"testeui5/controller/BaseController"
 ], function(BaseController) {
@@ -21,10 +22,23 @@ sap.ui.define([
 
 			that.PDController = sView;
 
-			this.onInicializarEventosCampEnxoval();
+			this.InicializarEventosCampEnxoval();
 		} /* constructor */ ,
 
-		onInicializarEventosCampEnxoval: function() {
+		onChangeIdTipoPedido: function() {
+			that.VerificarCampanhaEnxoval();
+		} /* onChangeIdTipoPedido */ ,
+
+		onSelectIconTabBar: function(evt) {
+			var item = evt.getParameters();
+
+			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
+				// alert("ok");
+			}
+
+		}, /* onSelectIconTabBar */
+
+		InicializarEventosCampEnxoval: function() {
 			// this.PDController.byId("idObservacoesAuditoria").attachLiveChange(this.onLiveChangeIdCodCliente);
 			var oEventRegistry = that.PDController.byId("idTipoPedido").mEventRegistry;
 			var bAtribuiuEvento = false;
@@ -41,20 +55,21 @@ sap.ui.define([
 			if (!bAtribuiuEvento) {
 				/* Atribuição de eventos exclusivos da campanha */
 				that.PDController.byId("idTipoPedido").attachChange(this.onChangeIdTipoPedido);
+				that.PDController.byId("idTopLevelIconTabBar").attachSelect(this.onSelectIconTabBar);
 			}
 
-			this.onGetCampanha();
+			this.GetCampanha();
 
-		} /* onInicializarEventosCampEnxoval */ ,
+		} /* InicializarEventosCampEnxoval */ ,
 
-		/*Restrições (
-			Pedido de bonificação YBON															=> sIdTipoPed
-			Vigência da campanha																=> that.oCmpEnxoval[i].bCampanhaVigente, 
-			Cadastro do cliente (cliente pode ou não permitir compra pela campanha enxoval)		=> that.bClienteEfetuouCompra
-			
-			Resultado																			=> that.bCampanhaEnxovalAtiva = true
-		)*/
-		onVerificarCampanhaEnxoval: function() {
+		VerificarCampanhaEnxoval: function() {
+			/*Restrições (
+				Pedido de bonificação YBON															=> sIdTipoPed
+				Vigência da campanha																=> that.oCmpEnxoval[i].bCampanhaVigente, 
+				Cadastro do cliente (cliente pode ou não permitir compra pela campanha enxoval)		=> that.bClienteEfetuouCompra
+				
+				Resultado																			=> that.bCampanhaEnxovalAtiva = true
+			)*/
 			/* Verifico se o tipo de pedido é YBON */
 			var sIdTipoPed = that.PDController.byId("idTipoPedido").getSelectedKey();
 
@@ -107,13 +122,9 @@ sap.ui.define([
 				console.log("Não usa campanha Enxoval: Representante não tem campanha!");
 				that.bCampanhaEnxovalAtiva = false;
 			}
-		} /* onVerificarCampanhaEnxoval */ ,
+		} /* VerificarCampanhaEnxoval */ ,
 
-		onChangeIdTipoPedido: function() {
-			that.onVerificarCampanhaEnxoval();
-		} /* onChangeIdTipoPedido */ ,
-
-		onGetCampanha: function() {
+		GetCampanha: function() {
 			var open = indexedDB.open("VB_DataBase");
 
 			open.onsuccess = function() {
@@ -128,15 +139,15 @@ sap.ui.define([
 						// var oModel = new sap.ui.model.json.JSONModel(tmpCampanha);
 
 						that.oCmpEnxoval = tmpCampanha;
-						that.onVerificarCampanhasValidas();
+						that.VerificarCampanhasValidas();
 
 						// that.getView().setModel(oModel, "tiposPedidos");
 					};
 				}
 			};
-		} /* onGetCampanha */ ,
+		} /* GetCampanha */ ,
 
-		onVerificarCampanhasValidas: function() {
+		VerificarCampanhasValidas: function() {
 			var dDataAtual = new Date();
 
 			for (var i = 0; i < that.oCmpEnxoval.length; i++) {
@@ -151,6 +162,17 @@ sap.ui.define([
 			/* A campanha só é válida se o cliente tiver com efetuoucompra = false */
 			that.bClienteEfetuouCompra = that.PDController.getModel("modelCliente").getProperty("/efetuoucompra") == "true";
 
-		} /* onVerificarCampanhasValidas */
+		},
+		/* VerificarCampanhasValidas */
+		
+		ProcessarSaldoCampanhaEnxoval: function(){
+			
+		},
+		/* ProcessarSaldoCampanhaEnxoval */
+		
+		DisponibilizarValoresCampanhaEnxoval: function(){
+			
+		}
+		/* DisponibilizarValoresCampanhaEnxoval */
 	});
 });
