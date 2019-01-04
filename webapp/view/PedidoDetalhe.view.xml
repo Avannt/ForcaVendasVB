@@ -45,9 +45,8 @@
 											<Select id="idTipoPedido" forceSelection="false" items="{ path: 'tiposPedidos>/' }" showSecondaryValues="true" change="onChangeTipoPedido">
 												<core:Item key="{tiposPedidos>idTipoPedido}" text="{tiposPedidos>idTipoPedido} - {tiposPedidos>descricao}"/>
 											</Select>
-											<Label text="Tipo negociação *"/>
-											<Select id="idTipoNegociacao" forceSelection="false" items="{ path: 'tipoNegociacao>/' }" showSecondaryValues="true"
-												change="onChangeTipoNegociacao">
+											<Label  text="Tipo negociação *"/>
+											<Select id="idTipoNegociacao" forceSelection="false" items="{ path: 'tipoNegociacao>/' }" showSecondaryValues="true" change="onChangeTipoNegociacao">
 												<core:Item key="{tipoNegociacao>idNegociacao}" text="{tipoNegociacao>idNegociacao} - {tipoNegociacao>descNegociacao}"/>
 											</Select>
 											<Label text="Tabela preço *"/>
@@ -289,13 +288,13 @@
 											<Label text="Total Itens"/>
 											<Input id="idTotalItensAbaTotal" value="{path: 'modelDadosPedido>/TotalItensPedido'}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Peso Total dos Itens"/>
-											<Input id="idPesoPedidoAbaTotal" value="{path: 'modelDadosPedido>/Ntgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
+											<Input id="idPesoPedidoAbaTotal" value="{path: 'modelDadosPedido>/Ntgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} KG" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Verba Pedido (R$)"/>
 											<Input id="idVerbaAbaTotal" value="{path: 'modelDadosPedido>/ValVerbaPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Comissão (R$)"/>
 											<Input id="idComissaoAbaTotal" value="{path: 'modelDadosPedido>/ValComissaoPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Parcela "/>
-											<Input id="idParcela" value="{path: 'modelDadosPedido>/ValParcelasPedido'}" enabled="false" class="desabilitado"/>
+											<Input id="idParcela" value="{path: 'modelDadosPedido>/EntradaPedido'}{path: 'modelDadosPedido>/QuantidadeParcelasPedido'} R$: {path: 'modelDadosPedido>/ValParcelasPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado"/>
 											<Label text="Prazo Médio "/>
 											<Input id="idPrazoMedio" value="{path: 'modelDadosPedido>/PrazoMedioParcelas'} dias" enabled="false" class="desabilitado"/>
 										</f:content>

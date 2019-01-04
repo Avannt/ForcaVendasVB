@@ -15,8 +15,6 @@ sap.ui.define([
 			onInit: function() {
 				var that = this;
 
-				// var oModel2 = new sap.ui.model.odata.v2.ODataModel("https://104.46.124.66:8001/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV");
-				
 				// this.getView().setModel(oModel2, "VBModel");
 				
 				this.onInicializaModels();
@@ -357,6 +355,11 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
+							
+							objCmpGbGrpProdsAcabs.createIndex("material", "material", {
+								unique: false
+							});
+							
 						}
 
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbItensBrindes (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -366,6 +369,9 @@ sap.ui.define([
 								keyPath: "idCmpGbItensBrindes",
 								unique: true,
 								autoIncrement: true
+							});
+							objCmpGbItensBrindes.createIndex("material", "material", {
+								unique: false
 							});
 						}
 
@@ -378,7 +384,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-
+						
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbQtdItens (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpGbQtdItens – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpGbQtdItens")) {
@@ -388,7 +394,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-
+						
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpProdsAcabs (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpProdsAcabs – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpProdsAcabs")) {
@@ -396,6 +402,10 @@ sap.ui.define([
 								keyPath: "idCmpProdsAcabs",
 								unique: true,
 								autoIncrement: true
+							});
+							
+							objCmpProdsAcabs.createIndex("material", "material", {
+								unique: false
 							});
 						}
 
@@ -658,10 +668,10 @@ sap.ui.define([
 
 				var oModel = that.getView().getModel();
 
-				// var oModel = new sap.ui.model.odata.v2.ODataModel({
-				// 	serviceUrl: "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
-				// 	sUser: "appadmin",
-				// 	sPassword: "sap123"
+				// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
+				// 	json     : true,
+				// 	user     : "appadmin",
+				// 	password : "sap123"
 				// });
 
 				oModel.setUseBatch(false);
@@ -1498,13 +1508,13 @@ sap.ui.define([
 																																																										representante: retornoCmpSldBrindes.results[i].Representante,
 																																																										descricaoRepresentante: retornoCmpSldBrindes.results[i].DescricaoRepresentante
 																																																									};
-
+																																																									
 																																																									var requestCmpSldBrindes = objCmpSldBrindes.add(objBancoCmpSldBrindes);
-
+																																																									
 																																																									requestCmpSldBrindes.onsuccess = function(event) {
 																																																										console.log("Dados CmpSldBrindes inseridos. " + event);
 																																																									};
-
+																																																									
 																																																									requestCmpSldBrindes.onerror = function(event) {
 																																																										console.log("Dados CmpSldBrindes não foram inseridos :" + event);
 																																																									};
@@ -2469,10 +2479,10 @@ sap.ui.define([
 
 					var oModel = this.getView().getModel();
 
-					// var oModel = new sap.ui.model.odata.v2.ODataModel({
-					// 	serviceUrl: "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
-					// 	sUser: "appadmin",
-					// 	sPassword: "sap123"
+					// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
+					// 	json     : true,
+					// 	user     : "appadmin",
+					// 	password : "sap123"
 					// });
 
 					// oModel.setProperty("user", "rcardilo");
@@ -2606,23 +2616,23 @@ sap.ui.define([
 								}
 							},
 							error: function(error) {
-
+								
 								sap.ui.getCore().byId("idDialogLogin").setBusy(false);
 								that.onMensagemErroODATA(error.statusCode);
-
+								
 							}
 						});
 				}
 			},
 
 			onDialogCancelLoginsButton: function() {
-
+				
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-
+				
 			},
-
+			
 			onDialogResetarLoginsButton: function() {
 				var that = this;
 
@@ -2671,7 +2681,7 @@ sap.ui.define([
 			
 			onMensagemErroODATA: function(codigoErro) {
 				var that = this;
-
+				
 				if (codigoErro == 0) {
 					sap.m.MessageBox.show(
 						"Verifique a conexão com a internet!", {

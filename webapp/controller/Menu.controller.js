@@ -96,15 +96,24 @@ sap.ui.define([
 					/* Aprovador-> Ocultar pedido de vendas e entrega futura
 								-> Verifico a quantidade de pedidos para aprovação*/
 					if (bAprovador) {
-						for (var i = 0; i < oPrincipal.length; i++) {
+						for (i = 0; i < oPrincipal.length; i++) {
 							
 							if (oPrincipal[i].id == "pedido" || oPrincipal[i].id == "entregaFutura") {
 								oPrincipal[i].visible = false;
 							}
 							
 							if (oPrincipal[i].id == "aprovacoes") {
+								
 								var oMenuAprovar = oPrincipal[i];
+								
 								var oModel = that.getView().getModel();
+								
+								// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
+								// 	json     : true,
+								// 	user     : "appadmin",
+								// 	password : "sap123"
+								// });
+								
 								var codRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
 								oMenuAprovar.visible = true;
 								oMenuAprovar.busy = true;
@@ -135,42 +144,20 @@ sap.ui.define([
 			};
 		},
 		/* onExibicaoMenu */
-
+		
 		onDialogCloseImagem: function() {
+			
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
 			}
 		},
-
 		onAfterRendering: function() {
-
+			
 		},
 		
 		_onRouteMatched: function(oEvent) {
-			var oModel = new sap.ui.model.json.JSONModel();
 			this.getOwnerComponent().getModel("modelAux");
-			
 			this.onExibicaoMenu();
-
-			// var empresa = this.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-			// var nomeEmpresa;
-			// var icone;
-
-			// if(empresa == 1){
-			// 	nomeEmpresa = "Pred -Só Fruta -Lafer";
-			// 	icone = "img/predilecta.png";
-			// }
-			// else if(empresa == 2){
-			// 	nomeEmpresa = "Stella";
-			// 	icone = "img/SD.png";
-			// }
-			// else if(empresa == 3){
-			// 	nomeEmpresa = "Minas";
-			// 	icone = "img/soFrutas.png";
-			// }
-			// this.getOwnerComponent().getModel("modelAux").setProperty("/nomeEmpresa", nomeEmpresa);
-			// this.getOwnerComponent().getModel("modelAux").setProperty("/iconeEmpresa", icone);
-			// this.getOwnerComponent().getModel("helper").setProperty("/showShellHeader", true);
 		},
 		
 		onMensagemErroODATA: function(codigoErro) {
@@ -269,7 +256,6 @@ sap.ui.define([
 				);
 			}
 		}
-
 	});
 
 });
