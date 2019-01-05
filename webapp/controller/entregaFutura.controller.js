@@ -95,17 +95,17 @@ sap.ui.define([
 				var transaction = db.transaction("EntregaFutura", "readonly");
 				var objectStore = transaction.objectStore("EntregaFutura");
 				var iKunrg = objectStore.index("Kunrg");
-				
+
 				var pClientes = new Promise(function(resolv, rject) {
-					
+
 					var reqEF = iKunrg.openCursor(undefined, "nextunique");
-					
+
 					vetorCliente = [];
 					vClientesUnicosEF = [];
 					/* Recuperto todos os clientes únicos do processo de entrega futura */
 					reqEF.onsuccess = function(event) {
 						var cursor = event.target.result;
-						
+
 						if (cursor) {
 							vClientesUnicosEF.push(cursor.value);
 							cursor.continue();
@@ -328,8 +328,6 @@ sap.ui.define([
 			oItensEF = [];
 			if (aContexts && aContexts.length) {
 				var iVbeln = aContexts[0].getObject().Vbeln;
-
-				that.getView().byId("ifVbeln").setValue(iVbeln);
 				var open = indexedDB.open("VB_DataBase");
 
 				open.onerror = function() {
@@ -342,32 +340,67 @@ sap.ui.define([
 
 				open.onsuccess = function() {
 					var db = open.result;
-					var transactionPedEF = db.transaction("EntregaFutura", "readonly");
-					var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
-					var keyRangeValue = IDBKeyRange.only(iVbeln);
-					var ixVbeln = objectStorePedEF.index("Vbeln");
 
-					var request = ixVbeln.openCursor(keyRangeValue);
+					/* É necessário verificar se já existem lançamentos com Vbeln diferentes*/
+					var tPedEF2 = db.transaction("EntregaFutura2", "readonly");
+					var osPedEF2 = tPedEF2.objectStore("EntregaFutura2");
 
-					request.onsuccess = function(event) {
-						var cursor = event.target.result;
+					var reqEF2 = osPedEF2.getAll();
 
-						if (cursor) {
-							oItensEF.push(cursor.value);
-							cursor.continue();
-						} else {
-							var oModel = new sap.ui.model.json.JSONModel(oItensEF);
-							that.getView().setModel(oModel, "ItensEF");
-						}
-					};
+					var p1 = new Promise(function(res, rej) {
+						reqEF2.onsuccess = function(event) {
+							var vEntregas = event.target.result;
 
-					request.onerror = function(event) {
-						MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
+							for (var i = 0; i < vEntregas.length; i++) {
+								if (vEntregas[i].Vbeln != iVbeln) {
+									rej();
+								}
+							}
+
+							res();
+						};
+					});
+					/* --- */
+
+					p1.then(function() {
+						that.getView().byId("ifVbeln").setValue(iVbeln);
+
+						var transactionPedEF = db.transaction("EntregaFutura", "readonly");
+						var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura");
+						var keyRangeValue = IDBKeyRange.only(iVbeln);
+						var ixVbeln = objectStorePedEF.index("Vbeln");
+
+						var request = ixVbeln.openCursor(keyRangeValue);
+
+						request.onsuccess = function(event) {
+							var cursor = event.target.result;
+
+							if (cursor) {
+								oItensEF.push(cursor.value);
+								cursor.continue();
+							} else {
+								var oModel = new sap.ui.model.json.JSONModel(oItensEF);
+								that.getView().setModel(oModel, "ItensEF");
+							}
+						};
+
+						request.onerror = function(event) {
+							MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
+								icon: MessageBox.Icon.ERROR,
+								title: "Banco não encontrado!",
+								actions: [MessageBox.Action.OK]
+							});
+						};
+
+					}).catch(function() {
+						
+						MessageBox.show("Finalize o envio de saldo atual para trocar de pedido de vendas.", {
 							icon: MessageBox.Icon.ERROR,
-							title: "Banco não encontrado!",
+							title: "Erro!",
 							actions: [MessageBox.Action.OK]
 						});
-					};
+						
+					});
 				};
 			} else {
 				oItensEF = [];
@@ -407,7 +440,7 @@ sap.ui.define([
 			if (sMatnr) {
 
 				var iQtdeDia = 0;
-				
+
 				/* Recupero o saldo do Sap do item escolhido. */
 				for (var i = 0; i < oModel.length; i++) {
 					if (oModel[i].Matnr == sMatnr) {
@@ -724,12 +757,12 @@ sap.ui.define([
 		/* Fim onExcluirItem */
 
 		onClearView: function() {
+			// this.getView().byId("ifVbeln").setValue("");
+			// this.getView().setModel(undefined, "ItensEF");
+
 			this.getView().byId("ifQtde").setValue(1);
 			this.getView().byId("ifSaldo").setValue("");
-			this.getView().byId("ifVbeln").setValue("");
 			this.getView().byId("sfItem").setValue("");
-
-			this.getView().setModel(undefined, "ItensEF");
 		},
 		/* Fim onClearView */
 

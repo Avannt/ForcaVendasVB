@@ -166,11 +166,44 @@ sap.ui.define([
 		/* VerificarCampanhasValidas */
 		
 		ProcessarSaldoCampanhaEnxoval: function(){
-			
+			if (that.bCampanhaEnxovalAtiva){
+				that.oCmpEnxoval[0].ValorSaldo = 0;
+			}
 		},
 		/* ProcessarSaldoCampanhaEnxoval */
 		
 		DisponibilizarValoresCampanhaEnxoval: function(){
+			
+			/* Só populo os valores se a campanha estiver ativa para o representante / cliente */
+			if (that.bCampanhaEnxovalAtiva){
+				var dValorDisponivelCampanha;
+				
+				var dValorLimite;
+				var dValorTotal;
+				
+				dValorLimite = parseFloat(that.oCmpEnxoval[0].ValorLimite);
+				dValorTotal = parseFloat(that.oCmpEnxoval[0].ValorTotal);
+				
+				if(dValorTotal < dValorLimite){
+					
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			}
 			
 		}
 		/* DisponibilizarValoresCampanhaEnxoval */
