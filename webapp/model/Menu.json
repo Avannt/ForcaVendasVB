@@ -42,12 +42,19 @@
 			"info": "Descr. dos Produtos",
 			"visible": true,
 			"number": ""
-	}, 
+	},
 		{
 			"id": "relatorioPedidos",
 			"icon": "expense-report",
 			"title": "Pedidos",
 			"info": "Levant. dos Pedidos",
+			"visible": true,
+			"number": ""
+	}, {
+			"id": "relatorioEnvSaldo",
+			"icon": "expense-report",
+			"title": "Envio Saldo",
+			"info": "Envio de saldo",
 			"visible": true,
 			"number": ""
 	}, {

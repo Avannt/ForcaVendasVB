@@ -34,7 +34,7 @@
 						</customData>
 						<cells>
 							<!--<Text text="{path : 'EntregasEnviar>idEntregaFutura'}"/>-->
-							<Text text="{path : 'EntregasEnviar>Vbeln'}"/>
+							<Text text="{path : 'EntregasEnviar>idEntregaFutura'}"/>
 							<Text text="{path : 'EntregasEnviar>codUsr'}"/>
 							<Text text="{path : 'EntregasEnviar>NameOrg1'} {path : 'EntregasEnviar&gt;NameOrg2'}"/>
 						</cells>

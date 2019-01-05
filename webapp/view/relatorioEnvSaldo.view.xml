@@ -1,0 +1,41 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form" xmlns:form="sap.ui.layout.form" xmlns:course="opensap.manageproducts.control" height="100%"
+	controllerName="testeui5.controller.relatorioEnvSaldo">
+	<Page id="masterEnvSaldo" title="Envio de saldos" icon="sap-icon://action" class="sapUiStdPage" showNavButton="true"
+		navButtonPress="onNavBack">
+		<headerContent/>
+		<content>
+			<Table noDataText="Sem dados." id="tableProdutos" width="100%" alternateRowColors="true"
+				items="{ path: 'Envio>/', sorter: { path: 'Envio', descending: false, parameter: 'idEntregaFutura'}}">
+				<columns>
+					<Column minScreenWidth="400px" hAlign="Left" demandPopin="true">
+						<Text text="Número"/>
+					</Column>
+					<Column minScreenWidth="100px" hAlign="Left" demandPopin="false">
+						<Text text="Material"/>
+					</Column>
+					<Column minScreenWidth="50px" hAlign="Left" demandPopin="false">
+						<Text text="Qtde"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Inactive" id="item1">
+						<cells>
+							<Text text="{Envio>idEntregaFutura2}"/>
+							<Text text="{Envio>Matnr}"/>
+							<Text text="{Envio>Fkimg2}"/>
+							<!--<Text text="10000" />-->
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+		<footer>
+			<Bar id="bar0_99931351">
+				<contentRight>
+					<Button id="btnLimparLog" class="sapUiSmallMarginBottom" text="Limpar Log" press="onLimparLog" width="100%"/>
+				</contentRight>
+			</Bar>
+		</footer>
+	</Page>
+</mvc:View>
