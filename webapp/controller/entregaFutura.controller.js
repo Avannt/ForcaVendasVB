@@ -19,6 +19,10 @@ sap.ui.define([
 
 	return BaseController.extend("testeui5.controller.entregaFutura", {
 
+		_data: {
+			"Qtde": ["99"]
+		},
+
 		onInit: function() {
 			this.getRouter().getRoute("entregaFutura").attachPatternMatched(this._onLoadFields, this);
 		},
@@ -393,13 +397,13 @@ sap.ui.define([
 						};
 
 					}).catch(function() {
-						
+
 						MessageBox.show("Finalize o envio de saldo atual para trocar de pedido de vendas.", {
 							icon: MessageBox.Icon.ERROR,
 							title: "Erro!",
 							actions: [MessageBox.Action.OK]
 						});
-						
+
 					});
 				};
 			} else {
@@ -503,6 +507,13 @@ sap.ui.define([
 			oSF.suggest();
 		},
 		/* Fim sfItemSuggest */
+		
+		onLiveChangeQtde: function(e){
+			var Qtde = e.getParameter("value");
+			
+			this.getView().byId("ifQtde").setValue(parseInt(Qtde));
+		},
+		/* onLiveChangeQtde  */
 
 		onInserirItemPress: function(oEvent) {
 			var iVbeln = 0;
