@@ -35,7 +35,7 @@
 						<Label text="Saldo" labelFor="ifSaldo"/>
 						<Input id="ifSaldo" width="100%" type="Number" class="sapUiSmallMarginBottom" placeholder="Saldo ..." editable="false"/>
 						<Label text="Quantidade" labelFor="ifQtde"/>
-						<Input id="ifQtde" width="100%" type="Number" class="sapUiSmallMarginBottom" placeholder="Informe a quantidade ..."/>
+						<Input id="ifQtde" liveChange="onLiveChangeQtde" width="100%" type="Number" class="sapUiSmallMarginBottom" placeholder="Informe a quantidade ..." />
 						<Button id="btnInserirItem" class="sapUiSmallMarginBottom" text="Inserir Item" press="onInserirItemPress" width="100%"/>
 					</form:content>
 				</form:SimpleForm>
