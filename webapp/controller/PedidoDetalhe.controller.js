@@ -605,7 +605,6 @@ sap.ui.define([
 					
 				} else{
 					
-					this.byId("idTipoNegociacao").setSelectedKey();
 					this.byId("idTipoNegociacao").setVisible(true);
 					this.byId("idFormParcelamento").setVisible(true);
 					this.byId("idInserirItemDiluicao").setEnabled(true);
@@ -959,11 +958,11 @@ sap.ui.define([
 							});
 							
 						} else {
-							
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
 							that.oItemPedido.maktx = oMaterial.maktx;
 							that.oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
+							that.oItemPedido.aumng = parseInt(oMaterial.aumng, 10);
 							that.oItemPedido.zzValExcedidoItem = 0;
 							that.oItemPedido.kbetr = 0;
 							that.oItemPedido.maxdescpermitido = 0;
@@ -1341,6 +1340,7 @@ sap.ui.define([
 							that.oItemPedido.maktx = oMaterial.maktx;
 							that.oItemPedido.mtpos = oMaterial.mtpos;
 							that.oItemPedido.ntgew = oMaterial.ntgew;
+							that.oItemPedido.aumng = parseInt(oMaterial.aumng, 10);
 							that.oItemPedido.knumh = 0;
 							that.oItemPedido.zzRegra = 0;
 							that.oItemPedido.zzGrpmat = 0;
@@ -1392,9 +1392,8 @@ sap.ui.define([
 									break;
 								}
 							}
-
 							if (itemJaInseridoDiluicao == true) {
-
+								
 								MessageBox.show("Item de diluição já inserido!", {
 									icon: MessageBox.Icon.ERROR,
 									title: "Item inválido.",
@@ -1405,9 +1404,9 @@ sap.ui.define([
 										itemJaInseridoDiluicao = false;
 									}
 								});
-
+								
 							} else {
-
+								
 								//REGRA DILUIÇÃO - > SENÃO EXISTIR ITEM NA GRID  .. ACHAR O VALOR MINIMO DO ITEM
 								var storeA960 = db.transaction("A960", "readwrite");
 								var objA960 = storeA960.objectStore("A960");
@@ -3584,7 +3583,7 @@ sap.ui.define([
 					}
 				});
 			} else if (sap.ui.getCore().byId("idQuantidade").getValue() === "" || sap.ui.getCore().byId("idQuantidade").getValue() === 0) {
-
+				
 				MessageBox.show("Digite uma quantidade acima de 0.", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Campo Inválido.",
@@ -3592,11 +3591,23 @@ sap.ui.define([
 					onClose: function() {
 						oPanel.setBusy(false);
 						oButtonSalvar.setEnabled(true);
-						sap.ui.getCore().byId("idQuantidade").setValue(that.oItemTemplate.QtdPedida);
-
+						sap.ui.getCore().byId("idQuantidade").setValue(1);
 					}
 				});
-
+				
+			} else if(that.oItemPedido.aumng != 0 && (that.oItemPedido.zzQnt / that.oItemPedido.aumng) != 0){
+				
+				MessageBox.show("Digite uma quantidade multipla de " + that.oItemPedido.aumng, {
+					icon: MessageBox.Icon.ERROR,
+					title: "Quantidade Inválida.",
+					actions: [MessageBox.Action.OK],
+					onClose: function() {
+						oPanel.setBusy(false);
+						oButtonSalvar.setEnabled(true);
+						sap.ui.getCore().byId("idQuantidade").setValue(1);
+						
+					}
+				});
 			} else {
 				var open = indexedDB.open("VB_DataBase");
 
