@@ -18,7 +18,7 @@ sap.ui.define([
 		_data: {
 			"precoVendas": ["99"]
 		},
-			
+		
 		onInit: function() {
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this._onLoadFields, this);
 		},
@@ -2435,17 +2435,17 @@ sap.ui.define([
 			open.onsuccess = function() {
 				var db = open.result;
 				var NrPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
-
+				
 				var totalPercentualDiluicaoDado = 0;
 				var TotalDiluicao = 0;
 				var TotalNormal = 0;
-
+				
 				that.objItensPedidoTemplate.sort(function(a, b) {
 					var x = a.tipoItem2.toLowerCase();
 					var y = b.tipoItem2.toLowerCase();
 					return x > y ? -1 : x < y ? 1 : 0;
 				});
-
+				
 				for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 					if (that.objItensPedidoTemplate[i].tipoItem === "Diluicao") {
 						TotalDiluicao += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
@@ -2454,17 +2454,17 @@ sap.ui.define([
 						TotalNormal += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
 					}
 				}
-
+					
 				totalPercentualDiluicaoDado = Math.round((TotalDiluicao / TotalNormal) * 10000);
 				totalPercentualDiluicaoDado = totalPercentualDiluicaoDado / 10000;
-
+					
 				if (totalPercentualDiluicaoDado > 0.30) {
 					MessageBox.show("Quantidade de descontos ultrapassa o máximo permitido (30%) - máximo dado (" + Math.round(totalPercentualDiluicaoDado * 100) + "%)", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Corrigir o itens a ser diluidos!",
 						actions: [MessageBox.Action.OK]
 					});
-
+					
 				} else {
 					var store = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
 					store.openCursor().onsuccess = function(event) {
@@ -2526,6 +2526,7 @@ sap.ui.define([
 
 										var objAuxItem = {
 											idItemPedido: that.objItensPedidoTemplate[i].idItemPedido,
+											aumng: that.objItensPedidoTemplate[i].aumng,
 											index: that.objItensPedidoTemplate[i].index,
 											knumh: that.objItensPedidoTemplate[i].knumh,
 											mtpos: that.objItensPedidoTemplate[i].mtpos,
@@ -2587,6 +2588,7 @@ sap.ui.define([
 										var objAuxItem1 = {
 											idItemPedido: that.objItensPedidoTemplate[i].idItemPedido,
 											index: that.objItensPedidoTemplate[i].index,
+											aumng: that.objItensPedidoTemplate[i].aumng,
 											knumh: that.objItensPedidoTemplate[i].knumh,
 											zzRegra: that.objItensPedidoTemplate[i].zzRegra,
 											mtpos: that.objItensPedidoTemplate[i].mtpos,
@@ -2650,6 +2652,7 @@ sap.ui.define([
 										var objAuxItem2 = {
 											idItemPedido: that.objItensPedidoTemplate[i].idItemPedido,
 											index: that.objItensPedidoTemplate[i].index,
+											aumng: that.objItensPedidoTemplate[i].aumng,
 											knumh: that.objItensPedidoTemplate[i].knumh,
 											mtpos: that.objItensPedidoTemplate[i].mtpos,
 											kbetr: that.objItensPedidoTemplate[i].kbetr,
@@ -2779,7 +2782,7 @@ sap.ui.define([
 				}
 			};
 		},
-
+		
 		onInicioBalancoVerbas: function(resolve, reject) {
 			//Carrega as tabelas necessarias para fazer os calculos dos excedentes.
 			//buscar os campos zzPrzmax/ zzPrzmin/ zzVlrPedMin na tabela de preço
