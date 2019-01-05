@@ -420,6 +420,7 @@ sap.ui.define([
 									Mtpos: String(oItensPedidoGridEnviar[j].mtpos),
 									Kbetr: String(oItensPedidoGridEnviar[j].kbetr),
 									Zzvprodabb: String(oItensPedidoGridEnviar[j].zzVprodABB),
+									Aumng: String(oItensPedidoGridEnviar[j].aumng)
 								};
 
 								oModel.create("/InserirLinhaOV", objItensPedido, {
@@ -427,7 +428,6 @@ sap.ui.define([
 									success: function(data) {
 										console.info("Itens Inserido");
 										that.byId("table_pedidos").setBusy(false);
-
 									},
 									error: function(error) {
 										that.byId("table_pedidos").setBusy(false);

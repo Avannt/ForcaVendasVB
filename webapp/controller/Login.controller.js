@@ -1827,7 +1827,9 @@ sap.ui.define([
 																																																																					zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
 																																																																					zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
 																																																																					zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
-
+																																																																					
+																																																																					zzvprodabb: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodabb),
+																																																																					aumng: parseInt(retornoPVPrepostoItem.results[i].Aumng),
 																																																																					zzVprodDesc2: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc2),
 																																																																					zzVprodMinPermitido: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodminpermitido),
 																																																																					zzValorDiluido: parseFloat(retornoPVPrepostoItem.results[i].Zzvalordiluido),
