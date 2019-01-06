@@ -679,8 +679,9 @@ sap.ui.define([
 				var Werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
 				var ImeiCelular = this.getOwnerComponent().getModel("modelAux").getProperty("/Imei");
 				var NumVersao = this.getOwnerComponent().getModel("modelAux").getProperty("/VersaoApp");
-				var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 				var TipoUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario");
+				var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+				var CodUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
 
 				var oModel = that.getView().getModel();
 
@@ -909,7 +910,7 @@ sap.ui.define([
 																		//Clientes
 																		oModel.read("/Clientes", {
 																			urlParameters: {
-																				"$filter": "IvRepres eq '" + CodRepres + "'"
+																				"$filter": "IvRepres eq '" + CodRepres + "' and IvUsuario eq '" + CodUsuario + "'"
 																			},
 																			success: function(retornoCliente) {
 
@@ -1571,7 +1572,7 @@ sap.ui.define([
 
 																																																										oModel.read("/EntregaFutura", {
 																																																											urlParameters: {
-																																																												"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																												"$filter": "IRepresentante eq '" + CodRepres + "' and IUsuario eq '" + CodUsuario + "'"
 																																																											},
 																																																											success: function(retornoEntregaFutura) {
 																																																												var txEntregaFutura = db.transaction("EntregaFutura", "readwrite");
