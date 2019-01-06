@@ -668,6 +668,9 @@ sap.ui.define([
 										for (var j = 0; j < tempItemEntregar.length; j++) {
 											/* Verifo se a linha é do pedido em questão */
 											if (vEntregasEnviar[i].Vbeln == tempItemEntregar[j].Vbeln) {
+												
+												/* Mantenho o mesmo número do grupo para identficação posterior */
+												tempItemEntregar[j].idEntregaFutura2 = vEntregasEnviar[i].idEntregaFutura;
 												vPromise.push(tempItemEntregar[j]);
 											}
 										}
@@ -723,7 +726,7 @@ sap.ui.define([
 											Sldfut: String(oItemEntregar.Sldfut),
 											Ultitm: oItemEntregar.Ultitm,
 											Vbeln: oItemEntregar.Vbeln,
-											Identregafutura: oItemEntregar.idEntregaFutura,
+											Identregafutura: oItemEntregar.idEntregaFutura2,
 											Codrepres: oItemEntregar.codRepres,
 											Codusr: oItemEntregar.codUsr,
 											Tipousuario: oItemEntregar.tipoUsuario,
@@ -743,7 +746,17 @@ sap.ui.define([
 													sMensagem, {
 														icon: sap.m.MessageBox.Icon.SUCCESS,
 														title: "Sucesso",
-														actions: [sap.m.MessageBox.Action.OK]
+														actions: [sap.m.MessageBox.Action.OK],
+														onClose: function(){
+															var txEF3 = db.transaction("EntregaFutura3", "readwrite");
+															var objItensEntrega3 = txEF3.objectStore("EntregaFutura3");
+															
+															var rEF3 = objItensEntrega3.put(oItemEntregar);
+															
+															rEF3.onsuccess = function(e){
+																console.log("Salvo na tabela de histórico.");	
+															};
+														}
 													}
 												);
 

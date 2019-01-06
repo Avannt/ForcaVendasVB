@@ -595,7 +595,7 @@ sap.ui.define([
 
 							var sDataHora = that.onDataAtualizacao();
 
-							oItemEF2.idEntregaFutura = oItemEF.idEntregaFutura + '.' + sDataHora;
+							oItemEF2.idEntregaFutura = oItemEF.Vbeln + '.' + sDataHora;
 
 							var storeEF2 = db.transaction("EntregaFutura2", "readwrite");
 							var objEF2 = storeEF2.objectStore("EntregaFutura2");

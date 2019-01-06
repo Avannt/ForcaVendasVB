@@ -120,6 +120,22 @@ sap.ui.define([
 							});
 						}
 
+						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PV ENTREGA FUTURA (HISTÓRICO) >>>>>>>>>>>>>>>>>>>>>>>>>
+						if (!db.objectStoreNames.contains("EntregaFutura3")) {
+							var objEntregaFutura3 = db.createObjectStore("EntregaFutura3", {
+								keyPath: "idEntregaFutura",
+								unique: true
+							});
+
+							objEntregaFutura3.createIndex("Vbeln", "Vbeln", {
+								unique: false
+							});
+
+							objEntregaFutura3.createIndex("Kunrg", "Kunrg", {
+								unique: false
+							});
+						}
+						
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PEDIDOS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("PrePedidos")) {
 							var objPedido = db.createObjectStore("PrePedidos", {

@@ -62,6 +62,9 @@ sap.ui.define([
 				case "relatorioTitulos":
 					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioTitulos");
 					break;
+				case "relatorioEnvSaldo":
+					sap.ui.core.UIComponent.getRouterFor(this).navTo("relatorioEnvSaldo");
+					break;
 			}
 		}
 	});

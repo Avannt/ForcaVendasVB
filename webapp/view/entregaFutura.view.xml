@@ -129,7 +129,7 @@
 				<footer>
 					<Bar id="bar0_1545129589646">
 						<contentRight>
-							<Button id="btnEnviar" class="sapUiSmallMarginBottom" text="ENVIAR ITENS" press="onEnviarItens" width="100%"/>
+							<Button id="btnEnviar" class="sapUiSmallMarginBottom" text="Gerar Entrega de Saldo" press="onEnviarItens" width="100%"/>
 						</contentRight>
 					</Bar>
 				</footer>
