@@ -3499,11 +3499,12 @@ sap.ui.define([
 			var indexEdit = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem");
 
 			for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
-				if (that.oItemPedido.matnr == that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem == "Normal") {
+				if (that.oItemPedido.matnr == that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem == "Normal" && indexEdit == undefined) {
 					itemExistente = true;
 					break;
 				}
 			}
+			
 			if (itemExistente == false) {
 
 				if (indexEdit == undefined) {
