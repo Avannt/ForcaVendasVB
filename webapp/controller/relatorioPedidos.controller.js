@@ -48,6 +48,7 @@ sap.ui.define([
 			var oFilter = [
 				new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("NameOrg1", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Nrpedcli", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("AprovadoDesc", sap.ui.model.FilterOperator.Contains, sValue)
 			];

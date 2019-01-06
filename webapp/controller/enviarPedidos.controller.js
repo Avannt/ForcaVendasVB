@@ -35,6 +35,8 @@ sap.ui.define([
 			that.byId("table_entregas").setVisible(!envioPedidos);
 			that.byId("btnEnviarPedido").setVisible(envioPedidos);
 			that.byId("btnEnviarEntrega").setVisible(!envioPedidos);
+			that.byId("btnExcluir").setVisible(!envioPedidos);
+			that.byId("btnExcluirPedido").setVisible(envioPedidos);
 
 			if (envioPedidos) {
 				this.onLoadPedidos();
@@ -132,7 +134,7 @@ sap.ui.define([
 										var aux = event.target.result[i];
 										oItensPedidoGrid.push(aux);
 									}
-									
+
 									console.log("Pedidos: ");
 									console.log(oItensPedidoGrid);
 									resolve();
@@ -302,7 +304,7 @@ sap.ui.define([
 
 			var that = this;
 			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
-			
+
 			for (var i = 0; i < oSelectedItems.length; i++) {
 				var nrPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
 
@@ -355,13 +357,13 @@ sap.ui.define([
 
 							if (oAction == "Enviar") {
 
-								var oModel = that.getView().getModel();
+								// var oModel = that.getView().getModel();
 
-								// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
-								// 	json     : true,
-								// 	user     : "appadmin",
-								// 	password : "sap123"
-								// });
+								var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+									json: true,
+									user: "appadmin",
+									password: "sap123"
+								});
 
 								oModel.setUseBatch(true);
 								oModel.refreshSecurityToken();
@@ -611,13 +613,13 @@ sap.ui.define([
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
 
-						var oModel = that.getView().getModel();
+						// var oModel = that.getView().getModel();
 
-						// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
-						// 	json     : true,
-						// 	user     : "appadmin",
-						// 	password : "sap123"
-						// });
+						var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+							json: true,
+							user: "appadmin",
+							password: "sap123"
+						});
 
 						oModel.setUseBatch(true);
 						oModel.refreshSecurityToken();
@@ -666,7 +668,7 @@ sap.ui.define([
 										for (var j = 0; j < tempItemEntregar.length; j++) {
 											/* Verifo se a linha é do pedido em questão */
 											if (vEntregasEnviar[i].Vbeln == tempItemEntregar[j].Vbeln) {
-												
+
 												/* Mantenho o mesmo número do grupo para identficação posterior */
 												tempItemEntregar[j].idEntregaFutura2 = vEntregasEnviar[i].idEntregaFutura;
 												vPromise.push(tempItemEntregar[j]);
@@ -745,14 +747,14 @@ sap.ui.define([
 														icon: sap.m.MessageBox.Icon.SUCCESS,
 														title: "Sucesso",
 														actions: [sap.m.MessageBox.Action.OK],
-														onClose: function(){
+														onClose: function() {
 															var txEF3 = db.transaction("EntregaFutura3", "readwrite");
 															var objItensEntrega3 = txEF3.objectStore("EntregaFutura3");
-															
+
 															var rEF3 = objItensEntrega3.put(oItemEntregar);
-															
-															rEF3.onsuccess = function(e){
-																console.log("Salvo na tabela de histórico.");	
+
+															rEF3.onsuccess = function(e) {
+																console.log("Salvo na tabela de histórico.");
 															};
 														}
 													}
@@ -860,29 +862,29 @@ sap.ui.define([
 
 		onDeletarPedido: function(oEvent) {
 			var that = this;
-			var oModel = that.getView().getModel();
+			// var oModel = that.getView().getModel();
 
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
-			// 	json     : true,
-			// 	user     : "appadmin",
-			// 	password : "sap123"
-			// });
+			var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+				json: true,
+				user: "appadmin",
+				password: "sap123"
+			});
 
 			oModel.setUseBatch(true);
 			// oModel.refreshSecurityToken();
-			
+
 			if (oPedidosEnviar.length == 0) {
-				
+
 				MessageBox.show("Selecione pelo menos um pedido para deletar!", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Banco não encontrado!",
 					actions: [MessageBox.Action.OK]
 				});
-				
+
 			} else {
-				
+
 				var open = indexedDB.open("VB_DataBase");
-				
+
 				open.onerror = function() {
 					MessageBox.show(open.error.mensage, {
 						icon: MessageBox.Icon.ERROR,
@@ -890,29 +892,29 @@ sap.ui.define([
 						actions: [MessageBox.Action.OK]
 					});
 				};
-				
+
 				open.onsuccess = function() {
 					var db = open.result;
-					
+
 					that.byId("table_pedidos").setBusy(true);
 					var oSelectedItems = that.getView().byId("table_pedidos").getSelectedItems();
-					
+
 					for (var i = 0; i < oSelectedItems.length; i++) {
-						
+
 						var nrPed = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
-						
+
 						if (oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("idStatusPedido") == 9) {
-							
+
 							var aux = {
 								Nrpedcli: String(nrPed),
 								Reprov: "X"
 							};
-							
+
 							oModel.remove("/DelPrepostos(IvAprovado='" + aux.Reprov + "',IvNrpedcli='" + aux.Nrpedcli + "')", {
 								success: function(retorno) {
-									
+
 									var mensagem = "Pedido" + aux.Nrpedcli + " deletado com sucesso!";
-									
+
 									sap.m.MessageBox.show(
 										mensagem, {
 											icon: sap.m.MessageBox.Icon.SUCCESS,
@@ -923,9 +925,9 @@ sap.ui.define([
 
 												var store1 = db.transaction("PrePedidos", "readwrite");
 												var objPedido = store1.objectStore("PrePedidos");
-												
+
 												var request = objPedido.delete(aux.Nrpedcli);
-												
+
 												request.onsuccess = function() {
 
 													mensagem = "Pedido Preposto " + aux.Nrpedcli + " deletado com sucesso!";
@@ -1049,13 +1051,13 @@ sap.ui.define([
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
 
-						var oModel = that.getView().getModel();
+						// var oModel = that.getView().getModel();
 
-						// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
-						// 	json     : true,
-						// 	user     : "appadmin",
-						// 	password : "sap123"
-						// });
+						var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+							json: true,
+							user: "appadmin",
+							password: "sap123"
+						});
 
 						oModel.setUseBatch(true);
 						oModel.refreshSecurityToken();

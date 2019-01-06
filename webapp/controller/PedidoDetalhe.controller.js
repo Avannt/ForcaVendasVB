@@ -1914,7 +1914,7 @@ sap.ui.define([
 
 			//Valores utilizados para abater de verbas e comissões.
 			var verbaUtilizadaDesconto = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
-			if (verbaUtilizadaDesconto == "") {
+			if (verbaUtilizadaDesconto === "") {
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", 0);
 			} else {
 				verbaUtilizadaDesconto = parseFloat(verbaUtilizadaDesconto);
@@ -1922,7 +1922,7 @@ sap.ui.define([
 			}
 
 			var comissaoUtilizadaDesconto = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValComissaoUtilizadaDesconto");
-			if (comissaoUtilizadaDesconto == "") {
+			if (comissaoUtilizadaDesconto === "") {
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", 0);
 			} else {
 				comissaoUtilizadaDesconto = parseFloat(comissaoUtilizadaDesconto);
@@ -1930,10 +1930,11 @@ sap.ui.define([
 			}
 
 			var comissaoUtilizadaPrazoMed = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
-			if (comissaoUtilizadaPrazoMed == "") {
+			if (comissaoUtilizadaPrazoMed === "") {
 
 				comissaoUtilizadaPrazoMed = 0;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", 0);
+				
 			} else {
 
 				comissaoUtilizadaPrazoMed = parseFloat(comissaoUtilizadaPrazoMed);
@@ -1941,7 +1942,7 @@ sap.ui.define([
 			}
 
 			var valUtilizadoVerbaPrazoMed = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaPrazoMed");
-			if (valUtilizadoVerbaPrazoMed == "") {
+			if (valUtilizadoVerbaPrazoMed === "") {
 
 				valUtilizadoVerbaPrazoMed = 0;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", 0);
@@ -1952,25 +1953,26 @@ sap.ui.define([
 			}
 
 			var valUtilizadoVerbaBrinde = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBrinde");
-			if (comissaoUtilizadaDesconto == "") {
+			if (comissaoUtilizadaDesconto === "") {
 
-				valUtilizadoVerbaPrazoMed = 0;
+				valUtilizadoVerbaBrinde = 0;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
 			} else {
 
-				valUtilizadoVerbaPrazoMed = 0;
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", 0);
+				valUtilizadoVerbaBrinde = parseFloat(valUtilizadoVerbaBrinde);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", valUtilizadoVerbaBrinde);
 			}
 
 			var valUtilizadoComissaoBrinde = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBrinde");
-			if (comissaoUtilizadaDesconto == "") {
+			if (valUtilizadoComissaoBrinde === "") {
 
-				valUtilizadoVerbaPrazoMed = 0;
+				valUtilizadoComissaoBrinde = 0;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", 0);
+				
 			} else {
 
-				valUtilizadoVerbaPrazoMed = parseFloat(valUtilizadoVerbaPrazoMed);
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", valUtilizadoVerbaPrazoMed);
+				valUtilizadoComissaoBrinde = parseFloat(valUtilizadoComissaoBrinde);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", valUtilizadoComissaoBrinde);
 			}
 
 			var valTotalExcedenteBrinde = 0;
@@ -1978,23 +1980,28 @@ sap.ui.define([
 			// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBrinde", valTotalExcedenteBrinde.toFixed(2));
 
 			var valUtilizadoVerbaAmostra = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaAmostra");
-			if (comissaoUtilizadaDesconto == "") {
-				valUtilizadoVerbaPrazoMed = 0;
+			if (valUtilizadoVerbaAmostra === "") {
+				
+				valUtilizadoVerbaAmostra = 0;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", 0);
 			} else {
-				valUtilizadoVerbaPrazoMed = parseFloat(valUtilizadoVerbaPrazoMed);
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", valUtilizadoVerbaPrazoMed);
+				
+				valUtilizadoVerbaAmostra = parseFloat(valUtilizadoVerbaAmostra);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", valUtilizadoVerbaAmostra);
+				
 			}
 
 			var valUtilizadoComissaoAmostra = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoAmostra");
-			if (comissaoUtilizadaDesconto == "") {
+			if (valUtilizadoComissaoAmostra === "") {
 
-				valUtilizadoVerbaPrazoMed = 0;
+				valUtilizadoComissaoAmostra = 0;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", 0);
+				
 			} else {
-
-				valUtilizadoVerbaPrazoMed = parseFloat(valUtilizadoVerbaPrazoMed);
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", valUtilizadoVerbaPrazoMed);
+				
+				valUtilizadoComissaoAmostra = parseFloat(valUtilizadoComissaoAmostra);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", valUtilizadoComissaoAmostra);
+				
 			}
 
 			var valTotalExcedenteAmostra = 0;
@@ -2002,25 +2009,25 @@ sap.ui.define([
 			// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteAmostra", valTotalExcedenteAmostra.toFixed(2));
 
 			var valUtilizadoVerbaBonif = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif");
-			if (comissaoUtilizadaDesconto == "") {
+			if (valUtilizadoVerbaBonif === "") {
 
-				valUtilizadoVerbaPrazoMed = 0;
+				valUtilizadoVerbaBonif = 0;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", 0);
 			} else {
 
-				valUtilizadoVerbaPrazoMed = parseFloat(valUtilizadoVerbaPrazoMed);
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", valUtilizadoVerbaPrazoMed);
+				valUtilizadoVerbaBonif = parseFloat(valUtilizadoVerbaBonif);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", valUtilizadoVerbaBonif);
 			}
 
 			var valUtilizadoComissaoBonif = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif");
-			if (comissaoUtilizadaDesconto == "") {
+			if (valUtilizadoComissaoBonif === "") {
 
-				valUtilizadoVerbaPrazoMed = 0;
+				valUtilizadoComissaoBonif = 0;
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", 0);
 			} else {
 
-				valUtilizadoVerbaPrazoMed = parseFloat(valUtilizadoVerbaPrazoMed);
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", valUtilizadoVerbaPrazoMed);
+				valUtilizadoComissaoBonif = parseFloat(valUtilizadoComissaoBonif);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", valUtilizadoComissaoBonif);
 			}
 
 			var valTotalExcedenteBonif = 0;
@@ -3499,7 +3506,7 @@ sap.ui.define([
 			var indexEdit = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem");
 
 			for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
-				if (that.oItemPedido.matnr == that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem == "Normal" && indexEdit == undefined) {
+				if (that.oItemPedido.matnr == that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem == "Normal" && (indexEdit == undefined || indexEdit == 0 || indexEdit == "")) {
 					itemExistente = true;
 					break;
 				}
@@ -3693,7 +3700,7 @@ sap.ui.define([
 										};
 										requestPutItens.onerror = function(event) {
 											console.log(" Dados itensPedido não foram inseridos");
-
+											
 											oButtonSalvar.setEnabled(true);
 
 											if (that._ItemDialog) {
@@ -3747,9 +3754,13 @@ sap.ui.define([
 					title: "Item inválido.",
 					actions: [MessageBox.Action.OK],
 					onClose: function() {
-						oPanel.setBusy(false);
+						
+						that.onResetaCamposDialog();
+						sap.ui.getCore().byId("idItemPedido").setValue();
 						sap.ui.getCore().byId("idItemPedido").focus();
+						oPanel.setBusy(false);
 						itemJaInseridoDiluicao = false;
+						
 					}
 				});
 

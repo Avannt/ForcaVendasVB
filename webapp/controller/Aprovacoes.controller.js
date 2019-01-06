@@ -73,6 +73,13 @@ sap.ui.define([
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
 			var oModel = that.getView().getModel();
+			
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// 	json: true,
+			// 	user: "appadmin",
+			// 	password: "sap123"
+			// });
+			
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
 			oModel.read("/PedidosAprovar(IAprovador='" + codRepres + "')", {
@@ -455,6 +462,13 @@ sap.ui.define([
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
 			var oModel = that.getView().getModel();
+			
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// 	json: true,
+			// 	user: "appadmin",
+			// 	password: "sap123"
+			// });
+				
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
 			oModel.read("/PedidosAprovar", {
@@ -599,7 +613,14 @@ sap.ui.define([
 
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
+			
 			var oModel = this.getView().getModel();
+			
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// 	json: true,
+			// 	user: "appadmin",
+			// 	password: "sap123"
+			// });
 
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
@@ -683,7 +704,14 @@ sap.ui.define([
 			var that = this;
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
+			
 			var oModel = this.getView().getModel();
+			
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// 	json: true,
+			// 	user: "appadmin",
+			// 	password: "sap123"
+			// });
 
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");

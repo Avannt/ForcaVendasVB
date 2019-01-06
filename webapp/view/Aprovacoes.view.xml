@@ -34,15 +34,9 @@
 						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left" popinDisplay="Inline"  width="100px">
 							<Text text="Tot. Ped."/>
 						</Column>
-						<!--<Column minScreenWidth="380px" visible="false" demandPopin="true">-->
-						<!--	<Text text="Exc Total"/>-->
-						<!--</Column>-->
-						<!--<Column minScreenWidth="600px" demandPopin="true">-->
-						<!--	<Text text="Valor verba"/>-->
-						<!--</Column>-->
-						<!--<Column minScreenWidth="500px" demandPopin="true">-->
-						<!--	<Text text="Rentab."/>-->
-						<!--</Column>-->
+						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" width="auto">
+							<Text text="Nº Pedido"/>
+						</Column>
 					</columns>
 					<items>
 						<ColumnListItem type="Inactive">
@@ -52,9 +46,7 @@
 								<Text text="{path : 'PedidosAprovar>Erdat', formatter:'.myFormatterDataImp'} - {PedidosAprovar>Horaped}" />
 								<Text text="R$: {path :'PedidosAprovar>Vlrexc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 								<Text text="R$: {path: 'PedidosAprovar>Valtotpedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
-								<Text text="{PedidosAprovar>NrPedcli}" visible="false"/>
-								<!--<Text text="{PedidosEnviar>ValVerbaPedido}"/>-->
-								<!--<Text text="{PedidosEnviar>Rentabilidade}"/>-->
+								<Text text="{PedidosAprovar>Nrpedcli}" />
 							</cells>
 						</ColumnListItem>
 					</items>

@@ -8,8 +8,7 @@
 				<ToolbarSpacer/>
 				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
 				<DatePicker visible="false" id="DP6" placeholder="Filtre Data" displayFormat="short" change="handleChange" width="50%"/>
-				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite Nº Ped, Cliente, Repres, Status" enableSuggestions="true"
-					liveChange="onSearch" width="100%"></SearchField>
+				<SearchField id="idClientesRelatorio" placeholder="Digite Nº Ped, Cliente, Repres, Status" liveChange="onSearch" width="100%"></SearchField>
 			</Toolbar>
 		</subHeader>
 		<content>

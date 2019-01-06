@@ -1635,7 +1635,8 @@ sap.ui.define([
 																																																																AprovNome: retornoAcompPedidos.results[i].AprovNome,
 																																																																Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
 																																																																Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
-																																																																Aprovado: retornoAcompPedidos.results[i].Aprovado
+																																																																Aprovado: retornoAcompPedidos.results[i].Aprovado,
+																																																																PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png"
 																																																															};
 
 																																																															var sDescAprovado = "";
