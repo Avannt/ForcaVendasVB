@@ -97,7 +97,7 @@
 					<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m"
 						text="Enviar" press="onEnviarPedido" icon="sap-icon://upload" type="Accept" id="btnEnviarPedido"/>
 					<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m"
-						text="Excluir" press="onExcluirEntregas" icon="sap-icon://delete" type="Reject" id="btnExcluir"/>
+						text="Excluir" press="onDeletarPedido" icon="sap-icon://delete" type="Reject" id="btnExcluir"/>
 				</contentRight>
 			</Bar>
 		</footer>
