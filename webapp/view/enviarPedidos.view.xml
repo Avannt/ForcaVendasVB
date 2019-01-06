@@ -30,7 +30,7 @@
 				<items>
 					<ColumnListItem type="Active">
 						<customData>
-							<core:CustomData key="mydataEF" value="{EntregasEnviar>tipoUsuario}" writeToDom="true"/>
+							<core:CustomData key="mydataEF" value="{path: 'EntregasEnviar>tipoUsuario', type: 'sap.ui.model.type.String'}" writeToDom="true"/>
 						</customData>
 						<cells>
 							<!--<Text text="{path : 'EntregasEnviar>idEntregaFutura'}"/>-->
@@ -75,14 +75,14 @@
 				<items>
 					<ColumnListItem type="Active">
 						<customData>
-							<core:CustomData key="mydataPED" value="{PedidosEnviar>idStatusPedido}" writeToDom="true"/>
+							<core:CustomData key="mydataPED" value="{path: 'PedidosEnviar>idStatusPedido', type: 'sap.ui.model.type.String'}" writeToDom="true"/>
 						</customData>
 						<cells>
 							<Text text="{path : 'PedidosEnviar>kunnr'}"/>
 							<Text text="{path : 'PedidosEnviar>nrPedCli'}"/>
 							<Text text="{path : 'PedidosEnviar>dataImpl', formatter:'.myFormatterDataImp'}"/>
 							<Text text="{path : 'PedidosEnviar>totalItensPedido'}"/>
-							<Text text="R$: {path : 'PedidosEnviar>valTotPed'}"/>
+							<Text text="R$: {path : 'PedidosEnviar>valTotPed', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 							<Text text="{path :'PedidosEnviar>situacaoPedido'}"/>
 						</cells>
 					</ColumnListItem>
@@ -97,7 +97,7 @@
 					<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m"
 						text="Enviar" press="onEnviarPedido" icon="sap-icon://upload" type="Accept" id="btnEnviarPedido"/>
 					<Button xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic" xmlns="sap.m"
-						text="Excluir" press="onExcluirEntregas" icon="sap-icon://delete" type="Reject" id="btnExcluir"/>
+						text="Excluir" press="onDeletarPedido" icon="sap-icon://delete" type="Reject" id="btnExcluir"/>
 				</contentRight>
 			</Bar>
 		</footer>

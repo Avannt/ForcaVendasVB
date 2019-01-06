@@ -16,7 +16,7 @@ sap.ui.define([
 				var that = this;
 
 				// this.getView().setModel(oModel2, "VBModel");
-				
+
 				this.onInicializaModels();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
@@ -44,7 +44,7 @@ sap.ui.define([
 								unique: false
 							});
 						}
-						
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE CLIENTES >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("Clientes")) {
 							var objCliente = db.createObjectStore("Clientes", {
@@ -55,7 +55,7 @@ sap.ui.define([
 								unique: false
 							});
 						}
-						
+
 						if (!db.objectStoreNames.contains("TiposPedidos")) {
 							var objTiposPedidos = db.createObjectStore("TiposPedidos", {
 								keyPath: "idTipoPedido",
@@ -371,11 +371,11 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
-							
+
 							objCmpGbGrpProdsAcabs.createIndex("material", "material", {
 								unique: false
 							});
-							
+
 						}
 
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbItensBrindes (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -400,7 +400,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-						
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbQtdItens (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpGbQtdItens – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpGbQtdItens")) {
@@ -410,7 +410,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-						
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpProdsAcabs (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpProdsAcabs – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpProdsAcabs")) {
@@ -419,7 +419,7 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
-							
+
 							objCmpProdsAcabs.createIndex("material", "material", {
 								unique: false
 							});
@@ -756,7 +756,7 @@ sap.ui.define([
 									if (oAction === sap.m.MessageBox.Action.YES) {
 
 										var vTables = ["Clientes", "A969", "A959", "A960", "A961", "A962", "A963", "A964", "A965", "A966", "A967", "A968",
-											"Materiais", "TitulosAbertos", "Konm", "TiposPedidos", "FormasPagamentos", "StatusPedidos", "CmpGbItensBrindes", 
+											"Materiais", "TitulosAbertos", "Konm", "TiposPedidos", "FormasPagamentos", "StatusPedidos", "CmpGbItensBrindes",
 											"CmpSldBrindes", "CmpProdsAcabs", "CmpGbQtdItens", "CmpGbProdsAcabs", "CmpGbGrpProdsAcabs", "CmpEnxoval", "EntregaFutura"
 										];
 
@@ -841,17 +841,17 @@ sap.ui.define([
 																		console.log("Dados TiposPedidos não foram inseridos :" + event);
 																	};
 																}
-																
+
 																oModel.read("/TitulosAbertos", {
 																	urlParameters: {
 																		"$filter": "IvRepres eq '" + CodRepres + "'"
 																	},
 																	success: function(retornoTitulosAbertos) {
-																		
+
 																		var txTitulosAbertos = db.transaction("TitulosAbertos", "readwrite");
 																		var objTitulosAbertos = txTitulosAbertos.objectStore("TitulosAbertos");
 																		// objTitulosAbertos.autoIncrement();
-																		
+
 																		for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
 																			var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
 																			var date = retornoTitulosAbertos.results[i].Budat;
@@ -862,7 +862,7 @@ sap.ui.define([
 																			var minuto = String(date.getMinutes());
 																			var hora = String(date.getHours());
 																			var seg = String(date.getSeconds());
-																			
+
 																			if (dia.length == 1) {
 																				dia = "0" + String(dia);
 																			}
@@ -1375,7 +1375,7 @@ sap.ui.define([
 																																																console.log("Dados CmpEnxoval não foram inseridos :" + event);
 																																															};
 																																														}
-																																														
+
 																																														oModel.read("/CmpGbGrpProdsAcabs", {
 																																															urlParameters: {
 																																																"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1482,7 +1482,7 @@ sap.ui.define([
 																																																						var objCmpProdsAcabs = txCmpProdsAcabs.objectStore("CmpProdsAcabs");
 
 																																																						for (i = 0; i < retornoCmpProdsAcabs.results.length; i++) {
-																																																							
+
 																																																							var objBancoCmpProdsAcabs = {
 																																																								idCmpProdsAcabs: i,
 																																																								representante: retornoCmpProdsAcabs.results[i].Representante,
@@ -1493,13 +1493,13 @@ sap.ui.define([
 																																																								quantidadeTotal: retornoCmpProdsAcabs.results[i].QuantidadeTotal,
 																																																								quantidadeMaxima: retornoCmpProdsAcabs.results[i].QuantidadeMaxima
 																																																							};
-																																																							
+
 																																																							var requestCmpProdsAcabs = objCmpProdsAcabs.add(objBancoCmpProdsAcabs);
-																																																							
+
 																																																							requestCmpProdsAcabs.onsuccess = function(event) {
 																																																								console.log("Dados CmpProdsAcabs inseridos. " + event);
 																																																							};
-																																																							
+
 																																																							requestCmpProdsAcabs.onerror = function(event) {
 																																																								console.log("Dados CmpProdsAcabs não foram inseridos :" + event);
 																																																							};
@@ -1525,18 +1525,18 @@ sap.ui.define([
 																																																										representante: retornoCmpSldBrindes.results[i].Representante,
 																																																										descricaoRepresentante: retornoCmpSldBrindes.results[i].DescricaoRepresentante
 																																																									};
-																																																									
+
 																																																									var requestCmpSldBrindes = objCmpSldBrindes.add(objBancoCmpSldBrindes);
-																																																									
+
 																																																									requestCmpSldBrindes.onsuccess = function(event) {
 																																																										console.log("Dados CmpSldBrindes inseridos. " + event);
 																																																									};
-																																																									
+
 																																																									requestCmpSldBrindes.onerror = function(event) {
 																																																										console.log("Dados CmpSldBrindes não foram inseridos :" + event);
 																																																									};
 																																																								}
-																																																								
+
 																																																								oModel.read("/CmpGbItensBrindes", {
 																																																									urlParameters: {
 																																																										"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1609,12 +1609,12 @@ sap.ui.define([
 																																																													requestEntregaFutura.onsuccess = function(event) {
 																																																														console.log("Dados Entrega Futura inseridos. " + event);
 																																																													};
-																																																													
+
 																																																													requestEntregaFutura.onerror = function(event) {
 																																																														console.log("Dados Entrega Futura não foram inseridos :" + event);
 																																																													};
 																																																												}
-																																																												
+
 																																																												oModel.read("/AcompPedidos", {
 																																																													urlParameters: {
 																																																														"$filter": "IRepres eq '" + CodRepres + "'"
@@ -1705,6 +1705,7 @@ sap.ui.define([
 																																																																	"$filter": "IRepresentante eq '" + CodRepres + "'"
 																																																																},
 																																																																success: function(retornoPVPrepostoTopo) {
+
 																																																																	var txPVPrepostoTopo = db.transaction("PrePedidos", "readwrite");
 																																																																	var objPVPrepostoTopo = txPVPrepostoTopo.objectStore("PrePedidos");
 
@@ -1769,17 +1770,18 @@ sap.ui.define([
 																																																																			valTotalCampGlobal: parseFloat(0),
 																																																																			valTotalCampProdutoAcabado: parseFloat(0),
 																																																																			valUtilizadoVerbaPrazoMed: parseFloat(0),
-
+																																																																			
 																																																																			codRepres: CodRepres,
 																																																																			codUsr: parseInt(retornoPVPrepostoTopo.results[i].Usuario),
 																																																																			tipoUsuario: retornoPVPrepostoTopo.results[i].Tipousuario,
 																																																																			valCampBrinde: parseFloat(0),
 																																																																			valCampEnxoval: parseFloat(0),
 																																																																			valCampGlobal: parseFloat(0),
-
+																																																																			
 																																																																			valTotalExcedenteNaoDirecionadoBrinde: 0,
 																																																																			valTotalExcedenteNaoDirecionadoAmostra: 0,
-																																																																			valTotalExcedenteNaoDirecionadoBonif: 0
+																																																																			valTotalExcedenteNaoDirecionadoBonif: 0,
+																																																																			zlsch: retornoPVPrepostoTopo.results[i].Zlsch
 																																																																		};
 
 																																																																		var requestPVPrepostoTopo = objPVPrepostoTopo.put(objBancoPVPrepostoTopo);
@@ -1828,8 +1830,8 @@ sap.ui.define([
 																																																																					zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
 																																																																					zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
 																																																																					zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
-																																																																					
-																																																																					zzvprodabb: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodabb),
+
+																																																																					zzVprodABB: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodabb),
 																																																																					aumng: parseInt(retornoPVPrepostoItem.results[i].Aumng),
 																																																																					zzVprodDesc2: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc2),
 																																																																					zzVprodMinPermitido: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodminpermitido),
@@ -1863,7 +1865,6 @@ sap.ui.define([
 																																																																						if (that._ItemDialog) {
 																																																																							that._ItemDialog.destroy(true);
 																																																																						}
-
 																																																																						that.onUpdateDateTime();
 																																																																					}
 																																																																				});
@@ -1874,7 +1875,6 @@ sap.ui.define([
 																																																																			that.onMensagemErroODATA(error.statusCode);
 																																																																		}
 																																																																	}); // GetPedidoPrepostoItem
-
 																																																																},
 																																																																error: function(error) {
 																																																																	console.log(error);
@@ -1882,24 +1882,19 @@ sap.ui.define([
 																																																																}
 																																																															}); // GetPedidoPrepostoTopo
 																																																														} else {
-
 																																																															MessageBox.show(
 																																																																"Tabelas carregadas com sucesso!", {
 																																																																	icon: MessageBox.Icon.SUCCESS,
 																																																																	title: "Carregamento Completo",
-																																																																	actions: [
-																																																																MessageBox.Action.OK
-																																																															],
+																																																																	actions: [MessageBox.Action.OK],
 																																																																	onClose: function() {
 																																																																		if (that._ItemDialog) {
 																																																																			that._ItemDialog.destroy(true);
 																																																																		}
-
 																																																																		that.onUpdateDateTime();
 																																																																	}
 																																																																});
 																																																														}
-
 																																																													},
 																																																													error: function(error) {
 																																																														console.log(error);
@@ -2167,7 +2162,7 @@ sap.ui.define([
 									}
 								});
 						}
-
+						
 						that.getOwnerComponent().getModel("modelAux").setProperty("/Usuario", result1);
 						var oPrincipal = that.getView().getModel("menu").getProperty("/Principal");
 
@@ -2635,23 +2630,23 @@ sap.ui.define([
 								}
 							},
 							error: function(error) {
-								
+
 								sap.ui.getCore().byId("idDialogLogin").setBusy(false);
 								that.onMensagemErroODATA(error.statusCode);
-								
+
 							}
 						});
 				}
 			},
 
 			onDialogCancelLoginsButton: function() {
-				
+
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-				
+
 			},
-			
+
 			onDialogResetarLoginsButton: function() {
 				var that = this;
 
@@ -2675,32 +2670,32 @@ sap.ui.define([
 									"Materiais", "PrePedidos", "ItensPedido", "TitulosAbertos", "Konm", "EntregaFutura", "EntregaFutura2", "TiposPedidos", "FormasPagamentos", "EntregaFutura2",
 									"StatusPedidos", "CmpGbItensBrindes", "CmpSldBrindes", "CmpProdsAcabs", "CmpGbQtdItens", "CmpGbProdsAcabs", "CmpGbGrpProdsAcabs", "CmpEnxoval", "EntregaFutura"
 								];
-								
+
 								that.DropDBTables(vTables);
-								
+
 								sap.ui.getCore().byId("idUsuario").setEnabled(true);
 								sap.ui.getCore().byId("idUsuario").setValue("");
 								sap.ui.getCore().byId("idSenha").setValue("");
-								
+
 								that.getOwnerComponent().getModel("modelAux").setProperty("/DataAtualizacao", "");
 								that.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
-								
+
 								sap.ui.getCore().byId("idUsuario").focus();
 							};
 						}
 					}
 				});
 			},
-			
+
 			onDialogPromocoesCancelButton: function() {
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
 			},
-			
+
 			onMensagemErroODATA: function(codigoErro) {
 				var that = this;
-				
+
 				if (codigoErro == 0) {
 					sap.m.MessageBox.show(
 						"Verifique a conexão com a internet!", {
