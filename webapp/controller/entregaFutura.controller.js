@@ -463,21 +463,38 @@ sap.ui.define([
 					var oEF2 = tEF2.objectStore("EntregaFutura2");
 					var ixVbeln = oEF2.index("Vbeln");
 
-					var reqEntrega2 = ixVbeln.getAll(sVbeln); /* CONTINUARAQUI */
+					var reqEntrega2 = ixVbeln.getAll(sVbeln);
 
 					reqEntrega2.onsuccess = function(event) {
 						var vEntregas = event.target.result;
+						var bErro = false;
 
 						for (var i = 0; i < vEntregas.length; i++) {
 							if (vEntregas[i].Matnr == sMatnr) {
-								iQtdeDia += parseInt(vEntregas[i].Fkimg2);
+								// iQtdeDia += parseInt(vEntregas[i].Fkimg2);
+								bErro = true;
+								
+								break;
 							}
 						}
-
-						var saldo = 0;
-						saldo = iSaldoSap - iQtdeDia;
-
-						that.byId("ifSaldo").setValue(saldo);
+						
+						if (bErro){
+							/* Se esse item já foi digitado, mando uma mensagem de erro */
+							MessageBox.show("Item já digitado, por favor verifique.", {
+								icon: MessageBox.Icon.ERROR,
+								title: "Erro",
+								actions: [MessageBox.Action.OK],
+							});
+							
+							that.byId("sfItem").setValue("");
+							return;
+						}
+						else{
+							var saldo = 0;
+							saldo = iSaldoSap - iQtdeDia;
+	
+							that.byId("ifSaldo").setValue(saldo);
+						}
 					};
 				};
 
@@ -507,10 +524,10 @@ sap.ui.define([
 			oSF.suggest();
 		},
 		/* Fim sfItemSuggest */
-		
-		onLiveChangeQtde: function(e){
+
+		onLiveChangeQtde: function(e) {
 			var Qtde = e.getParameter("value");
-			
+
 			this.getView().byId("ifQtde").setValue(parseInt(Qtde));
 		},
 		/* onLiveChangeQtde  */

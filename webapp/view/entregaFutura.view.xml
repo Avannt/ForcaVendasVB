@@ -57,10 +57,10 @@
 								<Text text="Doc Vendas"/>
 							</Column>
 							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Item"/>
+								<Text text="Linha"/>
 							</Column>
 							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
-								<Text text="Linha"/>
+								<Text text="Item"/>
 							</Column>
 							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
 								<Text text="Ref.cliente"/>
