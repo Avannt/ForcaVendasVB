@@ -302,9 +302,7 @@ sap.ui.define([
 
 			var that = this;
 			var oSelectedItems = this.getView().byId("table_pedidos").getSelectedItems();
-
-			console.log("teste");
-
+			
 			for (var i = 0; i < oSelectedItems.length; i++) {
 				var nrPedido = oSelectedItems[i].getBindingContext("PedidosEnviar").getProperty("nrPedCli");
 
