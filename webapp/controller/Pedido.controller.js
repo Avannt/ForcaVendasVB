@@ -229,6 +229,7 @@ sap.ui.define([
 					that.getOwnerComponent().getModel("modelCliente").setProperty("/Inco1", result.inco1);
 					that.getOwnerComponent().getModel("modelCliente").setProperty("/Parvw", result.parvw);
 					that.getOwnerComponent().getModel("modelCliente").setProperty("/Lifnr", result.lifnr);
+					that.getOwnerComponent().getModel("modelCliente").setProperty("/Telf1", result.telf1);
 					that.getOwnerComponent().getModel("modelCliente").setProperty("/efetuoucompra", result.efetuoucompra);
 					resolve();
 				} else {
