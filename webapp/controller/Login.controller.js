@@ -28,7 +28,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 41);
+					var open = indexedDB.open("VB_DataBase", 42);
 
 					// Create the Tables
 					open.onupgradeneeded = function(e) {
@@ -184,6 +184,9 @@ sap.ui.define([
 							//     {keyPath: ["nrPedcli", "idStatusPedido"]}
 							// );
 							objItensPedido.createIndex("matnr", "matnr", {
+								unique: false
+							});
+							objItensPedido.createIndex("mtpos", "mtpos", {
 								unique: false
 							});
 							objItensPedido.createIndex("werks", "werks", {
