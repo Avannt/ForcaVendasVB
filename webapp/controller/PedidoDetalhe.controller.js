@@ -964,6 +964,7 @@ sap.ui.define([
 							that.oItemPedido.zzValExcedidoItem = 0;
 							that.oItemPedido.kbetr = 0;
 							that.oItemPedido.maxdescpermitido = 0;
+							that.oItemPedido.maxdescpermitidoExtra = 0;
 							that.oItemPedido.mtpos = oMaterial.mtpos;
 							that.oItemPedido.knumh = 0;
 							that.oItemPedido.zzRegra = 0;
@@ -2523,7 +2524,9 @@ sap.ui.define([
 											zzValorDiluido: 0,
 											zzValExcedidoItem: that.objItensPedidoTemplate[i].zzValExcedidoItem,
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
-											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB
+											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
+											maxDescPermitido: that.objItensPedidoTemplate[i].maxDescPermitido,
+											maxDescPermitidoExtra: that.objItensPedidoTemplate[i].maxDescPermitidoExtra
 										};
 
 										vetorAux.push(objAuxItem);
@@ -2583,6 +2586,7 @@ sap.ui.define([
 											zzValorDiluido: 0,
 											zzValExcedidoItem: that.objItensPedidoTemplate[i].zzValExcedidoItem,
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
+											maxDescPermitidoExtra: that.objItensPedidoTemplate[i].maxDescPermitidoExtra,
 											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB
 
 										};
@@ -3621,7 +3625,7 @@ sap.ui.define([
 										oButtonSalvar.setEnabled(true);
 									}
 								});
-
+								
 							} else {
 
 								var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
@@ -3631,6 +3635,7 @@ sap.ui.define([
 								var request = objItensPedido.get(indexEdit);
 
 								request.onsuccess = function(e3) {
+									
 									var result2 = e3.target.result;
 									//preparar o obj a ser adicionado ou editado
 									if (result2 == undefined) {
@@ -3639,12 +3644,18 @@ sap.ui.define([
 										that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoindexItem");
 										that.oItemPedido.index = that.indexItem;
 										that.oItemPedido.nrPedCli = nrPedCli;
+										
 										var requestADDItem = objItensPedido.add(that.oItemPedido);
+										
 										requestADDItem.onsuccess = function(e3) {
 
 											that.objItensPedidoTemplate.push(that.oItemPedido);
 											// that.indexItem = that.indexItem + 1;
 											that.setaCompleto(db, "Não");
+											
+											if(that.oItemPedido.mtpos == "YAMO"){
+												that.onConsumirSaldoAmostra(db, that.oItemPedido);
+											}
 
 											var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 											that.getView().setModel(oModel, "ItensPedidoGrid");
@@ -3686,6 +3697,7 @@ sap.ui.define([
 											if (that._ItemDialog) {
 												that._ItemDialog.destroy(true);
 											}
+											
 											oButtonSalvar.setEnabled(true);
 
 											that.getOwnerComponent().getModel("modelAux").setProperty("/EditarindexItem", 0);
@@ -3713,9 +3725,7 @@ sap.ui.define([
 						};
 					};
 				}
-
 			} else {
-
 				MessageBox.show("Produto: " + that.oItemPedido.matnr + " já inserido na lista de itens!", {
 					icon: MessageBox.Icon.ERROR,
 					title: "Produto já inserido.",
@@ -3754,7 +3764,7 @@ sap.ui.define([
 					title: "Item inválido.",
 					actions: [MessageBox.Action.OK],
 					onClose: function() {
-						
+						oButtonSalvar.setEnabled(true);
 						that.onResetaCamposDialog();
 						sap.ui.getCore().byId("idItemPedido").setValue();
 						sap.ui.getCore().byId("idItemPedido").focus();
@@ -3885,7 +3895,7 @@ sap.ui.define([
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			that.oItemPedido = [];
-
+			
 			if (statusPedido == 3) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
@@ -3897,17 +3907,17 @@ sap.ui.define([
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-
+				
 				if (!this._CreateMaterialFragment) {
-
+					
 					this._ItemDialog = sap.ui.xmlfragment(
 						"testeui5.view.ItemDialog",
 						this
 					);
-
+					
 					this.getView().addDependent(this._ItemDialog);
 				}
-
+				
 				/*set model para o dialog*/
 				this._ItemDialog.open();
 				sap.ui.getCore().byId("idItemPedido").focus();
@@ -3944,7 +3954,20 @@ sap.ui.define([
 					);
 					this.getView().addDependent(this._ItemDialog);
 				}
-
+				
+				var itensDiluicao = [];
+				var materiais = this.getView().getModel("materiaisCadastrados");
+				
+				for(var t=0; t<materiais.oData.length; t++){
+					
+					if(materiais.oData[t].mtpos !== "YAMO" && materiais.oData[t].mtpos !== "YBRI"){
+						itensDiluicao.push(materiais.oData[t]);
+					}
+				}
+				
+				var oModel = new sap.ui.model.json.JSONModel(itensDiluicao);
+				that.getView().setModel(oModel, "materiaisCadastradosDiluicao");
+				
 				this._ItemDialog.open();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/IserirDiluicao", true);
 				sap.ui.getCore().byId("idItemPedido").focus();
@@ -3952,7 +3975,6 @@ sap.ui.define([
 		},
 
 		onEditarItemPress: function(oEvent) {
-
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
@@ -4014,11 +4036,13 @@ sap.ui.define([
 			var idItem = oItem.getBindingContext("ItensPedidoGrid").getProperty("matnr");
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			if (statusPedido == 3) {
+				
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
+				
 			} else {
 				var that = this;
 				MessageBox.show("Deseja excluir o item " + idItem + "?", {
@@ -4030,11 +4054,11 @@ sap.ui.define([
 
 							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								if (that.objItensPedidoTemplate[i].idItemPedido === idItemPedido) {
-
+									
 									that.objItensPedidoTemplate.splice(i, 1);
-
+									
 									if (that.objItensPedidoTemplate.length === 0) {
-
+										
 										that.byId("idTipoNegociacao").setProperty("enabled", true);
 										that.byId("idTabelaPreco").setProperty("enabled", true);
 										that.byId("idFormaPagamento").setProperty("enabled", true);
@@ -4912,7 +4936,82 @@ sap.ui.define([
 
 		onFormatterzzVprodDesc: function(value) {
 			return parseFloat(Math.round(value * 100) / 100);
-		}
+		},
+		
+		//Passa o item corrente a ser adicionado
+		onConsumirSaldoAmostra: function(db, itemPedido){
+			
+			var codUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
+			
+			var store = db.transaction("ControleAmostras", "readwrite");
+			var objControleAmostras = store.objectStore("ControleAmostras");
 
+			var requestMaterial = objControleAmostras.get(codUsuario);
+
+			requestMaterial.onsuccess = function(e) {
+				var oSaldo = e.target.result;
+
+				if (oSaldo == undefined) {
+					
+					MessageBox.show("Não possui saldo de Amostra!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Saldo Indisponível!",
+						actions: [MessageBox.Action.OK],
+					});
+					
+				} else{
+					
+					oSaldo.quantidadeTotal = oSaldo.quantidadeTotal - itemPedido.zzQnt;
+					
+					var requestADDItem = objControleAmostras.put(oSaldo);
+					
+					requestADDItem.onsuccess = function(e3) {
+						console.log("Saldo da Amostra atualizado com sucesso");
+					};
+					
+					requestADDItem.onerror = function(e3) {
+						console.log("Erro ao atualizar Saldo da Amostra");
+					};
+				}
+			};
+		},
+		
+		//Passa o item corrente restaurar o saldo
+		onRetornaSaldoAmostra: function(db, itemPedido){
+			
+			var codUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
+			
+			var store = db.transaction("ControleAmostras", "readwrite");
+			var objControleAmostras = store.objectStore("ControleAmostras");
+
+			var requestMaterial = objControleAmostras.get(codUsuario);
+
+			requestMaterial.onsuccess = function(e) {
+				var oSaldo = e.target.result;
+
+				if (oSaldo == undefined) {
+					
+					MessageBox.show("Não possui saldo de Amostra!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Saldo Indisponível!",
+						actions: [MessageBox.Action.OK],
+					});
+					
+				} else{
+					
+					oSaldo.quantidadeTotal = oSaldo.quantidadeTotal - itemPedido.zzQnt;
+					
+					var requestADDItem = objControleAmostras.put(oSaldo);
+					
+					requestADDItem.onsuccess = function(e3) {
+						console.log("Saldo da Amostra atualizado com sucesso");
+					};
+					
+					requestADDItem.onerror = function(e3) {
+						console.log("Erro ao atualizar Saldo da Amostra");
+					};
+				}
+			};
+		}
 	});
 });

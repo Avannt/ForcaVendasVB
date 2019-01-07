@@ -74,7 +74,7 @@ sap.ui.define([
 
 			var oModel = that.getView().getModel();
 			
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http:// /sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
 			// 	password: "sap123"
@@ -463,7 +463,7 @@ sap.ui.define([
 
 			var oModel = that.getView().getModel();
 			
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
 			// 	password: "sap123"
@@ -616,7 +616,7 @@ sap.ui.define([
 			
 			var oModel = this.getView().getModel();
 			
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
 			// 	password: "sap123"
@@ -707,7 +707,7 @@ sap.ui.define([
 			
 			var oModel = this.getView().getModel();
 			
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
 			// 	password: "sap123"

@@ -13,9 +13,9 @@
 					</Label>
 					<SearchField class="camposDialog" id="idItemPedido" placeholder="Digite Código ou Nome do Produto" enableSuggestions="true"
 						search="onItemChangeDiluicao" suggest="_handleValueHelpSearch"
-						suggestionItems="{ path: 'materiaisCadastrados>/', sorter: { path: 'matnr' }, parameters: {operationMode: 'Client'} }">
+						suggestionItems="{ path: 'materiaisCadastradosDiluicao>/', sorter: { path: 'matnr' }, parameters: {operationMode: 'Client'} }">
 						<suggestionItems>
-							<SuggestionItem text="{materiaisCadastrados>matnr}" description="{materiaisCadastrados>maktx}" key="{materiaisCadastrados>matnr}"/>
+							<SuggestionItem text="{materiaisCadastradosDiluicao>matnr}" description="{materiaisCadastradosDiluicao>maktx}" key="{materiaisCadastradosDiluicao>matnr}"/>
 						</suggestionItems>
 						<layoutData>
 							<layout:GridData span="L4 M2"/>
