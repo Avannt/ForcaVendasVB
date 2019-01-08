@@ -14,10 +14,10 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente desconto (R$)" class="bold" busyIndicatorSize="Large"/>
-					<Input id="idExcedenteDesconto" value="{path: 'ItemAprovar>/Vlrdsc'}" class="desabilitado2" type="Number"  enabled="false"/>
+					<Input id="idExcedenteDesconto" value="{path: 'ItemAprovar>/Vlrdsc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" class="desabilitado2" type="Text"  enabled="false"/>
 					<!--}-->
 					<Label text="Valor sem destinar Desconto (R$)" class="bold"/>
-					<Input id="idAbaterNaoDestinadoDesconto" value="{path: 'ItemAprovar>/Valtotexcndirdesc'}"  type="Number" valueState="Warning" enabled="false" class="desabilitado" />
+					<Input id="idAbaterNaoDestinadoDesconto" value="{path: 'ItemAprovar>/Valtotexcndirdesc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"  type="Text" valueState="Warning" enabled="false" class="desabilitado" />
 					<Label text="Verba de Marketing (R$)"/>
 					<Input id="idVerbaUtilizadaDesconto" value="{path: 'ItemAprovar>/Vlrdscvm'}" type="Number" enabled="true" change="onDestinaDesc" />
 					<Label text="Comissão (R$)"/>
@@ -33,9 +33,9 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente prazo médio (R$)" class="bold"/>
-					<Input id="idExcedentePrazo" value="{path: 'ItemAprovar>/Vlrprz'}" enabled="false" type="Number" class="desabilitado2"/>
+					<Input id="idExcedentePrazo" value="{path: 'ItemAprovar>/Vlrprz', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" type="Text" class="desabilitado2"/>
 					<Label text="Valor sem destinar Prazo Médio (R$)" class="bold"/>
-					<Input id="idAbaterNaoDestinadoPrazoMed" value="{path: 'ItemAprovar>/Valtotexcndirprazo'}" type="Number" valueState="Warning" enabled="false" class="desabilitado"/>
+					<Input id="idAbaterNaoDestinadoPrazoMed" value="{path: 'ItemAprovar>/Valtotexcndirprazo', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" type="Text" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
 					<Input id="idVerbaUtilizadaPrazo" type="Number" value="{path: 'ItemAprovar>/Vlrprzvm'}" enabled="true" change="onDestinaPrazo"/>
 					<Label text="Comissão (R$)"/>
@@ -51,9 +51,9 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente brinde (R$)" class="bold"/>
-					<Input id="idExcedenteBrinde" value="{path: 'ItemAprovar>/Vlrbri'}" enabled="false" type="Number" class="desabilitado2 bold"/>
+					<Input id="idExcedenteBrinde" value="{path: 'ItemAprovar>/Vlrbri', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" type="Text" class="desabilitado2 bold"/>
 					<Label text="Valor sem destinar Brinde (R$)" class="bold"/>
-					<Input id="idAbaterNaoDestinadoBrinde" value="{path: 'ItemAprovar>/ValtotexcndirBrinde'}" type="Number" valueState="Warning" enabled="false" class="desabilitado"/>
+					<Input id="idAbaterNaoDestinadoBrinde" value="{path: 'ItemAprovar>/ValtotexcndirBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" type="Text" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
 					<Input id="idVerbaUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbrivm'}" enabled="true" type="Number" />
 					<Label text="Comissão (R$)"/>
@@ -69,9 +69,9 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente amostra (R$)" class="bold"/>
-					<Input id="idExcedenteAmostra" value="{path: 'ItemAprovar>/Vlramo'}" enabled="false" type="Number" class="desabilitado2"/>
+					<Input id="idExcedenteAmostra" value="{path: 'ItemAprovar>/Vlramo', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" type="Text" class="desabilitado2"/>
 					<Label text="Valor sem destinar Amostra (R$)" class="bold"/>
-					<Input id="idAbaterNaoDestinadoAmostra" value="{path: 'ItemAprovar>/ValtotexcndirAmostra'}" type="Number" valueState="Warning" enabled="false" class="desabilitado"/>
+					<Input id="idAbaterNaoDestinadoAmostra" value="{path: 'ItemAprovar>/ValtotexcndirAmostra', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" type="Text" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
 					<Input id="idVerbaUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramovm'}" enabled="true" type="Number" />
 					<Label text="Comissão (R$)"/>
@@ -87,9 +87,9 @@
 				emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				<form:content>
 					<Label text="Valor excedente bonificação (R$)" class="bold"/>
-					<Input id="idExcedenteBonif" value="{path: 'ItemAprovar>/Vlrbon'}" enabled="false" type="Number" class="desabilitado2"/>
+					<Input id="idExcedenteBonif" value="{path: 'ItemAprovar>/Vlrbon', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" type="Text" class="desabilitado2"/>
 					<Label text="Valor sem destinar Bonificação (R$)" class="bold"/>
-					<Input id="idAbaterNaoDestinadoBonif" value="{path: 'ItemAprovar>/ValtotexcndirBonif'}" type="Number" valueState="Warning" enabled="false" class="desabilitado"/>
+					<Input id="idAbaterNaoDestinadoBonif" value="{path: 'ItemAprovar>/ValtotexcndirBonif', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" type="Text" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
 					<Input id="idVerbaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbonvm'}" enabled="true" type="Number" />
 					<Label id="idLabelComissaoUtilizadaBonif" text="Comissão (R$)"/>

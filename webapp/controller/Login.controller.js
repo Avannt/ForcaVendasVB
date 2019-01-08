@@ -947,7 +947,8 @@ sap.ui.define([
 																						// inco1: retornoCliente.results[i].Inco1,
 																						parvw: retornoCliente.results[i].Parvw,
 																						lifnr: retornoCliente.results[i].Lifnr,
-																						efetuoucompra: retornoCliente.results[i].Efetuoucompra
+																						efetuoucompra: retornoCliente.results[i].Efetuoucompra,
+																						telf1: retornoCliente.results[i].Telf1
 																					};
 
 																					var requestCliente = objCliente.add(objBancoCliente);
@@ -966,7 +967,9 @@ sap.ui.define([
 																						stcd2: "",
 																						// inco1: "",
 																						parvw: "",
-																						lifnr: ""
+																						lifnr: "",
+																						telf1: "",
+																						efetuoucompra: ""
 																					};
 
 																					requestCliente.onsuccess = function(event) {
@@ -2419,7 +2422,9 @@ sap.ui.define([
 						"testeui5.view.salvarLogin",
 						this
 					);
+					
 					this.getView().addDependent(this._ItemDialog);
+					
 				}
 
 				this._ItemDialog.open();

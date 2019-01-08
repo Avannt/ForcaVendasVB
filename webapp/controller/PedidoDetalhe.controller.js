@@ -105,12 +105,12 @@ sap.ui.define([
 
 			this.byId("idCodCliente").setValue(this.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + "-" +
 				this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres") + "-" + codUsr);
-			this.byId("idNome").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Name1"));
-			this.byId("idCNPJ").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Stcd1") + this.getOwnerComponent().getModel("modelCliente").getProperty("/Stcd2"));
-			this.byId("idEndereco").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Stras"));
-			this.byId("idCidade").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Ort01") + "-" +
-				this.getOwnerComponent().getModel("modelCliente").getProperty("/Regio"));
-			this.byId("idFone").setValue();
+			// this.byId("idNome").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Name1"));
+			// this.byId("idCNPJ").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Stcd1") + this.getOwnerComponent().getModel("modelCliente").getProperty("/Stcd2"));
+			// this.byId("idEndereco").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Stras"));
+			// this.byId("idCidade").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Ort01") + "-" +
+			// 	this.getOwnerComponent().getModel("modelCliente").getProperty("/Regio"));
+			// this.byId("idFone").setValue(this.getOwnerComponent().getModel("modelCliente").getProperty("/Telf1"));
 		},
 
 		onResetaCamposPrePedido: function() {
@@ -663,32 +663,71 @@ sap.ui.define([
 
 		onCarregaMateriaisComPreco: function(db, tabPreco, vetorMateriais) {
 			var vetorResultMateriais = [];
+			var tabbri = this.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbri;
+			var tabamo = this.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabamo;
+			var tabbon = this.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
+			
 			var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
 			var that = this;
-
-			var storeA960 = db.transaction("A960", "readwrite");
-			var objA960 = storeA960.objectStore("A960");
-
+			
 			for (var i = 0; i < vetorMateriais.length; i++) {
-
-				var idA960 = werks + "." + tabPreco + "." + vetorMateriais[i].matnr;
-				var requesA960 = objA960.get(idA960);
-
-				requesA960.onsuccess = function(e) {
-					var oA960 = e.target.result;
-					if (oA960 != undefined) {
-
-						for (var j = 0; j < vetorMateriais.length; j++) {
-							if (oA960.matnr == vetorMateriais[j].matnr) {
-								vetorResultMateriais.push(vetorMateriais[j]);
-								break;
+				
+				if(vetorMateriais[i].mtpos == "NORM"){
+					
+					var storeA960 = db.transaction("A960", "readwrite");
+					var objA960 = storeA960.objectStore("A960");
+					
+					var idA960 = werks + "." + tabPreco + "." + vetorMateriais[i].matnr;
+					var requesA960 = objA960.get(idA960);
+	
+					requesA960.onsuccess = function(e) {
+						var oA960 = e.target.result;
+						if (oA960 != undefined) {
+							for (var j = 0; j < vetorMateriais.length; j++) {
+								if (oA960.matnr == vetorMateriais[j].matnr) {
+									vetorResultMateriais.push(vetorMateriais[j]);
+									break;
+								}
 							}
 						}
-						var oModel = new sap.ui.model.json.JSONModel(vetorResultMateriais);
-						that.getView().setModel(oModel, "materiaisCadastrados");
+					};
+				
+				} else if (vetorMateriais[i].mtpos == "YAMO" || vetorMateriais[i].mtpos == "YBRI" || vetorMateriais[i].mtpos == "YBON"){
+					var tabPrecoAB = "";
+					
+					if(vetorMateriais[i].mtpos == "YBRI"){
+						tabPrecoAB = tabbri;
+					} else if(vetorMateriais[i].mtpos == "YAMO"){
+						tabPrecoAB = tabamo;
+					} else if(vetorMateriais[i].mtpos == "YBON"){
+						tabPrecoAB = tabbri;
 					}
-				};
+					
+					storeA960 = db.transaction("A960", "readwrite");
+					objA960 = storeA960.objectStore("A960");
+					
+					idA960 = werks + "." + tabPrecoAB + "." + vetorMateriais[i].matnr;
+					var requesA963 = objA960.get(idA960);
+	
+					requesA963.onsuccess = function(e) {
+						var oA960 = e.target.result;
+						
+						if (oA960 != undefined) {
+							for (var j = 0; j < vetorMateriais.length; j++) {
+								
+								if (oA960.matnr == vetorMateriais[j].matnr) {
+									vetorResultMateriais.push(vetorMateriais[j]);
+									break;
+								}
+							}
+						}
+					};
+				}
 			}
+			
+			var oModel = new sap.ui.model.json.JSONModel(vetorResultMateriais);
+			that.getView().setModel(oModel, "materiaisCadastrados");
+			
 		},
 		/// EVENTOS CAMPOS							<<<<<<<<<<<<
 
@@ -913,6 +952,10 @@ sap.ui.define([
 			var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
 			var tabPreco = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco");
 			var tipoPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			
+			var tabbri = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbri;
+			var tabamo = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabamo;
+			var tabbon = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
 
 			var vetorAuxFamilias = [];
 			var vetorAuxFamiliasExtra = [];
@@ -956,6 +999,7 @@ sap.ui.define([
 							});
 
 						} else {
+							
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
 							that.oItemPedido.maktx = oMaterial.maktx;
@@ -992,12 +1036,14 @@ sap.ui.define([
 
 							requesA960.onsuccess = function(e) {
 								var oA960 = e.target.result;
-
-								if (oA960 == undefined) {
+								
+								//validação feita para ver preço de brinde e amostra de acordo com uma tabela fixa cadastrado no login do usuário
+								if (oA960 == undefined && that.oItemPedido.mtpos != "NORM") {
+									
 									oPanel.setBusy(false);
-
+									
 									sap.ui.getCore().byId("idItemPedido").setValue("");
-
+									
 									MessageBox.show("Não existe preço para o produto: " + codItem + " de acordo com a tabela de preço: " +
 										that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"), {
 											icon: MessageBox.Icon.ERROR,
@@ -1007,23 +1053,74 @@ sap.ui.define([
 												that.onResetaCamposDialog();
 											}
 										});
-
+										
 								} else {
-
-									if (oA960.zzPervm !== "" || oA960.zzPervm !== undefined) {
-										oA960.zzPervm = parseFloat(oA960.zzPervm);
+									
+									if(that.oItemPedido.mtpos == "YBRI" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBON"){
+										
+										var tabPrecoAB = "";
+										
+										if(that.oItemPedido.mtpos == "YBRI"){
+											
+											tabPrecoAB = tabbri;
+											
+										} else if(that.oItemPedido.mtpos == "YAMO"){
+											
+											tabPrecoAB = tabamo;
+											
+										} else if(that.oItemPedido.mtpos == "YBON"){
+											
+											tabPrecoAB = tabbon;
+											
+										}
+										
+										storeA960 = db.transaction("A960", "readwrite");
+										objA960 = storeA960.objectStore("A960");
+			
+										idA960 = werks + "." + tabPrecoAB + "." + oMaterial.matnr;
+										
+										requesA960 = objA960.get(idA960);
+										
+										requesA960.onsuccess = function(e) {
+											var oA960AB = e.target.result;
+											
+											if (oA960AB.zzPervm !== "" || oA960AB.zzPervm !== undefined) {
+												oA960AB.zzPervm = parseFloat(oA960AB.zzPervm);
+											}
+											if (oA960AB.zzPercom !== "" || oA960AB.zzPercom !== undefined) {
+												oA960AB.zzPercom = parseFloat(oA960AB.zzPercom);
+											}
+											if (oA960AB.zzVprod !== "" || oA960AB.zzVprod !== undefined) {
+												oA960AB.zzVprod = parseFloat(oA960AB.zzVprod);
+											}
+		
+											// Desconto Extra aplicado depois do dento digitado no item
+											that.oItemPedido.zzPervm = oA960AB.zzPervm; //Verba
+											that.oItemPedido.zzPercom = oA960AB.zzPercom; //Comissão
+											that.oItemPedido.zzVprod = oA960AB.zzVprod;
+										};
+										
+									} else {
+										
+										//Pega os preços quando o mtpos for NORM
+										if (oA960.zzPervm !== "" || oA960.zzPervm !== undefined) {
+											oA960.zzPervm = parseFloat(oA960.zzPervm);
+										}
+										
+										if (oA960.zzPercom !== "" || oA960.zzPercom !== undefined) {
+											oA960.zzPercom = parseFloat(oA960.zzPercom);
+										}
+										
+										if (oA960.zzVprod !== "" || oA960.zzVprod !== undefined) {
+											oA960.zzVprod = parseFloat(oA960.zzVprod);
+										
+											// Desconto Extra aplicado depois do dento digitado no item
+											that.oItemPedido.zzPervm = oA960.zzPervm; //Verba
+											that.oItemPedido.zzPercom = oA960.zzPercom; //Comissão
+											that.oItemPedido.zzVprod = oA960.zzVprod;
+										}
 									}
-									if (oA960.zzPercom !== "" || oA960.zzPercom !== undefined) {
-										oA960.zzPercom = parseFloat(oA960.zzPercom);
-									}
-									if (oA960.zzVprod !== "" || oA960.zzVprod !== undefined) {
-										oA960.zzVprod = parseFloat(oA960.zzVprod);
-									}
-
-									// Desconto Extra aplicado depois do dento digitado no item
-									that.oItemPedido.zzPervm = oA960.zzPervm; //Verba
-									that.oItemPedido.zzPercom = oA960.zzPercom; //Comissão
-									that.oItemPedido.zzVprod = oA960.zzVprod;
+									
 									that.oItemPedido.knumh = 0; //Desconto familia
 									that.oItemPedido.zzDesext = 0;
 									that.oItemPedido.zzDesitem = 0;
@@ -1047,9 +1144,9 @@ sap.ui.define([
 												vetorAuxFamilias.push(cursor.value);
 												console.log("Familia: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
 											}
-
+											
 											cursor.continue();
-
+											
 										} else {
 
 											var objA966 = db.transaction("A966").objectStore("A966");
@@ -1193,15 +1290,15 @@ sap.ui.define([
 																								var oA960ABB = e.target.result;
 
 																								if (oA960ABB == undefined) {
-
+																									
 																									that.oItemPedido.zzVprodABB = 0;
 																									that.calculaPrecoItem();
 																									that.popularCamposItemPedido();
 																									sap.ui.getCore().byId("idQuantidade").focus();
 																									oPanel.setBusy(false);
-
+																									
 																								} else {
-
+																									
 																									that.oItemPedido.zzVprodABB = parseFloat(oA960ABB.zzVprod);
 																									that.calculaPrecoItem();
 																									that.popularCamposItemPedido();
@@ -3644,15 +3741,15 @@ sap.ui.define([
 										that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoindexItem");
 										that.oItemPedido.index = that.indexItem;
 										that.oItemPedido.nrPedCli = nrPedCli;
-
+										
 										var pInserirItem = new Promise(function(resII, rejII) {
 											if (that.oItemPedido.mtpos == "YAMO") {
-												that.onConsumirSaldoAmostra(db, that.oItemPedido, resII, rejII, oItemPedido.zzQnt);
+												that.onConsumirSaldoAmostra(db, that.oItemPedido, resII, rejII, that.oItemPedido.zzQnt);
 											} else {
 												resII();
 											}
 										});
-
+										
 										pInserirItem.then(function() {
 											storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 											objItensPedido = storeItensPedido.objectStore("ItensPedido");
@@ -4156,14 +4253,27 @@ sap.ui.define([
 			//Percorre os itens do pesdido para fazer uma verificação se realmente não tem produto repetido.
 			var that = this;
 			var idStatusPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
-
+			var valorParcelas = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValParcelasPedido");
+			
 			if (idStatusPedido == 3) {
+				
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
-			} else {
+				
+			} else if(valorParcelas < 300){
+				
+				MessageBox.show("Pedido deve ter um parcelamento maior que R$: 300,00.", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK]
+				});
+				
+			} 
+			else {
+				
 				//HRIMP E DATIMP
 				var data = this.onDataAtualizacao();
 				var horario = data[1];
