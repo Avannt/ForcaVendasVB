@@ -426,17 +426,24 @@ sap.ui.define([
 										Zzvalexcedidoitem: String(oItensPedidoGridEnviar[j].zzValExcedidoItem),
 										Zzqntdiluicao: String(oItensPedidoGridEnviar[j].zzQntDiluicao),
 										Tipoitem2: String(oItensPedidoGridEnviar[j].tipoItem2),
-										Maxdescpermitidoextra: String(oItensPedidoGridEnviar[j].maxDescPermitidoExtra),
-										Maxdescpermitido: String(oItensPedidoGridEnviar[j].maxDescPermitido),
+										Maxdescpermitidoextra: String(oItensPedidoGridEnviar[j].maxdescpermitidoExtra),
+										Maxdescpermitido: String(oItensPedidoGridEnviar[j].maxdescpermitido),
 										Mtpos: String(oItensPedidoGridEnviar[j].mtpos),
 										Kbetr: String(oItensPedidoGridEnviar[j].kbetr),
 										Zzvprodabb: String(oItensPedidoGridEnviar[j].zzVprodABB),
 										Aumng: String(oItensPedidoGridEnviar[j].aumng)
 									};
 
+									
 									oModel.create("/InserirLinhaOV", objItensPedido, {
 										method: "POST",
 										success: function(data) {
+											/* Se for item do tipo Amostra (YAMO), diminui o saldo do item oItensPedidoGridEnviar */
+											if (data.Mtpos == "YAMO") {
+												that.onAtulizaSaldoAmostra(db, data);
+											}
+											/* ---- */
+
 											console.info("Itens Inserido");
 											that.byId("table_pedidos").setBusy(false);
 										},
@@ -589,6 +596,37 @@ sap.ui.define([
 			}
 		},
 		/*FIM onEnviarPedido*/
+
+		onAtulizaSaldoAmostra: function(db, oItem) {
+			var txControleAmostras = db.transaction("ControleAmostra", "readwrite");
+			var objControleAmostras = txControleAmostras.objectStore("ControleAmostra");
+
+			var requestGetControleAmostras = objControleAmostras.get(0);
+
+			requestGetControleAmostras.onsuccess = function(event) {
+				var objBancoControleAmostras = event.target.result;
+
+				objBancoControleAmostras.quantidadeTotal = String(parseInt(objBancoControleAmostras.quantidadeTotal) - oItem.Zzqnt);
+				
+				txControleAmostras = db.transaction("ControleAmostra", "readwrite");
+				objControleAmostras = txControleAmostras.objectStore("ControleAmostra");
+				
+				var requestPutControleAmostras = objControleAmostras.put(objBancoControleAmostras);
+				
+				requestPutControleAmostras.onsuccess = function(e){
+					console.log("Dados Controle Amostras atualizados. " + event);
+				};
+				
+				requestPutControleAmostras.onerror = function(e){
+					console.log("Dados Controle Amostras não foram atualizados. " + event);
+				};
+				
+			};
+
+			requestGetControleAmostras.onerror = function(event) {
+				console.log("Dados ControleAmostras não foram atualizados :" + event);
+			};
+		},
 
 		onEnviarEntrega: function(oEvent) {
 
