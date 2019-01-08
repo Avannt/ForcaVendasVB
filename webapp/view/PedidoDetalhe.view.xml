@@ -15,17 +15,17 @@
 											<Label text="Cod Cli - Cod Repres - Cod Prep"/>
 											<Input id="idCodCliente" value="" enabled="false"/>
 											<Label text="Nome"/>
-											<Input id="idNome" value="" enabled="false"/>
+											<Input id="idNome" value="{modelCliente>/Name1}" enabled="false"/>
 											<Label text="CPF/CNPJ"/>
-											<Input id="idCNPJ" value="" enabled="false"/>
+											<Input id="idCNPJ" value="{modelCliente>/Stcd1} {modelCliente>/Stcd2} " enabled="false"/>
 											<Label text="Endereço"/>
-											<Input id="idEndereco" value="" enabled="false"/>
+											<Input id="idEndereco" value="{modelCliente>/Stras}" enabled="false"/>
 											<Label text="Cidade"/>
-											<Input id="idCidade" value="" enabled="false"/>
+											<Input id="idCidade" value="{modelCliente>/Ort01} - {modelCliente>/Regio}" enabled="false"/>
 											<!--<Label text="E-mail envio XML"/>-->
 											<!--<Input id="idEmail" value="" enabled="false"/>-->
 											<Label text="Telefone"/>
-											<Input id="idFone" value="" enabled="false"/>
+											<Input id="idFone" value="{modelCliente>/Telf1}" enabled="false"/>
 										</f:content>
 									</f:SimpleForm>
 								</ScrollContainer>
