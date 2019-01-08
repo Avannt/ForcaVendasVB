@@ -20,39 +20,317 @@ sap.ui.define([
 
 		onCarregaExcedentes: function() {
 
-			var Vlrdsc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
-			var Vlrdsccom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
-			var Vlrdscdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
-			var Vlrdscvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
-			var Vlrdscvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
+			var Vlrdsc = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
+			if(Vlrdsc == "" || Vlrdsc == undefined){
+				
+				Vlrdsc = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdsc", Vlrdsc);
+				 
+			} else{
+				
+				Vlrdsc = parseFloat(Vlrdsc);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdsc", Vlrdsc);
+				
+			}
+			
+			var Vlrdsccom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
+			if(Vlrdsccom == "" || Vlrdsccom == undefined){
+				
+				Vlrdsccom = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdsccom", Vlrdsccom);
+				 
+			} else{
+				
+				Vlrdsccom = parseFloat(Vlrdsccom);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdsccom", Vlrdsccom);
+				
+			}
+			
+			var Vlrdscdd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
+			if(Vlrdscdd == "" || Vlrdscdd == undefined){
+				Vlrdscdd = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscdd", Vlrdscdd);
+				 
+			} else{
+				
+				Vlrdscdd = parseFloat(Vlrdscdd);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscdd", Vlrdscdd);
+				
+			}
+			
+			var Vlrdscvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
+			if(Vlrdscvm == "" || Vlrdscvm == undefined){
+				Vlrdscvm = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscvm", Vlrdscvm);
+				 
+			} else{
+				
+				Vlrdscvm = parseFloat(Vlrdscvm);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscvm", Vlrdscvm);
+				
+			}
+			
+			var Vlrdscvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
+			if(Vlrdscvvb == "" || Vlrdscvvb == undefined){
+				
+				Vlrdscvvb = 0; 
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscvvb", Vlrdscvvb);
+				
+			} else{
+				
+				Vlrdscvvb = parseFloat(Vlrdscvvb);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscvvb", Vlrdscvvb);
+				
+			}
+			
 			var Valtotexcndirdesc = Vlrdsc - (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb).toFixed(2);
 
-			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
-			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
-			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
-			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
-			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
+			var Vlrprz = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
+			if(Vlrprz == "" || Vlrprz == undefined){
+				Vlrprz = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprz", Vlrprz);
+				
+			} else{
+				
+				Vlrprz = parseFloat(Vlrprz);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprz", Vlrprz);
+				
+			}
+			
+			var Vlrprzcom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
+			if(Vlrprzcom == "" || Vlrprzcom == undefined){
+				Vlrprzcom = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzcom", Vlrprzcom);
+				
+			} else{
+				
+				Vlrprzcom = parseFloat(Vlrprzcom);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzcom", Vlrprzcom);
+				
+			}
+			
+			var Vlrprzdd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
+			if(Vlrprzdd == "" || Vlrprzdd == undefined){
+				Vlrprzdd = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzdd", Vlrprzdd);
+				
+			} else{
+				
+				Vlrprzdd = parseFloat(Vlrprzdd);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzdd", Vlrprzdd);
+				
+			}
+			
+			var Vlrprzvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
+			if(Vlrprzvm == "" || Vlrprzvm == undefined){
+				Vlrprzvm = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvm", Vlrprzvm);
+				
+			} else{
+				
+				Vlrprzvm = parseFloat(Vlrprzvm);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvm", Vlrprzvm);
+				
+			}
+			
+			var Vlrprzvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
+			if(Vlrprzvvb == "" || Vlrprzvvb == undefined){
+				Vlrprzvvb = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrprzvvb);
+				
+			} else{
+				
+				Vlrprzvvb = parseFloat(Vlrprzvvb);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrprzvvb);
+				
+			}
+			
 			var Valtotexcndirprazo = Vlrprz - (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb).toFixed(2);
 
-			var Vlrbri = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbri"));
-			var Vlrbrivm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
-			var Vlrbricom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
-			var Vlrbridd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
-			var Vlrbrivvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
+			var Vlrbri = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbri"));
+			if(Vlrbri == "" || Vlrbri == undefined){
+				Vlrbri = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbri", Vlrbri);
+				
+			} else{
+				
+				Vlrbri = parseFloat(Vlrbri);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbri", Vlrbri);
+				
+			}
+			
+			var Vlrbrivm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
+			if(Vlrbrivm == "" || Vlrbrivm == undefined){
+				Vlrbrivm = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrbrivm);
+				
+			} else{
+				
+				Vlrbrivm = parseFloat(Vlrbrivm);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbrivm", Vlrbrivm);
+				
+			}
+			
+			var Vlrbricom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
+			if(Vlrbricom == "" || Vlrbricom == undefined){
+				Vlrbricom = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbricom", Vlrbricom);
+				
+			} else{
+				
+				Vlrbricom = parseFloat(Vlrbricom);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbricom", Vlrbricom);
+				
+			}
+			
+			var Vlrbridd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
+			if(Vlrbridd == "" || Vlrbridd == undefined){
+				Vlrbridd = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrbridd);
+				
+			} else{
+				
+				Vlrbridd = parseFloat(Vlrbridd);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbridd", Vlrbridd);
+				
+			}
+			
+			var Vlrbrivvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
+			if(Vlrbrivvb == "" || Vlrbrivvb == undefined){
+				Vlrbrivvb = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbrivvb", Vlrbrivvb);
+				
+			} else{
+				
+				Vlrbrivvb = parseFloat(Vlrbrivvb);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbrivvb", Vlrbrivvb);
+				
+			}
+			
 			var ValtotexcndirBrinde = Vlrbri - (Vlrbrivm + Vlrbricom + Vlrbridd + Vlrbrivvb).toFixed(2);
 
-			var Vlramo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramo"));
-			var Vlramovm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
-			var Vlramocom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
-			var Vlramodd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
-			var Vlramovvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
+			var Vlramo = (this.getView().getModel("ItemAprovar").getProperty("/Vlramo"));
+			if(Vlramo == "" || Vlramo == undefined){
+				Vlramo = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramo", Vlramo);
+				
+			} else{
+				
+				Vlramo = parseFloat(Vlramo);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramo", Vlramo);
+				
+			}
+			
+			var Vlramovm = (this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
+			if(Vlramovm == "" || Vlramovm == undefined){
+				Vlramovm = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramovm", Vlramovm);
+				
+			} else{
+				
+				Vlramovm = parseFloat(Vlramovm);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramovm", Vlramovm);
+				
+			}
+			
+			var Vlramocom = (this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
+			if(Vlramocom == "" || Vlramocom == undefined){
+				Vlramocom = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramocom", Vlramocom);
+				
+			} else{
+				
+				Vlramocom = parseFloat(Vlramocom);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramocom", Vlramocom);
+				
+			}
+			
+			var Vlramodd = (this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
+			if(Vlramodd == "" || Vlramodd == undefined){
+				Vlramodd = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramodd", Vlramodd);
+				
+			} else{
+				
+				Vlramodd = parseFloat(Vlramodd);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramodd", Vlramodd);
+				
+			}
+			
+			var Vlramovvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
+			if(Vlramovvb == "" || Vlramovvb == undefined){
+				Vlramovvb = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramovvb", Vlramovvb);
+				
+			} else{
+				
+				Vlramovvb = parseFloat(Vlramovvb);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlramovvb", Vlramovvb);
+				
+			}
+			
 			var ValtotexcndirAmostra = Vlramo - (Vlramovm + Vlramocom + Vlramodd + Vlramovvb).toFixed(2);
 
-			var Vlrbon = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbon"));
-			var Vlrbonvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
-			var Vlrboncom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
-			var Vlrbondd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
-			var Vlrbonvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
+			var Vlrbon = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbon"));
+			if(Vlrbon == "" || Vlrbon == undefined){
+				Vlrbon = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbon", Vlrbon);
+				
+			} else{
+				
+				Vlrbon = parseFloat(Vlrbon);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbon", Vlrbon);
+				
+			}
+			
+			var Vlrbonvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
+			if(Vlrbonvm == "" || Vlrbonvm == undefined){
+				Vlrbonvm = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbonvm", Vlrbonvm);
+				
+			} else{
+				
+				Vlrbonvm = parseFloat(Vlrbonvm);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbonvm", Vlrbonvm);
+				
+			}
+			
+			var Vlrboncom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
+			if(Vlrboncom == "" || Vlrboncom == undefined){
+				Vlrboncom = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrboncom", Vlrboncom);
+				
+			} else{
+				
+				Vlrboncom = parseFloat(Vlrboncom);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrboncom", Vlrboncom);
+				
+			}
+			
+			var Vlrbondd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
+			if(Vlrbondd == "" || Vlrbondd == undefined){
+				Vlrbondd = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbondd", Vlrbondd);
+				
+			} else{
+				
+				Vlrbondd = parseFloat(Vlrbondd);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbondd", Vlrbondd);
+				
+			}
+			
+			var Vlrbonvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
+			if(Vlrbonvvb == "" || Vlrbonvvb == undefined){
+				Vlrbonvvb = 0;
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbonvvb", Vlrbonvvb);
+				
+			} else{
+				
+				Vlrbonvvb = parseFloat(Vlrbonvvb);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbonvvb", Vlrbonvvb);
+				
+			}
+			
 			var ValtotexcndirBonif = Vlrbon - (Vlrbonvm + Vlrboncom + Vlrbondd + Vlrbonvvb).toFixed(2);
 
 			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc.toFixed(2));
@@ -218,23 +496,32 @@ sap.ui.define([
 			var Valtotexcndirdesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc")).toFixed(2);
 			var vlrTotalDesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
 			
-			var Vlrdsccom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
+			var Vlrdsccom = this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom");
 			if(Vlrdsccom == "" || Vlrdsccom == undefined){
 				Vlrdsccom = 0;
+			} else{
+				Vlrdsccom = parseFloat(Vlrdsccom);
 			}
-			var Vlrdscdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
+			
+			var Vlrdscdd = this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd");
 			if(Vlrdscdd == "" || Vlrdscdd == undefined){
 				Vlrdscdd = 0;
+			} else {
+				Vlrdscdd = parseFloat(Vlrdscdd);
 			}
 			
-			var Vlrdscvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
+			var Vlrdscvm = this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm");
 			if(Vlrdscvm == "" || Vlrdscvm == undefined){
 				Vlrdscvm = 0;
+			} else {
+				Vlrdscvm = parseFloat(Vlrdscvm);
 			}
 			
-			var Vlrdscvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
+			var Vlrdscvvb = this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb");
 			if(Vlrdscvvb == "" || Vlrdscvvb == undefined){
 				Vlrdscvvb = 0;
+			} else {
+				Vlrdscvvb = parseFloat(Vlrdscvvb);
 			}
 			
 			var somaDosDestinados = (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb).toFixed(2);
@@ -279,29 +566,48 @@ sap.ui.define([
 		onDestinaPrazo: function(evt) {
 			var Valtotexcndirprazo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo"));
 
-			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz")).toFixed(2);
+			var Vlrprz = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprz")).toFixed(2);
 			if(Vlrprz == "" || Vlrprz == undefined){
 				Vlrprz = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprz", 0);
+				
+			} else {
+				Vlrprz = parseFloat(Vlrprz);
 			}
 			
-			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
+			var Vlrprzcom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
 			if(Vlrprzcom == "" || Vlrprzcom == undefined){
 				Vlrprzcom = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom", 0);
+				
+			} else {
+				Vlrprzcom = parseFloat(Vlrprzcom);
 			}
 			
-			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
+			var Vlrprzdd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
 			if(Vlrprzdd == "" || Vlrprzdd == undefined){
 				Vlrprzdd = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd", 0);
+				
+			} else {
+				Vlrprzdd = parseFloat(Vlrprzdd);
 			}
 			
-			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
+			var Vlrprzvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
 			if(Vlrprzvm == "" || Vlrprzvm == undefined){
 				Vlrprzvm = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm", 0);
+				
+			} else {
+				Vlrprzvm = parseFloat(Vlrprzvm);
 			}
 			
-			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
+			var Vlrprzvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
 			if(Vlrprzvvb == "" || Vlrprzvvb == undefined){
 				Vlrprzvvb = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb", 0);
+			} else {
+				Vlrprzvvb = parseFloat(Vlrprzvvb);
 			}
 			
 			var somaDosDestinados = (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb).toFixed(2);
@@ -346,29 +652,49 @@ sap.ui.define([
 		onDestinaBonif: function(evt) {
 			var ValtotexcndirBonif = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif"));
 
-			var Vlrprz = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprz")).toFixed(2);
+			var Vlrprz = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprz")).toFixed(2);
 			if(Vlrprz == "" || Vlrprz == undefined){
 				Vlrprz = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprz", 0);
+				
+			} else {
+				Vlrprz = parseFloat(Vlrprz);
 			}
 			
-			var Vlrprzcom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
+			var Vlrprzcom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
 			if(Vlrprzcom == "" || Vlrprzcom == undefined){
 				Vlrprzcom = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom", 0);
+				
+			} else {
+				Vlrprzcom = parseFloat(Vlrprzcom);
 			}
 			
-			var Vlrprzdd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
+			var Vlrprzdd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
 			if(Vlrprzdd == "" || Vlrprzdd == undefined){
 				Vlrprzdd = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd", 0);
+				
+			} else {
+				Vlrprzdd = parseFloat(Vlrprzdd);
 			}
 			
-			var Vlrprzvm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
+			var Vlrprzvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
 			if(Vlrprzvm == "" || Vlrprzvm == undefined){
 				Vlrprzvm = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm", 0);
+				
+			} else {
+				Vlrprzvm = parseFloat(Vlrprzvm);
 			}
 			
-			var Vlrprzvvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
+			var Vlrprzvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
 			if(Vlrprzvvb == "" || Vlrprzvvb == undefined){
 				Vlrprzvvb = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb", 0);
+				
+			} else {
+				Vlrprzvvb = parseFloat(Vlrprzvvb);
 			}
 			
 			var somaDosDestinados = (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb).toFixed(2);
@@ -411,29 +737,49 @@ sap.ui.define([
 		onDestinaAmostra: function(evt) {
 			var ValtotexcndirAmostra = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirAmostra"));
 
-			var Vlramo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramo")).toFixed(2);
+			var Vlramo = (this.getView().getModel("ItemAprovar").getProperty("/Vlramo")).toFixed(2);
 			if(Vlramo == "" || Vlramo == undefined){
 				Vlramo = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramo", 0);
+				
+			} else {
+				Vlramo = parseFloat(Vlramo);
 			}
 			
-			var Vlramocom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
+			var Vlramocom = (this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
 			if(Vlramocom == "" || Vlramocom == undefined){
 				Vlramocom = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramocom", 0);
+				
+			} else {
+				Vlramocom = parseFloat(Vlramocom);
 			}
 			
-			var Vlramodd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
+			var Vlramodd = (this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
 			if(Vlramodd == "" || Vlramodd == undefined){
 				Vlramodd = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramodd", 0);
+				
+			} else {
+				Vlramodd = parseFloat(Vlramodd);
 			}
 			
-			var Vlramovm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
+			var Vlramovm = (this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
 			if(Vlramovm == "" || Vlramovm == undefined){
 				Vlramovm = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramovm", 0);
+				
+			} else {
+				Vlramovm = parseFloat(Vlramovm);
 			}
 			
-			var Vlramovvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
+			var Vlramovvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
 			if(Vlramovvb == "" || Vlramovvb == undefined){
 				Vlramovvb = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
+				
+			} else {
+				Vlramovvb = parseFloat(Vlramovvb);
 			}
 			
 			var somaDosDestinados = (Vlramocom + Vlramodd + Vlramovm + Vlramovvb).toFixed(2);
@@ -477,29 +823,49 @@ sap.ui.define([
 		onDestinaBrinde: function(evt) {
 			var ValtotexcndirBrinde = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde"));
 
-			var Vlrbri = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbri")).toFixed(2);
+			var Vlrbri = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbri")).toFixed(2);
 			if(Vlrbri == "" || Vlrbri == undefined){
 				Vlrbri = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
+				
+			} else {
+				Vlrbri = parseFloat(Vlrbri);
 			}
 			
-			var Vlrbricom = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
+			var Vlrbricom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
 			if(Vlrbricom == "" || Vlrbricom == undefined){
 				Vlrbricom = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
+				
+			} else {
+				Vlrbricom = parseFloat(Vlrbricom);
 			}
 			
-			var Vlrbridd = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
+			var Vlrbridd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
 			if(Vlrbridd == "" || Vlrbridd == undefined){
 				Vlrbridd = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
+				
+			} else {
+				Vlrbridd = parseFloat(Vlrbridd);
 			}
 			
-			var Vlrbrivm = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
+			var Vlrbrivm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
 			if(Vlrbrivm == "" || Vlrbrivm == undefined){
 				Vlrbrivm = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
+				
+			} else {
+				Vlrbrivm = parseFloat(Vlrbrivm);
 			}
 			
-			var Vlrbrivvb = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
+			var Vlrbrivvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
 			if(Vlrbrivvb == "" || Vlrbrivvb == undefined){
 				Vlrbrivvb = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
+				
+			} else {
+				Vlrbrivvb = parseFloat(Vlrbrivvb);
 			}
 			
 			var somaDosDestinados = (Vlrbricom + Vlrbridd + Vlrbrivm + Vlrbrivvb).toFixed(2);
