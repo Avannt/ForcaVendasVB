@@ -2450,10 +2450,11 @@ sap.ui.define([
 
 						var result = e.target.result;
 						if (result !== null && result !== undefined) {
-
+							
 							sap.ui.getCore().byId("idUsuario").setValue(result.codUsr);
+							that.getOwnerComponent().getModel("modelAux").setProperty("/CodUsr", result.codUsr);
+							
 							sap.ui.getCore().byId("idUsuario").setEnabled(false);
-
 							sap.ui.getCore().byId("idSenha").setValue(result.senha);
 
 						}
@@ -2625,7 +2626,9 @@ sap.ui.define([
 												buGroup: retorno.BuGroup,
 												tabbon: retorno.Tabbon,
 												tabamo: retorno.Tabamo,
-												tabbri: retorno.Tabbri
+												tabbri: retorno.Tabbri,
+												usrped: retorno.Usrped,
+												usrapr: retorno.Usrapr
 											};
 
 											if (result == null || result == undefined) {
@@ -2698,6 +2701,183 @@ sap.ui.define([
 					this._ItemDialog.destroy(true);
 				}
 
+			},
+			
+			onOpenMudarSenha: function(){
+				var that = this;
+				var open = indexedDB.open("VB_DataBase");
+
+				open.onerror = function(hxr) {
+					console.log("Erro ao abrir tabelas.");
+					console.log(hxr.Message);
+				};
+
+				open.onsuccess = function(e) {
+
+					var werks = that.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
+					var db = e.target.result;
+
+					var objUsuarios = db.transaction(["Usuarios"], "readwrite");
+					var objectStoreUsuarios = objUsuarios.objectStore("Usuarios");
+
+					var request = objectStoreUsuarios.get(werks);
+
+					request.onsuccess = function(e) {
+
+						var result = e.target.result;
+						if (result !== null && result !== undefined) {
+							
+							sap.ui.getCore().byId("idUsuario").setValue(result.codUsr);
+							that.getOwnerComponent().getModel("modelAux").setProperty("/CodUsr", result.codUsr);
+							that.getOwnerComponent().getModel("modelAux").setProperty("/SenhaAlterar", result.senha);
+							
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+							
+							if (!that._CreateMaterialFragment) {
+								that._ItemDialog = sap.ui.xmlfragment(
+									"testeui5.view.AlterarSenha",
+									that
+								);
+								that.getView().addDependent(that._ItemDialog);
+							}
+							that._ItemDialog.open();
+						}
+						else{
+							sap.m.MessageBox.show(
+								"Faça a autenticação com Usuário e Senha primeiro!", {
+									icon: sap.m.MessageBox.Icon.WARNING,
+									title: "Autenticação no sistema!",
+									actions: [sap.m.MessageBox.Action.OK],
+									onClose: function(oAction) {
+										
+									}
+								}
+							);
+						}
+					};
+				};
+			},
+			
+			onFecharAlteracaoSenha:function(){
+				
+				if (this._ItemDialog) {
+					this._ItemDialog.destroy(true);
+				}
+				
+				this.onOpenCredenciais();
+			},
+			
+			onDialogMudarSenha: function(){
+				var that = this;
+				var senha = sap.ui.getCore().byId("idSenha").getValue();
+				var senhaNova = sap.ui.getCore().byId("idSenhaNova").getValue();
+				var senhaNova2 = sap.ui.getCore().byId("idSenhaNova2").getValue();
+				var codUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
+				var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
+				
+				if(senhaNova != senhaNova2){
+					
+					sap.m.MessageBox.show(
+						"As senhas são diferentes!", {
+							icon: sap.m.MessageBox.Icon.WARNING,
+							title: "Corrija as Senhas!",
+							actions: [sap.m.MessageBox.Action.OK],
+							onClose: function(oAction) {
+								sap.ui.getCore().byId("idSenhaNova").focus();
+							}
+						}
+					);
+					
+				} else{
+					
+					var oModel = this.getView().getModel();
+					
+					// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
+					// 	json     : true,
+					// 	user     : "appadmin",
+					// 	password : "sap123"
+					// });
+					
+					sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(true);
+	
+					oModel.read("/MudarSenha(IvCodRepres='" + codUsuario + "',IvWerks='" + werks + "',IvSenha='" + senha  
+						+ "',IvNovaSenha='" + senhaNova + "')", {
+							success: function(retorno) {
+								if (retorno.EvRettyp == "E") {
+	
+									sap.m.MessageBox.show(
+										retorno.EvReturn, {
+											icon: sap.m.MessageBox.Icon.WARNING,
+											title: "Falha ao atualizar Senha!",
+											actions: [sap.m.MessageBox.Action.OK],
+											onClose: function(oAction) {
+												sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(false);
+	
+											}
+										}
+									);
+	
+								} else if (retorno.EvRettyp == "S") {
+									
+									var open = indexedDB.open("VB_DataBase");
+									
+									open.onerror = function(hxr) {
+										console.log("Erro ao abrir tabelas.");
+										console.log(hxr.Message);
+									};
+	
+									//Load tables
+									open.onsuccess = function(e) {
+	
+										var db = e.target.result;
+	
+										var objUsuarios = db.transaction(["Usuarios"], "readwrite");
+										var objectStoreUsuarios = objUsuarios.objectStore("Usuarios");
+	
+										var request = objectStoreUsuarios.get(werks);
+	
+										request.onsuccess = function(e1) {
+											var result = e1.target.result;
+											
+											if (result != null || result != undefined) {
+												
+												result.senha = senhaNova;
+	
+												var requestUsuariosAdd = objectStoreUsuarios.put(result);
+	
+												requestUsuariosAdd.onsuccess = function() {
+	
+													MessageBox.show(retorno.EvReturn, {
+														icon: MessageBox.Icon.SUCCESS,
+														title: "Confirmação",
+														actions: [MessageBox.Action.OK],
+														onClose: function() {
+															if (that._ItemDialog) {
+																that._ItemDialog.destroy(true);
+															}
+														}
+													});
+	
+												};
+												requestUsuariosAdd.onerror = function() {
+													console.log("Erro ao adicionar dados de login.");
+												};
+	
+											} 
+										};
+									};
+								}
+							},
+							error: function(error) {
+	
+								sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(false);
+								that.onMensagemErroODATA(error.statusCode);
+	
+							}
+						});
+				}
 			},
 
 			onDialogResetarLoginsButton: function() {

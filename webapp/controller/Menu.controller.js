@@ -71,43 +71,49 @@ sap.ui.define([
 					Finalidade: variavel criada para ser usada na tela de relatórios de pedidos, se for != de 
 					VERT chamar a RFC online para trazer os pedidos.
 					*/
-					that.getOwnerComponent().getModel("modelAux").setProperty("/TipoAprovador", result1.buGroup);
-				
+					// that.getOwnerComponent().getModel("modelAux").setProperty("/TipoAprovador", result1.buGroup);
+					that.getOwnerComponent().getModel("modelAux").setProperty("/Usrped", result1.usrped);
+					that.getOwnerComponent().getModel("modelAux").setProperty("/Usrapr", result1.usrapr);
+					
+					var usaPed = result1.usrped;
+					var aprovaPed = result1.usrapr;
+					
 					// VERT -> Representante
 					// Diferente de VERT -> Aprovador
-					var bAprovador = (result1.buGroup != "VERT");
+					// var bAprovador = (result1.buGroup != "VERT");
 					// var bAprovador = true;
 					
-					var bPreposto = sTipoUsuario == "2";
-					var bRepresentante = (sTipoUsuario == "1" && !bAprovador);
+					// var bPreposto = sTipoUsuario == "2";
+					// var bRepresentante = (sTipoUsuario == "1" && !bAprovador);
 					
 					/*Representante e Preposto -> Oculto aprovações */
-					if (bRepresentante || bPreposto) {
-						for (var i = 0; i < oPrincipal.length; i++) {
-							
+					for (var i = 0; i < oPrincipal.length; i++) {
 							if (oPrincipal[i].id == "aprovacoes") {
-								oPrincipal[i].visible = false;
-							}else if (oPrincipal[i].id == "pedido" || oPrincipal[i].id == "entregaFutura") {
-								oPrincipal[i].visible = true;
+								//Verifica se o kra usa o pedido e oculta o menu aprovador
+								if(aprovaPed == true){
+									oPrincipal[i].visible = true;
+								}else {
+									oPrincipal[i].visible = false;
+								}
+								
+							} else if (oPrincipal[i].id == "pedido" || oPrincipal[i].id == "entregaFutura") {
+								//Verifica se o kra usa o pedido e oculta os Pedido e entrega futura
+								if(usaPed == true){
+									oPrincipal[i].visible = true;
+								}else {
+									oPrincipal[i].visible = false;
+								}
 							}
 						}
-					}
 					
-					/* Aprovador-> Ocultar pedido de vendas e entrega futura
-								-> Verifico a quantidade de pedidos para aprovação*/
-					if (bAprovador) {
-						for (i = 0; i < oPrincipal.length; i++) {
+					if(aprovaPed == true){
+						for (var i = 0; i < oPrincipal.length; i++) {
 							
-							if (oPrincipal[i].id == "pedido" || oPrincipal[i].id == "entregaFutura") {
-								oPrincipal[i].visible = false;
-							}
-							
-							if (oPrincipal[i].id == "aprovacoes") {
+							if(oPrincipal[i].id == "aprovacoes"){
 								
 								var oMenuAprovar = oPrincipal[i];
-								
 								var oModel = that.getView().getModel();
-								
+										
 								// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
 								// 	json     : true,
 								// 	user     : "appadmin",
@@ -117,7 +123,7 @@ sap.ui.define([
 								var codRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
 								oMenuAprovar.visible = true;
 								oMenuAprovar.busy = true;
-
+								
 								oModel.read("/PedidosAprovar/$count", {
 									urlParameters: {
 										"$filter": "IAprovador eq '" + codRepres + "'"
@@ -136,8 +142,9 @@ sap.ui.define([
 									}
 								});
 							}
+							
 						}
-					}/*if bAprovador*/
+					}
 					
 					that.getView().getModel("menu").refresh();
 				};

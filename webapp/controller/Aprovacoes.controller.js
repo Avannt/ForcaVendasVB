@@ -1168,6 +1168,8 @@ sap.ui.define([
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
 			
+			this.byId("obsAprovador").setBusy(true);
+			
 			var oModel = this.getView().getModel();
 			
 			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
@@ -1229,16 +1231,21 @@ sap.ui.define([
 								title: "Destinação dos valores!",
 								actions: [sap.m.MessageBox.Action.OK],
 								onClose: function(oAction) {
+									
+									this.byId("obsAprovador").setBusy(true);
 
 									if (that._ItemDialog) {
 										that._ItemDialog.destroy(true);
 									}
 
 									that.onOpenDialog();
+									
 								}
 							}
 						);
 					} else if (retorno.ENumber == "001") {
+						
+						this.byId("obsAprovador").setBusy(true);
 
 						if (that._ItemDialog) {
 							that._ItemDialog.destroy(true);

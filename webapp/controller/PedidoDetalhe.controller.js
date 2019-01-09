@@ -5070,10 +5070,11 @@ sap.ui.define([
 
 					}).then(function(oAmostras) {
 						var dValorTotAmo = iQtde + oAmostras.qtde;
+						var saldoRestante = oSaldo.quantidadeTotal - oAmostras.qtde ;
 
 						if (dValorTotAmo > parseInt(oSaldo.quantidadeTotal)) {
 
-							MessageBox.show("Não possui saldo de Amostra!", {
+							MessageBox.show("Não possui saldo de Amostra! (Saldo: " + saldoRestante + ")", {
 								icon: MessageBox.Icon.ERROR,
 								title: "Saldo Indisponível!",
 								actions: [MessageBox.Action.OK],
