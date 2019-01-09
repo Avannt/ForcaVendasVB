@@ -338,7 +338,7 @@
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
-										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Valores a Descontar Campanha" visible="false">
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Valores a Descontar Campanha" visible="true">
 										<f:content>
 											<Label text="Campanha Enxoval (R$)"/>
 											<Input id="idAbaterCampEnxoval" value="{path: 'modelDadosPedido>/ValUtilizadoCampEnxoval', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
