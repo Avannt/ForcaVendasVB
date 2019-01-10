@@ -999,7 +999,7 @@ sap.ui.define([
 							});
 
 						} else {
-
+							
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
 							that.oItemPedido.maktx = oMaterial.maktx;
@@ -1038,7 +1038,7 @@ sap.ui.define([
 								var oA960 = e.target.result;
 
 								//validação feita para ver preço de brinde e amostra de acordo com uma tabela fixa cadastrado no login do usuário
-								if (oA960 == undefined && that.oItemPedido.mtpos != "NORM") {
+								if (oA960 == undefined && that.oItemPedido.mtpos == "NORM") {
 
 									oPanel.setBusy(false);
 
@@ -1053,7 +1053,7 @@ sap.ui.define([
 												that.onResetaCamposDialog();
 											}
 										});
-
+										
 								} else {
 
 									if (that.oItemPedido.mtpos == "YBRI" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBON") {
@@ -2578,11 +2578,11 @@ sap.ui.define([
 										if (that.objItensPedidoTemplate[i].kbetr == undefined) {
 											that.objItensPedidoTemplate[i].kbetr = 0;
 										}
-										if (that.objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
-											that.objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										if (that.objItensPedidoTemplate[i].maxdescpermitidoExtra == undefined) {
+											that.objItensPedidoTemplate[i].maxdescpermitidoExtra = 0;
 										}
-										if (that.objItensPedidoTemplate[i].maxDescPermitido == undefined) {
-											that.objItensPedidoTemplate[i].maxDescPermitido = 0;
+										if (that.objItensPedidoTemplate[i].maxdescpermitido == undefined) {
+											that.objItensPedidoTemplate[i].maxdescpermitido = 0;
 										}
 
 										var objAuxItem = {
@@ -2621,9 +2621,8 @@ sap.ui.define([
 											zzValorDiluido: 0,
 											zzValExcedidoItem: that.objItensPedidoTemplate[i].zzValExcedidoItem,
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
-											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
-											maxDescPermitido: that.objItensPedidoTemplate[i].maxDescPermitido,
-											maxDescPermitidoExtra: that.objItensPedidoTemplate[i].maxDescPermitidoExtra
+											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
+											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB
 										};
 
 										vetorAux.push(objAuxItem);
@@ -2641,11 +2640,11 @@ sap.ui.define([
 										if (that.objItensPedidoTemplate[i].kbetr == undefined) {
 											that.objItensPedidoTemplate[i].kbetr = 0;
 										}
-										if (that.objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
-											that.objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										if (that.objItensPedidoTemplate[i].maxdescpermitidoExtra == undefined) {
+											that.objItensPedidoTemplate[i].maxdescpermitidoExtra = 0;
 										}
-										if (that.objItensPedidoTemplate[i].maxDescPermitido == undefined) {
-											that.objItensPedidoTemplate[i].maxDescPermitido = 0;
+										if (that.objItensPedidoTemplate[i].maxdescpermitido == undefined) {
+											that.objItensPedidoTemplate[i].maxdescpermitido = 0;
 										}
 
 										var objAuxItem1 = {
@@ -2683,14 +2682,13 @@ sap.ui.define([
 											zzValorDiluido: 0,
 											zzValExcedidoItem: that.objItensPedidoTemplate[i].zzValExcedidoItem,
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
-											maxDescPermitidoExtra: that.objItensPedidoTemplate[i].maxDescPermitidoExtra,
+											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
 											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB
-
 										};
-
+										
 										vetorAux.push(objAuxItem1);
 									}
-
+									
 								} else if (that.objItensPedidoTemplate[i].tipoItem === "Diluicao") {
 									TotalDiluicao += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
 
@@ -2706,11 +2704,11 @@ sap.ui.define([
 										if (that.objItensPedidoTemplate[i].kbetr == undefined) {
 											that.objItensPedidoTemplate[i].kbetr = 0;
 										}
-										if (that.objItensPedidoTemplate[i].maxDescPermitidoExtra == undefined) {
-											that.objItensPedidoTemplate[i].maxDescPermitidoExtra = 0;
+										if (that.objItensPedidoTemplate[i].maxdescpermitidoExtra == undefined) {
+											that.objItensPedidoTemplate[i].maxdescpermitidoExtra = 0;
 										}
-										if (that.objItensPedidoTemplate[i].maxDescPermitido == undefined) {
-											that.objItensPedidoTemplate[i].maxDescPermitido = 0;
+										if (that.objItensPedidoTemplate[i].maxdescpermitido == undefined) {
+											that.objItensPedidoTemplate[i].maxdescpermitido = 0;
 										}
 
 										var objAuxItem2 = {
@@ -2943,8 +2941,8 @@ sap.ui.define([
 
 				}
 
-				var valorMinPermitido = valorProdutoCheio - (valorProdutoCheio * parseFloat(that.objItensPedidoTemplate[i].maxDescPermitido) / 100);
-				valorMinPermitido = valorMinPermitido - (valorMinPermitido * parseFloat(that.objItensPedidoTemplate[i].maxDescPermitidoExtra) / 100);
+				var valorMinPermitido = valorProdutoCheio - (valorProdutoCheio * parseFloat(that.objItensPedidoTemplate[i].maxdescpermitido) / 100);
+				valorMinPermitido = valorMinPermitido - (valorMinPermitido * parseFloat(that.objItensPedidoTemplate[i].maxdescpermitidoExtra) / 100);
 
 				that.objItensPedidoTemplate[i].zzVprodMinPermitido = (valorMinPermitido).toFixed(3);
 				console.log("Item :" + that.objItensPedidoTemplate[i].matnr + ", Min Permitido: " + that.objItensPedidoTemplate[i].zzVprodMinPermitido);
@@ -3182,7 +3180,7 @@ sap.ui.define([
 				console.log("Percentual de Desconto Permitido : " + percDescPermitido + ", Quantidade: " + auxRangeQuant);
 
 				for (u = 0; u < vetorFamilia.length; u++) {
-					vetorFamilia[u].maxDescPermitido = percDescPermitido;
+					vetorFamilia[u].maxdescpermitido = percDescPermitido;
 				}
 
 				return vetorFamilia;
@@ -3221,7 +3219,7 @@ sap.ui.define([
 				console.log("Percentual de Desconto Extra: " + percDescPermitidoExtra + ", Quantidade: " + auxRangeQuantExtra);
 
 				for (u = 0; u < vetorFamilia.length; u++) {
-					vetorFamilia[u].maxDescPermitidoExtra = percDescPermitidoExtra;
+					vetorFamilia[u].maxdescpermitidoExtra = percDescPermitidoExtra;
 				}
 
 				return vetorFamilia;
@@ -3673,7 +3671,7 @@ sap.ui.define([
 						}
 					});
 
-				} else if (that.oItemPedido.aumng != 0 && (that.oItemPedido.zzQnt / that.oItemPedido.aumng) != 0) {
+				} else if (that.oItemPedido.aumng != 0 && (that.oItemPedido.zzQnt % that.oItemPedido.aumng) != 0) {
 
 					MessageBox.show("Digite uma quantidade multipla de " + that.oItemPedido.aumng, {
 						icon: MessageBox.Icon.ERROR,
@@ -4209,23 +4207,23 @@ sap.ui.define([
 			var that = this;
 			var idStatusPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			var valorParcelas = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValParcelasPedido");
-
+			var formaPagamento = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento");
 			if (idStatusPedido == 3) {
-
+				
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
-
-			} else if (valorParcelas < 300) {
-
+				
+			} else if (valorParcelas < 300 && formaPagamento == "D" ) {
+				
 				MessageBox.show("Pedido deve ter um parcelamento maior que R$: 300,00.", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
-
+				
 			} else {
 
 				//HRIMP E DATIMP

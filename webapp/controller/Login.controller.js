@@ -2415,6 +2415,11 @@ sap.ui.define([
 
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DIALOG CREDENCIAIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 			onOpenCredenciais: function() {
+				
+				if (this._ItemDialog) {
+					this._ItemDialog.destroy(true);
+				}
+				
 				var that = this;
 
 				if (!this._CreateMaterialFragment) {
