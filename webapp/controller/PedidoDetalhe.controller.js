@@ -5079,7 +5079,7 @@ sap.ui.define([
 
 					}).then(function(oAmostras) {
 						var dValorTotAmo = iQtde + oAmostras.qtde;
-						var saldoRestante = oSaldo.quantidadeTotal - oAmostras.qtde ;
+						var saldoRestante = oSaldo.quantidadeTotal - oAmostras.qtde;
 
 						if (dValorTotAmo > parseInt(oSaldo.quantidadeTotal)) {
 
@@ -5091,6 +5091,9 @@ sap.ui.define([
 
 							rejII();
 						} else {
+							
+							itemPedido.zzQntAmostra = itemPedido.zzQnt;
+							
 							resII();
 						}
 					});
@@ -5136,6 +5139,7 @@ sap.ui.define([
 
 						/* Percorro todos os pedidos buscando os itens do tipo amostras em aberto */
 						for (var i = 0; i < oDocsPendentes.length; i++) {
+							
 							var sItens = db.transaction("ItensPedido", "readwrite");
 							var objItens = sItens.objectStore("ItensPedido");
 							var inrPedCli = objItens.index("nrPedCli");
@@ -5156,6 +5160,7 @@ sap.ui.define([
 
 										cursor.continue();
 									} else {
+										
 										res3(tempItensBon);
 									}
 								};

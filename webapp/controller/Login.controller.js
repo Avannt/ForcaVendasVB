@@ -577,7 +577,7 @@ sap.ui.define([
 				this.getOwnerComponent().setModel(oModelItemPedido, "modelItemPedido");
 
 				//Versão App
-				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.2");
+				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.3");
 				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
 				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
 
@@ -697,13 +697,13 @@ sap.ui.define([
 				var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 				var CodUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
 
-				// var oModel = that.getView().getModel();
+				var oModel = that.getView().getModel();
 
-				var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
-					json     : true,
-					user     : "appadmin",
-					password : "sap123"
-				});
+				// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
+				// 	json     : true,
+				// 	user     : "appadmin",
+				// 	password : "sap123"
+				// });
 
 				oModel.setUseBatch(false);
 
@@ -2582,13 +2582,13 @@ sap.ui.define([
 					);
 				} else {
 
-					// var oModel = this.getView().getModel();
+					var oModel = this.getView().getModel();
 
-					var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
-						json     : true,
-						user     : "appadmin",
-						password : "sap123"
-					});
+					// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
+					// 	json     : true,
+					// 	user     : "appadmin",
+					// 	password : "sap123"
+					// });
 
 					// oModel.setProperty("user", "rcardilo");
 					// oModel.setProperty("password", "sap123");
@@ -2829,13 +2829,13 @@ sap.ui.define([
 					
 				} else{
 					
-					// var oModel = this.getView().getModel();
+					var oModel = this.getView().getModel();
 					
-					var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
-						json     : true,
-						user     : "appadmin",
-						password : "sap123"
-					});
+					// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
+					// 	json     : true,
+					// 	user     : "appadmin",
+					// 	password : "sap123"
+					// });
 					
 					sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(true);
 	
