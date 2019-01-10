@@ -36,7 +36,8 @@ sap.ui.define([
 				// alert("ok");
 			}
 
-		}, /* onSelectIconTabBar */
+		},
+		/* onSelectIconTabBar */
 
 		InicializarEventosCampEnxoval: function() {
 			// this.PDController.byId("idObservacoesAuditoria").attachLiveChange(this.onLiveChangeIdCodCliente);
@@ -164,47 +165,32 @@ sap.ui.define([
 
 		},
 		/* VerificarCampanhasValidas */
-		
-		ProcessarSaldoCampanhaEnxoval: function(){
-			if (that.bCampanhaEnxovalAtiva){
+
+		ProcessarSaldoCampanhaEnxoval: function() {
+			if (that.bCampanhaEnxovalAtiva) {
 				that.oCmpEnxoval[0].ValorSaldo = 0;
 			}
 		},
 		/* ProcessarSaldoCampanhaEnxoval */
-		
-		DisponibilizarValoresCampanhaEnxoval: function(){
+
+		DisponibilizarValoresCampanhaEnxoval: function() {
 			
 			/* Só populo os valores se a campanha estiver ativa para o representante / cliente */
-			if (that.bCampanhaEnxovalAtiva){
-				var dValorDisponivelCampanha;
-				
+			if (that.bCampanhaEnxovalAtiva) {
+				var dValorLiberar;
+
 				var dValorLimite;
 				var dValorTotal;
-				
+
 				dValorLimite = parseFloat(that.oCmpEnxoval[0].ValorLimite);
 				dValorTotal = parseFloat(that.oCmpEnxoval[0].ValorTotal);
-				
-				if(dValorTotal < dValorLimite){
-					
+
+				if (dValorTotal < dValorLimite) {
+					dValorLiberar = dValorTotal;
+				} else {
+					dValorLiberar = dValorLimite;
 				}
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 			}
-			
 		}
 		/* DisponibilizarValoresCampanhaEnxoval */
 	});

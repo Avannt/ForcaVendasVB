@@ -151,6 +151,9 @@ sap.ui.define([
 					var sKunrg = oAux.getProperty("/KunrgEntrega");
 
 					if (sKunrg) {
+						that.getView().byId("ifVbeln").setValue("");
+						that.getView().setModel(undefined, "ItensEF");
+
 						oAux.setProperty("/KunrgEntrega", undefined);
 
 						// that.byId("listClientes").attachItemPress(that.byId("listClientes").getItems()[0]);
@@ -203,8 +206,10 @@ sap.ui.define([
 
 		onOpenFormDetail: function(oItem) {
 			var that = this;
+			oPedEF = [];
 
 			//seta os dados da objectHeader
+			this.getView().byId("btnPesquisaPedido").focus();
 			this.getView().byId("objectHeader").setTitle(oItem.getTitle());
 			this.getView().byId("objectHeader").setNumber(oItem.getNumber());
 			this.getView().byId("objectAttribute_cnpj").setText(oItem.getIntro());
@@ -214,7 +219,7 @@ sap.ui.define([
 			this.onGetDataFromEF2(oItem.getNumber());
 
 			this.onClearView();
-
+			
 			var open = indexedDB.open("VB_DataBase");
 			open.onerror = function() {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
@@ -473,26 +478,25 @@ sap.ui.define([
 							if (vEntregas[i].Matnr == sMatnr) {
 								// iQtdeDia += parseInt(vEntregas[i].Fkimg2);
 								bErro = true;
-								
+
 								break;
 							}
 						}
-						
-						if (bErro){
+
+						if (bErro) {
 							/* Se esse item já foi digitado, mando uma mensagem de erro */
 							MessageBox.show("Item já digitado, por favor verifique.", {
 								icon: MessageBox.Icon.ERROR,
 								title: "Erro",
 								actions: [MessageBox.Action.OK],
 							});
-							
+
 							that.byId("sfItem").setValue("");
 							return;
-						}
-						else{
+						} else {
 							var saldo = 0;
 							saldo = iSaldoSap - iQtdeDia;
-	
+
 							that.byId("ifSaldo").setValue(saldo);
 						}
 					};
