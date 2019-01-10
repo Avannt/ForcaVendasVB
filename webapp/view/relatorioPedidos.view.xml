@@ -34,10 +34,10 @@
 					<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="30px">
 						<Text text=""/>
 					</Column>
-					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
 						<Text text="Cliente"/>
 					</Column>
-					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
 						<Text text="Aprovador"/>
 					</Column>
 					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="100px">

@@ -1168,7 +1168,7 @@ sap.ui.define([
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
 			
-			this.byId("obsAprovador").setBusy(true);
+			that._ItemDialog.setBusy(true);
 			
 			var oModel = this.getView().getModel();
 			
@@ -1232,7 +1232,7 @@ sap.ui.define([
 								actions: [sap.m.MessageBox.Action.OK],
 								onClose: function(oAction) {
 									
-									this.byId("obsAprovador").setBusy(true);
+									that._ItemDialog.setBusy(true);
 
 									if (that._ItemDialog) {
 										that._ItemDialog.destroy(true);
@@ -1245,7 +1245,7 @@ sap.ui.define([
 						);
 					} else if (retorno.ENumber == "001") {
 						
-						this.byId("obsAprovador").setBusy(true);
+						that._ItemDialog.setBusy(true);
 
 						if (that._ItemDialog) {
 							that._ItemDialog.destroy(true);

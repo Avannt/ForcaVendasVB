@@ -130,10 +130,10 @@
 											<!--<Column minScreenWidth="420px" demandPopin="false" hAlign="Left" vAlign="Left" width="80px">-->
 											<!--	<Text text="Preço"/>-->
 											<!--</Column>-->
-											<Column minScreenWidth="320px" width="auto" hAlign="Left">
+											<Column minScreenWidth="320px" width="70px" hAlign="Left">
 												<Text text="Qnt"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="true" width="auto" hAlign="Left">
+											<Column minScreenWidth="360px" demandPopin="true" width="80px" hAlign="Left">
 												<Text text="Desc"/>
 											</Column>
 											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">

@@ -1025,7 +1025,13 @@ sap.ui.define([
 
 							//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
 							that.oItemPedido.zzValorDiluido = 0;
-
+							
+							if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
+								sap.ui.getCore().byId("idDesconto").setEnabled(false);
+							} else {
+								sap.ui.getCore().byId("idDesconto").setEnabled(true);
+							}
+							
 							//Busca o preço do item
 							var storeA960 = db.transaction("A960", "readwrite");
 							var objA960 = storeA960.objectStore("A960");
@@ -2134,7 +2140,10 @@ sap.ui.define([
 
 			for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 				//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
-				TotalPedidoDesc += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
+				if(that.objItensPedidoTemplate[i].mtpos != "YAMO" && that.objItensPedidoTemplate[i].mtpos != "YBRI"){
+					TotalPedidoDesc += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
+				}
+				
 				Total += that.objItensPedidoTemplate[i].zzVprod * that.objItensPedidoTemplate[i].zzQnt;
 				Qnt += that.objItensPedidoTemplate[i].zzQnt;
 				QntProdutos += 1;
@@ -2857,6 +2866,7 @@ sap.ui.define([
 			var prazoMaxAprazo = 0;
 			var prazoMaxAprazo = 0;
 			var prazoMaxAprazo = 0;
+			var tabPreco = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco");
 
 			var open = indexedDB.open("VB_DataBase");
 			open.onerror = function() {
@@ -2896,12 +2906,18 @@ sap.ui.define([
 									objectStore2.getAll().onsuccess = function(event) {
 
 										var perc = event.target.result;
-
-										that.prazoMaxAprazo = parseFloat(perc[0].zzPrzmaxap);
-										that.prazoMinAprazo = parseFloat(perc[0].zzPrzminap);
-										that.prazoMaxAvista = parseFloat(perc[0].zzPrzmaxav);
-										that.prazoMinAvista = parseFloat(perc[0].zzPrzminav);
-										that.valorPedMin = parseFloat(perc[0].zzVlrPedMin);
+										
+										for(var i=0; perc.length; i++){
+											if(perc[i].pltyp == tabPreco){
+												that.prazoMaxAprazo = parseFloat(perc[i].zzPrzmaxap);
+												that.prazoMinAprazo = parseFloat(perc[i].zzPrzminap);
+												that.prazoMaxAvista = parseFloat(perc[i].zzPrzmaxav);
+												that.prazoMinAvista = parseFloat(perc[i].zzPrzminav);
+												that.valorPedMin = parseFloat(perc[i].zzVlrPedMin);
+												break;
+											}
+										}
+										
 
 										var vetorParametros = [that.prazoMaxAvista, that.prazoMaxAprazo, that.prazoMinAprazo,
 											that.prazoMinAvista, that.valorPedMin, that.percJuros, that.percJurosDia
@@ -4008,11 +4024,6 @@ sap.ui.define([
 				this._ItemDialog.open();
 				sap.ui.getCore().byId("idItemPedido").focus();
 
-				if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
-					sap.ui.getCore().byId("idDesconto").setEnabled(false);
-				} else {
-					sap.ui.getCore().byId("idDesconto").setEnabled(true);
-				}
 			}
 		},
 
@@ -4100,7 +4111,7 @@ sap.ui.define([
 				that._ItemDialog.open();
 				that.popularCamposItemPedido();
 
-				if (that.oItemPedido.tipoItem == "Diluicao" || tipoPedido == "YBON" || tipoPedido == "YTRO") {
+				if (that.oItemPedido.tipoItem == "Diluicao" | tipoPedido == "YBON" | tipoPedido == "YTRO") {
 					sap.ui.getCore().byId("idDesconto").setEnabled(false);
 				} else {
 					sap.ui.getCore().byId("idDesconto").setEnabled(true);
