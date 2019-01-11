@@ -9,6 +9,10 @@
 	padding-botton: 20px !important;
 }
 
+.sapMTextBold div > span {
+    font-size: 10px !important;
+} 
+
 .removePadding {
     padding-top: 0px !important;
     padding-left: 0px !important;
