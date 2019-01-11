@@ -55,13 +55,13 @@
 					<Label text="Valor sem destinar Brinde (R$)" class="bold"/>
 					<Input id="idAbaterNaoDestinadoBrinde" value="{path: 'ItemAprovar>/ValtotexcndirBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" type="Text" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
-					<Input id="idVerbaUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbrivm'}" enabled="true" type="Number" />
+					<Input id="idVerbaUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbrivm'}" enabled="true" type="Number" change="onDestinaBrinde"/>
 					<Label text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbricom'}" enabled="true" />
+					<Input id="idComissaoUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbricom'}" enabled="true" change="onDestinaBrinde"/>
 					<Label id="idLabelVerbaDiaDiaUtilizadaBrinde" text="Verba VB (R$)" />
-					<Input id="idVerbaDiaDiaUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbridd'}" enabled="true" type="Number" />
+					<Input id="idVerbaDiaDiaUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbridd'}" enabled="true" type="Number" change="onDestinaBrinde"/>
 					<Label id="idLabelVerbaVBUtilizadaBrinde" text="Verba Institucional (R$)"/>
-					<Input id="idVerbaVBUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbrivvb'}" enabled="true" />
+					<Input id="idVerbaVBUtilizadaBrinde" value="{path: 'ItemAprovar>/Vlrbrivvb'}" enabled="true" change="onDestinaBrinde"/>
 				</form:content>
 			</form:SimpleForm>
 			
@@ -73,13 +73,13 @@
 					<Label text="Valor sem destinar Amostra (R$)" class="bold"/>
 					<Input id="idAbaterNaoDestinadoAmostra" value="{path: 'ItemAprovar>/ValtotexcndirAmostra', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" type="Text" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
-					<Input id="idVerbaUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramovm'}" enabled="true" type="Number" />
+					<Input id="idVerbaUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramovm'}" enabled="true" type="Number" change="onDestinaAmostra"/>
 					<Label text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramocom'}" enabled="true" type="Number" />
+					<Input id="idComissaoUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramocom'}" enabled="true" type="Number" change="onDestinaAmostra"/>
 					<Label id="idLabelVerbaDiaDiaUtilizadaAmostra" text="Verba VB (R$)" />
-					<Input id="idVerbaDiaDiaUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramodd'}" enabled="true" type="Number" />
+					<Input id="idVerbaDiaDiaUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramodd'}" enabled="true" type="Number" change="onDestinaAmostra"/>
 					<Label id="idLabelVerbaVBUtilizadaAmostra" text="Verba Institucional (R$)"/>
-					<Input id="idVerbaVBUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramovvb'}" enabled="true" type="Number" />
+					<Input id="idVerbaVBUtilizadaAmostra" value="{path: 'ItemAprovar>/Vlramovvb'}" enabled="true" type="Number" change="onDestinaAmostra"/>
 				</form:content>
 			</form:SimpleForm>
 			
@@ -91,13 +91,13 @@
 					<Label text="Valor sem destinar Bonificação (R$)" class="bold"/>
 					<Input id="idAbaterNaoDestinadoBonif" value="{path: 'ItemAprovar>/ValtotexcndirBonif', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" type="Text" valueState="Warning" enabled="false" class="desabilitado"/>
 					<Label text="Verba de Marketing (R$)"/>
-					<Input id="idVerbaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbonvm'}" enabled="true" type="Number" />
+					<Input id="idVerbaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbonvm'}" enabled="true" type="Number" change="onDestinaBonif" />
 					<Label id="idLabelComissaoUtilizadaBonif" text="Comissão (R$)"/>
-					<Input id="idComissaoUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrboncom'}" enabled="true" type="Number" />
+					<Input id="idComissaoUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrboncom'}" enabled="true" type="Number" change="onDestinaBonif" />
 					<Label id="idLabelVerbaDiaDiaUtilizadaBonif" text="Verba VB (R$)" />
-					<Input id="idVerbaDiaDiaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbondd'}" enabled="true"  />
+					<Input id="idVerbaDiaDiaUtilizadaBonif" value="{path: 'ItemAprovar>/Vlrbondd'}" enabled="true" change="onDestinaBonif" />
 					<Label id="idLabelVerbaVBUtilizadaBonf" text="Verba Institucional (R$)"/>
-					<Input id="idVerbaVBUtilizadaBonf" value="{path: 'ItemAprovar>/Vlrbonvvb'}" enabled="true" type="Number" />
+					<Input id="idVerbaVBUtilizadaBonf" value="{path: 'ItemAprovar>/Vlrbonvvb'}" enabled="true" type="Number" change="onDestinaBonif" />
 				</form:content>
 			</form:SimpleForm>
 		</content>
