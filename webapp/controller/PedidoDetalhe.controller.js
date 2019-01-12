@@ -999,7 +999,7 @@ sap.ui.define([
 							});
 
 						} else {
-							
+
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
 							that.oItemPedido.maktx = oMaterial.maktx;
@@ -1025,13 +1025,13 @@ sap.ui.define([
 
 							//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
 							that.oItemPedido.zzValorDiluido = 0;
-							
+
 							if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
 								sap.ui.getCore().byId("idDesconto").setEnabled(false);
 							} else {
 								sap.ui.getCore().byId("idDesconto").setEnabled(true);
 							}
-							
+
 							//Busca o preço do item
 							var storeA960 = db.transaction("A960", "readwrite");
 							var objA960 = storeA960.objectStore("A960");
@@ -1059,7 +1059,7 @@ sap.ui.define([
 												that.onResetaCamposDialog();
 											}
 										});
-										
+
 								} else {
 
 									if (that.oItemPedido.mtpos == "YBRI" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBON") {
@@ -2140,10 +2140,10 @@ sap.ui.define([
 
 			for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 				//VALORES EM COMUM PARA TODOS OS TIPOS DE ITEM
-				if(that.objItensPedidoTemplate[i].mtpos != "YAMO" && that.objItensPedidoTemplate[i].mtpos != "YBRI"){
+				if (that.objItensPedidoTemplate[i].mtpos != "YAMO" && that.objItensPedidoTemplate[i].mtpos != "YBRI") {
 					TotalPedidoDesc += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
 				}
-				
+
 				Total += that.objItensPedidoTemplate[i].zzVprod * that.objItensPedidoTemplate[i].zzQnt;
 				Qnt += that.objItensPedidoTemplate[i].zzQnt;
 				QntProdutos += 1;
@@ -2694,10 +2694,10 @@ sap.ui.define([
 											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
 											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB
 										};
-										
+
 										vetorAux.push(objAuxItem1);
 									}
-									
+
 								} else if (that.objItensPedidoTemplate[i].tipoItem === "Diluicao") {
 									TotalDiluicao += that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
 
@@ -2906,9 +2906,9 @@ sap.ui.define([
 									objectStore2.getAll().onsuccess = function(event) {
 
 										var perc = event.target.result;
-										
-										for(var i=0; perc.length; i++){
-											if(perc[i].pltyp == tabPreco){
+
+										for (var i = 0; perc.length; i++) {
+											if (perc[i].pltyp == tabPreco) {
 												that.prazoMaxAprazo = parseFloat(perc[i].zzPrzmaxap);
 												that.prazoMinAprazo = parseFloat(perc[i].zzPrzminap);
 												that.prazoMaxAvista = parseFloat(perc[i].zzPrzmaxav);
@@ -2917,7 +2917,6 @@ sap.ui.define([
 												break;
 											}
 										}
-										
 
 										var vetorParametros = [that.prazoMaxAvista, that.prazoMaxAprazo, that.prazoMinAprazo,
 											that.prazoMinAvista, that.valorPedMin, that.percJuros, that.percJurosDia
@@ -3751,7 +3750,6 @@ sap.ui.define([
 									//preparar o obj a ser adicionado ou editado
 									if (result2 == undefined) {
 
-
 										that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoindexItem", nrPedCli + "/" + (that.indexItem));
 										that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoindexItem");
 										that.oItemPedido.index = that.indexItem;
@@ -3768,14 +3766,14 @@ sap.ui.define([
 											resII();
 										}
 									});
-									
+
 									pAtualizarItem.then(function() {
 										storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 										objItensPedido = storeItensPedido.objectStore("ItensPedido");
 
 										var requestPutItens = objItensPedido.put(that.oItemPedido);
 										requestPutItens.onsuccess = function() {
-											
+
 											/* Se for inserção */
 											if (result2 == undefined) {
 												that.objItensPedidoTemplate.push(that.oItemPedido);
@@ -4220,21 +4218,21 @@ sap.ui.define([
 			var valorParcelas = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValParcelasPedido");
 			var formaPagamento = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento");
 			if (idStatusPedido == 3) {
-				
+
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
-				
-			} else if (valorParcelas < 300 && formaPagamento == "D" ) {
-				
+
+			} else if (valorParcelas < 300 && formaPagamento == "D") {
+
 				MessageBox.show("Pedido deve ter um parcelamento maior que R$: 300,00.", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
-				
+
 			} else {
 
 				//HRIMP E DATIMP
@@ -5091,9 +5089,9 @@ sap.ui.define([
 
 							rejII();
 						} else {
-							
+
 							itemPedido.zzQntAmostra = itemPedido.zzQnt;
-							
+
 							resII();
 						}
 					});
@@ -5102,6 +5100,8 @@ sap.ui.define([
 		},
 
 		onGetSaldoAmostra: function(oAmostras, res4, itemPedido) {
+
+				var that = this;
 				var open = indexedDB.open("VB_DataBase");
 				var db = "";
 
@@ -5115,16 +5115,59 @@ sap.ui.define([
 						var objPedidos = sPedidos.objectStore("PrePedidos");
 						var iStatus = objPedidos.index("idStatusPedido");
 
-						var krStatus = IDBKeyRange.bound(1, 2);
+						/*
+						Regra dos status dos pedidos
+						1 - Pedidos em digitação: Considerar todos.
+						2 - Pedidos pendentes de envio: Considerar todos.
+						3 - Pedidos enviados: Considerar todos os pedidos 
+						enviados DEPOIS DA ÚLTIMA ATUALIZAÇÃO.(Os pedidos
+						enviados antes da última atualização já estarão
+						sendo considerados no saldo retornado da atualização
+						de tabelas).
+						*/
 
-						/* Recupero todos os pedidos com status 1 e 2 */
-						var tPedido = iStatus.getAll(krStatus);
-
+						/* Recupero todos os pedidos com status 1, 2, 3 */
+						var krStatus = IDBKeyRange.bound(1, 3);
+						var tPedido = iStatus.openCursor(krStatus);
 						var oDocsPendentes = [];
+						var cursor;
+						var oDoc;
 						tPedido.onsuccess = function(e) {
-							oDocsPendentes = e.target.result;
+							cursor = e.target.result;
 
-							res(oDocsPendentes);
+							if (cursor) {
+								oDoc = cursor.value;
+								
+								/* Verifico se o pedido já foi enviado (Status = 3) */
+								if (oDoc.idStatusPedido == 3) {
+
+									/* Recupero a data da última atualização de tabelas */
+									/**/
+									var sUltimaAtualizacao = that.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
+									sUltimaAtualizacao = sUltimaAtualizacao.replace("/", "-").replace("/", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
+									var p = sUltimaAtualizacao.split("-");
+									var dUltimaAtualizacao = new Date("20" + p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
+									
+									var sDataImpl = oDoc.dataImpl.replace("/", "-").replace("/", "-").replace(":", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
+									p = sDataImpl.split("-");
+									var dDataImpl = new Date(p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
+									/**/
+
+									/* Verifico se a data do pedido é superior a data da última atualização */
+									if (dDataImpl > dUltimaAtualizacao) {
+										oDocsPendentes.push(oDoc);
+									}
+									
+									cursor.continue();
+									
+								} else {
+									cursor.continue();
+									
+									oDocsPendentes.push(oDoc);
+								}
+							} else {
+								res(oDocsPendentes);
+							}
 						};
 					};
 				});
@@ -5139,7 +5182,7 @@ sap.ui.define([
 
 						/* Percorro todos os pedidos buscando os itens do tipo amostras em aberto */
 						for (var i = 0; i < oDocsPendentes.length; i++) {
-							
+
 							var sItens = db.transaction("ItensPedido", "readwrite");
 							var objItens = sItens.objectStore("ItensPedido");
 							var inrPedCli = objItens.index("nrPedCli");
@@ -5160,7 +5203,7 @@ sap.ui.define([
 
 										cursor.continue();
 									} else {
-										
+
 										res3(tempItensBon);
 									}
 								};
@@ -5169,10 +5212,10 @@ sap.ui.define([
 
 								for (var j = 0; j < tempItensBon.length; j++) {
 									/* Verifico se não é o pedido e o material em questão, não posso considerar para cálculo de saldo */
-									if (tempItensBon[j].idItemPedido == itemPedido.idItemPedido && tempItensBon[j].index == itemPedido.index){
+									if (tempItensBon[j].idItemPedido == itemPedido.idItemPedido && tempItensBon[j].index == itemPedido.index) {
 										continue;
 									}
-									
+
 									vItensAmostras.push(tempItensBon[j]);
 								}
 

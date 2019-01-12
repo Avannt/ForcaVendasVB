@@ -440,7 +440,9 @@ sap.ui.define([
 										success: function(data) {
 											/* Se for item do tipo Amostra (YAMO), diminui o saldo do item oItensPedidoGridEnviar */
 											if (data.Mtpos == "YAMO") {
-												that.onAtulizaSaldoAmostra(db, data);
+												/* Não é necessário mais reduzir o saldo no momento do envio, pois os pedidos
+												enviados agora estão considerados no cálculo.*/
+												// that.onAtulizaSaldoAmostra(db, data);
 											}
 											/* ---- */
 
