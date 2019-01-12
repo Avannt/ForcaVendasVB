@@ -48,30 +48,33 @@ sap.ui.define([
 			this.getView().setModel(this.getView().getModel("modelCliente"));
 			this.getView().setModel(this.getView().getModel("modelAux"));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
-
+			
+			//Qualquer alteração obriga a salvar no dados pedido. (true a validação passa / false pracisa barrar);
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", true);
+			
 			this.byId("tabItensPedidoStep").setProperty("enabled", false);
 			this.byId("tabBalancoVerbaStep").setProperty("enabled", false);
 			this.byId("tabTotalStep").setProperty("enabled", false);
 			// this.byId("tabItensDiluicaoPedidoStep").setProperty("enabled", false);
-
+			
 			var open = indexedDB.open("VB_DataBase");
-
+			
 			open.onerror = function() {
-				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-
+					MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Banco não encontrado!",
+						actions: [MessageBox.Action.OK]
+					});
+				};
+				
 			open.onsuccess = function() {
 				var db = open.result;
-
+				
 				var promise = new Promise(function(resolve, reject) {
 					that.onCarregaCampos(db);
 					resolve();
 				});
-
+				
 				promise.then(function(value) {
 					if (that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli") === "") {
 						console.log("Criando numero pedido");
@@ -80,7 +83,6 @@ sap.ui.define([
 						console.log("Carregando dados PrePedido");
 						that.onCarregaDadosPedido(db);
 					}
-
 				});
 			};
 		},
@@ -357,6 +359,7 @@ sap.ui.define([
 		},
 
 		onCarregaDadosPedido: function(db) {
+			
 			var that = this;
 			that.objItensPedidoTemplate = [];
 			var vetorAux = [];
@@ -581,24 +584,21 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", 0);
 
 				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido") == true) {
-
+					
 					this.byId("idPercEntrada").setVisible(true);
 					this.byId("idValorEntrada").setVisible(true);
-
+						
 				} else {
-
+						
 					this.byId("idPercEntrada").setVisible(false);
 					this.byId("idValorEntrada").setVisible(false);
-
+						
 				}
 			} else {
-
+					
 				if (valor == "YVEF") {
-
-					this.byId("idTipoNegociacao").setVisible(false);
-					this.byId("idTipoNegociacao").setSelectedKey(this.oVetorTipoNegociacao[1].idNegociacao);
-					this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", this.oVetorTipoNegociacao[1].idNegociacao);
-
+					
+					this.byId("idTipoNegociacao").setVisible(true);
 					this.byId("idFormParcelamento").setVisible(true);
 					this.byId("idInserirItemDiluicao").setEnabled(true);
 					this.byId("idFormaPagamento").setVisible(true);
@@ -790,7 +790,8 @@ sap.ui.define([
 
 		onBloqueiaPercEntrada: function(evt) {
 			var percEntrada = evt.getSource();
-
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
+			
 			if (percEntrada.getValue() > 0) {
 				this.byId("idPercEntrada").setEnabled(false);
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", parseFloat(percEntrada.getValue()));
@@ -801,9 +802,10 @@ sap.ui.define([
 		},
 
 		onBloqueiaValorEntrada: function(evt) {
-
+			
 			var vlrEntrada = evt.getSource();
-
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
+			
 			if (vlrEntrada.getValue() > 0) {
 				this.byId("idValorEntrada").setEnabled(false);
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", vlrEntrada.getValue());
@@ -815,6 +817,8 @@ sap.ui.define([
 		onChangeTipoNegociacao: function(evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", oSource.getSelectedKey());
+			
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
 		},
 
 		onChangeTabelaPreco: function(evt) {
@@ -823,6 +827,7 @@ sap.ui.define([
 			var vetorResultMateriais = [];
 			//PRECISA PREENCHER O TIPO DE PEDIDO ANTES, POIS O TIPO DE PEDIDO CARREGA OS MATERIAIS PARA CADA TIPO.
 			//DEPOIS DISSO ESSE METODO IRÁ FILTRAR TODOS OS MATERIAIS COM PREÇO.
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
 
 			var open = indexedDB.open("VB_DataBase");
 
@@ -859,25 +864,34 @@ sap.ui.define([
 		onChangeTipoTransporte: function(evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", oSource.getSelectedKey());
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
+		},
+		
+		onChangeParcelas: function(){
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
 		},
 
 		onChangeFormaPagamento: function(evt) {
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/FormaPagamento", oSource.getSelectedKey());
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
 		},
 
 		onChangeDataPedido: function() {
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataPedido", this.byId("idDataPedido").getValue());
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
 		},
 
 		onChangeObservacoes: function(evt) {
 			var oObservacoes = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", oObservacoes.getValue());
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
 		},
 
 		onChangeAuditoriaObservacoes: function(evt) {
 			var oObservacoes = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", oObservacoes.getValue());
+			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
 		},
 
 		/// FIM EVENTOS CAMPOS
@@ -1005,6 +1019,7 @@ sap.ui.define([
 							that.oItemPedido.maktx = oMaterial.maktx;
 							that.oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
 							that.oItemPedido.aumng = parseInt(oMaterial.aumng, 10);
+							that.oItemPedido.extwg = oMaterial.extwg;
 							that.oItemPedido.zzValExcedidoItem = 0;
 							that.oItemPedido.kbetr = 0;
 							that.oItemPedido.maxdescpermitido = 0;
@@ -1022,11 +1037,14 @@ sap.ui.define([
 							that.oItemPedido.zzValorDiluido = 0;
 							that.oItemPedido.zzPercDescDiluicao = 0;
 							that.oItemPedido.zzVprodABB = 0;
+							
+							//Controle de amostra para não gerar excedente.
+							that.oItemPedido.zzQntAmostra = 0;
 
 							//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
 							that.oItemPedido.zzValorDiluido = 0;
 							
-							if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
+							if (tipoPedido == "YBON" || tipoPedido == "YTRO" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBRI") {
 								sap.ui.getCore().byId("idDesconto").setEnabled(false);
 							} else {
 								sap.ui.getCore().byId("idDesconto").setEnabled(true);
@@ -1428,6 +1446,7 @@ sap.ui.define([
 							that.oItemPedido.zzRegraExtra = 0;
 							that.oItemPedido.zzGrpmatExtra = 0;
 							that.oItemPedido.zzPercDescDiluicao = 0;
+							that.oItemPedido.zzQntAmostra = 0;
 
 							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Normal") {
@@ -1462,7 +1481,8 @@ sap.ui.define([
 										tipoItem2: "Diluicao",
 										zzQntDiluicao: 0,
 										zzValorDiluido: 0,
-										zzVprodABB: 0
+										zzVprodABB: 0,
+										zzQntAmostra: 0
 									};
 
 									itemEncontradoDiluicao = true;
@@ -1847,7 +1867,7 @@ sap.ui.define([
 
 		calculaPrecoItem: function() {
 			var that = this;
-
+			
 			that.oItemPedido.zzPercDescTotal = 0;
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 
@@ -1858,14 +1878,19 @@ sap.ui.define([
 				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 
 			} else if (tipoPedido == "YBON") {
-
-				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod - (that.oItemPedido.zzVprod * that.oItemPedido.kbetr / 100);
+				
+				that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
+				
+				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc * that.oItemPedido.kbetr / 100);
+				
 				that.oItemPedido.zzPercDescTotal = that.oItemPedido.kbetr;
 				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;
 
 			} else if (that.oItemPedido.tipoItem === "Diluicao" && that.oItemPedido.kbetr >= 0) {
-
-				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod - (that.oItemPedido.zzVprod * that.oItemPedido.kbetr / 100);
+				
+				that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
+				
+				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc * that.oItemPedido.kbetr / 100);
 				that.oItemPedido.zzPercDescTotal = that.oItemPedido.kbetr;
 
 				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
@@ -1877,7 +1902,7 @@ sap.ui.define([
 				//Inicialmente o valor cheio do produto é atribuido para o valor com desconto.
 				// 1º Aplicar - Preco Cheio do produto - tabela (avista -5%) a prazo sem desconto.
 				//Senão for desconto avista, criar o campo zzPercDescTotal do item do pedido com desconto zerado. 
-				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
+				if (this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01" && (that.oItemPedido.extwg != "GRP0005" && that.oItemPedido.extwg != "GRP0006")) {
 
 					that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
 					//Desconto normal. *****
@@ -2155,12 +2180,12 @@ sap.ui.define([
 				// >>>>>>>>>>>> PADRÃO PARA AMBOS OS TIPOS DE ITEM (NORMAL / DILUÍDO) >>>>>>>>>>>>
 
 				if (that.objItensPedidoTemplate[i].mtpos == "YBRI") {
-
+				
 					valTotalExcedenteBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
 
-				} else if (that.objItensPedidoTemplate[i].mtpos == "YAMO") {
+				} else if (that.objItensPedidoTemplate[i].mtpos == "YAMO" && that.objItensPedidoTemplate[i].zzQntAmostra > 0) {
 
-					valTotalExcedenteAmostra += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
+					valTotalExcedenteAmostra += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQntAmostra;
 
 				} else if (that.objItensPedidoTemplate[i].mtpos == "NORM") {
 
@@ -2909,20 +2934,25 @@ sap.ui.define([
 										
 										for(var i=0; perc.length; i++){
 											if(perc[i].pltyp == tabPreco){
-												that.prazoMaxAprazo = parseFloat(perc[i].zzPrzmaxap);
-												that.prazoMinAprazo = parseFloat(perc[i].zzPrzminap);
-												that.prazoMaxAvista = parseFloat(perc[i].zzPrzmaxav);
-												that.prazoMinAvista = parseFloat(perc[i].zzPrzminav);
-												that.valorPedMin = parseFloat(perc[i].zzVlrPedMin);
+												var zzPrzmaxap = perc[i].zzPrzmaxap.replace(",", ".");
+												var zzPrzminap = perc[i].zzPrzminap.replace(",", ".");
+												var zzPrzmaxav = perc[i].zzPrzmaxav.replace(",", ".");
+												var zzPrzminav = perc[i].zzPrzminav.replace(",", ".");
+												var zzVlrPedMin = perc[i].zzVlrPedMin.replace(",", ".");
+												
+												that.prazoMaxAprazo = parseFloat(zzPrzmaxap);
+												that.prazoMinAprazo = parseFloat(zzPrzminap);
+												that.prazoMaxAvista = parseFloat(zzPrzmaxav);
+												that.prazoMinAvista = parseFloat(zzPrzminav);
+												that.valorPedMin = parseFloat(zzVlrPedMin);
 												break;
 											}
 										}
 										
-
 										var vetorParametros = [that.prazoMaxAvista, that.prazoMaxAprazo, that.prazoMinAprazo,
 											that.prazoMinAvista, that.valorPedMin, that.percJuros, that.percJurosDia
 										];
-
+										
 										//Quando termina de carregar as tabelas usadas .. chamar as funções
 										//usa apenas vetorRange
 										that.onDefineFamilias(that.vetorRange, "Normal");
@@ -2981,56 +3011,83 @@ sap.ui.define([
 
 			open.onsuccess = function() {
 				var db = open.result;
-
-				if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
-
-					var promise = new Promise(function(resolve, reject) {
-						that.onInicioBalancoVerbas(resolve, reject);
-					});
-
-					promise.then(function() {
-						that.calculaTotalPedido();
-					});
-
-					that.setaCompleto(db, "Não");
-
-					var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
-					var objItensPedido = storeItensPedido.objectStore("ItensPedido");
-
-					for (var p = 0; p < that.objItensPedidoTemplate.length; p++) {
-
-						if (that.objItensPedidoTemplate[p].tipoItem2 == "Diluicao") {
-							that.objItensPedidoTemplate[p].zzValExcedidoItem = 0;
-						} else {
-							that.objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(that.objItensPedidoTemplate[p].zzValExcedidoItem * 1000) / 1000;
-						}
-
-						that.objItensPedidoTemplate[p].zzVprodDesc2 = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc2 * 1000) / 1000);
-						that.objItensPedidoTemplate[p].zzVprodDesc = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc * 1000) / 1000);
-
-						var requestADDItem = objItensPedido.put(that.objItensPedidoTemplate[p]);
-
-						requestADDItem.onsuccess = function(e3) {
-							console.log("Itens atualizados com sucesso");
-
-						};
-						requestADDItem.onerror = function(e3) {
-							console.log("Falha ao atualizar os Itens");
-						};
-					}
-				}
-				if (item.selectedKey == "tab3") {
-					if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco") == "") {
-						MessageBox.show("Escolha uma tabela de preço!", {
+				var obrigadoSalvar = that.getOwnerComponent().getModel("modelAux").getProperty("/ObrigaSalvar");
+				
+				if(obrigadoSalvar == false){
+					MessageBox.show("Salve o pedido !", {
 							icon: MessageBox.Icon.ERROR,
-							title: "Falha ao inserir",
+							title: "Atenção!",
 							actions: [MessageBox.Action.OK],
 							onClose: function() {
-								that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
-								that.byId("idTabelaPreco").focus();
+								that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+								that.byId("idLiberarItens").focus();
 							}
 						});
-					}
+				} else {
+					
+					if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
+						if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco") == "") {
+							MessageBox.show("Escolha uma tabela de preço!", {
+								icon: MessageBox.Icon.ERROR,
+								title: "Preecher campo(s)",
+								actions: [MessageBox.Action.OK],
+								onClose: function() {
+									that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+									that.byId("idTabelaPreco").focus();
+								}
+							});
+						} else {
+							
+							var promise = new Promise(function(resolve, reject) {
+								that.onInicioBalancoVerbas(resolve, reject);
+						});
+						
+							promise.then(function() {
+								that.calculaTotalPedido();
+						});
+						
+							that.setaCompleto(db, "Não");
+							
+							var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
+							var objItensPedido = storeItensPedido.objectStore("ItensPedido");
+		
+							for (var p = 0; p < that.objItensPedidoTemplate.length; p++) {
+		
+								if (that.objItensPedidoTemplate[p].tipoItem2 == "Diluicao") {
+									that.objItensPedidoTemplate[p].zzValExcedidoItem = 0;
+								} else {
+									that.objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(that.objItensPedidoTemplate[p].zzValExcedidoItem * 1000) / 1000;
+								}
+		
+								that.objItensPedidoTemplate[p].zzVprodDesc2 = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc2 * 1000) / 1000);
+								that.objItensPedidoTemplate[p].zzVprodDesc = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc * 1000) / 1000);
+		
+								var requestADDItem = objItensPedido.put(that.objItensPedidoTemplate[p]);
+		
+								requestADDItem.onsuccess = function(e3) {
+									console.log("Itens atualizados com sucesso");
+		
+								};
+								requestADDItem.onerror = function(e3) {
+									console.log("Falha ao atualizar os Itens");
+								};
+						}
+						}
+	
+				}
+					if (item.selectedKey == "tab3") {
+						if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco") == "") {
+							MessageBox.show("Escolha uma tabela de preço!", {
+								icon: MessageBox.Icon.ERROR,
+								title: "Preecher campo(s)",
+								actions: [MessageBox.Action.OK],
+								onClose: function() {
+									that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+									that.byId("idTabelaPreco").focus();
+								}
+							});
+						}
+				}
 				}
 			};
 		},
@@ -3045,10 +3102,10 @@ sap.ui.define([
 			var percDescPermitido = 0;
 
 			if (tipoDesconto == "Normal") {
-
+				
 				//Ordenando para desconto Familia normal
 				vetorGeral.sort(function(a, b) {
-					return parseInt(a.kstbm) - parseInt(b.kstbm);
+					return a.knumh - b.knumh;
 				});
 
 				for (var o = 0; o < vetorGeral.length; o++) {
@@ -3654,6 +3711,7 @@ sap.ui.define([
 						}
 					}
 				}
+				
 				if (that.objItensPedidoTemplate.length === 0) {
 					that.indexItem = 1;
 				} else {
@@ -3663,7 +3721,7 @@ sap.ui.define([
 				// if(indexEdit !== "" && indexEdit !== undefined){
 				// 	that.indexItem = indexEdit;
 				// }
-
+				
 				if (sap.ui.getCore().byId("idItemPedido").getValue() === "") {
 					MessageBox.show("Selecione um produto.", {
 						icon: MessageBox.Icon.ERROR,
@@ -3675,7 +3733,7 @@ sap.ui.define([
 						}
 					});
 				} else if (sap.ui.getCore().byId("idQuantidade").getValue() === "" || sap.ui.getCore().byId("idQuantidade").getValue() === 0) {
-
+					
 					MessageBox.show("Digite uma quantidade acima de 0.", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Campo Inválido.",
@@ -3750,17 +3808,17 @@ sap.ui.define([
 									var result2 = e3.target.result;
 									//preparar o obj a ser adicionado ou editado
 									if (result2 == undefined) {
-
-
+										
 										that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoindexItem", nrPedCli + "/" + (that.indexItem));
 										that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoindexItem");
 										that.oItemPedido.index = that.indexItem;
 										that.oItemPedido.nrPedCli = nrPedCli;
+										
 									} else {
 										//OBJ ENCONTRADO NO BANCO... ATUALIZA ELE.
 										that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem");
 									}
-
+									
 									var pAtualizarItem = new Promise(function(resII, rejII) {
 										if (that.oItemPedido.mtpos == "YAMO") {
 											that.onConsumirSaldoAmostra(db, that.oItemPedido, resII, rejII, that.oItemPedido.zzQnt);
@@ -3993,7 +4051,7 @@ sap.ui.define([
 		// EVENTOS DA TABLE 						<<<<<<<<<<<<
 		onNovoItem: function() {
 			var that = this;
-
+			
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			that.oItemPedido = [];
@@ -4009,21 +4067,21 @@ sap.ui.define([
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-
+				
 				if (!this._CreateMaterialFragment) {
-
+					
 					this._ItemDialog = sap.ui.xmlfragment(
 						"testeui5.view.ItemDialog",
 						this
 					);
-
+					
 					this.getView().addDependent(this._ItemDialog);
 				}
-
+				
 				/*set model para o dialog*/
 				this._ItemDialog.open();
 				sap.ui.getCore().byId("idItemPedido").focus();
-
+				this.getOwnerComponent().getModel("modelItemPedido").setProperty("/valorTotal", 0);
 			}
 		},
 
@@ -4402,6 +4460,7 @@ sap.ui.define([
 				});
 			} else {
 				var date = new Date();
+				this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", true);
 
 				var dia = String(date.getDate());
 				var tamanhoDia = parseInt(dia.length);
@@ -4910,12 +4969,12 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", parseFloat(valor));
 				oSource.setValueState("None");
 				oSource.setValueStateText("");
-
+				
 			} else {
 				oSource.setValueState("Error");
-				oSource.setValueStateText("Inserir apenas numeros");
+				// oSource.setValueStateText("Inserir apenas numeros");
 				// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", 0);
-
+				
 			}
 		},
 
@@ -5062,37 +5121,45 @@ sap.ui.define([
 				var oSaldo = e.target.result;
 
 				if (oSaldo == undefined) {
-
-					MessageBox.show("Não possui saldo de Amostra!", {
-						icon: MessageBox.Icon.ERROR,
-						title: "Saldo Indisponível!",
-						actions: [MessageBox.Action.OK],
-					});
-
+					
+					//COLOCAR TUDO QUE O KRA DIGITOU COMO EXCEDENTE. 
+					itemPedido.zzQntAmostra = itemPedido.zzQnt;
+					resII();
+					// MessageBox.show("Não possui saldo de Amostra!", {
+					// 	icon: MessageBox.Icon.ERROR,
+					// 	title: "Saldo Indisponível!",
+					// 	actions: [MessageBox.Action.OK],
+					// });
+					
 				} else {
 
 					var pSaldo = new Promise(function(res4) {
 						/* Recupero o saldo de amostras */
 						var oAmostras = [];
-
+						
 						that.onGetSaldoAmostra(oAmostras, res4, itemPedido);
-
+						
 					}).then(function(oAmostras) {
+						
 						var dValorTotAmo = iQtde + oAmostras.qtde;
 						var saldoRestante = oSaldo.quantidadeTotal - oAmostras.qtde;
 
-						if (dValorTotAmo > parseInt(oSaldo.quantidadeTotal)) {
+						if (dValorTotAmo > parseInt(oSaldo.quantidadeTotal, 10)) {
 
-							MessageBox.show("Não possui saldo de Amostra! (Saldo: " + saldoRestante + ")", {
-								icon: MessageBox.Icon.ERROR,
-								title: "Saldo Indisponível!",
-								actions: [MessageBox.Action.OK],
-							});
-
-							rejII();
+							// MessageBox.show("Não possui saldo de Amostra! (Saldo: " + saldoRestante + ")", {
+							// 	icon: MessageBox.Icon.ERROR,
+							// 	title: "Saldo Indisponível!",
+							// 	actions: [MessageBox.Action.OK],
+							// });
+							
+							//Grava a quantidade de saldo excedente de amsotra .. pra gerar dos brindes.
+							itemPedido.zzQntAmostra = dValorTotAmo - parseInt(oSaldo.quantidadeTotal, 10);
+							
+							resII();
+							// rejII();
 						} else {
 							
-							itemPedido.zzQntAmostra = itemPedido.zzQnt;
+							itemPedido.zzQntAmostra = 0;
 							
 							resII();
 						}

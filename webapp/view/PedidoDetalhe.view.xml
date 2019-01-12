@@ -74,13 +74,13 @@
 										emptySpanM="3" columnsL="2" columnsM="2" layout="ResponsiveGridLayout" title="Parcelamento">
 										<f:content>
 											<Label text="Dias da primeira parcela *"/>
-											<Input id="idPrimeiraParcela" type="Number" value="{modelDadosPedido>/DiasPrimeiraParcela}" submit="onSubmitParcela"/>
+											<Input id="idPrimeiraParcela" type="Number" value="{modelDadosPedido>/DiasPrimeiraParcela}" submit="onSubmitParcela" change="onChangeParcelas" />
 											<Label text="Quantidade de parcelas *"/>
-											<Input id="idQuantParcelas" type="Number" value="{modelDadosPedido>/QuantParcelas}" submit="onSubmitParcela2"/>
+											<Input id="idQuantParcelas" type="Number" value="{modelDadosPedido>/QuantParcelas}" submit="onSubmitParcela2" change="onChangeParcelas" />
 											<Label text="Dias de intervalo entre as parcelas *"/>
-											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}" submit="onSubmitParcela3"/>
+											<Input id="idIntervaloParcelas" type="Number" value="{modelDadosPedido>/IntervaloParcelas}" submit="onSubmitParcela3" change="onChangeParcelas" />
 											<Label text="Existe entrada"/>
-											<CheckBox id="idCheckEntrada" select="onExisteEntrada"/>
+											<CheckBox id="idCheckEntrada" select="onExisteEntrada" />
 											<Label text="Valor (R$)"/>
 											<Input id="idValorEntrada" type="Number" value="{modelDadosPedido>/ValorEntradaPedido}" liveChange="onBloqueiaPercEntrada" visible="false"/>
 											<Label text="Perc. (%)"/>
@@ -124,22 +124,23 @@
 											<Column minScreenWidth="320px" width="90px" hAlign="Left">
 												<Text text="Item"/>
 											</Column>
-											<Column minScreenWidth="870px" demandPopin="false" width="auto" hAlign="Left">
+											<Column minScreenWidth="870px" demandPopin="true" popinDisplay="Inline" width="auto" hAlign="Left">
 												<Text text="Descrição"/>
 											</Column>
 											<!--<Column minScreenWidth="420px" demandPopin="false" hAlign="Left" vAlign="Left" width="80px">-->
 											<!--	<Text text="Preço"/>-->
 											<!--</Column>-->
-											<Column minScreenWidth="320px" width="70px" hAlign="Left">
+											<Column minScreenWidth="320px" width="80px" hAlign="Left">
 												<Text text="Qnt"/>
 											</Column>
+											
 											<Column minScreenWidth="360px" demandPopin="true" width="80px" hAlign="Left">
 												<Text text="Desc"/>
 											</Column>
 											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">
 												<Text text="Valor UN"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="false" width="auto" hAlign="Left">
+											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">
 												<Text text="Valor Total"/>
 											</Column>
 											<!--<Column minScreenWidth="500px" demandPopin="false" hAlign="Left" vAlign="Left" width="110px">-->

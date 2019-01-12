@@ -34,11 +34,11 @@ sap.ui.define([
 			var oFilter = [
 				new sap.ui.model.Filter("Erdat", sap.ui.model.FilterOperator.EQ, sValue)
 			];
-
+			
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
 			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, "Application");
-
+			
 		},
 
 		onSearch: function(oEvent) {
@@ -67,12 +67,15 @@ sap.ui.define([
 			this.byId("table_relatorio_pedidos").setBusy(true);
 			var tipoAprovador = that.getOwnerComponent().getModel("modelAux").getProperty("/TipoAprovador");
 			var CodRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
-
+		
+			var usrped = that.getOwnerComponent().getModel("modelAux").getProperty("/Usrped");
+			var usrapr = that.getOwnerComponent().getModel("modelAux").getProperty("/Usrapr");
+			
 			var oModel = this.getView().getModel();
 			this.getView().getModel("modelAux");
-
+			
 			var open1 = indexedDB.open("VB_DataBase");
-
+			
 			open1.onerror = function() {
 				MessageBox.show(open1.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
@@ -84,11 +87,12 @@ sap.ui.define([
 			open1.onsuccess = function() {
 				var db = open1.result;
 				
-				if (tipoAprovador == "VERT") {
+				if (usrped == true) {
 					
 					var store = db.transaction("StatusPedidos").objectStore("StatusPedidos");
 					store.openCursor().onsuccess = function(event1) {
 						var cursor1 = event1.target.result;
+						
 						if (cursor1 !== null) {
 							
 							cursor1.value.pathImg = sap.ui.require.toUrl("testeui5/img/") + cursor1.value.Aprovado + ".png ";
@@ -97,6 +101,7 @@ sap.ui.define([
 							cursor1.continue();
 							
 						} else {
+							
 							//CARREGA OS CAMPOS DO LOCAL DE ENTREGA
 							store = db.transaction("Clientes").objectStore("Clientes");
 							store.openCursor().onsuccess = function(event) {
@@ -125,7 +130,7 @@ sap.ui.define([
 						}
 					};
 
-				} else {
+				} else if (usrapr == true) {
 
 					oModel.read("/AcompPedidos", {
 						urlParameters: {
@@ -137,13 +142,17 @@ sap.ui.define([
 							var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
 
 							for (var i = 0; i < retornoAcompPedidos.results.length; i++) {
-
+								
+								var data = retornoAcompPedidos.results[i].Nrpedcli.split(".");
+								data = data[1];
+								data = data.substring(6,8) + "/" + data.substring(4,6) + "/" + data.substring(0,4);
+								
 								var objBancoAcompPedidos = {
 									idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
 									Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
 									Kunnr: retornoAcompPedidos.results[i].Kunnr,
 									NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
-									Erdat: retornoAcompPedidos.results[i].Erdat,
+									Erdat: data,
 									Aprov: retornoAcompPedidos.results[i].Aprov,
 									AprovNome: retornoAcompPedidos.results[i].AprovNome,
 									Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
