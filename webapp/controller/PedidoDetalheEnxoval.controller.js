@@ -33,7 +33,9 @@ sap.ui.define([
 			var item = evt.getParameters();
 
 			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
-				// alert("ok");
+				that.VerificarCampanhaEnxoval();
+
+				that.DisponibilizarValoresCampanhaEnxoval();
 			}
 
 		},
@@ -60,7 +62,6 @@ sap.ui.define([
 			}
 
 			this.GetCampanha();
-
 		} /* InicializarEventosCampEnxoval */ ,
 
 		VerificarCampanhaEnxoval: function() {
@@ -174,10 +175,10 @@ sap.ui.define([
 		/* ProcessarSaldoCampanhaEnxoval */
 
 		DisponibilizarValoresCampanhaEnxoval: function() {
-			
+
 			/* Só populo os valores se a campanha estiver ativa para o representante / cliente */
 			if (that.bCampanhaEnxovalAtiva) {
-				var dValorLiberar;
+				var dValorLiberar = 0;
 
 				var dValorLimite;
 				var dValorTotal;
@@ -190,8 +191,31 @@ sap.ui.define([
 				} else {
 					dValorLiberar = dValorLimite;
 				}
+
+				// that.PDController.getView().byId("idValorTotalEnxoval").setValue(parseFloat(dValorLiberar).toFixed(2));
+				that.PDController.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
 			}
-		}
+		},
 		/* DisponibilizarValoresCampanhaEnxoval */
+
+		calculaTotalPedidoEnxoval: function() {
+			
+			if (that.bCampanhaEnxovalAtiva) {
+				var dValorLiberado = that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval");
+				var dValorUtilizado = that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
+
+				if (parseFloat(dValorUtilizado) > parseFloat(dValorLiberado)) {
+					var sMensagem = "Valor destinado para abater a campanha enxonval ultrapassou o valor total permitido. Desconto Excedente (0)";
+					that.PDController.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+					that.PDController.byId("idVerbaEnxoval").setValueState("Error");
+					that.PDController.byId("idVerbaEnxoval").setValueStateText(sMensagem);
+					that.PDController.byId("idVerbaEnxoval").focus();
+				} else {
+					that.PDController.byId("idVerbaEnxoval").setValueState("None");
+					that.PDController.byId("idVerbaEnxoval").setValueStateText("");
+				}
+			} /*if bCampanhaEnxovalAtiva */
+		}
+
 	});
 });

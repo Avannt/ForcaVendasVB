@@ -2015,6 +2015,11 @@ sap.ui.define([
 			var quantidadeParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"));
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			var totalExcedenteDescontosDiluicao = 0;
+			
+			/* Campanha Enxoval */
+			if (this.pedidoDetalheEnxoval){
+				this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
+			}
 
 			//Valores utilizados para abater de verbas e comissões.
 			var verbaUtilizadaDesconto = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
