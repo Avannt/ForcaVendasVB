@@ -28,7 +28,7 @@ sap.ui.define([
 
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
 			//this.pedidoDetalheGlobal   = new testeui5.controller.PedidoDetalheGlobal(that);
-
+			
 			that.oItemTemplate = [];
 			that.oVetorMateriais = [];
 			that.indexItem = 0;
@@ -618,19 +618,19 @@ sap.ui.define([
 			var that = this;
 
 			if (tipoPedido == "YVEN" || tipoPedido == "YBON" || tipoPedido == "YTRO") {
-
+				
 				var filtro = "";
-
-			} else if (tipoPedido == "YVEF") {
-
+				
+			} else if (tipoPedido == "YVEF" || tipoPedido == "YVEX") {
+				
 				filtro = "NORM";
-
+				
 			} else {
-
+				
 				filtro = tipoPedido;
-
+				
 			}
-
+			
 			var transaction = db.transaction("Materiais", "readonly");
 			var objectStoreMaterial = transaction.objectStore("Materiais");
 
@@ -3717,7 +3717,7 @@ sap.ui.define([
 				} else {
 					that.indexItem += 1;
 				}
-
+				
 				// if(indexEdit !== "" && indexEdit !== undefined){
 				// 	that.indexItem = indexEdit;
 				// }
@@ -3746,21 +3746,37 @@ sap.ui.define([
 					});
 
 				} else if (that.oItemPedido.aumng != 0 && (that.oItemPedido.zzQnt % that.oItemPedido.aumng) != 0) {
-
+					
 					MessageBox.show("Digite uma quantidade multipla de " + that.oItemPedido.aumng, {
 						icon: MessageBox.Icon.ERROR,
 						title: "Quantidade Inválida.",
 						actions: [MessageBox.Action.OK],
 						onClose: function() {
+							
 							oPanel.setBusy(false);
 							oButtonSalvar.setEnabled(true);
 							sap.ui.getCore().byId("idQuantidade").setValue(1);
-
+							
+						}
+					});
+					
+				} else if (that.oItemPedido.zzDesitem >= 80) {
+					
+					MessageBox.show("Desconto não permitido (" + that.oItemPedido.zzDesitem + ")", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Quantidade de desconto inválida.",
+						actions: [MessageBox.Action.OK],
+						onClose: function() {
+							
+							oPanel.setBusy(false);
+							oButtonSalvar.setEnabled(true);
+							sap.ui.getCore().byId("idQuantidade").setValue(1);
+							
 						}
 					});
 				} else {
 					var open = indexedDB.open("VB_DataBase");
-
+					
 					open.onerror = function() {
 						oButtonSalvar.setEnabled(true);
 						MessageBox.show(open.error.mensage, {
@@ -3769,21 +3785,21 @@ sap.ui.define([
 							actions: [MessageBox.Action.OK]
 						});
 					};
-
+					
 					open.onsuccess = function() {
 						var db = open.result;
-
+						
 						var store = db.transaction("Materiais", "readwrite");
 						var objMaterial = store.objectStore("Materiais");
-
+						
 						var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
-
+						
 						requestMaterial.onsuccess = function(e) {
 							var oMaterial = e.target.result;
-
+							
 							if (oMaterial == undefined) {
 								oPanel.setBusy(false);
-
+								
 								MessageBox.show("Não existe o produto: " + sap.ui.getCore().byId("idItemPedido").getValue(), {
 									icon: MessageBox.Icon.ERROR,
 									title: "Produto não encontrado.",
@@ -3794,17 +3810,17 @@ sap.ui.define([
 										oButtonSalvar.setEnabled(true);
 									}
 								});
-
+								
 							} else {
 
 								var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
 								var objItensPedido = storeItensPedido.objectStore("ItensPedido");
-
+								
 								// indexEdit inicia com 0, só é populado quando clica para editar 1 item. Senão sempre vai adicionar novo item
 								var request = objItensPedido.get(indexEdit);
-
+								
 								request.onsuccess = function(e3) {
-
+									
 									var result2 = e3.target.result;
 									//preparar o obj a ser adicionado ou editado
 									if (result2 == undefined) {
