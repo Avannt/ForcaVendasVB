@@ -3,7 +3,7 @@ sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/core/mvc/Controller",
 	"sap/m/MessageBox"
-], function(BaseController, MessageBox) {
+], function(BaseController, Controller, MessageBox) {
 
 	"use strict";
 	var oItensAprovar = [];
@@ -344,7 +344,7 @@ sap.ui.define([
 			this.getView().getModel("ItemAprovar").setProperty("/Vlrexc", totalExc.toFixed(2));
 
 		},
-
+		
 		onCarregaLimites: function() {
 
 			var that = this;
@@ -402,35 +402,44 @@ sap.ui.define([
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var Nrpedcli = oItem.getBindingContext("PedidosAprovar").getProperty("Nrpedcli");
-			var variavelCodigoCliente = oItem.getBindingContext("PedidosAprovar").getProperty("kunnr");
-			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", variavelCodigoCliente);
+			var Namecli = oItem.getBindingContext("PedidosAprovar").getProperty("Namecli");
+			var Kunnr = oItem.getBindingContext("PedidosAprovar").getProperty("Kunnr");
+			var Namerep = oItem.getBindingContext("PedidosAprovar").getProperty("Namerep");
+			var Lifnr = oItem.getBindingContext("PedidosAprovar").getProperty("Lifnr");
+			
 			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", Nrpedcli);
 			
-			sap.ui.core.UIComponent.getRouterFor(that).navTo("PedidoDetalheAprov");
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", Kunnr);
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Namecli", Namecli);
 			
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Namerep", Namerep);
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Lifnr", Lifnr);
 			
-			
-			// sap.m.MessageBox.show("Deseja mesmo detalhar o Pedido?", {
-			// 	icon: sap.m.MessageBox.Icon.WARNING,
-			// 	title: "Detalhamento Solicitado",
-			// 	actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-			// 	onClose: function(oAction) {
-			// 		if (oAction == sap.m.MessageBox.Action.YES) {
+			MessageBox.show("Deseja mesmo detalhar o Pedido?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Detalhamento Solicitado",
+				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+				onClose: function(oAction) {
+					if (oAction == sap.m.MessageBox.Action.YES) {
 						
+						sap.ui.core.UIComponent.getRouterFor(that).navTo("PedidoDetalheAprov");
 						
-			// 			
-						
-			// 		}
-			// 	}
-			// });
+					}
+				}
+			});
 		},
 
 		onItemChange: function(oEvent) {
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue)
+			
+			var oFilter = [
+				new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Namecli", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Namerep", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Nrpedcli", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -452,21 +461,22 @@ sap.ui.define([
 		},
 
 		onOpenDialog: function() {
+			
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
-
+			
 			if (oSelectedItems.length == 0) {
 				MessageBox.show("Selecione um pedido para aprovar", {
 					icon: sap.m.MessageBox.Icon.INFORMATION,
 					title: "escolher um pedido!",
 					actions: [MessageBox.Action.OK],
 					onClose: function() {
-
 					}
 				});
 			} else {
+				
 				var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
 				console.log(itemAprovar);
 
@@ -689,7 +699,7 @@ sap.ui.define([
 				Vlrbon = parseFloat(Vlrbon);
 			}
 			
-			var Vlrboncom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
+			var Vlrboncom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
 			if(Vlrboncom == "" || Vlrboncom == undefined){
 				Vlrboncom = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom", 0);
@@ -975,7 +985,9 @@ sap.ui.define([
 
 						var hora = retorno.results[i].Horaped;
 						hora = hora.substring(0, 2) + ":" + hora.substring(2, 4);
-
+						
+						retorno.results[i].Vlrexc = parseFloat(retorno.results[i].Vlramo) + parseFloat(retorno.results[i].Vlrprz) + parseFloat(retorno.results[i].Vlrbri) + parseFloat(retorno.results[i].Vlrbon) + parseFloat(retorno.results[i].Vlrdsc);
+						
 						var aux = {
 							IAprovador: retorno.results[i].IAprovador,
 							Nivel: retorno.results[i].Nivel,
@@ -1116,7 +1128,7 @@ sap.ui.define([
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
 			var aux = {
 				Nrpedcli: String(itemAprovar.Nrpedcli),
@@ -1209,7 +1221,7 @@ sap.ui.define([
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
 			var aux = {
 				Nrpedcli: String(itemAprovar.Nrpedcli),
@@ -1340,7 +1352,7 @@ sap.ui.define([
 			} else {
 				var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
 				console.log(itemAprovar);
 

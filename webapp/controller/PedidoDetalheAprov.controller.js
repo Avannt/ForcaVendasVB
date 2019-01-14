@@ -14,10 +14,10 @@ sap.ui.define([
 		
 		_onLoadFields: function(){
 			var that = this;
-			
+			this.byId("idPedAprovar").setBusy(true);
 			var oModel = that.getView().getModel();
 			
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http:// /sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
 			// 	password: "sap123"
@@ -27,48 +27,64 @@ sap.ui.define([
 
 			oModel.read("/BuscaCabecPedidoAprov(INrpedcli='" + nrPed + "')", {
 				success: function(retorno) {
+					//Tipo pedido
+					if(retorno.Auart == "YVEN"){
+						retorno.Auart = "YVEN - VENDA NORMAL";
+					} else if(retorno.Auart == "YVEF"){
+						retorno.Auart = "YVEF - VENDA FUTURA";
+					} else if(retorno.Auart == "YBON"){
+						retorno.Auart = "YBON - BONIFICAÇÃO/AMOSTRA/BRINDE";
+					} else if(retorno.Auart == "YTRO"){
+						retorno.Auart = "YTRO - TROCAS";
+					} else if(retorno.Auart == "YVEX"){
+						retorno.Auart = "YVEX - EXPORTAÇÃO";
+					}
+					
+					retorno.Erdat = retorno.Erdat.substring(4,6) + "/" + retorno.Erdat.substring(6,8) + "/" + retorno.Erdat.substring(0,4); 
+					retorno.Hora = retorno.Horaped.substring(0,2) + ":" + retorno.Horaped.substring(2,4) + ":" + retorno.Horaped.substring(4,6);
+					
+					if(retorno.Tiponego == "01"){
+						retorno.Tiponego = "01 - Avista";
+					} else if(retorno.Tiponego == "02"){
+						retorno.Tiponego = "02 - A prazo";
+					}
+					
+					retorno.Quantparcelas = parseInt(retorno.Quantparcelas, 10);
+					retorno.Diasprimeiraparcela = parseInt(retorno.Diasprimeiraparcela, 10);
+					
+					retorno.Existeentradapedido = Boolean(retorno.Existeentradapedido);
 					
 					var oModelAprovacoes = new sap.ui.model.json.JSONModel(retorno);
 					that.getView().setModel(oModelAprovacoes, "PedidosAprovarDetalhe");
 					
-					
-					oModel.read("/BuscaItemPedidoAprov", {
+					oModel.read("/BuscaItensPedidoAprov", {
 						urlParameters: {
 							"$filter": "INrpedcli eq '" + nrPed + "'"
 						},
 						success: function(retornoitens) {
 							
-							var oModelAprovacoes = new sap.ui.model.json.JSONModel(retornoitens.results);
-							that.getView().setModel(oModelAprovacoes, "PedidosAprovarItens");
+							var oModelItensAprovacoes = new sap.ui.model.json.JSONModel(retornoitens.results);
+							that.getView().setModel(oModelItensAprovacoes, "PedidosAprovarItens");
 							
-							
+							that.byId("idPedAprovar").setBusy(false);
 							
 						},
 						error: function(error) {
-							
+							that.byId("idPedAprovar").setBusy(false);
 							that.onMensagemErroODATA(error.statusCode);
 						}
 					});
 				},
 				error: function(error) {
-					
+					that.byId("idPedAprovar").setBusy(false);
 					that.onMensagemErroODATA(error.statusCode);
 				}
 			});
 			
 		},
 		
-		onNavBack: function(oEvent) {
-			
-			var oHistory, sPreviousHash;
-			oHistory = History.getInstance();
-			sPreviousHash = oHistory.getPreviousHash();
-			if (sPreviousHash !== undefined) {
-				window.history.go(-1);
-			} else {
-				this.getRouter().navTo("clienteConsultas", {}, true);
-			}
-			// sap.ui.core.UIComponent.getRouterFor(this).navTo("clienteConsultas");
+		onNavBack: function() {
+			sap.ui.core.UIComponent.getRouterFor(this).navTo("Aprovacoes");
 		},
 
 		/**

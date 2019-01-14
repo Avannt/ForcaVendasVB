@@ -579,7 +579,11 @@ sap.ui.define([
 				this.getOwnerComponent().setModel(oModelItemPedido, "modelItemPedido");
 
 				//Versão App
+<<<<<<< HEAD
 				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.14");
+=======
+				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.12");
+>>>>>>> refs/heads/master
 				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
 				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
 
