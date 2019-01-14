@@ -3,7 +3,7 @@ sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/core/mvc/Controller",
 	"sap/m/MessageBox"
-], function(BaseController, MessageBox) {
+], function(BaseController, Controller, MessageBox) {
 
 	"use strict";
 	var oItensAprovar = [];
@@ -344,7 +344,7 @@ sap.ui.define([
 			this.getView().getModel("ItemAprovar").setProperty("/Vlrexc", totalExc.toFixed(2));
 
 		},
-
+		
 		onCarregaLimites: function() {
 
 			var that = this;
@@ -359,7 +359,7 @@ sap.ui.define([
 			// });
 			
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
-
+			
 			oModel.read("/PedidosAprovar(IAprovador='" + codRepres + "')", {
 				success: function(retorno) {
 					var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
@@ -372,7 +372,6 @@ sap.ui.define([
 					that.onMensagemErroODATA(error.statusCode);
 				}
 			});
-
 		},
 
 		myFormatterDataImp: function(value) {
@@ -399,141 +398,48 @@ sap.ui.define([
 		},
 		
 		onItemPress: function(oEvent) {
+			
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
-			var nrPedCli = oItem.getBindingContext("PedidosAprovar").getProperty("Nrpedcli");
-			var variavelCodigoCliente = oItem.getBindingContext("PedidosAprovar").getProperty("kunnr");
-			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", variavelCodigoCliente);
-			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", nrPedCli);
+			var Nrpedcli = oItem.getBindingContext("PedidosAprovar").getProperty("Nrpedcli");
+			var Namecli = oItem.getBindingContext("PedidosAprovar").getProperty("Namecli");
+			var Kunnr = oItem.getBindingContext("PedidosAprovar").getProperty("Kunnr");
+			var Namerep = oItem.getBindingContext("PedidosAprovar").getProperty("Namerep");
+			var Lifnr = oItem.getBindingContext("PedidosAprovar").getProperty("Lifnr");
 			
-			var TelaAprovacao = this.getOwnerComponent().getModel("modelAux").getProperty("/TelaAprovacao");
+			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", Nrpedcli);
 			
-			var oModel = that.getView().getModel();
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", Kunnr);
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Namecli", Namecli);
 			
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
-				// 	json: true,
-				// 	user: "appadmin",
-				// 	password: "sap123"
-			// });
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Namerep", Namerep);
+			that.getOwnerComponent().getModel("modelAux").setProperty("/Lifnr", Lifnr);
 			
-			var nrPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
-			
-			oModel.read("/BuscaECabecAprov(INrpedcli='" + nrPedido + "')", {
-				success: function(retornoCabec) {
-					
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", retornoCabec.ECabec.situacaoPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", retornoCabec.ECabec.idStatusPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DataImpl", retornoCabec.ECabec.dataImpl);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasPrimeiraParcela", retornoCabec.ECabec.diasPrimeiraParcela);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", retornoCabec.ECabec.quantParcelas);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", retornoCabec.ECabec.intervaloParcelas);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoPedido", retornoCabec.ECabec.observacaoPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ObservacaoAuditoriaPedido", retornoCabec.ECabec.observacaoAuditoriaPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", retornoCabec.ECabec.existeEntradaPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercEntradaPedido", retornoCabec.ECabec.percEntradaPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", retornoCabec.ECabec.valorEntradaPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValMinPedido", retornoCabec.ECabec.valMinPedido);
-
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", retornoCabec.ECabec.tipoNegociacao);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Ntgew", retornoCabec.ECabec.ntgew);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotPed", retornoCabec.ECabec.valTotPed);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValDescontoTotal", retornoCabec.ECabec.valDescontoTotal);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedentePrazoMed", retornoCabec.ECabec.valTotalExcedentePrazoMed);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteDesconto", retornoCabec.ECabec.valTotalExcedenteDesconto);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TotalItensPedido", retornoCabec.ECabec.totalItensPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampEnxoval", retornoCabec.ECabec.valCampEnxoval);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampBrinde", retornoCabec.ECabec.valCampBrinde);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValCampGlobal", retornoCabec.ECabec.valCampGlobal);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaPedido", retornoCabec.ECabec.valVerbaPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoPedido", retornoCabec.ECabec.valComissaoPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/Completo", retornoCabec.ECabec.completo);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValComissaoUtilizadaDesconto", retornoCabec.ECabec.valComissaoUtilizadaDesconto);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValVerbaUtilizadaDesconto", retornoCabec.ECabec.valVerbaUtilizadaDesconto);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoPrazoMed", retornoCabec.ECabec.valUtilizadoComissaoPrazoMed);
-
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoDesconto", retornoCabec.ECabec.valTotalExcedenteNaoDirecionadoDesconto);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", retornoCabec.ECabec.valTotalExcedenteNaoDirecionadoPrazoMed);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoComissao", retornoCabec.ECabec.valTotalAbatidoComissao);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalAbatidoVerba", retornoCabec.ECabec.valTotalAbatidoVerba);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampGlobal", retornoCabec.ECabec.valTotalCampGlobal);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", retornoCabec.ECabec.valUtilizadoCampBrinde);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", retornoCabec.ECabec.valUtilizadoCampGlobal);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", retornoCabec.ECabec.valTotalCampEnxoval);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", retornoCabec.ECabec.valUtilizadoCampEnxoval);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", retornoCabec.ECabec.valTotalCampProdutoAcabado);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", retornoCabec.ECabec.valUtilizadoCampProdutoAcabado);
-
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBrinde", retornoCabec.ECabec.valTotalExcedenteBrinde);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBrinde", retornoCabec.ECabec.valUtilizadoVerbaBrinde);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaPrazoMed", retornoCabec.ECabec.valUtilizadoVerbaPrazoMed);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", retornoCabec.ECabec.valUtilizadoComissaoBrinde);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteAmostra", retornoCabec.ECabec.valTotalExcedenteAmostra);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaAmostra", retornoCabec.ECabec.valUtilizadoVerbaAmostra);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoAmostra", retornoCabec.ECabec.valUtilizadoComissaoAmostra);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", retornoCabec.ECabec.valTotalExcedenteBonif);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", retornoCabec.ECabec.valUtilizadoVerbaBonif);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", retornoCabec.ECabec.valUtilizadoComissaoBonif);
-
-					//Tela cabeçalho (2º aba)
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoTransporte", retornoCabec.ECabec.tipoTransporte);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TabPreco", retornoCabec.ECabec.tabPreco);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", retornoCabec.ECabec.tipoNegociacao);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoPedido", retornoCabec.ECabec.tipoPedido);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/CodUsr", retornoCabec.ECabec.codUsr);
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/FormaPagamento", retornoCabec.ECabec.zlsch);
-					
-					//Seleciona o valor do combo
-					that.byId("idTabelaPreco").setSelectedKey(retornoCabec.ECabec.tabPreco);
-					that.byId("idTipoTransporte").setSelectedKey(retornoCabec.ECabec.tipoTransporte);
-					that.byId("idTipoNegociacao").setSelectedKey(retornoCabec.ECabec.tipoNegociacao);
-					that.byId("idTipoPedido").setSelectedKey(retornoCabec.ECabec.tipoPedido);
-					that.byId("idFormaPagamento").setSelectedKey(retornoCabec.ECabec.zlsch);
-					
-					oModel.read("/BuscaItensPedidoAprov", {
-						urlParameters: {
-							"$filter": "INrpedcli eq '" + nrPedido + "'"
-						},
-						success: function(retornoItens) {
-							
-							that.objItensPedidoTemplate = retornoItens;
-							
-						},
-						error: function(error) {
-							console.log(error);
-							that.onMensagemErroODATA(error.statusCode);
-						}
-					});
-				},
-				error: function(error) {
-					console.log(error);
-					that.onMensagemErroODATA(error.statusCode);
+			MessageBox.show("Deseja mesmo detalhar o Pedido?", {
+				icon: MessageBox.Icon.WARNING,
+				title: "Detalhamento Solicitado",
+				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
+				onClose: function(oAction) {
+					if (oAction == sap.m.MessageBox.Action.YES) {
+						
+						sap.ui.core.UIComponent.getRouterFor(that).navTo("PedidoDetalheAprov");
+						
+					}
 				}
 			});
-				
-
-
-			// sap.m.MessageBox.show("Deseja mesmo detalhar o Pedido?", {
-			// 	icon: sap.m.MessageBox.Icon.WARNING,
-			// 	title: "Detalhamento Solicitado",
-			// 	actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
-			// 	onClose: function(oAction) {
-			// 		if (oAction == sap.m.MessageBox.Action.YES) {
-						
-			// 			sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-						
-			// 			that.getOwnerComponent().getModel("modelAux").setProperty("/TelaAprovacao", true);
-						
-			// 		}
-			// 	}
-			// });
 		},
 
 		onItemChange: function(oEvent) {
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue)
+			
+			var oFilter = [
+				new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Namecli", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Namerep", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Nrpedcli", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -555,21 +461,22 @@ sap.ui.define([
 		},
 
 		onOpenDialog: function() {
+			
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
-
+			
 			if (oSelectedItems.length == 0) {
 				MessageBox.show("Selecione um pedido para aprovar", {
 					icon: sap.m.MessageBox.Icon.INFORMATION,
 					title: "escolher um pedido!",
 					actions: [MessageBox.Action.OK],
 					onClose: function() {
-
 					}
 				});
 			} else {
+				
 				var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
 				console.log(itemAprovar);
 
@@ -783,55 +690,55 @@ sap.ui.define([
 		onDestinaBonif: function(evt) {
 			var ValtotexcndirBonif = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif"));
 
-			var Vlrprz = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprz")).toFixed(2);
-			if(Vlrprz == "" || Vlrprz == undefined){
-				Vlrprz = 0;
-				this.getView().getModel("ItemAprovar").getProperty("/Vlrprz", 0);
+			var Vlrbon = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbon")).toFixed(2);
+			if(Vlrbon == "" || Vlrbon == undefined){
+				Vlrbon = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrbon", 0);
 				
 			} else {
-				Vlrprz = parseFloat(Vlrprz);
+				Vlrbon = parseFloat(Vlrbon);
 			}
 			
-			var Vlrprzcom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
-			if(Vlrprzcom == "" || Vlrprzcom == undefined){
-				Vlrprzcom = 0;
-				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom", 0);
+			var Vlrboncom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
+			if(Vlrboncom == "" || Vlrboncom == undefined){
+				Vlrboncom = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom", 0);
 				
 			} else {
-				Vlrprzcom = parseFloat(Vlrprzcom);
+				Vlrboncom = parseFloat(Vlrboncom);
 			}
 			
-			var Vlrprzdd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
-			if(Vlrprzdd == "" || Vlrprzdd == undefined){
-				Vlrprzdd = 0;
-				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd", 0);
+			var Vlrbondd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
+			if(Vlrbondd == "" || Vlrbondd == undefined){
+				Vlrbondd = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd", 0);
 				
 			} else {
-				Vlrprzdd = parseFloat(Vlrprzdd);
+				Vlrbondd = parseFloat(Vlrbondd);
 			}
 			
-			var Vlrprzvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
-			if(Vlrprzvm == "" || Vlrprzvm == undefined){
-				Vlrprzvm = 0;
-				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm", 0);
+			var Vlrbonvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
+			if(Vlrbonvm == "" || Vlrbonvm == undefined){
+				Vlrbonvm = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm", 0);
 				
 			} else {
-				Vlrprzvm = parseFloat(Vlrprzvm);
+				Vlrbonvm = parseFloat(Vlrbonvm);
 			}
 			
-			var Vlrprzvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
-			if(Vlrprzvvb == "" || Vlrprzvvb == undefined){
-				Vlrprzvvb = 0;
-				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb", 0);
+			var Vlrbonvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
+			if(Vlrbonvvb == "" || Vlrbonvvb == undefined){
+				Vlrbonvvb = 0;
+				this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb", 0);
 				
 			} else {
-				Vlrprzvvb = parseFloat(Vlrprzvvb);
+				Vlrbonvvb = parseFloat(Vlrbonvvb);
 			}
 			
-			var somaDosDestinados = (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb).toFixed(2);
-			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrprz + ")";
+			var somaDosDestinados = (Vlrboncom + Vlrbondd + Vlrbonvm + Vlrbonvvb).toFixed(2);
+			var msg = "Valores destinados para abater o excedente de Bonificação, ultrapassou o valor total necessário. Valor Excedente (" + Vlrbon + ")";
 
-			if (somaDosDestinados > Vlrprz) {
+			if (somaDosDestinados > Vlrbon) {
 				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaUtilizadaBonif").setValueStateText(msg);
 
@@ -846,7 +753,7 @@ sap.ui.define([
 
 			} else {
 
-				ValtotexcndirBonif = Vlrprz - somaDosDestinados;
+				ValtotexcndirBonif = Vlrbon - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/ValtotexcndirBonif", ValtotexcndirBonif.toFixed(2));
 
 				this.onCalculaTotalDestinar();
@@ -914,7 +821,7 @@ sap.ui.define([
 			}
 			
 			var somaDosDestinados = (Vlramocom + Vlramodd + Vlramovm + Vlramovvb).toFixed(2);
-			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlramo + ")";
+			var msg = "Valores destinados para abater o excedente de Amostra, ultrapassou o valor total necessário. Valor Excedente (" + Vlramo + ")";
 
 			if (somaDosDestinados > Vlramo) {
 				sap.ui.getCore().byId("idVerbaUtilizadaAmostra").setValueState("Error");
@@ -1000,7 +907,7 @@ sap.ui.define([
 			}
 			
 			var somaDosDestinados = (Vlrbricom + Vlrbridd + Vlrbrivm + Vlrbrivvb).toFixed(2);
-			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrbri + ")";
+			var msg = "Valores destinados para abater o excedente de Brinde, ultrapassou o valor total necessário. Valor Excedente (" + Vlrbri + ")";
 
 			if (somaDosDestinados > Vlrbri) {
 				sap.ui.getCore().byId("idVerbaUtilizadaBrinde").setValueState("Error");
@@ -1078,7 +985,9 @@ sap.ui.define([
 
 						var hora = retorno.results[i].Horaped;
 						hora = hora.substring(0, 2) + ":" + hora.substring(2, 4);
-
+						
+						retorno.results[i].Vlrexc = parseFloat(retorno.results[i].Vlramo) + parseFloat(retorno.results[i].Vlrprz) + parseFloat(retorno.results[i].Vlrbri) + parseFloat(retorno.results[i].Vlrbon) + parseFloat(retorno.results[i].Vlrdsc);
+						
 						var aux = {
 							IAprovador: retorno.results[i].IAprovador,
 							Nivel: retorno.results[i].Nivel,
@@ -1219,7 +1128,7 @@ sap.ui.define([
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
 			var aux = {
 				Nrpedcli: String(itemAprovar.Nrpedcli),
@@ -1312,7 +1221,7 @@ sap.ui.define([
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
 			var aux = {
 				Nrpedcli: String(itemAprovar.Nrpedcli),
@@ -1443,7 +1352,7 @@ sap.ui.define([
 			} else {
 				var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, 2)];
+				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
 				console.log(itemAprovar);
 

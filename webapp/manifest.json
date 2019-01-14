@@ -71,8 +71,7 @@
 					"defaultBindingMode": "OneWay",
 					"defaultCountMode": "Request"
 				},
-				"dataSource": "ZFORCA_VENDAS_VB_SRV",
-				"preload": true
+				"dataSource": "ZFORCA_VENDAS_VB_SRV"
 			}
 		},
 		"resources": {
@@ -177,6 +176,10 @@
 				"name": "relatorioEnvSaldo",
 				"pattern": "relatorioEnvSaldo",
 				"target": "relatorioEnvSaldo"
+			}, {
+				"name": "PedidoDetalheAprov",
+				"pattern": "PedidoDetalheAprov",
+				"target": "PedidoDetalheAprov"
 			}],
 			"targets": {
 				"login": {
@@ -267,6 +270,10 @@
 					"viewType": "XML",
 					"viewName": "relatorioEnvSaldo",
 					"viewLevel": 1
+				},
+				"PedidoDetalheAprov": {
+					"viewType": "XML",
+					"viewName": "PedidoDetalheAprov"
 				}
 			}
 		}

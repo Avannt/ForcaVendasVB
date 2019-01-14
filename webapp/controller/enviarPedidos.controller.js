@@ -200,16 +200,34 @@ sap.ui.define([
 			};
 		},
 		/*FIM onLoadEntregas*/
+		
+		onItemChange: function(oEvent){
+			
+			var sValue = oEvent.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [
+				new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("NameOrg1", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Nrpedcli", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("AprovadoDesc", sap.ui.model.FilterOperator.Contains, sValue)
+			];
 
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+			aFilters.push(allFilters);
+			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, sap.ui.model.FilterType.Application);
+
+		},
+		
 		onNavBack: function() {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("login");
 		},
 		/*FIM onNavBack*/
-
+		
 		myFormatterDataImp: function(value) {
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
 				var data = value.split("-");
-
+				
 				var aux = data[0].split("/");
 				var hora = data[1].split(":");
 				// var aux2 = aux[2].substring(2, aux[2].length);
@@ -314,6 +332,7 @@ sap.ui.define([
 						oPedidosEnviar.push(oPedidoGrid[j]);
 					} /*EndIf*/
 				}
+				
 				for (var k = 0; k < oItensPedidoGrid.length; k++) {
 					if (oItensPedidoGrid[k].nrPedCli == nrPedido) {
 						oItensPedidoGridEnviar.push(oItensPedidoGrid[k]);
@@ -325,7 +344,8 @@ sap.ui.define([
 
 		onEnviarPedido: function(oEvent) {
 			var that = this;
-
+			
+			
 			if (oPedidosEnviar.length == 0) {
 
 				MessageBox.show("Selecione pelo menos um pedido para enviar!", {

@@ -541,11 +541,12 @@ sap.ui.define([
 					EditarIndexItem: "",
 					IserirDiluicao: "",
 					bConectado: false,
-					bEnviarPedido: true
+					bEnviarPedido: true,
+					TelaAprovação: false
 				});
-
+				
 				this.getOwnerComponent().setModel(oModelAux, "modelAux");
-
+				
 				var oModelCliente = new sap.ui.model.json.JSONModel({
 					Kunnr: "",
 					Land1: "",
@@ -574,10 +575,11 @@ sap.ui.define([
 					zzDesext: "", // – Desconto Extra
 					zzValmim: "" // – Valor Mínimo
 				});
+				
 				this.getOwnerComponent().setModel(oModelItemPedido, "modelItemPedido");
 
 				//Versão App
-				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.12");
+				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.17");
 				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
 				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
 
@@ -1020,7 +1022,9 @@ sap.ui.define([
 																												scmng: retornoMateriais.results[i].Scmng,
 																												vrkme: retornoMateriais.results[i].Vrkme,
 																												mtpos: retornoMateriais.results[i].Mtpos,
-																												ntgew: retornoMateriais.results[i].Ntgew
+																												ntgew: retornoMateriais.results[i].Ntgew,
+																												provg:  retornoMateriais.results[i].Provg,
+																												extwg:  retornoMateriais.results[i].Extwg
 																											};
 					
 																											var requestMateriais = objMateriais.add(objBancoMateriais);
@@ -1662,15 +1666,19 @@ sap.ui.define([
 																																																																	success: function(retornoAcompPedidos) {
 																																																																		var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
 																																																																		var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
-					
+																																																																		
 																																																																		for (i = 0; i < retornoAcompPedidos.results.length; i++) {
-					
+																																																																			
+																																																																			var dataPedido = retornoAcompPedidos.results[i].Nrpedcli.split(".");
+																																																																			dataPedido = dataPedido[1];
+																																																																			dataPedido = dataPedido.substring(6,8) + "/" + dataPedido.substring(4,6) + "/" + dataPedido.substring(0,4);
+																																																																			
 																																																																			var objBancoAcompPedidos = {
 																																																																				idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
 																																																																				Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
 																																																																				Kunnr: retornoAcompPedidos.results[i].Kunnr,
 																																																																				NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
-																																																																				Erdat: retornoAcompPedidos.results[i].Erdat,
+																																																																				Erdat: dataPedido,
 																																																																				Aprov: retornoAcompPedidos.results[i].Aprov,
 																																																																				AprovNome: retornoAcompPedidos.results[i].AprovNome,
 																																																																				Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
@@ -1678,9 +1686,9 @@ sap.ui.define([
 																																																																				Aprovado: retornoAcompPedidos.results[i].Aprovado,
 																																																																				PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png"
 																																																																			};
-					
+																																																																			
 																																																																			var sDescAprovado = "";
-					
+																																																																			
 																																																																			switch (retornoAcompPedidos.results[i].Aprovado) {
 																																																																				case "S":
 																																																																					sDescAprovado = "Aprovado";
@@ -1852,12 +1860,12 @@ sap.ui.define([
 																																																																										requestPVPrepostoTopo.onsuccess = function(event) {
 																																																																											console.log("Dados Topo PV Preposto inseridos. " + event);
 																																																																										};
-								
+																																																																										
 																																																																										requestPVPrepostoTopo.onerror = function(event) {
 																																																																											console.log("Dados Topo PV Preposto não foram inseridos :" + event);
 																																																																										};
 																																																																									}
-								
+																																																																									
 																																																																									/* GetPedidoPrepostoItem */
 																																																																									oModel.read("/GetPedidoPrepostoItem", {
 																																																																										urlParameters: {
@@ -1868,7 +1876,7 @@ sap.ui.define([
 																																																																											var objPVPrepostoItem = txPVPrepostoItem.objectStore("ItensPedido");
 								
 																																																																											for (var i = 0; i < retornoPVPrepostoItem.results.length; i++) {
-								
+																																																																												
 																																																																												var objBancoPVPrepostoItem = {
 																																																																													idItemPedido: retornoPVPrepostoItem.results[i].Iditempedido,
 																																																																													index: parseInt(retornoPVPrepostoItem.results[i].Tindex),

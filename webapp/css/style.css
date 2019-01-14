@@ -25,7 +25,11 @@
 
 }
 
-tr[data-mydata="Diluicao"]{	
+tr[data-mydata="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubRow {	
+  background:  #FF8484 !important;
+}
+
+tr[data-mydataAprov="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubRow {	
   background:  #FF8484 !important;
 }
 
@@ -33,11 +37,11 @@ tr[data-mydataEF="2"], tr[data-mydataEF="2"] + tr.sapMListTblSubRow, tr[data-myd
   background:  #fff10d7d !important;
 }
 
-tr[data-mydata="Diluido"]{	
+tr[data-mydata="Diluido"], tr[data-mydata="Diluido"] + tr.sapMListTblSubRow  {	
   background:  #C1FFAD !important;
 }
 
-tr[data-mydata="Normal"]{	
+tr[data-mydata="Normal"], tr[data-mydata="Normal"] + tr.sapMListTblSubRow {	
   background:  #FFFFFF !important;
 }
 
@@ -58,7 +62,8 @@ tr[data-mydata="Normal"]{
 }
 
 .sapMStdTileTitle{
-	font-size: 1.25rem !important;
+	font-size: 1.10rem !important;
+	font-weight:bold;
 }
 
 .bold{

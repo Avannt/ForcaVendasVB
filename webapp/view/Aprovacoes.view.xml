@@ -4,13 +4,7 @@
 		<subHeader>
 			<Toolbar>
 				<!--<DatePicker id="DP6" valueFormat="dd/MM/yyyy" placeholder="Digite Data .." displayFormat="long" change="handleChange" width="50%"/>-->
-				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite Repres / Cliente" enableSuggestions="true" search="onItemChange"
-					 width="100%"></SearchField>
-					<!--suggestionItems="{ path: 'cliRelatorio>/', sorter: { path: 'CodCliente' }, parameters: {operationMode: 'Client'}}">-->
-					<!--<suggestionItems>-->
-					<!--	<SuggestionItem text="{cliRelatorio>CodCliente}" description="{cliRelatorio>NomeEmit}" key="{cliRelatorio>CodCliente}"/>-->
-					<!--</suggestionItems>-->
-				<!--</SearchField>-->
+				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Filtre por Repres / Cliente / Nº Pedido" liveChange="onItemChange" width="100%" />
 			</Toolbar>
 		</subHeader>
 		<semantic:FullscreenPage id="page">
@@ -19,34 +13,34 @@
 					noDataText="Nenhum Pedido Pendente" updateFinished="onUpdateFinished" width="100%" alternateRowColors="true"
 					items="{ path: 'PedidosAprovar>/', sorter: { path: 'Cliente', descending: false, parameter: 'Codigo'}}">
 					<columns>
-						<Column minScreenWidth="320px" demandPopin="false" hAlign="Left" width="auto">
+						<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" width="auto">
+							<Text text="Nº Pedido"/>
+						</Column>
+						<Column minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
 							<Text text="Cliente"/>
 						</Column>
-						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+						<Column minScreenWidth="Desktop" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
 							<Text text="Repres"/>
 						</Column>
-						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
+						<Column minScreenWidth="320px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">
 							<Text text="Data"/>
 						</Column>
-						<Column minScreenWidth="700px" demandPopin="true" hAlign="Left" popinDisplay="Inline"  width="100px">
+						<Column minScreenWidth="600px" demandPopin="true" hAlign="Left" popinDisplay="Inline"  width="100px">
 							<Text text="Tot Exc"/>
 						</Column>
-						<Column minScreenWidth="320px" demandPopin="true" hAlign="Left" popinDisplay="Inline"  width="100px">
+						<Column minScreenWidth="600px" demandPopin="true" hAlign="Left" popinDisplay="Inline"  width="100px">
 							<Text text="Tot. Ped."/>
-						</Column>
-						<Column minScreenWidth="600px" demandPopin="true" popinDisplay="Inline" width="auto">
-							<Text text="Nº Pedido"/>
 						</Column>
 					</columns>
 					<items>
 						<ColumnListItem type="Active" press="onItemPress">
 							<cells>
-								<Text text="{PedidosAprovar>Kunnr}- {path: 'PedidosAprovar>Namecli', formatter:'.myFormatterName'}" />
+								<Text text="{PedidosAprovar>Nrpedcli}" />
+								<Text text="{PedidosAprovar>Kunnr} - {path: 'PedidosAprovar>Namecli', formatter:'.myFormatterName'}" />
 								<Text text="{PedidosAprovar>Lifnr} - {path: 'PedidosAprovar>Namerep', formatter:'.myFormatterName'}" />
 								<Text text="{path : 'PedidosAprovar>Erdat', formatter:'.myFormatterDataImp'} - {PedidosAprovar>Horaped}" />
 								<Text text="R$: {path :'PedidosAprovar>Vlrexc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 								<Text text="R$: {path: 'PedidosAprovar>Valtotpedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
-								<Text text="{PedidosAprovar>Nrpedcli}" />
 							</cells>
 						</ColumnListItem>
 					</items>
