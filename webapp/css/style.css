@@ -29,6 +29,10 @@ tr[data-mydata="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubRow {
   background:  #FF8484 !important;
 }
 
+tr[data-mydataAprov="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubRow {	
+  background:  #FF8484 !important;
+}
+
 tr[data-mydataEF="2"], tr[data-mydataEF="2"] + tr.sapMListTblSubRow, tr[data-mydataPED="9"], tr[data-mydataPED="9"] + tr.sapMListTblSubRow {	
   background:  #fff10d7d !important;
 }
@@ -58,7 +62,8 @@ tr[data-mydata="Normal"], tr[data-mydata="Normal"] + tr.sapMListTblSubRow {
 }
 
 .sapMStdTileTitle{
-	font-size: 1.25rem !important;
+	font-size: 1.10rem !important;
+	font-weight:bold;
 }
 
 .bold{
