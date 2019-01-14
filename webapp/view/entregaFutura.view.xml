@@ -66,14 +66,14 @@
 								<Text text="Ref.cliente"/>
 							</Column>
 							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Qtde Faturada"/>
+								<Text text="Qtde Fat"/>
 							</Column>
 							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Saldo"/>
 							</Column>
-							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Representante"/>
-							</Column>
+							<!--<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">-->
+							<!--	<Text text="Repres"/>-->
+							<!--</Column>-->
 							<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
 								<Text text="Cliente"/>
 							</Column>
@@ -96,7 +96,7 @@
 								<Text text="idEntregaFutura"/>
 							</Column>
 							<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
-								<Text text="Qtde Entregar"/>
+								<Text text="Qtd Entr"/>
 							</Column>
 						</columns>
 						<items>
@@ -114,7 +114,7 @@
 									<Text text="{path : 'entregasEnviar>Sldfut'}"/>
 									<Text text="{path : 'entregasEnviar>IRepresentante'}"/>
 									<Text text="{path : 'entregasEnviar>Kunrg'}"/>
-									<Text text="{path : 'entregasEnviar>Lifnr'}"/>
+									<!--<Text text="{path : 'entregasEnviar>Lifnr'}"/>-->
 									<Text text="{path : 'entregasEnviar>Aupos'}"/>
 									<Text text="{path : 'entregasEnviar>NameOrg1'}"/>
 									<Text text="{path : 'entregasEnviar>NameOrg2'}"/>

@@ -362,7 +362,7 @@ sap.ui.define([
 
 							for (var i = 0; i < vEntregas.length; i++) {
 								if (vEntregas[i].Vbeln != iVbeln) {
-									rej();
+									rej(iVbeln);
 								}
 							}
 
@@ -401,14 +401,15 @@ sap.ui.define([
 							});
 						};
 
-					}).catch(function() {
-
-						MessageBox.show("Finalize o envio de saldo atual para trocar de pedido de vendas.", {
+					}).catch(function(iVbeln) {
+						
+						var cliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+						
+						MessageBox.show("Finalize ou delete o envio de saldo do cliente " + cliente + " para liberar uma nova digitação.", {
 							icon: MessageBox.Icon.ERROR,
 							title: "Erro!",
 							actions: [MessageBox.Action.OK]
 						});
-
 					});
 				};
 			} else {
@@ -550,7 +551,7 @@ sap.ui.define([
 			iVbeln = this.getView().byId("ifVbeln").getValue();
 			sMatnr = this.getView().byId("sfItem").getValue();
 			iQuantidade = this.getView().byId("ifQtde").getValue();
-			iSaldo = parseInt(this.getView().byId("ifSaldo").getValue());
+			iSaldo = parseInt(this.getView().byId("ifSaldo").getValue(), 10);
 
 			idEntregaFutura = iVbeln.toString() + sMatnr;
 
@@ -596,7 +597,7 @@ sap.ui.define([
 							oItemEF2.Aubel = oItemEF.Aubel;
 							oItemEF2.Aupos = oItemEF.Aupos;
 							oItemEF2.Bstkd = oItemEF.Bstkd;
-							oItemEF2.Fkimg = oItemEF.Fkimg;
+							oItemEF2.Fkimg = parseInt(oItemEF.Fkimg, 10);
 							oItemEF2.Fkimg2 = iQuantidade;
 							oItemEF2.IRepresentante = oItemEF.IRepresentante;
 							oItemEF2.Kunrg = oItemEF.Kunrg;

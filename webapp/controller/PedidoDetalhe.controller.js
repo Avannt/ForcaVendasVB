@@ -22,18 +22,17 @@ sap.ui.define([
 		onInit: function() {
 			this.getRouter().getRoute("pedidoDetalhe").attachPatternMatched(this._onLoadFields, this);
 		},
-
+		
 		_onLoadFields: function() {
 			var that = this;
-
+			
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
-			//this.pedidoDetalheGlobal   = new testeui5.controller.PedidoDetalheGlobal(that);
+			// this.pedidoDetalheGlobal  = new testeui5.controller.PedidoDetalheGlobal(that);
 			
 			that.oItemTemplate = [];
 			that.oVetorMateriais = [];
 			that.indexItem = 0;
 			that.oVetorTabPreco = [];
-			that.oVetorTipoTransporte = [];
 			that.oVetorFormasPagamentos = [];
 			that.oVetorTipoNegociacao = [];
 			that.oVetorTiposPedidos = [];
@@ -567,15 +566,15 @@ sap.ui.define([
 		onBloqueioFormaPagamento: function(valor) {
 
 			if (valor == "YAMO" || valor == "YBRI" || valor == "YTRO" || valor == "YBON") {
-
+				
 				this.byId("idFormParcelamento").setVisible(false);
 				this.byId("idInserirItemDiluicao").setEnabled(false);
 				this.byId("idFormaPagamento").setVisible(false);
-
+				
 				this.byId("idTipoNegociacao").setVisible(false);
-				this.byId("idTipoNegociacao").setSelectedKey(this.oVetorTipoNegociacao[1].idNegociacao);
-				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", this.oVetorTipoNegociacao[1].idNegociacao);
-
+				this.byId("idTipoNegociacao").setSelectedKey("L");
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "L");
+				
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
