@@ -33,6 +33,7 @@ sap.ui.define([
 			that.oVetorMateriais = [];
 			that.indexItem = 0;
 			that.oVetorTabPreco = [];
+			that.oVetorTipoTransporte = [];
 			that.oVetorFormasPagamentos = [];
 			that.oVetorTipoNegociacao = [];
 			that.oVetorTiposPedidos = [];
@@ -566,15 +567,15 @@ sap.ui.define([
 		onBloqueioFormaPagamento: function(valor) {
 
 			if (valor == "YAMO" || valor == "YBRI" || valor == "YTRO" || valor == "YBON") {
-				
+
 				this.byId("idFormParcelamento").setVisible(false);
 				this.byId("idInserirItemDiluicao").setEnabled(false);
 				this.byId("idFormaPagamento").setVisible(false);
-				
+
 				this.byId("idTipoNegociacao").setVisible(false);
-				this.byId("idTipoNegociacao").setSelectedKey("L");
-				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", "L");
-				
+				this.byId("idTipoNegociacao").setSelectedKey(this.oVetorTipoNegociacao[1].idNegociacao);
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/TipoNegociacao", this.oVetorTipoNegociacao[1].idNegociacao);
+
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IntervaloParcelas", 0);
 				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
@@ -2041,9 +2042,9 @@ sap.ui.define([
 			var totalExcedenteDescontosDiluicao = 0;
 			
 			/* Campanha Enxoval */
-			if (this.pedidoDetalheEnxoval){
-				this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
-			}
+			// if (this.pedidoDetalheEnxoval){
+			// 	this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
+			// }
 
 			//Valores utilizados para abater de verbas e comissões.
 			var verbaUtilizadaDesconto = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValVerbaUtilizadaDesconto");
@@ -4297,6 +4298,8 @@ sap.ui.define([
 			var idStatusPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			var valorParcelas = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValParcelasPedido");
 			var formaPagamento = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento");
+			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			
 			if (idStatusPedido == 3) {
 				
 				MessageBox.show("Este pedido não pode mais ser alterado", {
@@ -4305,7 +4308,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 				
-			} else if (valorParcelas < 300 && formaPagamento == "D" ) {
+			} else if (valorParcelas < 300 && formaPagamento == "D" && tipoPedido != "YBON") {
 				
 				MessageBox.show("Pedido deve ter um parcelamento maior que R$: 300,00.", {
 					icon: MessageBox.Icon.WARNING,
@@ -4314,7 +4317,7 @@ sap.ui.define([
 				});
 				
 			} else {
-
+				
 				//HRIMP E DATIMP
 				var data = this.onDataAtualizacao();
 				var horario = data[1];

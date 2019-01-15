@@ -565,7 +565,7 @@ sap.ui.define([
 					efetuoucompra: ""
 				});
 				this.getOwnerComponent().setModel(oModelCliente, "modelCliente");
-
+				
 				var oModelItemPedido = new sap.ui.model.json.JSONModel({
 					matnr: "", // - Cod Material
 					maktx: "", // - Desc Material
@@ -577,12 +577,12 @@ sap.ui.define([
 				});
 				
 				this.getOwnerComponent().setModel(oModelItemPedido, "modelItemPedido");
-
+				
 				//Versão App
-				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.17");
+				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.19");
 				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
 				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
-
+				
 			},
 
 			retornaDataAtualizacao: function() {
