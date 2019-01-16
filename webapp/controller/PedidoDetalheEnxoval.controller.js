@@ -182,14 +182,22 @@ sap.ui.define([
 
 				var dValorLimite;
 				var dValorTotal;
+				var dValorBonificacao;
 
 				dValorLimite = parseFloat(that.oCmpEnxoval[0].ValorLimite);
 				dValorTotal = parseFloat(that.oCmpEnxoval[0].ValorTotal);
-
+				dValorBonificacao = parseFloat(that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
+				
+				/* Verifico se o valor total a liberar é menor que o limite disponível por pedido */
 				if (dValorTotal < dValorLimite) {
 					dValorLiberar = dValorTotal;
 				} else {
 					dValorLiberar = dValorLimite;
+				}
+				
+				/* Verifico se o valor a liberar é menor que o da bonificação */
+				if(dValorLiberar > dValorBonificacao){
+					dValorLiberar =  dValorBonificacao;
 				}
 
 				// that.PDController.getView().byId("idValorTotalEnxoval").setValue(parseFloat(dValorLiberar).toFixed(2));
@@ -205,7 +213,7 @@ sap.ui.define([
 				var dValorUtilizado = that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
 
 				if (parseFloat(dValorUtilizado) > parseFloat(dValorLiberado)) {
-					var sMensagem = "Valor destinado para abater a campanha enxonval ultrapassou o valor total permitido. Desconto Excedente (0)";
+					var sMensagem = "Valor destinado para abater a campanha enxonval ultrapassou o valor total permitido.";
 					that.PDController.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 					that.PDController.byId("idVerbaEnxoval").setValueState("Error");
 					that.PDController.byId("idVerbaEnxoval").setValueStateText(sMensagem);
