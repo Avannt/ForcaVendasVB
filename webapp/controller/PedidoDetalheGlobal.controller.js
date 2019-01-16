@@ -11,22 +11,19 @@ sap.ui.define([
 
 		constructor: function(sView) {
 			that = this;
-
+			
 			/* CAMPOS - INICIO */
 			/* that.oCmpEnxoval[i].bCampanhaVigente */
 			that.PDController = undefined;
-			that.oCmpEnxoval = undefined;
-			that.bCampanhaEnxovalAtiva = false;
-			that.bClienteEfetuouCompra = false;
 			/* CAMPOS - FIM */
-
+			
 			that.PDController = sView;
-
-			this.InicializarEventosCampGlobal();
+			
+			// this.InicializarEventosCampGlobal();
 		} /* constructor */ ,
-
-		onChangeIdTipoPedido: function() {
-			that.VerificarCampanhaEnxoval();
+		
+		onSearchIdTipoPedido: function() {
+			that.VerificaCampanhaGlobal();
 		}, /* onChangeIdTipoPedido */
 
 		onSelectIconTabBar: function(evt) {
@@ -41,26 +38,26 @@ sap.ui.define([
 		},
 		/* onSelectIconTabBar */
 
-		InicializarEventosCampEnxoval: function() {
+		InicializarEventosCampGlobal: function() {
 			// this.PDController.byId("idObservacoesAuditoria").attachLiveChange(this.onLiveChangeIdCodCliente);
-			var oEventRegistry = that.PDController.byId("idTipoPedido").mEventRegistry;
+			var oEventRegistry = that.PDController.sap.ui.getCore().byId("idItemPedido").mEventRegistry;
 			var bAtribuiuEvento = false;
-
+			
 			/* Preciso verificar se o evento já não foi atribuído ao controle pelo menos uma vez para 
 			que não chame em duplicidade */
-			for (var i = 0; i < oEventRegistry.change.length; i++) {
-
-				if (oEventRegistry.change[i].fFunction.name == "onChangeIdTipoPedido") {
+			for (var i = 0; i < oEventRegistry.search.length; i++) {
+				
+				if (oEventRegistry.change[i].fFunction.name == "onItemChange") {
 					bAtribuiuEvento = true;
 				}
 			}
-
+			
 			if (!bAtribuiuEvento) {
 				/* Atribuição de eventos exclusivos da campanha */
-				that.PDController.byId("idTipoPedido").attachChange(this.onChangeIdTipoPedido);
+				that.PDController.byId("idItemPedido").attachSearch(this.onChangeIdTipoPedido);
 				that.PDController.byId("idTopLevelIconTabBar").attachSelect(this.onSelectIconTabBar);
 			}
-
+			
 			this.GetCampanha();
 		} /* InicializarEventosCampEnxoval */ ,
 

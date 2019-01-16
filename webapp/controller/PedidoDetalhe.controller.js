@@ -27,7 +27,7 @@ sap.ui.define([
 			var that = this;
 			
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
-			// this.pedidoDetalheGlobal  = new testeui5.controller.PedidoDetalheGlobal(that);
+			this.pedidoDetalheGlobal  = new testeui5.controller.PedidoDetalheGlobal(that);
 			
 			that.oItemTemplate = [];
 			that.oVetorMateriais = [];
@@ -39,12 +39,12 @@ sap.ui.define([
 			that.oVetorTiposPedidos = [];
 			that.objItensPedidoTemplate = [];
 			that.oItemPedido = [];
-
+			
 			var aTemp = [];
-
+			
 			var oModel = new sap.ui.model.json.JSONModel(aTemp);
 			this.getView().setModel(oModel);
-
+			
 			this.getView().setModel(this.getView().getModel("modelCliente"));
 			this.getView().setModel(this.getView().getModel("modelAux"));
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ExisteEntradaPedido", false);
@@ -175,6 +175,8 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoVerbaBonif", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/FormaPagamento", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/zlsch", "L");
 
 			this.byId("idTabelaPreco").setSelectedKey();
 			this.byId("idTipoTransporte").setSelectedKey();
@@ -2387,11 +2389,11 @@ sap.ui.define([
 					aux = (TotalPedidoDesc - valorEntradaPedido);
 					valorParcelas = aux / quantidadeParcelas;
 					valorParcelas = Math.round(valorParcelas * 100) / 100;
-
+					
 					// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "Entrada: R$: " + valorEntradaPedido +
 					// 	" + " + quantidadeParcelas + "x " + valorParcelas);
-
-					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/EntradaPedido", "Entrada: " + valorEntradaPedido + " % + ");
+					
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/EntradaPedido", "Entrada: R$: " + valorEntradaPedido + " + ");
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantidadeParcelasPedido", quantidadeParcelas + " x ");
 					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", valorParcelas);
 
@@ -2969,7 +2971,6 @@ sap.ui.define([
 										that.onPrecoMinPermitido(that.objItensPedidoTemplate);
 										resolve();
 										console.log("resolve Perc Descontos");
-
 									};
 								}
 							};
@@ -3688,7 +3689,7 @@ sap.ui.define([
 					break;
 				}
 			}
-
+			
 			if (itemExistente == false) {
 
 				if (indexEdit == undefined) {
@@ -3884,18 +3885,21 @@ sap.ui.define([
 											var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 											that.getView().setModel(oModel, "ItensPedidoGrid");
 											that.onBloqueiaPrePedido();
-
+											
+											//Campanha Global 
+											//-> Verifica os itens já selecionados e coloca o respectivo grupo no item e ver quantidade de brindes possiveis.
+											that.onCheckItensCampanhaGlobal(db, that.oItemPedido);
+											
 										};
 										requestPutItens.onerror = function(event) {
 											console.log(" Dados itensPedido não foram inseridos");
-
+											
 											oButtonSalvar.setEnabled(true);
-
+											
 											if (that._ItemDialog) {
 												that._ItemDialog.destroy(true);
 											}
 										};
-
 									}).catch(function() {
 										oButtonSalvar.setEnabled(true);
 
@@ -3920,7 +3924,7 @@ sap.ui.define([
 				});
 			}
 		},
-
+		
 		onDialogDiluicaoSubmitButton: function() {
 
 			var that = this;
@@ -4308,7 +4312,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 				
-			} else if (valorParcelas < 300 && formaPagamento == "D" && tipoPedido != "YBON") {
+			} else if (valorParcelas < 300 && formaPagamento == "D" && tipoPedido != "U") {
 				
 				MessageBox.show("Pedido deve ter um parcelamento maior que R$: 300,00.", {
 					icon: MessageBox.Icon.WARNING,
@@ -4429,6 +4433,7 @@ sap.ui.define([
 								tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
 								verificadoPreposto: true,
 								zlsch: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento"),
+								zzPrazoMedio: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PrazoMedioParcelas")
 							};
 
 							var store1 = db.transaction("PrePedidos", "readwrite");
@@ -4653,9 +4658,9 @@ sap.ui.define([
 
 							//ADICIONAR O OBJ .. QND FOR UNDEFINED, POIS O OBJ NÃO FOI ENCONTRADO, ESTÁ VAZIO.
 							if (result == undefined || result == null) {
-
+								
 								var request1 = objPrePedido.add(objBancoPrePedido);
-
+								
 								objBancoPrePedido = {
 									nrPedCli: "",
 									kunnr: "",
@@ -4718,7 +4723,8 @@ sap.ui.define([
 									codUsr: "",
 									tipoUsuario: "",
 									verificadoPreposto: "",
-									zlsch: ""
+									zlsch: "",
+									zzPrazoMed: ""
 								};
 
 								request1.onsuccess = function() {
@@ -5286,8 +5292,152 @@ sap.ui.define([
 						res4(oAmostras);
 					});
 				});
-			}
+			},
 			/* onGetSaldoAmostra */
+			
+			/* Campanha Global -> Primeiro método */
+			onCheckItensCampanhaGlobal: function(db, ItemPedido){
+				var that = this;
+				var proximoItemDiferente = false;
+				var vetorItemAux = [];
+				
+				var promise = new Promise(function(resolve, reject) {
+					/* Busca o grupo da camp global do item selecionado */
+					that.onBuscaGrupoCmpGlobal(db, ItemPedido, resolve, reject);
+				});
+				
+				promise.then(function(ItemPedido) {
+					
+					//Verifica a quantidade de itens que tem que ser vendidos para entrar na campanha
+					
+					that.onVerifQuantCmpGlobal(db, ItemPedido);
+					
+				}).catch(function(Matnr) {
+					/* Não achou grupo do material para campanha Global */
+					ItemPedido.zzQtdRegraGb = 0;
+					console.log("Matnr: " + Matnr + " não possui Grupo Cmp Global.");
+				});
+			},
+			/* Campanha Global */
+			
+			//Busca em qual grupo da campanha Global o item pertence.
+			onBuscaGrupoCmpGlobal: function(db, ItemPedido, resolve, reject){
+				
+				//Verifica se o item item grupo de Campanha Global para ser Agrupado. Senão tiver grupoGlobal = 0;
+				var transaction = db.transaction("CmpGbGrpProdsAcabs", "readonly");
+				var objectStoreMaterial = transaction.objectStore("CmpGbGrpProdsAcabs");
+				
+				var indexMatnr = objectStoreMaterial.index("material");
+				
+				var request = indexMatnr.get(ItemPedido.matnr);
+				
+				request.onsuccess = function(event) {
+					
+					var result = event.target.result;
+					
+					console.error("Campanha Global");
+					
+					if (result != undefined && result != null){
+						
+						console.log("Matnr: " + result.material + ", Grupo: " + result.grupo);
+						ItemPedido.grupoGlobal = result.grupo;
+						resolve(ItemPedido);
+						
+					} else{
+						
+						ItemPedido.grupoGlobal = 0;
+						reject(ItemPedido.matnr);
+						
+					}
+				};
+			},
+			
+			//Quantidade que este grupo deve vender na Camp Global.
+			onVerifQuantCmpGlobal: function(db, ItemPedido){
+				
+				var transaction = db.transaction("CmpGbProdsAcabs", "readonly");
+				var objectStore = transaction.objectStore("CmpGbProdsAcabs");
+				var indexGrupo = objectStore.index("grupo");
+				
+				var request = indexGrupo.get(ItemPedido.grupoGlobal);
+				
+				request.onsuccess = function(event) {
+					
+					var result = event.target.result;
+					
+					if (result != undefined && result != null){
+						
+						//zzQtdRegraGb vai ser a variavel para identificar a quantidade que o kra tem que comprar 
+						//pra ativar a bonificação
+						console.log("Material: " + ItemPedido.matnr + ", Qtd: " + parseFloat(result.quantidade));
+						ItemPedido.zzQtdRegraGb = parseFloat(result.quantidade);
+						
+					} else{
+						
+						// Quando não tem range para ativar campanha. (Quantidade necessaria para ativar Campanha Global)
+						ItemPedido.zzQtdRegraGb = 0;
+						
+					}
+				};
+			}
+			
+			//Agrupa os itens da campanha pelo grupo e verifica se atingiu a regra para ver a quantidade de bonificação
+			//que o kra pode inserir.
+			// onAgrupaItensGlobal: function(){
+			// 	var that = this;
+			// 	var proximoItemDiferente = false;
+			// 	var vetorItemAux = [];
+				
+			// 	//Ordenando para desconto Familia normal
+			// 	that.objItensPedidoTemplate.sort(function(a, b) {
+			// 		return a.grupoGlobal - b.grupoGlobal;
+			// 	});
+				
+			// 	/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
+			// 	for(var i=0; that.objItensPedidoTemplate; i++){
+					
+			// 		if (proximoItemDiferente == true) {
+			// 			proximoItemDiferente = false; 
+			// 			vetorItemAux = [];
+			// 		}
 
+			// 		if (vetorItemAux.length == 0 && that.objItensPedidoTemplate.length == 1) {
+						
+			// 			vetorItemAux.push(that.objItensPedidoTemplate[i]);
+						
+						
+			// 		} else if (vetorItemAux.length > 1 && (i + 1) < vetorItemAux.length) {
+
+			// 			if (vetorItemAux[i].zzGrpmat == vetorItemAux[i + 1].zzGrpmat) {
+
+			// 				proximoItemDiferente = false;
+			// 				vetorFamilia.push(vetorGeral[o]);
+
+			// 			} else {
+			// 				//Nesse momento tenho os itens daquela familia.. tendo os itens da familia .. somar as quantidades
+			// 				// e verificar se o desconto aplicado é maior que o permitido.
+			// 				//fazendo ( preço cheio - preço de venda )
+			// 				vetorFamilia.push(vetorGeral[o]);
+			// 				this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
+			// 				proximoItemDiferente = true;
+			// 			}
+
+			// 		} else if ((o + 1) == vetorGeral.length) {
+
+			// 			//sinal proximoItemDiferente = true e limpou
+			// 			if (vetorFamilia.length > 0) {
+
+			// 				vetorFamilia.push(vetorGeral[o]);
+			// 				this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
+
+			// 			} else {
+			// 				//ultimo item e é diferente do antepenultimo
+			// 				vetorFamilia.push(vetorGeral[o]);
+			// 				this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
+			// 			}
+			// 		}
+			// 	}
+				
+			// }
 	});
 });

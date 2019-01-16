@@ -21,15 +21,15 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
 				//sap.ui.getCore().byId("label").visible = false;
-
+				
 				if ("indexedDB" in window) {
 					idbSupported = true;
 				}
-
+				
 				if (idbSupported) {
-
-					var open = indexedDB.open("VB_DataBase", 42);
-
+					
+					var open = indexedDB.open("VB_DataBase", 45);
+					
 					// Create the Tables
 					open.onupgradeneeded = function(e) {
 						var db = e.target.result;
@@ -355,7 +355,7 @@ sap.ui.define([
 								unique: false
 							});
 						}
-
+						
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpEnxoval (ZSDMF_CAMPANHA_ENXOVAL) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpEnxoval – Tabela de campanha de enxoval
 						if (!db.objectStoreNames.contains("CmpEnxoval")) {
@@ -365,7 +365,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-
+						
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbGrpProdsAcabs (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpGbGrpProdsAcabs – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpGbGrpProdsAcabs")) {
@@ -374,13 +374,12 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
-
+							
 							objCmpGbGrpProdsAcabs.createIndex("material", "material", {
 								unique: false
 							});
-
 						}
-
+						
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbItensBrindes (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpGbItensBrindes – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpGbItensBrindes")) {
@@ -389,6 +388,7 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
+							
 							objCmpGbItensBrindes.createIndex("material", "material", {
 								unique: false
 							});
@@ -402,6 +402,10 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
+							
+							objCmpGbProdsAcabs.createIndex("grupo", "grupo", {
+								unique: false
+							});
 						}
 
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbQtdItens (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -413,7 +417,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-
+						
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpProdsAcabs (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpProdsAcabs – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpProdsAcabs")) {
@@ -422,7 +426,7 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
-
+							
 							objCmpProdsAcabs.createIndex("material", "material", {
 								unique: false
 							});
@@ -491,7 +495,7 @@ sap.ui.define([
 					};
 				}
 			},
-
+			
 			onInicializaModels: function() {
 
 				var oModel = new sap.ui.model.json.JSONModel({
@@ -584,7 +588,7 @@ sap.ui.define([
 				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
 				
 			},
-
+			
 			retornaDataAtualizacao: function() {
 				var date = new Date();
 				var dia = String(date.getDate());
@@ -619,7 +623,7 @@ sap.ui.define([
 
 				return data + " - " + horario;
 			},
-
+			
 			getPermissao: function() {
 				var that = this;
 
@@ -638,7 +642,7 @@ sap.ui.define([
 					that.getImei();
 				}
 			},
-
+			
 			getImei: function() {
 				var that = this;
 				var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
