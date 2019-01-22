@@ -2358,7 +2358,7 @@ sap.ui.define([
 			var teste = "0.00";
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", teste);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", teste);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", teste);
+			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", teste);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", teste);
 
 			console.log("CALCULO PARCELAMENTO");
@@ -2522,7 +2522,13 @@ sap.ui.define([
 				that.byId("idComissaoUtilizadaBrinde").setValueState("None");
 				that.byId("idComissaoUtilizadaBrinde").setValueStateText("");
 			}
+			
+			/* Campanha Enxoval */
+			if (this.pedidoDetalheEnxoval){
+				this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
+			}
 		},
+		/* calculaTotalPedido */
 
 		onCalculaDiluicaoItem: function() {
 			var that = this;
@@ -4742,7 +4748,6 @@ sap.ui.define([
 											console.log("Dados PrePedido inseridos");
 										}
 									});
-
 								};
 
 								request1.onerror = function(event) {

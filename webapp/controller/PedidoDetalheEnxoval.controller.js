@@ -35,9 +35,8 @@ sap.ui.define([
 			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
 				that.VerificarCampanhaEnxoval();
 
-				that.DisponibilizarValoresCampanhaEnxoval();
+				// that.DisponibilizarValoresCampanhaEnxoval();
 			}
-
 		},
 		/* onSelectIconTabBar */
 
@@ -175,7 +174,6 @@ sap.ui.define([
 		/* ProcessarSaldoCampanhaEnxoval */
 
 		DisponibilizarValoresCampanhaEnxoval: function() {
-
 			/* Só populo os valores se a campanha estiver ativa para o representante / cliente */
 			if (that.bCampanhaEnxovalAtiva) {
 				var dValorLiberar = 0;
@@ -187,17 +185,17 @@ sap.ui.define([
 				dValorLimite = parseFloat(that.oCmpEnxoval[0].ValorLimite);
 				dValorTotal = parseFloat(that.oCmpEnxoval[0].ValorTotal);
 				dValorBonificacao = parseFloat(that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
-				
+
 				/* Verifico se o valor total a liberar é menor que o limite disponível por pedido */
 				if (dValorTotal < dValorLimite) {
 					dValorLiberar = dValorTotal;
 				} else {
 					dValorLiberar = dValorLimite;
 				}
-				
+
 				/* Verifico se o valor a liberar é menor que o da bonificação */
-				if(dValorLiberar > dValorBonificacao){
-					dValorLiberar =  dValorBonificacao;
+				if (dValorLiberar > dValorBonificacao) {
+					dValorLiberar = dValorBonificacao;
 				}
 
 				// that.PDController.getView().byId("idValorTotalEnxoval").setValue(parseFloat(dValorLiberar).toFixed(2));
@@ -206,9 +204,28 @@ sap.ui.define([
 		},
 		/* DisponibilizarValoresCampanhaEnxoval */
 
-		calculaTotalPedidoEnxoval: function() {
+		ajustarValoresBonificacao: function() {
+			var oModelPed = that.PDController.getOwnerComponent().getModel("modelDadosPedido");
 			
+			var dValorUtilizadoCampanha = parseFloat(oModelPed.getProperty("/ValUtilizadoCampEnxoval"));
+			var dValorBonificacao = parseFloat(oModelPed.getProperty("/ValTotalExcedenteNaoDirecionadoBonif"));
+			var dValorLiquidoBonificacao = dValorBonificacao - dValorUtilizadoCampanha;
+			
+			dValorLiquidoBonificacao = Math.round(dValorLiquidoBonificacao * 100) / 100;
+			
+			console.log("Valor da bonificação total alterado.");
+			oModelPed.setProperty("/ValTotalExcedenteNaoDirecionadoBonif", dValorLiquidoBonificacao.toString());
+			oModelPed.setProperty("/ValUtilizadoCampEnxoval", dValorUtilizadoCampanha.toString());
+			oModelPed.refresh();
+			
+		},
+		/* ajustarValoresBonificacao */
+
+		calculaTotalPedidoEnxoval: function() {
+
 			if (that.bCampanhaEnxovalAtiva) {
+				that.DisponibilizarValoresCampanhaEnxoval();
+
 				var dValorLiberado = that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval");
 				var dValorUtilizado = that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
 
@@ -221,6 +238,8 @@ sap.ui.define([
 				} else {
 					that.PDController.byId("idVerbaEnxoval").setValueState("None");
 					that.PDController.byId("idVerbaEnxoval").setValueStateText("");
+					
+					that.ajustarValoresBonificacao();
 				}
 			} /*if bCampanhaEnxovalAtiva */
 		}
