@@ -19,31 +19,38 @@ sap.ui.define([
 			//FORÇA FAZER O INIT DA PÁGINA .. MESMO QUE JÁ FOI INICIADA.
 			this.getRouter().getRoute("relatorioTitulos").attachPatternMatched(this._onLoadFields, this);
 		},
-
-		_handleValueHelpSearch: function(oEvent) {
-			var sValue = oEvent.getSource().getValue();
+		
+		onItemChange2: function(oEvent){
+			
+			var de = oEvent.getParameters().from;
+			var ate = oEvent.getParameters().to;
+			
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("CodCliente", sap.ui.model.FilterOperator.StartsWith, sValue), new sap.ui.model.Filter(
-				"NomeEmit", sap.ui.model.FilterOperator.Contains, sValue)];
+			var oFilter = [
+				new sap.ui.model.Filter("zfbdt", sap.ui.model.FilterOperator.BT, de, ate)
+			];
+
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
-			this.byId("idClientesRelatorio").getBinding("suggestionItems").filter(aFilters);
-			this.byId("idClientesRelatorio").suggest();
+			this.byId("idtableTitulos").getBinding("items").filter(aFilters, sap.ui.model.FilterType.Application);
+			
 		},
+		
+		onItemChange: function(oEvent){
+			
+			var sValue = this.byId("idClientesRelatorio").getValue();
+			var aFilters = [];
+			var oFilter = [
+				new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue)
+			];
 
-		myFormatterDataImp: function(value) {
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+			aFilters.push(allFilters);
+			this.byId("idtableTitulos").getBinding("items").filter(aFilters, sap.ui.model.FilterType.Application);
 
-			if (value !== undefined && value !== null && value !== "") {
-				var aux = value.split("/");
-				var ano = aux[2];
-				ano = ano.substring(2, 4);
-				// var aux2 = aux[2].substring(2, aux[2].length);
-				// value = aux[0] + "/" + aux[1] + "/" + aux2;
-				value = aux[0] + "/" + aux[1] + "/" + ano;
-				return value;
-			}
 		},
-
+		
 		_onLoadFields: function() {
 
 			var that = this;
@@ -90,115 +97,21 @@ sap.ui.define([
 									}
 								}
 							}
-
+							
 							var oModel = new sap.ui.model.json.JSONModel(oTitulos);
 							that.getView().setModel(oModel, "TitulosAbertos");
-
+							
 							that.byId("idtableTitulos").setBusy(false);
+							var cliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+							
+							if(cliente != ""){
+								that.byId("idClientesRelatorio").setValue(cliente);
+								that.onItemChange();
+							}
 						}
 					};
 				};
 			};
-		},
-
-		onItemChange: function() {
-			var that = this;
-			oDuplicataRelatorio = [];
-			var fValue = this.byId("idClientesRelatorio").getValue();
-			var IdBase = that.getOwnerComponent().getModel("modelAux").getProperty("/IdBase");
-
-			var open1 = indexedDB.open("VB_DataBase");
-
-			open1.onerror = function() {
-				MessageBox.show(open1.error.mensage, {
-					icon: MessageBox.Icon.ERROR,
-					title: "Banco não encontrado!",
-					actions: [MessageBox.Action.OK]
-				});
-			};
-			open1.onsuccess = function() {
-				var db = open1.result;
-
-				var store = db.transaction("DuplicataCliente").objectStore("DuplicataCliente");
-				//CARREGA TODOS OS ITENS DE UM DETERMINADO PEDIDO
-				store.openCursor().onsuccess = function(event) {
-					// consulta resultado do event
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.CodCliente == fValue && cursor.value.IdBase == IdBase) {
-							oDuplicataRelatorio.push(cursor.value);
-
-						}
-						cursor.continue();
-
-					} else {
-						var oModel = new sap.ui.model.json.JSONModel(oDuplicataRelatorio);
-						that.getView().setModel(oModel);
-						that.getOwnerComponent().getModel("modelAux").setProperty("/CodCliente", "");
-					}
-				};
-			};
 		}
-
-		// onDataExport: sap.m.Table.prototype.exportData || function() {
-		// 	var oModel = new sap.ui.model.json.JSONModel(oDuplicataRelatorio);
-		// 	this.getView().setModel(oModel);
-
-		// 	var oExport = new sap.ui.core.util.Export({
-
-		// 		// Type that will be used to generate the content. Own ExportType's can be created to support other formats
-		// 		exportType: new sap.ui.core.util.ExportTypeCSV({
-		// 			separatorChar: ";"
-		// 		}),
-
-		// 		// Pass in the model created above
-		// 		models: oModel,
-		// 		// binding information for the rows aggregation
-		// 		rows: {
-		// 			path: "/"
-		// 		},
-
-		// 		// column definitions with column name and binding info for the content
-
-		// 		columns: [{
-		// 			name: "Nº Pedido",
-		// 			template: {
-		// 				content: "{CodTitAcr}"
-		// 			}
-		// 		}, {
-		// 			name: "Dt' Emissao",
-		// 			template: {
-		// 				content: "{DatEmisDocto}"
-		// 			}
-		// 		}, {
-		// 			name: "Dt Vencimento",
-		// 			template: {
-		// 				content: "{DatVenctoTitAcr}"
-		// 			}
-		// 		}, {
-		// 			name: "Dias de atraso",
-		// 			template: {
-		// 				content: "{DiasAtraso}"
-		// 			}
-		// 		}, {
-		// 			name: "Valor Orginal",
-		// 			template: {
-		// 				content: "{ValOriginTitAcr}"
-		// 			}
-		// 		}, {
-		// 			name: "Juros",
-		// 			template: {
-		// 				content: "{ValSdoTitAcr}"
-		// 			}
-		// 		}]
-		// 	});
-
-		// 	// download exported file
-		// 	oExport.saveFile().catch(function(oError) {
-		// 		MessageBox.error("Error when downloading data. Browser might not be supported!\n\n" + oError);
-		// 	}).then(function() {
-		// 		oExport.destroy();
-		// 	});
-		// }
 	});
 });

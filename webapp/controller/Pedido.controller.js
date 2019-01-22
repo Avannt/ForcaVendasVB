@@ -35,7 +35,7 @@ sap.ui.define([
 
 			if (value !== undefined && value !== null && value !== "" && value !== 0) {
 				var data = value.split("-");
-				
+
 				var aux = data[0].split("/");
 				var hora = data[1].split(":");
 				// var aux2 = aux[2].substring(2, aux[2].length);
@@ -44,10 +44,10 @@ sap.ui.define([
 				return value;
 			}
 		},
-		
+
 		_onLoadFields: function() {
 			var that = this;
-			
+
 			this.navBack2();
 			that.vetorCliente = [];
 			that.oPrePedidos = [];
@@ -57,7 +57,7 @@ sap.ui.define([
 			this.getView().byId("objectAttribute_cnpj").setText();
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
-			
+
 			var oModel = new sap.ui.model.json.JSONModel();
 			that.getView().setModel(oModel, "pedidosCadastrados");
 
@@ -84,7 +84,7 @@ sap.ui.define([
 						var oModel = new sap.ui.model.json.JSONModel(that.vetorCliente);
 						that.getView().setModel(oModel, "clientesCadastrados");
 					};
-					
+
 				}
 			};
 		},
@@ -178,42 +178,25 @@ sap.ui.define([
 				promise.then(function() {
 					var transactionPrePedidos = db.transaction("PrePedidos", "readonly");
 					var objectStorePrePedidos = transactionPrePedidos.objectStore("PrePedidos");
-					
+
 					objectStorePrePedidos.openCursor().onsuccess = function(event) {
-					// consulta resultado do event
-					var cursor = event.target.result;
-					if (cursor) {
-						if (cursor.value.kunnr == that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr")) {
-							that.oPrePedidos.push(cursor.value);
-						}
-
-						cursor.continue();
-
-					} else{
-						
-						var oModel = new sap.ui.model.json.JSONModel(that.oPrePedidos);
-						that.getView().setModel(oModel, "pedidosCadastrados");
-						
-						var transaction = db.transaction("TitulosAbertos", "readonly");
-						var objectStoreTitulos = transaction.objectStore("TitulosAbertos");
-			
-						var indexMtpos = objectStoreTitulos.index("mtpos");
-			
-						var request = indexMtpos.getAll(that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"));
-		
-						request.onsuccess = function(event) {
-							that.oVetorTitulos = event.target.result;
-							
-							if(that.oVetorTitulos != ""){
-								
-								
-							} else{
-								
+						// consulta resultado do event
+						var cursor = event.target.result;
+						if (cursor) {
+							if (cursor.value.kunnr == that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr")) {
+								that.oPrePedidos.push(cursor.value);
 							}
-						};
-					}
-				};
-			});
+
+							cursor.continue();
+
+						} else {
+
+							var oModel = new sap.ui.model.json.JSONModel(that.oPrePedidos);
+							that.getView().setModel(oModel, "pedidosCadastrados");
+
+						}
+					};
+				});
 			};
 		},
 
@@ -256,27 +239,27 @@ sap.ui.define([
 				}
 			};
 		},
-		
+
 		onSearch: function(oEvent) {
-			
+
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue)
 			];
-			
+
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
 			//oEvent.getSource().getBinding("items").filter(aFilters, "Application");
 			this.byId("listClientes").getBinding("items").filter(aFilters, "Application");
-			
+
 		},
-		
+
 		onAddPedido: function() {
 			var pedido = "";
 			var that = this;
 			var open1 = indexedDB.open("VB_DataBase");
-			
+
 			open1.onerror = function(hxr) {
 				console.log("Erro ao abrir tabelas.");
 				console.log(hxr.Message);
@@ -284,22 +267,22 @@ sap.ui.define([
 			//Load tables
 			open1.onsuccess = function(e) {
 				var db = open1.result;
-				
+
 				var cliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
-				if(cliente == ""){
-					
+				if (cliente == "") {
+
 					MessageBox.show("Nenhum cliente selecionado! Selecione um cliente!", {
 						icon: sap.m.MessageBox.Icon.WARNING,
 						title: "Nenhum cliente selecionado",
 						actions: [MessageBox.Action.OK]
 					});
-					
-				}else {
+
+				} else {
 					var store = db.transaction("PrePedidos").objectStore("PrePedidos");
 					store.openCursor().onsuccess = function(event) {
 						// consulta resultado do event
 						var cursor = event.target.result;
-						
+
 						if (cursor) {
 							if (cursor.value.idStatusPedido != 3 && cursor.value.completo != "Sim") {
 								cliente = cursor.value.kunnr;
@@ -314,19 +297,53 @@ sap.ui.define([
 									actions: [MessageBox.Action.OK]
 								});
 							} else {
-								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+								
+								var transaction = db.transaction("TitulosAbertos", "readonly");
+								var objectStoreTitulos = transaction.objectStore("TitulosAbertos");
+					
+								var indexMtpos = objectStoreTitulos.index("kunnr");
+					
+								var request = indexMtpos.getAll(that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"));
+				
+								request.onsuccess = function(event) {
+									that.oVetorTitulos = event.target.result;
+									
+									if(that.oVetorTitulos != ""){
+										
+										MessageBox.show("O Cliente " + that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + 
+											" possui títulos em aberto!", {
+											icon: sap.m.MessageBox.Icon.WARNING,
+											title: "Títulos em Aberto!",
+											actions: ["Ver Titulo", "Continuar", "Cancelar"],
+											onClose: function(oAction){
+												if(oAction == "Ver Titulo"){
+													that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+													sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
+												} else if(oAction == "Continuar"){
+													sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+												} else {
+													
+												}
+											}
+										});
+										
+									} else{
+										
+										sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+									}
+								};
 							}
 						}
 					};
 				}
 			};
 		},
-
+		
 		onItemPress: function(oEvent) {
 			var that = this;
 			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
 			var open1 = indexedDB.open("VB_DataBase");
-			
+
 			open1.onerror = function(hxr) {
 				console.log("Erro ao abrir tabelas.");
 				console.log(hxr.Message);
@@ -334,26 +351,26 @@ sap.ui.define([
 			//Load tables
 			open1.onsuccess = function(e) {
 				var db = open1.result;
-				
+
 				var NrPedido = oNumeroPedido.getBindingContext("pedidosCadastrados").getProperty("nrPedCli");
 				that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", NrPedido);
-				
+
 				var promise = new Promise(function(resolve, reject) {
 					that.carregaModelCliente(db, resolve, reject);
 				});
-				
+
 				promise.then(function() {
 					sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 				});
 			};
 		},
-		
+
 		onExcluirPedido: function(oEvent) {
 			var that = this;
 			var naoDeletar = false;
 			var oNumeroPedido = oEvent.getParameter("listItem") || oEvent.getSource();
 			var NrPedido = oNumeroPedido.getBindingContext("pedidosCadastrados").getProperty("nrPedCli");
-			
+
 			MessageBox.show("Deseja mesmo excluir o pedido?.", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Exclusão de Pedidos",
@@ -361,7 +378,7 @@ sap.ui.define([
 				onClose: function(oAction) {
 					if (oAction == sap.m.MessageBox.Action.YES) {
 						var open = indexedDB.open("VB_DataBase");
-						
+
 						open.onerror = function() {
 							MessageBox.show(open.error.mensage, {
 								icon: MessageBox.Icon.ERROR,
@@ -369,7 +386,7 @@ sap.ui.define([
 								actions: [MessageBox.Action.OK]
 							});
 						};
-						
+
 						open.onsuccess = function() {
 							for (var i = 0; i < that.oPrePedidos.length; i++) {
 								if (that.oPrePedidos[i].nrPedCli == NrPedido) {
@@ -382,30 +399,30 @@ sap.ui.define([
 							}
 							var oModel = new sap.ui.model.json.JSONModel(that.oPrePedidos);
 							that.getView().setModel(oModel, "pedidosCadastrados");
-							
+
 							if (naoDeletar === true) {
 								MessageBox.show("Esse Pedido está com status Finalizado e não pode ser deletado.", {
 									icon: MessageBox.Icon.WARNING,
 									title: "Impossivel Excluir",
 									actions: [MessageBox.Action.OK]
 								});
-								
+
 							} else {
 								var db = open.result;
 								var store1 = db.transaction("PrePedidos", "readwrite");
 								var objPedido = store1.objectStore("PrePedidos");
 								var request = objPedido.delete(NrPedido);
-								
+
 								request.onsuccess = function() {
-									
+
 									that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 									console.log("Pedido deletado!");
-									
+
 								};
 								request.onerror = function() {
 									console.log("Pedido não foi deletado!");
 								};
-								
+
 								var store = db.transaction("ItensPedido", "readwrite").objectStore("ItensPedido");
 								store.openCursor().onsuccess = function(event) {
 									// consulta resultado do event

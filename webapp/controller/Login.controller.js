@@ -896,6 +896,7 @@ sap.ui.define([
 																						// objTitulosAbertos.autoIncrement();
 																						
 																						for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
+																							
 																							var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
 																							var date = retornoTitulosAbertos.results[i].Budat;
 																							var dia = String(date.getDate());
@@ -1751,20 +1752,25 @@ sap.ui.define([
 																																																																						var objControleAmostras = txControleAmostras.objectStore("ControleAmostra");
 						
 																																																																						for (i = 0; i < retornoControleAmostras.results.length; i++) {
-						
+																																																																							var valor = retornoControleAmostras.results[i].QuantidadeTotal;
+																																																																							
+																																																																							if(valor < 0){
+																																																																								valor = 0;
+																																																																							}
+																																																																							
 																																																																							var objBancoControleAmostras = {
 																																																																								idControleAmostra: i,
 																																																																								representante: retornoControleAmostras.results[i].IRepresentante,
-																																																																								quantidadeTotal: retornoControleAmostras.results[i].QuantidadeTotal,
+																																																																								quantidadeTotal: valor,
 																																																																								quantidadePedido: retornoControleAmostras.results[i].QuantidadePedido
 																																																																							};
-						
+																																																																							
 																																																																							var requestControleAmostras = objControleAmostras.put(objBancoControleAmostras);
-						
+																																																																							
 																																																																							requestControleAmostras.onsuccess = function(event) {
 																																																																								console.log("Dados ControleAmostras inseridos. " + event);
 																																																																							};
-						
+																																																																							
 																																																																							requestControleAmostras.onerror = function(event) {
 																																																																								console.log("Dados ControleAmostras não foram inseridos :" + event);
 																																																																							};

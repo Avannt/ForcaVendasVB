@@ -39,11 +39,12 @@ sap.ui.define([
 			that.byId("btnExcluirPedido").setVisible(envioPedidos);
 
 			if (envioPedidos) {
+				
 				this.onLoadPedidos();
 			} else {
+				
 				this.onLoadEntregas();
 			}
-
 		},
 		/*FIM _onLoadFields*/
 
