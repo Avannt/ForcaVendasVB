@@ -16,7 +16,7 @@
 				noDataText="Nenhum pedido encontrado" updateFinished="onUpdateFinished" width="100%" alternateRowColors="true"
 				growingTriggerText="Próximo >>>" items="{ path: 'pedidoRelatorio>/', sorter: { path: 'Nrpedcli', descending: true}}">
 				<columns>
-					<Column minScreenWidth="320px" demandPopin="false" popinDisplay="Inline" hAlign="Left" width="auto">
+					<Column minScreenWidth="320px" demandPopin="false" popinDisplay="Inline" hAlign="Left" width="170px">
 						<Text text="N°Ped"/>
 					</Column>
 					<!--<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="100px">-->
@@ -37,14 +37,17 @@
 					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
 						<Text text="Cliente"/>
 					</Column>
-					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto">
+					<Column minScreenWidth="1000px" demandPopin="true" popinDisplay="Inline" hAlign="Left" width="auto" >
 						<Text text="Aprovador"/>
 					</Column>
-					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="100px">
-						<Text text="Valor total"/>
+					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="110px">
+						<Text text="Valor Total"/>
 					</Column>
-					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="100px">
-						<Text text="Valor excedente"/>
+					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="110px">
+						<Text text="Valor Excedente"/>
+					</Column>
+					<Column minScreenWidth="700px" demandPopin="true" popinDisplay="Inline" width="80px">
+						<Text text="DocVenda"/>
 					</Column>
 				</columns>
 				<items>
@@ -58,10 +61,9 @@
 							<Text text="{path : 'pedidoRelatorio>Kunnr'} - {path : 'pedidoRelatorio>NameOrg1', formatter:'.myFormatterName'}"/>
 							<!--<Text text="{path : 'pedidoRelatorio>Aprov'}"/>-->
 							<Text text="{path : 'pedidoRelatorio>Aprov'} - {path : 'pedidoRelatorio>AprovNome', formatter:'.myFormatterName'}"/>
-							<Text
-								text="R$: {path :'pedidoRelatorio>Valtotpedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
-							<Text
-								text="R$: {path :'pedidoRelatorio>Vlrexc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="R$: {path :'pedidoRelatorio>Valtotpedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="R$: {path :'pedidoRelatorio>Vlrexc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+							<Text text="{path :'pedidoRelatorio>Vbeln'}" />
 						</cells>
 					</ColumnListItem>
 				</items>

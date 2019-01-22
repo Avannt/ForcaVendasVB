@@ -287,7 +287,7 @@
 											<Label text="Total Pedido (R$)"/>
 											<Input id="idTotalPedidoAbaTotal" value="{path: 'modelDadosPedido>/ValTotPed', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Total Itens"/>
-											<Input id="idTotalItensAbaTotal" value="{path: 'modelDadosPedido>/TotalItensPedido'}" enabled="false" class="desabilitado" type="Number"/>
+											<Input id="idTotalItensAbaTotal" value="{path: 'modelDadosPedido>/TotalItensPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.'}, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Peso Total dos Itens"/>
 											<Input id="idPesoPedidoAbaTotal" value="{path: 'modelDadosPedido>/Ntgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} KG" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Verba Pedido (R$)"/>
@@ -316,8 +316,6 @@
 											<Input id="idAbaterVerba" value="{path: 'modelDadosPedido>/ValTotalAbatidoVerba', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Valor abater comissão (R$)"/>
 											<Input id="idAbaterComissao" value="{path: 'modelDadosPedido>/ValTotalAbatidoComissao', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
-											<Label text="Valor abater campanha enxoval (R$)"/>
-											<Input id="idCampanhaEnxoval" value="{path: 'modelDadosPedido>/ValUtilizadoCampEnxoval', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"

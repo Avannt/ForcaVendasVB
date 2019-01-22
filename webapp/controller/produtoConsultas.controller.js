@@ -24,20 +24,18 @@ sap.ui.define([
 
 			open.onsuccess = function() {
 				var db = open.result;
-				var objectStore = db.transaction("Materiais", "readonly").objectStore("Materiais"); // Chave default
-
+				
+				var objectStore = db.transaction("A963", "readonly").objectStore("A963"); // Chave default
 				if ("getAll" in objectStore) {
 					objectStore.getAll().onsuccess = function(event) {
-						var vetorProdutos = [];
-						vetorProdutos = event.target.result;
-
-						var oModel = new sap.ui.model.json.JSONModel(vetorProdutos);
-
-						that.getView().setModel(oModel, "consultasProdutos");
+						var vetorTabPreco = [];
+						vetorTabPreco = event.target.result;
+						
+						var oModel = new sap.ui.model.json.JSONModel(vetorTabPreco);
+						that.getView().setModel(oModel, "tabPreco");
 					};
 				}
 			};
-
 		},
 
 		onNavBack: function() {
@@ -48,7 +46,87 @@ sap.ui.define([
 			this.byId("list").removeSelections(true);
 			this.getSplitContObj().backDetail();
 		},
+		
+		onChangeTabelaPreco: function(oEvent){
+			var that = this;
+			var tabnorm = oEvent.getSource().getSelectedKey();
+			var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
+			var tabbri = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbri;
+			var tabamo = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabamo;
+			var tabbon = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
+			
+			var open = indexedDB.open("VB_DataBase");
 
+			open.onerror = function() {
+				console.log(open.error.mensage);
+			};
+
+			open.onsuccess = function() {
+				var db = open.result;
+				
+				var promise = new Promise(function(resolve, reject) {
+					//Busca o preço do item
+					var objectStore = db.transaction("Materiais", "readonly").objectStore("Materiais"); // Chave default
+					if ("getAll" in objectStore) {
+						objectStore.getAll().onsuccess = function(event) {
+							var vetorProdutos = [];
+							vetorProdutos = event.target.result;
+							
+							var oModel = new sap.ui.model.json.JSONModel(vetorProdutos);
+							that.getView().setModel(oModel, "consultasProdutos");
+							
+							resolve(vetorProdutos);
+						};
+					}
+				});
+				
+				promise.then(function(vetorProdutos) {
+					
+					var storeA960 = db.transaction("A960", "readwrite");
+					var objA960 = storeA960.objectStore("A960");
+					var itemPreco = [];
+					var idA960 = "";
+					var tabPreco = "";
+					
+					for(var i=0; i<vetorProdutos.length; i++){
+						
+						if(vetorProdutos[i].mtpos == "YBRI"){
+							tabPreco = tabbri;
+						} else if(vetorProdutos[i].mtpos == "YBON"){
+							tabPreco = tabbon;
+						} else if(vetorProdutos[i].mtpos == "YAMO"){
+							tabPreco = tabamo;
+						} else{
+							tabPreco = tabnorm;
+						}
+						
+						idA960 = werks + "." + tabPreco + "." + vetorProdutos[i].matnr;
+						
+						var requesA960 = objA960.get(idA960);
+						
+						requesA960.onsuccess = function(e) {
+							var oA960 = e.target.result;
+							
+							if(oA960 != undefined){
+								for(var j=0; j<vetorProdutos.length; j++){
+									
+									if(vetorProdutos[j].matnr == oA960.matnr){
+										
+										vetorProdutos[j].zzVprod = oA960.zzVprod;
+										
+										itemPreco.push(vetorProdutos[j]);
+									}
+								}
+								
+								var oModel = new sap.ui.model.json.JSONModel(itemPreco);
+								that.getView().setModel(oModel, "consultasProdutos");
+							}
+						};
+					}
+				});
+			};
+		},
+		
 		onSelectionChange: function(oEvent) {
 			this.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
 			this.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
@@ -87,19 +165,18 @@ sap.ui.define([
 			var oFilter = [new sap.ui.model.Filter("matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
 				new sap.ui.model.Filter("maktx", sap.ui.model.FilterOperator.Contains, sValue)
 			];
-
+			
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
 			this.byId("tableProdutos").getBinding("items").filter(aFilters, "Application");
 		},
-
+		
 		onPressModeBtn: function(oEvent) {
 			var sSplitAppMode = oEvent.getSource().getSelectedButton().getCustomData()[0].getValue();
-
+			
 			this.getSplitContObj().setMode(sSplitAppMode);
-			// MessageToast.show("Split Container mode is changed to: " + sSplitAppMode, {duration: 5000});
 		},
-
+		
 		getSplitContObj: function() {
 			var result = this.byId("SplitContDemoProdutos");
 			if (!result) {
@@ -108,5 +185,4 @@ sap.ui.define([
 			return result;
 		}
 	});
-
 });

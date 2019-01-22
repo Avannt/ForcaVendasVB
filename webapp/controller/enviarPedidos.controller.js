@@ -161,11 +161,11 @@ sap.ui.define([
 
 		onLoadEntregas: function() {
 			this.byId("table_entregas").setBusy(true);
-
+			
 			var that = this;
 			var oModel = new sap.ui.model.json.JSONModel();
 			var open = indexedDB.open("VB_DataBase");
-
+			
 			open.onerror = function() {
 				MessageBox.show(open.error.mensage, {
 					icon: MessageBox.Icon.ERROR,
@@ -173,7 +173,7 @@ sap.ui.define([
 					actions: [MessageBox.Action.OK]
 				});
 			};
-
+			
 			open.onsuccess = function() {
 				var db = open.result;
 
@@ -451,9 +451,9 @@ sap.ui.define([
 										Mtpos: String(oItensPedidoGridEnviar[j].mtpos),
 										Kbetr: String(oItensPedidoGridEnviar[j].kbetr),
 										Zzvprodabb: String(oItensPedidoGridEnviar[j].zzVprodABB),
-										Aumng: String(oItensPedidoGridEnviar[j].aumng)
+										Aumng: String(oItensPedidoGridEnviar[j].aumng),
+										Zzqntamostra: String(oItensPedidoGridEnviar[j].zzQntAmostra)
 									};
-
 									
 									oModel.create("/InserirLinhaOV", objItensPedido, {
 										method: "POST",
@@ -465,7 +465,7 @@ sap.ui.define([
 												// that.onAtulizaSaldoAmostra(db, data);
 											}
 											/* ---- */
-
+											
 											console.info("Itens Inserido");
 											that.byId("table_pedidos").setBusy(false);
 										},
@@ -474,11 +474,10 @@ sap.ui.define([
 											that.onMensagemErroODATA(error.statusCode);
 										}
 									});
-
 								}
-
+								
 								for (var i = 0; i < oPedidosEnviar.length; i++) {
-
+									
 									var objPedido = {
 										Nrpedcli: oPedidosEnviar[i].nrPedCli,
 										Idstatuspedido: String(oPedidosEnviar[i].idStatusPedido),
@@ -560,7 +559,8 @@ sap.ui.define([
 										Valcampbrinde: String(oPedidosEnviar[i].valCampBrinde),
 										Usuario: String(oPedidosEnviar[i].codUsr),
 										Tipousuario: String(oPedidosEnviar[i].tipoUsuario),
-										Zlsch: String(oPedidosEnviar[i].zlsch)
+										Zlsch: String(oPedidosEnviar[i].zlsch),
+										Zzprazomed: String(oPedidosEnviar[i].zzPrazoMedio)
 									};
 
 									oModel.create("/InserirOV", objPedido, {
@@ -594,7 +594,7 @@ sap.ui.define([
 															}
 															// oModel = new sap.ui.model.json.JSONModel();
 															// that.getView().setModel(oModel, "PedidosEnviar");
-
+															
 															oModel = new sap.ui.model.json.JSONModel(oPedidoGrid);
 															that.getView().setModel(oModel, "PedidosEnviar");
 															that.byId("table_pedidos").setBusy(false);
@@ -768,8 +768,17 @@ sap.ui.define([
 								/* Percorro o vetor para enviar ao Sap */
 								for (var i = 0; i < vItensEntregar.length; i++) {
 									vetorPromise.push(new Promise(function(resolve, reject) {
-
+										
+										var horario = that.onDataAtualizacao();
+										var data = horario[0];
+										var hora = horario[1];
+										
 										var oItemEntregar = vItensEntregar[i];
+											oItemEntregar.Data = data;
+											oItemEntregar.Hora = hora;
+											oItemEntregar.PathImg = sap.ui.require.toUrl("testeui5/img/S.png");
+											oItemEntregar.AprovadoDesc = "Enviado";
+										
 										var tmpItem = {
 											Arktx: oItemEntregar.Arktx,
 											Aubel: oItemEntregar.Aubel,
@@ -789,7 +798,7 @@ sap.ui.define([
 											Identregafutura: oItemEntregar.idEntregaFutura2,
 											Codrepres: oItemEntregar.codRepres,
 											Codusr: oItemEntregar.codUsr,
-											Tipousuario: oItemEntregar.tipoUsuario,
+											Tipousuario: oItemEntregar.tipoUsuario
 										};
 
 										that.byId("table_entregas").setBusy(true);
@@ -919,6 +928,37 @@ sap.ui.define([
 			});
 		},
 		/*FIM onEnviarEntrega*/
+		
+		onDataAtualizacao: function() {
+			var date = new Date();
+			var dia = String(date.getDate());
+			var mes = String(date.getMonth() + 1);
+			var ano = String(date.getFullYear());
+			var minuto = String(date.getMinutes());
+			var hora = String(date.getHours());
+			var seg = String(date.getSeconds());
+
+			if (dia.length == 1) {
+				dia = String("0" + dia);
+			}
+			if (mes.length == 1) {
+				mes = String("0" + mes);
+			}
+			if (minuto.length == 1) {
+				minuto = String("0" + minuto);
+			}
+			if (hora.length == 1) {
+				hora = String("0" + hora);
+			}
+			if (seg.length == 1) {
+				seg = String("0" + seg);
+			}
+			//HRIMP E DATIMP
+			var data = String(dia + "/" + mes );
+			var horario = String(hora) + ":" + String(minuto);
+
+			return [data, horario];
+		},
 
 		onDeletarPedido: function(oEvent) {
 			var that = this;

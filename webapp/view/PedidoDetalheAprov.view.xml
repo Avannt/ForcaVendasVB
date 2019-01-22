@@ -188,8 +188,8 @@
 											<!--<Input id="idParcela"-->
 											<!--	value="{path: 'PedidosAprovarDetalhe>/Entradapedido'}{path: 'PedidosAprovarDetalhe>/Quantidadeparcelaspedido'} R$: {path: 'PedidosAprovarDetalhe>/Valparcelaspedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
 											<!--	enabled="false" class="desabilitado"/>-->
-											<!--<Label text="Prazo Médio "/>-->
-											<!--<Input id="idPrazoMedio" value="{path: 'PedidosAprovarDetalhe>/Prazomedioparcelas'} dias" enabled="false" class="desabilitado"/>-->
+											<Label text="Prazo Médio "/>
+											<Input id="idPrazoMedio" value="{path: 'PedidosAprovarDetalhe>/Zzprazomed'} dias" enabled="false" class="desabilitado"/>
 										</f:content>
 									</f:SimpleForm>
 								</ScrollContainer>

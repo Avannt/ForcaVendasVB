@@ -15,25 +15,29 @@
 				updateFinished="onUpdateFinished" width="100%" selectionChange="onSelectionChange" alternateRowColors="true" growingTriggerText="Próximo >>>"
 				items="{ path: 'TitulosAbertos>/', sorter: { path: 'Cliente', ascending: true}}">
 				<columns>
-					<Column minScreenWidth="320px" hAlign="Left" demandPopin="false">
-						<Text text="Titulo"/>
-					</Column>
-					<Column demandPopin="true" minScreenWidth="425px">
-						<Text text="Emissão"/>
-					</Column>
-					<Column minScreenWidth="600px" demandPopin="false">
+					<Column minScreenWidth="320px" demandPopin="false" hAlign="Left">
 						<Text text="Cliente"/>
 					</Column>
-					<Column demandPopin="true" minScreenWidth="320px" hAlign="Center">
+					<!--<Column minScreenWidth="320px" hAlign="Left" demandPopin="false">-->
+					<!--	<Text text="Titulo"/>-->
+					<!--</Column>-->
+					<Column demandPopin="true" minScreenWidth="550px" hAlign="Left" popinDisplay="Inline">
+						<Text text="Emissão"/>
+					</Column>
+					<Column demandPopin="true" minScreenWidth="500px" hAlign="Left" popinDisplay="Inline">
+						<Text text="Vencimento"/>
+					</Column>
+					<Column demandPopin="true" minScreenWidth="320px" width="100px" hAlign="Left">
 						<Text text="Vlr Orig"/>
 					</Column>
 				</columns>
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
-							<Text text="{TitulosAbertos>belnr}" />
-							<Text text="{TitulosAbertos>budat}" />
-							<Text text="{TitulosAbertos>kunnr}" />
+							<Text text="{TitulosAbertos>kunnr} - {TitulosAbertos>name1}" />
+							<!--<Text text="{TitulosAbertos>belnr}" />-->
+							<Text text="{path: 'TitulosAbertos>budat', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' }}" />
+							<Text text="{path: 'TitulosAbertos>zfbdt', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' }}" />
 							<Text text="R$ {path: 'TitulosAbertos>dmbtr', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" />
 						</cells>
 					</ColumnListItem>

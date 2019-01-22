@@ -90,7 +90,7 @@ sap.ui.define([
 					};
 
 				} else if (usrapr == true) {
-
+					
 					oModel.read("/AcompPedidos", {
 						urlParameters: {
 							"$filter": "IRepres eq '" + CodRepres + "'"
@@ -117,7 +117,8 @@ sap.ui.define([
 									Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
 									Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
 									Aprovado: retornoAcompPedidos.results[i].Aprovado,
-									PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png "
+									PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png ",
+									Vbeln: retornoAcompPedidos.results[i].Vbeln
 								};
 
 								var sDescAprovado = "";
@@ -195,7 +196,7 @@ sap.ui.define([
 			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, "Application");
 			
 		},
-
+		
 		onSearch: function(oEvent) {
 
 			var sValue = oEvent.getSource().getValue();
@@ -205,7 +206,10 @@ sap.ui.define([
 				new sap.ui.model.Filter("Namecli", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Namerep", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Nrpedcli", sap.ui.model.FilterOperator.Contains, sValue)
+				new sap.ui.model.Filter("Nrpedcli", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("NameOrg1", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("AprovNome", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -217,7 +221,7 @@ sap.ui.define([
 		myFormatterName: function(value) {
 
 			if (value.length > 28) {
-
+				
 				return value.substring(0, 20) + "...";
 
 			} else {

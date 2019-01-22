@@ -53,6 +53,7 @@ sap.ui.define([
 					retorno.Diasprimeiraparcela = parseInt(retorno.Diasprimeiraparcela, 10);
 					
 					retorno.Existeentradapedido = Boolean(retorno.Existeentradapedido);
+					retorno.Zzprazomed = parseFloat(retorno.Zzprazomed);
 					
 					var oModelAprovacoes = new sap.ui.model.json.JSONModel(retorno);
 					that.getView().setModel(oModelAprovacoes, "PedidosAprovarDetalhe");
@@ -80,7 +81,6 @@ sap.ui.define([
 					that.onMensagemErroODATA(error.statusCode);
 				}
 			});
-			
 		},
 		
 		onNavBack: function() {

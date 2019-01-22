@@ -113,12 +113,15 @@ sap.ui.define([
 
 		},
 
-		onSearch2: function(oEvent) {
+		onSearch: function(oEvent) {
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			var oFilter = [new sap.ui.model.Filter("matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
-				new sap.ui.model.Filter("maktx", sap.ui.model.FilterOperator.Contains, sValue)
+			var oFilter = [
+				new sap.ui.model.Filter("Matnr", sap.ui.model.FilterOperator.StartsWith, sValue),
+				new sap.ui.model.Filter("Arktx", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Arktx", sap.ui.model.FilterOperator.Contains, sValue),
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);

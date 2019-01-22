@@ -38,8 +38,8 @@
 	}, {
 		"id": "produtoConsultas",
 		"icon": "product",
-		"title": "Produtos",
-		"info": "Descrições",
+		"title": "Tabela Preços",
+		"info": "Produtos",
 		"visible": true,
 		"number": ""
 	},

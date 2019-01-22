@@ -9,9 +9,6 @@ sap.ui.define([
 	"sap/m/MessageBox"
 ], function(jQuery, MessageToast, Fragment, BaseController, Filter, FilterOperator, MessageBox) {
 	"use strict";
-	var vetorCliente = [];
-	var oPrePedidos = [];
-	var ajaxCall;
 
 	return BaseController.extend("testeui5.controller.Pedido", {
 
@@ -52,7 +49,9 @@ sap.ui.define([
 			var that = this;
 			
 			this.navBack2();
-			
+			that.vetorCliente = [];
+			that.oPrePedidos = [];
+			that.oVetorTitulos = [];
 			this.getView().byId("objectHeader").setTitle();
 			this.getView().byId("objectHeader").setNumber();
 			this.getView().byId("objectAttribute_cnpj").setText();
@@ -80,9 +79,9 @@ sap.ui.define([
 
 				if ("getAll" in objectStore) {
 					objectStore.getAll().onsuccess = function(event) {
-						vetorCliente = event.target.result;
+						that.vetorCliente = event.target.result;
 
-						var oModel = new sap.ui.model.json.JSONModel(vetorCliente);
+						var oModel = new sap.ui.model.json.JSONModel(that.vetorCliente);
 						that.getView().setModel(oModel, "clientesCadastrados");
 					};
 					
@@ -150,7 +149,7 @@ sap.ui.define([
 
 		onSelectionChange: function(oEvent) {
 			var that = this;
-			oPrePedidos = [];
+			that.oPrePedidos = [];
 			//filtra somente os pedidos do cliente e vai pra detail
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			//seta os dados da objectHeader
@@ -185,14 +184,33 @@ sap.ui.define([
 					var cursor = event.target.result;
 					if (cursor) {
 						if (cursor.value.kunnr == that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr")) {
-							oPrePedidos.push(cursor.value);
+							that.oPrePedidos.push(cursor.value);
 						}
 
 						cursor.continue();
 
 					} else{
-						var oModel = new sap.ui.model.json.JSONModel(oPrePedidos);
+						
+						var oModel = new sap.ui.model.json.JSONModel(that.oPrePedidos);
 						that.getView().setModel(oModel, "pedidosCadastrados");
+						
+						var transaction = db.transaction("TitulosAbertos", "readonly");
+						var objectStoreTitulos = transaction.objectStore("TitulosAbertos");
+			
+						var indexMtpos = objectStoreTitulos.index("mtpos");
+			
+						var request = indexMtpos.getAll(that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr"));
+		
+						request.onsuccess = function(event) {
+							that.oVetorTitulos = event.target.result;
+							
+							if(that.oVetorTitulos != ""){
+								
+								
+							} else{
+								
+							}
+						};
 					}
 				};
 			});
@@ -329,6 +347,7 @@ sap.ui.define([
 				});
 			};
 		},
+		
 		onExcluirPedido: function(oEvent) {
 			var that = this;
 			var naoDeletar = false;
@@ -352,16 +371,16 @@ sap.ui.define([
 						};
 						
 						open.onsuccess = function() {
-							for (var i = 0; i < oPrePedidos.length; i++) {
-								if (oPrePedidos[i].nrPedCli == NrPedido) {
-									if (oPrePedidos[i].idStatus === 3) {
+							for (var i = 0; i < that.oPrePedidos.length; i++) {
+								if (that.oPrePedidos[i].nrPedCli == NrPedido) {
+									if (that.oPrePedidos[i].idStatus === 3) {
 										naoDeletar = true;
 									} else {
-										oPrePedidos.splice(i, 1);
+										that.oPrePedidos.splice(i, 1);
 									}
 								}
 							}
-							var oModel = new sap.ui.model.json.JSONModel(oPrePedidos);
+							var oModel = new sap.ui.model.json.JSONModel(that.oPrePedidos);
 							that.getView().setModel(oModel, "pedidosCadastrados");
 							
 							if (naoDeletar === true) {
@@ -405,7 +424,7 @@ sap.ui.define([
 										}
 										cursor.continue();
 									} else {
-										oModel = new sap.ui.model.json.JSONModel(oPrePedidos);
+										oModel = new sap.ui.model.json.JSONModel(that.oPrePedidos);
 										that.getView().setModel(oModel, "PedidosCadastrados");
 									}
 								};
@@ -414,19 +433,6 @@ sap.ui.define([
 					}
 				}
 			});
-		},
-		
-		onBusyDialogClosed: function() {
-			var call = ajaxCall;
-			call.abort();
-			// MessageBox.show("Operação Cancelada!", {
-			// 	icon: MessageBox.Icon.ERROR,
-			// 	title: "Acesso negado",
-			// 	actions: [MessageBox.Action.OK],
-			// 	onClose: function() {
-			// 		call.abort();
-			// 	}
-			// });
 		},
 
 		handleLinkPress: function() {

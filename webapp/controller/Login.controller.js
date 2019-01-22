@@ -2,8 +2,8 @@
 sap.ui.define([
 		"sap/ui/core/mvc/Controller",
 		"sap/m/MessageBox",
-		"testeui5/js/index",
-		"testeui5/util/mensagem"
+		"testeui5/util/mensagem",
+		"testeui5/js/index"
 	],
 	function(Controller, MessageBox, mensagem, index) {
 		"use strict";
@@ -11,12 +11,12 @@ sap.ui.define([
 		var ImeiResult = [];
 
 		return Controller.extend("testeui5.controller.Login", {
-
+			
 			onInit: function() {
 				var that = this;
-
+				
 				// this.getView().setModel(oModel2, "VBModel");
-
+				
 				this.onInicializaModels();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
@@ -28,7 +28,7 @@ sap.ui.define([
 				
 				if (idbSupported) {
 					
-					var open = indexedDB.open("VB_DataBase", 45);
+					var open = indexedDB.open("VB_DataBase", 46);
 					
 					// Create the Tables
 					open.onupgradeneeded = function(e) {
@@ -126,11 +126,11 @@ sap.ui.define([
 								keyPath: "idEntregaFutura",
 								unique: true
 							});
-
+							
 							objEntregaFutura3.createIndex("Vbeln", "Vbeln", {
 								unique: false
 							});
-
+							
 							objEntregaFutura3.createIndex("Kunrg", "Kunrg", {
 								unique: false
 							});
@@ -159,10 +159,10 @@ sap.ui.define([
 								keyPath: "Nrpedcli",
 								unique: true
 							});
-							objStatusPedidos.createIndex("kunnr", "kunnr", {
+							objStatusPedidos.createIndex("Kunnr", "Kunnr", {
 								unique: false
 							});
-							objStatusPedidos.createIndex("werks", "werks", {
+							objStatusPedidos.createIndex("Werks", "Werks", {
 								unique: false
 							});
 							objStatusPedidos.createIndex("idStatusPedido", "idStatusPedido", {
@@ -890,11 +890,11 @@ sap.ui.define([
 																						"$filter": "IvRepres eq '" + CodRepres + "'"
 																					},
 																					success: function(retornoTitulosAbertos) {
-					
+																					
 																						var txTitulosAbertos = db.transaction("TitulosAbertos", "readwrite");
 																						var objTitulosAbertos = txTitulosAbertos.objectStore("TitulosAbertos");
 																						// objTitulosAbertos.autoIncrement();
-					
+																						
 																						for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
 																							var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
 																							var date = retornoTitulosAbertos.results[i].Budat;
@@ -926,14 +926,16 @@ sap.ui.define([
 																							//HRIMP E DATIMP
 																							//var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
 																							var data = String(dia + "/" + mes + "/" + ano);
-					
+																							
 																							var objBancoTitulosAbertos = {
 																								// idTituloAberto: retornoTitulosAbertos.results[i].Belnr + "." + retornoTitulosAbertos.results[
 																								// 		i].Kunnr + "." +
 																								// 	auxDmbtr + "." + data,
 																								idTituloAberto: String(i),
 																								belnr: retornoTitulosAbertos.results[i].Belnr,
-																								budat: data,
+																								name1: retornoTitulosAbertos.results[i].Name1,
+																								budat: retornoTitulosAbertos.results[i].Budat, //Data emissão
+																								zfbdt: retornoTitulosAbertos.results[i].Zfbdt, //Data vencimento
 																								dmbtr: auxDmbtr,
 																								kunnr: retornoTitulosAbertos.results[i].Kunnr
 																							};
@@ -1160,16 +1162,16 @@ sap.ui.define([
 																																			requestA963.onsuccess = function(event) {
 																																				console.log("Dados A963 inseridos. " + event);
 																																			};
-					
+																																			
 																																			requestA963.onerror = function(event) {
 																																				console.log("Dados A963 não foram inseridos :" +
 																																					event);
 																																			};
 																																		}
-					
+																																		
 																																		oModel.read("/A964", {
 																																			success: function(retornoA964) {
-					
+																																				
 																																				var txA964 = db.transaction("A964", "readwrite");
 																																				var objA964 = txA964.objectStore("A964");
 					
@@ -1177,8 +1179,7 @@ sap.ui.define([
 					
 																																					var objBancoA964 = {
 																																						idA964: retornoA964.results[i].Werks + "." +
-																																							retornoA964.results[
-																																								i].ZzPerjur,
+																																							retornoA964.results[i].ZzPerjur,
 																																						werks: retornoA964.results[i].Werks,
 																																						zzPerjur: retornoA964.results[i].ZzPerjur
 																																					};
@@ -1216,14 +1217,12 @@ sap.ui.define([
 																																							var requestA965 = objA965.add(objBancoA965);
 					
 																																							requestA965.onsuccess = function(event) {
-																																								console.log("Dados A965 inseridos. " +
-																																									event);
+																																								console.log("Dados A965 inseridos. " + event);
 																																							};
 					
 																																							requestA965.onerror = function(event) {
 																																								console.log(
-																																									"Dados A965 não foram inseridos :" +
-																																									event);
+																																									"Dados A965 não foram inseridos :" + event);
 																																							};
 																																						}
 					
@@ -1301,7 +1300,7 @@ sap.ui.define([
 																																												var objKonm = txKonm.objectStore("Konm");
 					
 																																												for (i = 0; i < retornoKonm.results.length; i++) {
-					
+				
 																																													var objBancoKonm = {
 																																														idKonm: retornoKonm.results[i].Knumh + "." +
 																																															retornoKonm.results[i].Kstbm + "." +
@@ -1316,9 +1315,7 @@ sap.ui.define([
 					
 																																													requestKonm.onsuccess =
 																																														function(event) {
-																																															console.log(
-																																																"Dados Konm inseridos. " +
-																																																event);
+																																															console.log("Dados Konm inseridos. " + event);
 																																														};
 					
 																																													requestKonm.onerror =
@@ -1688,7 +1685,8 @@ sap.ui.define([
 																																																																				Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
 																																																																				Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
 																																																																				Aprovado: retornoAcompPedidos.results[i].Aprovado,
-																																																																				PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png"
+																																																																				PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png",
+																																																																				Vbeln: retornoAcompPedidos.results[i].Vbeln
 																																																																			};
 																																																																			
 																																																																			var sDescAprovado = "";
@@ -2949,8 +2947,8 @@ sap.ui.define([
 							open.onsuccess = function() {
 								// Tabelas para serem limpadas
 								var vTables = ["Clientes", "A969", "Usuarios", "A959", "A960", "A961", "A962", "A963", "A964", "A965", "A966", "A967", "A968",
-									"Materiais", "PrePedidos", "ItensPedido", "TitulosAbertos", "Konm", "EntregaFutura", "EntregaFutura2", "TiposPedidos", "FormasPagamentos", "EntregaFutura2",
-									"StatusPedidos", "CmpGbItensBrindes", "CmpSldBrindes", "CmpProdsAcabs", "CmpGbQtdItens", "CmpGbProdsAcabs", "CmpGbGrpProdsAcabs", "CmpEnxoval", "EntregaFutura", "ControleAmostra"
+									"Materiais", "PrePedidos", "ItensPedido", "TitulosAbertos", "Konm", "EntregaFutura", "EntregaFutura2", "TiposPedidos", "FormasPagamentos",
+									"StatusPedidos", "CmpGbItensBrindes", "CmpSldBrindes", "CmpProdsAcabs", "CmpGbQtdItens", "CmpGbProdsAcabs", "CmpGbGrpProdsAcabs", "CmpEnxoval", "ControleAmostra"
 								];
 
 								that.DropDBTables(vTables);

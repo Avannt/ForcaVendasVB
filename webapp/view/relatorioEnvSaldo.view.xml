@@ -3,27 +3,55 @@
 	controllerName="testeui5.controller.relatorioEnvSaldo">
 	<Page id="masterEnvSaldo" title="Envio de saldos" icon="sap-icon://action" class="sapUiStdPage" showNavButton="true"
 		navButtonPress="onNavBack">
-		<headerContent/>
+		<subHeader>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<ToolbarSpacer/>
+				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
+				<DatePicker visible="false" id="DP6" placeholder="Filtre Data" displayFormat="short" change="handleChange" width="50%"/>
+				<SearchField id="idClientesRelatorio" placeholder="Digite Doc vendas, Cliente, Material" liveChange="onSearch" width="100%"></SearchField>
+			</Toolbar>
+		</subHeader>
 		<content>
 			<Table noDataText="Sem dados." id="tableProdutos" width="100%" alternateRowColors="true"
-				items="{ path: 'Envio>/', sorter: { path: 'Envio', descending: false, parameter: 'idEntregaFutura'}}">
+				items="{ path: 'Envio>/', sorter: { path: 'idEntregaFutura2', descending: true}}">
 				<columns>
-					<Column minScreenWidth="400px" hAlign="Left" demandPopin="true">
-						<Text text="Número"/>
+					<Column minScreenWidth="400px" hAlign="Left" demandPopin="true" width="100px">
+						<Text text="Doc Vendas"/>
 					</Column>
-					<Column minScreenWidth="100px" hAlign="Left" demandPopin="false">
+					<Column minScreenWidth="400px" hAlign="Left" demandPopin="true" width="100px">
+						<Text text="Data"/>
+					</Column>
+					<Column minScreenWidth="400px" hAlign="Left" demandPopin="true" width="100px">
+						<Text text="Status"/>
+					</Column>
+					<Column minScreenWidth="400px" hAlign="Left" demandPopin="true" width="100px">
+						<Text text=""/>
+					</Column>
+					<Column minScreenWidth="600px" hAlign="Left" demandPopin="true" popinDisplay="Inline">
+						<Text text="Cliente"/>
+					</Column>
+					<Column minScreenWidth="600px" hAlign="Left" demandPopin="true" popinDisplay="Inline">
 						<Text text="Material"/>
 					</Column>
-					<Column minScreenWidth="50px" hAlign="Left" demandPopin="false">
+					<Column minScreenWidth="600px" hAlign="Left" demandPopin="true" width="60px" popinDisplay="Inline">
 						<Text text="Qtde"/>
 					</Column>
+					<!--<Column minScreenWidth="400px" hAlign="Left" demandPopin="true" popinDisplay="Inline">-->
+					<!--	<Text text="Número"/>-->
+					<!--</Column>-->
 				</columns>
 				<items>
 					<ColumnListItem type="Inactive" id="item1">
 						<cells>
-							<Text text="{Envio>idEntregaFutura2}"/>
-							<Text text="{Envio>Matnr}"/>
+							<Text text="{Envio>Vbeln}"/>
+							<Text text="{Envio>Data} - {Envio>Hora}"/>
+							<Text text="{path : 'Envio>AprovadoDesc'}" />
+							<Image src="{path : 'Envio>PathImg'}" width="20%" tooltip="{path : 'Envio>AprovadoDesc'}"/>
+							<Text text="{Envio>Kunrg} - {Envio>NameOrg1}"/>
+							<Text text="{Envio>Matnr} - {Envio>Arktx}"/>
 							<Text text="{Envio>Fkimg2}"/>
+							<!--<Text text="{Envio>idEntregaFutura2}"/>-->
 							<!--<Text text="10000" />-->
 						</cells>
 					</ColumnListItem>
