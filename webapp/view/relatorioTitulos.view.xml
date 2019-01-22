@@ -7,7 +7,8 @@
 				<ToolbarSpacer/>
 				<ToolbarSpacer/>
 				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-				<SearchField class="camposDialog" id="idClientesRelatorio" placeholder="Digite Cód. Cliente" liveChange="onItemChange" width="100%" />
+				<SearchField id="idClientesRelatorio" placeholder="Cód/Desc Cliente" liveChange="onItemChange" width="100%" />
+				<DateRangeSelection id="idCDatePicker" change="onItemChange2" placeholder="Range Vencimento" width="100%" />
 			</Toolbar>
 		</subHeader>
 		<content>
