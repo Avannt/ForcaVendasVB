@@ -3789,6 +3789,7 @@ sap.ui.define([
 							
 						}
 					});
+					
 				} else {
 					var open = indexedDB.open("VB_DataBase");
 					
