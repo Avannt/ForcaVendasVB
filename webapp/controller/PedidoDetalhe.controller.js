@@ -3690,6 +3690,7 @@ sap.ui.define([
 			var itemExistente = false;
 			var aux = [];
 			var indexEdit = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem");
+			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 
 			for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
 				if (that.oItemPedido.matnr == that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem == "Normal" && (indexEdit == undefined || indexEdit == 0 || indexEdit == "")) {
@@ -3759,7 +3760,7 @@ sap.ui.define([
 						}
 					});
 
-				} else if (that.oItemPedido.aumng != 0 && (that.oItemPedido.zzQnt % that.oItemPedido.aumng) != 0) {
+				} else if (that.oItemPedido.aumng != 0 && (that.oItemPedido.zzQnt % that.oItemPedido.aumng) != 0 && tipoPedido != "YTRO") {
 					
 					MessageBox.show("Digite uma quantidade multipla de " + that.oItemPedido.aumng, {
 						icon: MessageBox.Icon.ERROR,
