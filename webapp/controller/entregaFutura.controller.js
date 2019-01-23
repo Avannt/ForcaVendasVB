@@ -1,4 +1,5 @@
 /*eslint-disable no-console, no-alert */
+/*eslint-disable no-console, sap-no-localstorage */
 sap.ui.define([
 	"jquery.sap.global",
 	"sap/m/MessageToast",
@@ -820,6 +821,8 @@ sap.ui.define([
 
 					new sap.m.TextArea('confirmDialogTextarea', {
 							width: '100%',
+							maxLength:100,
+							showExceededText:false,
 							placeholder: 'Adicione uma observação (opicional)'
 						})
 						],

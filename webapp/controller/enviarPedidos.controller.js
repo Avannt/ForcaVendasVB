@@ -860,7 +860,7 @@ sap.ui.define([
 															}
 														});
 													} /* fim if */
-
+													
 													/* Se o item em questão for do representante, 
 													então acumulo o saldo diário para controle local,
 													esse controle serve até o momento que o usuário atualizar
