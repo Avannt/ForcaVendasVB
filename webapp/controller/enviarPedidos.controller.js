@@ -1,4 +1,6 @@
 /*eslint-disable no-console, no-alert */
+/*eslint-disable no-console, sap-no-localstorage */
+
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/model/Filter",
@@ -774,6 +776,10 @@ sap.ui.define([
 										var data = horario[0];
 										var hora = horario[1];
 										
+										var sTempObs = localStorage.getItem("ObsEntregaSaldo"); 
+										
+										var sObs = (sTempObs == undefined ? "" :  sTempObs);
+										
 										var oItemEntregar = vItensEntregar[i];
 											oItemEntregar.Data = data;
 											oItemEntregar.Hora = hora;
@@ -799,7 +805,8 @@ sap.ui.define([
 											Identregafutura: oItemEntregar.idEntregaFutura2,
 											Codrepres: oItemEntregar.codRepres,
 											Codusr: oItemEntregar.codUsr,
-											Tipousuario: oItemEntregar.tipoUsuario
+											Tipousuario: oItemEntregar.tipoUsuario, 
+											Obsped: sObs
 										};
 
 										that.byId("table_entregas").setBusy(true);
@@ -919,6 +926,9 @@ sap.ui.define([
 
 								Promise.all(vetorPromise).then(function(values) {
 									that.byId("table_entregas").setBusy(false);
+									
+									// that.getOwnerComponent().getModel("modelAux").setProperty("/ObsEntregaSaldo", "");
+									localStorage.setItem("ObsEntregaSaldo", "");
 
 									that.onLoadEntregas();
 								});

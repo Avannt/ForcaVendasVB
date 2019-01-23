@@ -209,7 +209,6 @@ sap.ui.define([
 			oPedEF = [];
 
 			//seta os dados da objectHeader
-			this.getView().byId("btnPesquisaPedido").focus();
 			this.getView().byId("objectHeader").setTitle(oItem.getTitle());
 			this.getView().byId("objectHeader").setNumber(oItem.getNumber());
 			this.getView().byId("objectAttribute_cnpj").setText(oItem.getIntro());
@@ -219,7 +218,7 @@ sap.ui.define([
 			this.onGetDataFromEF2(oItem.getNumber());
 
 			this.onClearView();
-			
+
 			var open = indexedDB.open("VB_DataBase");
 			open.onerror = function() {
 				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
@@ -255,6 +254,7 @@ sap.ui.define([
 						}
 					}; /* Fim do cursor PEDIDOS ÚNICOS EF */
 
+					that.getView().byId("btnPesquisaPedido").focus();
 				});
 			};
 		},
@@ -361,8 +361,13 @@ sap.ui.define([
 							var vEntregas = event.target.result;
 
 							for (var i = 0; i < vEntregas.length; i++) {
+								var oErro = [];
+
+								oErro.iVbeln = vEntregas[0].Vbeln;
+								oErro.iKunrg = vEntregas[0].Kunrg;
+
 								if (vEntregas[i].Vbeln != iVbeln) {
-									rej(iVbeln);
+									rej(oErro);
 								}
 							}
 
@@ -401,11 +406,9 @@ sap.ui.define([
 							});
 						};
 
-					}).catch(function(iVbeln) {
-						
-						var cliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
-						
-						MessageBox.show("Finalize ou delete o envio de saldo do cliente " + cliente + " para liberar uma nova digitação.", {
+					}).catch(function(oErro) {
+
+						MessageBox.show("Finalize ou delete o envio de saldo do cliente " + oErro.iKunrg + ", pedido " + oErro.iVbeln + " para liberar uma nova digitação.", {
 							icon: MessageBox.Icon.ERROR,
 							title: "Erro!",
 							actions: [MessageBox.Action.OK]
@@ -790,9 +793,6 @@ sap.ui.define([
 		/* Fim onExcluirItem */
 
 		onClearView: function() {
-			// this.getView().byId("ifVbeln").setValue("");
-			// this.getView().setModel(undefined, "ItensEF");
-
 			this.getView().byId("ifQtde").setValue(1);
 			this.getView().byId("ifSaldo").setValue("");
 			this.getView().byId("sfItem").setValue("");
@@ -800,32 +800,78 @@ sap.ui.define([
 		/* Fim onClearView */
 
 		onEnviarItens: function() {
-				var that = this;
-				var iQtdeItens = this.getView().getModel("entregasEnviar").getData().length;
+			var that = this;
+			var iQtdeItens = this.getView().getModel("entregasEnviar").getData().length;
 
-				if (iQtdeItens == 0) {
-					sap.m.MessageBox.error("Pelo menos 1 (uma) linha deve ser escolhida para envio.", {
-						title: "Erro",
-						actions: ["Ok"]
-					});
-				} else {
-					sap.m.MessageBox.warning("Gostaria de seguir para o envio de entrega?.", {
-						title: "Envio de documentos",
-						actions: ["Sim", sap.m.MessageBox.Action.CANCEL],
-						onClose: function(sAction) {
-							switch (sAction) {
-								case "Sim":
-									that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", false);
-									sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
-									break;
-								case "CANCEL":
-									return;
-							}
+			if (iQtdeItens == 0) {
+				sap.m.MessageBox.error("Pelo menos 1 (uma) linha deve ser escolhida para envio.", {
+					title: "Erro",
+					actions: ["Ok"]
+				});
+			} else {
+
+				var dialog = new sap.m.Dialog({
+					title: 'Envio',
+					type: 'Message',
+					content: [
+					new sap.m.Text({
+							text: 'Gostaria de seguir para o envio de entrega? '
+						}),
+
+					new sap.m.TextArea('confirmDialogTextarea', {
+							width: '100%',
+							placeholder: 'Adicione uma observação (opicional)'
+						})
+						],
+					beginButton: new sap.m.Button({
+						text: 'Enviar',
+						press: function() {
+							/* Gravo a observação que o usuário digitou na entrega de saldo */
+							var sObs = sap.ui.getCore().byId('confirmDialogTextarea').getValue();
+							
+							localStorage.setItem("ObsEntregaSaldo", sObs);
+
+							that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", false);
+							sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
+
+							dialog.close();
 						}
-					});
+					}),
+					endButton: new sap.m.Button({
+						text: 'Cancel',
+						press: function() {
+							dialog.close();
+						}
+					}),
+					afterClose: function() {
+						dialog.destroy();
+					},
+					beforeOpen: function(){
+						var sObs = localStorage.getItem("ObsEntregaSaldo");
+						
+						sap.ui.getCore().byId('confirmDialogTextarea').setValue(sObs);
+					}
+				});
 
-				}
+				dialog.open();
+
+				// sap.m.MessageBox.warning("Gostaria de seguir para o envio de entrega?.", {
+				// 	title: "Envio de documentos",
+				// 	actions: ["Sim", sap.m.MessageBox.Action.CANCEL],
+				// 	onClose: function(sAction) {
+				// 		switch (sAction) {
+				// 			case "Sim":
+				// 				that.getOwnerComponent().getModel("modelAux").setProperty("/bEnviarPedido", false);
+				// 				sap.ui.core.UIComponent.getRouterFor(that).navTo("enviarPedidos");
+				// 				break;
+				// 			case "CANCEL":
+				// 				return;
+				// 		}
+				// 	}
+				// });
+
 			}
-			/* onEnviarItens */
+		} /* onEnviarItens */
+
 	});
 });
