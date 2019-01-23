@@ -117,7 +117,7 @@ sap.ui.define([
 					that.bCampanhaEnxovalAtiva = true;
 				} else {
 					console.log("Não usa campanha Enxoval: Cliente fora do período de compras! O USO TÁ LIBERADO TEMPORARIAMENTE, LEMBRAR DE RESTRINGIR APÓS OS TESTES");
-					that.bCampanhaEnxovalAtiva = true; //false;
+					that.bCampanhaEnxovalAtiva = false; //false;
 				}
 			} else {
 				console.log("Não usa campanha Enxoval: Representante não tem campanha!");
