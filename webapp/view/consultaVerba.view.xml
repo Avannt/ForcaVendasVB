@@ -1,0 +1,6 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="testeui5.controller.consultaVerba"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page title="Consulta de verbas" showNavButton="true" navButtonPress="onNavButtonPress">
+		<content></content>
+	</Page>
+</mvc:View>

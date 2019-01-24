@@ -1,5 +1,6 @@
 /*eslint-disable no-console, no-alert */
 /*eslint-disable sap-no-ui5base-prop*/
+
 sap.ui.define([
 	"testeui5/controller/BaseController"
 ], function(BaseController) {
