@@ -42,7 +42,8 @@ sap.ui.define([
 			var aFilters = [];
 			var oFilter = [
 				new sap.ui.model.Filter("kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue)
+				new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("status", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
@@ -84,16 +85,25 @@ sap.ui.define([
 					store.openCursor().onsuccess = function(event) {
 						var cursor = event.target.result;
 						if (cursor) {
-
+							
 							oClientes.push(cursor.value);
-
+							
 							cursor.continue();
 						} else {
-
+							var data = new Date();
 							for (var a = 0; a < oTitulos.length; a++) {
 								for (var b = 0; b < oClientes.length; b++) {
+									
 									if (oTitulos[a].kunnr == oClientes[b].kunnr) {
 										oTitulos[a].NomeCliente = oClientes[b].NomeAbrev;
+										
+										if (oTitulos[a].zfbdt < data){
+											oTitulos[a].status = "Vencido";
+											oTitulos[a].pathImg = sap.ui.require.toUrl("testeui5/img/R.png");
+										} else{
+											oTitulos[a].status = "Aberto";
+											oTitulos[a].pathImg = sap.ui.require.toUrl("testeui5/img/S.png");
+										}
 									}
 								}
 							}

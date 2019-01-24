@@ -2671,7 +2671,8 @@ sap.ui.define([
 											zzValExcedidoItem: that.objItensPedidoTemplate[i].zzValExcedidoItem,
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
 											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
-											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB
+											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
+											zzQntAmostra: that.objItensPedidoTemplate[i].zzQntAmostra
 										};
 
 										vetorAux.push(objAuxItem);
@@ -2732,7 +2733,8 @@ sap.ui.define([
 											zzValExcedidoItem: that.objItensPedidoTemplate[i].zzValExcedidoItem,
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
 											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
-											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB
+											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
+											zzQntAmostra: that.objItensPedidoTemplate[i].zzQntAmostra
 										};
 										
 										vetorAux.push(objAuxItem1);
@@ -2793,7 +2795,8 @@ sap.ui.define([
 											zzQntDiluicao: that.objItensPedidoTemplate[i].zzQntDiluicao,
 											tipoItem2: that.objItensPedidoTemplate[i].tipoItem2,
 											zzValorDiluido: 0,
-											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB
+											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
+											zzQntAmostra: that.objItensPedidoTemplate[i].zzQntAmostra
 										};
 
 										vetorAux.push(objAuxItem2);
@@ -5191,7 +5194,7 @@ sap.ui.define([
 							// });
 							
 							//Grava a quantidade de saldo excedente de amsotra .. pra gerar dos brindes.
-							itemPedido.zzQntAmostra = dValorTotAmo - parseInt(oSaldo.quantidadeTotal, 10);
+							itemPedido.zzQntAmostra = iQtde + oAmostras.qtde - parseInt(oSaldo.quantidadeTotal, 10);
 							
 							resII();
 							// rejII();
@@ -5207,102 +5210,147 @@ sap.ui.define([
 		},
 
 		onGetSaldoAmostra: function(oAmostras, res4, itemPedido) {
-				var open = indexedDB.open("VB_DataBase");
-				var db = "";
 
-				/* Recupero todas os documentos pendentes, inclusive o que está sendo digitado */
-				var p1 = new Promise(function(res, rej) {
+			var that = this;
+			var open = indexedDB.open("VB_DataBase");
+			var db = "";
 
-					open.onsuccess = function() {
-						db = open.result;
+			// Recupero todas os documentos pendentes, inclusive o que está sendo digitado /
+			var p1 = new Promise(function(res, rej) {
 
-						var sPedidos = db.transaction("PrePedidos", "readwrite");
-						var objPedidos = sPedidos.objectStore("PrePedidos");
-						var iStatus = objPedidos.index("idStatusPedido");
+				open.onsuccess = function() {
+					db = open.result;
 
-						var krStatus = IDBKeyRange.bound(1, 2);
+					var sPedidos = db.transaction("PrePedidos", "readwrite");
+					var objPedidos = sPedidos.objectStore("PrePedidos");
+					var iStatus = objPedidos.index("idStatusPedido");
 
-						/* Recupero todos os pedidos com status 1 e 2 */
-						var tPedido = iStatus.getAll(krStatus);
+					/*
+					Regra dos status dos pedidos
+					1 - Pedidos em digitação: Considerar todos.
+					2 - Pedidos pendentes de envio: Considerar todos.
+					3 - Pedidos enviados: Considerar todos os pedidos 
+					enviados DEPOIS DA ÚLTIMA ATUALIZAÇÃO.(Os pedidos
+					enviados antes da última atualização já estarão
+					sendo considerados no saldo retornado da atualização
+					de tabelas).
+					*/
 
-						var oDocsPendentes = [];
-						tPedido.onsuccess = function(e) {
-							oDocsPendentes = e.target.result;
+					/* Recupero todos os pedidos com status 1, 2, 3 */
+					var krStatus = IDBKeyRange.bound(1, 3);
+					var tPedido = iStatus.openCursor(krStatus);
+					var oDocsPendentes = [];
+					var cursor;
+					var oDoc;
+					tPedido.onsuccess = function(e) {
+						cursor = e.target.result;
 
+						if (cursor) {
+							oDoc = cursor.value;
+
+							// Verifico se o pedido já foi enviado (Status = 3) /
+							if (oDoc.idStatusPedido == 3) {
+
+								// Recupero a data da última atualização de tabelas /
+								/**/
+								var sUltimaAtualizacao = that.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
+								sUltimaAtualizacao = sUltimaAtualizacao.replace("/", "-").replace("/", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
+								var p = sUltimaAtualizacao.split("-");
+								var dUltimaAtualizacao = new Date("20" + p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
+
+								var sDataImpl = oDoc.dataImpl.replace("/", "-").replace("/", "-").replace(":", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
+								p = sDataImpl.split("-");
+								var dDataImpl = new Date(p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
+								/**/
+
+								// Verifico se a data do pedido é superior a data da última atualização /
+								if (dDataImpl > dUltimaAtualizacao) {
+									oDocsPendentes.push(oDoc);
+								}
+
+								cursor.continue();
+
+							} else {
+								cursor.continue();
+
+								oDocsPendentes.push(oDoc);
+							}
+						} else {
 							res(oDocsPendentes);
-						};
-					};
-				});
-
-				/* Recupero todos os itens do tipo YAMO => AMOSTRA  */
-				p1.then(function(oDocsPendentes) {
-
-					var vItensAmostras = [];
-
-					var p2 = new Promise(function(res2) {
-						var iIteracao = 0;
-
-						/* Percorro todos os pedidos buscando os itens do tipo amostras em aberto */
-						for (var i = 0; i < oDocsPendentes.length; i++) {
-							
-							var sItens = db.transaction("ItensPedido", "readwrite");
-							var objItens = sItens.objectStore("ItensPedido");
-							var inrPedCli = objItens.index("nrPedCli");
-
-							var p3 = new Promise(function(res3, rej3) {
-								var tItens = inrPedCli.openCursor(oDocsPendentes[i].nrPedCli);
-								var tempItensBon = [];
-
-								tItens.onsuccess = function(e) {
-									var cursor = e.target.result;
-
-									if (cursor) {
-
-										/* Verifico se o item em questão é de Amostras (YAMO)*/
-										if (cursor.value.mtpos === "YAMO") {
-											tempItensBon.push(cursor.value);
-										}
-
-										cursor.continue();
-									} else {
-										
-										res3(tempItensBon);
-									}
-								};
-							}).then(function(tempItensBon) { /*res3*/
-								iIteracao = iIteracao + 1;
-
-								for (var j = 0; j < tempItensBon.length; j++) {
-									/* Verifico se não é o pedido e o material em questão, não posso considerar para cálculo de saldo */
-									if (tempItensBon[j].idItemPedido == itemPedido.idItemPedido && tempItensBon[j].index == itemPedido.index){
-										continue;
-									}
-									
-									vItensAmostras.push(tempItensBon[j]);
-								}
-
-								/* Verifico se é a últma iteração do loop pra dar continuidade ao processo */
-								if (iIteracao == oDocsPendentes.length) {
-									res2(vItensAmostras);
-								}
-							});
-
-						} /* for */
-
-					}).then(function(vItensAmostras) {
-						var iQtdeUtilizada = 0;
-						for (var i = 0; i < vItensAmostras.length; i++) {
-							iQtdeUtilizada = iQtdeUtilizada + vItensAmostras[i].zzQnt;
 						}
+					};
+				};
+			});
 
-						oAmostras.itens = vItensAmostras;
-						oAmostras.qtde = iQtdeUtilizada;
+			// Recupero todos os itens do tipo YAMO => AMOSTRA  /
+			p1.then(function(oDocsPendentes) {
 
-						res4(oAmostras);
-					});
+				var vItensAmostras = [];
+
+				var p2 = new Promise(function(res2) {
+					var iIteracao = 0;
+
+					// Percorro todos os pedidos buscando os itens do tipo amostras em aberto /
+					for (var i = 0; i < oDocsPendentes.length; i++) {
+
+						var sItens = db.transaction("ItensPedido", "readwrite");
+						var objItens = sItens.objectStore("ItensPedido");
+						var inrPedCli = objItens.index("nrPedCli");
+
+						var p3 = new Promise(function(res3, rej3) {
+							var tItens = inrPedCli.openCursor(oDocsPendentes[i].nrPedCli);
+							var tempItensBon = [];
+
+							tItens.onsuccess = function(e) {
+								var cursor = e.target.result;
+
+								if (cursor) {
+
+									/* Verifico se o item em questão é de Amostras (YAMO)*/
+									if (cursor.value.mtpos === "YAMO") {
+										tempItensBon.push(cursor.value);
+									}
+
+									cursor.continue();
+								} else {
+
+									res3(tempItensBon);
+								}
+							};
+						}).then(function(tempItensBon) { /*res3*/
+							iIteracao = iIteracao + 1;
+
+							for (var j = 0; j < tempItensBon.length; j++) {
+								// Verifico se não é o pedido e o material em questão, não posso considerar para cálculo de saldo /
+								if (tempItensBon[j].idItemPedido == itemPedido.idItemPedido && tempItensBon[j].index == itemPedido.index) {
+									continue;
+								}
+
+								vItensAmostras.push(tempItensBon[j]);
+							}
+
+							// Verifico se é a últma iteração do loop pra dar continuidade ao processo /
+							if (iIteracao == oDocsPendentes.length) {
+								res2(vItensAmostras);
+							}
+						});
+
+					} /* for */
+
+				}).then(function(vItensAmostras) {
+					var iQtdeUtilizada = 0;
+					for (var i = 0; i < vItensAmostras.length; i++) {
+						iQtdeUtilizada = iQtdeUtilizada + vItensAmostras[i].zzQnt;
+					}
+
+					oAmostras.itens = vItensAmostras;
+					oAmostras.qtde = iQtdeUtilizada;
+
+					res4(oAmostras);
 				});
-			},
-			/* onGetSaldoAmostra */
+			});
+		},
+		/* onGetSaldoAmostra */
 			
 			/* Campanha Global -> Primeiro método */
 			onCheckItensCampanhaGlobal: function(db, ItemPedido){

@@ -24,7 +24,7 @@ sap.ui.define([
 			// });
 			
 			var nrPed = this.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
-
+			
 			oModel.read("/BuscaCabecPedidoAprov(INrpedcli='" + nrPed + "')", {
 				success: function(retorno) {
 					//Tipo pedido
@@ -44,7 +44,7 @@ sap.ui.define([
 					retorno.Hora = retorno.Horaped.substring(0,2) + ":" + retorno.Horaped.substring(2,4) + ":" + retorno.Horaped.substring(4,6);
 					
 					if(retorno.Tiponego == "01"){
-						retorno.Tiponego = "01 - Avista";
+						retorno.Tiponego = "01 - Á vista";
 					} else if(retorno.Tiponego == "02"){
 						retorno.Tiponego = "02 - A prazo";
 					}

@@ -380,13 +380,13 @@ sap.ui.define([
 
 							if (oAction == "Enviar") {
 
-								var oModel = that.getView().getModel();
+								// var oModel = that.getView().getModel();
 
-								// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
-								// 	json: true,
-								// 	user: "appadmin",
-								// 	password: "sap123"
-								// });
+								var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+									json: true,
+									user: "appadmin",
+									password: "sap123"
+								});
 
 								oModel.setUseBatch(true);
 								oModel.refreshSecurityToken();
@@ -678,11 +678,11 @@ sap.ui.define([
 
 						var oModel = that.getView().getModel();
 
-						// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
-						// 	json: true,
-						// 	user: "appadmin",
-						// 	password: "sap123"
-						// });
+						var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+							json: true,
+							user: "appadmin",
+							password: "sap123"
+						});
 
 						oModel.setUseBatch(true);
 						oModel.refreshSecurityToken();
@@ -975,11 +975,11 @@ sap.ui.define([
 			var that = this;
 			var oModel = that.getView().getModel();
 
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
-			// 	json: true,
-			// 	user: "appadmin",
-			// 	password: "sap123"
-			// });
+			var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+				json: true,
+				user: "appadmin",
+				password: "sap123"
+			});
 
 			oModel.setUseBatch(true);
 			// oModel.refreshSecurityToken();
@@ -1162,13 +1162,13 @@ sap.ui.define([
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
 
-						var oModel = that.getView().getModel();
+						// var oModel = that.getView().getModel();
 
-						// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
-						// 	json: true,
-						// 	user: "appadmin",
-						// 	password: "sap123"
-						// });
+						var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
+							json: true,
+							user: "appadmin",
+							password: "sap123"
+						});
 
 						oModel.setUseBatch(true);
 						oModel.refreshSecurityToken();
