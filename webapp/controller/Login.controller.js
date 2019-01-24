@@ -2513,9 +2513,8 @@ sap.ui.define([
 						}
 					};
 				};
-
 			},
-
+			
 			onUpdateDateTime: function() {
 				var that = this;
 				var open = indexedDB.open("VB_DataBase");

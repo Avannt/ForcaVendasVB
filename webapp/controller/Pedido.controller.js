@@ -258,6 +258,8 @@ sap.ui.define([
 		onAddPedido: function() {
 			var pedido = "";
 			var that = this;
+			var existeTituloVencido = false;
+			var date = new Date();
 			var open1 = indexedDB.open("VB_DataBase");
 
 			open1.onerror = function(hxr) {
@@ -297,7 +299,7 @@ sap.ui.define([
 									actions: [MessageBox.Action.OK]
 								});
 							} else {
-								
+										
 								var transaction = db.transaction("TitulosAbertos", "readonly");
 								var objectStoreTitulos = transaction.objectStore("TitulosAbertos");
 					
@@ -309,23 +311,32 @@ sap.ui.define([
 									that.oVetorTitulos = event.target.result;
 									
 									if(that.oVetorTitulos != ""){
-										
-										MessageBox.show("O Cliente " + that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + 
-											" possui títulos em aberto!", {
-											icon: sap.m.MessageBox.Icon.WARNING,
-											title: "Títulos em Aberto!",
-											actions: ["Ver Titulo", "Continuar", "Cancelar"],
-											onClose: function(oAction){
-												if(oAction == "Ver Titulo"){
-													that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
-													sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
-												} else if(oAction == "Continuar"){
-													sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
-												} else {
-													
-												}
+										for(var i=0; i<that.oVetorTitulos.length; i++){
+											if(that.oVetorTitulos[i].zfbdt < date){
+												existeTituloVencido = true;
 											}
+										}
+										
+										if(existeTituloVencido == true){
+											MessageBox.show("O Cliente " + that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr") + 
+												" possui títulos em aberto!", {
+												icon: sap.m.MessageBox.Icon.WARNING,
+												title: "Títulos em Aberto!",
+												actions: ["Ver Titulo", "Continuar", "Cancelar"],
+												onClose: function(oAction){
+													if(oAction == "Ver Titulo"){
+														that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+														sap.ui.core.UIComponent.getRouterFor(that).navTo("relatorioTitulos");
+													} else if(oAction == "Continuar"){
+														sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+													} else {
+														
+													}
+												}
 										});
+										} else{
+											sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+										}
 										
 									} else{
 										
