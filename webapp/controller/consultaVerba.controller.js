@@ -14,11 +14,13 @@ sap.ui.define([
 		onInit: function() {
 			this.getRouter().getRoute("consultaVerba").attachPatternMatched(this._onLoadFields, this);
 		},
-		
-		_onLoadFields: function(){
-			
+
+		_onLoadFields: function() {
+
+		},
+
+		onNavBack: function() {
+			sap.ui.core.UIComponent.getRouterFor(this).navTo("menuConsultas");
 		}
-
 	});
-
 });
