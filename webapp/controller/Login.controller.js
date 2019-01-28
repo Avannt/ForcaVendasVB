@@ -874,9 +874,9 @@ sap.ui.define([
 																						idTipoPedido: retornoTiposPedidos.results[i].IdTipoPedido,
 																						descricao: retornoTiposPedidos.results[i].Descricao
 																					};
-					
+																					
 																					var requestTiposPedidos = objTiposPedidos.add(objBancoTiposPedidos);
-					
+																					
 																					requestTiposPedidos.onsuccess = function(event) {
 																						console.log("Dados TiposPedidos inseridos");
 																					};
@@ -884,18 +884,27 @@ sap.ui.define([
 																						console.log("Dados TiposPedidos não foram inseridos :" + event);
 																					};
 																				}
-					
+																				
 																				oModel.read("/TitulosAbertos", {
 																					urlParameters: {
 																						"$filter": "IvRepres eq '" + CodRepres + "'"
 																					},
 																					success: function(retornoTitulosAbertos) {
-																					
+																						
 																						var txTitulosAbertos = db.transaction("TitulosAbertos", "readwrite");
 																						var objTitulosAbertos = txTitulosAbertos.objectStore("TitulosAbertos");
 																						// objTitulosAbertos.autoIncrement();
 																						
+																						Date.prototype.shiftDays = function(days){    
+																						  days = parseInt(days, 10);
+																						  this.setDate(this.getDate() + days);
+																						  return this;
+																						};
+																						
 																						for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
+																							
+																							var dataVenc = retornoTitulosAbertos.results[i].Zfbdt;
+																							dataVenc = dataVenc.shiftDays(1);
 																							
 																							var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
 																							var date = retornoTitulosAbertos.results[i].Budat;
@@ -936,7 +945,7 @@ sap.ui.define([
 																								belnr: retornoTitulosAbertos.results[i].Belnr,
 																								name1: retornoTitulosAbertos.results[i].Name1,
 																								budat: retornoTitulosAbertos.results[i].Budat, //Data emissão
-																								zfbdt: retornoTitulosAbertos.results[i].Zfbdt, //Data vencimento
+																								zfbdt: dataVenc, //Data vencimento
 																								dmbtr: auxDmbtr,
 																								kunnr: retornoTitulosAbertos.results[i].Kunnr
 																							};
@@ -1841,6 +1850,7 @@ sap.ui.define([
 																																																																											valUtilizadoVerbaBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonVm),
 																																																																											valUtilizadoCampProdutoAcabado: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcamppa),
 																																																																											valUtilizadoCampBrinde: retornoPVPrepostoTopo.results[i].Valtotabcampbrinde,
+																																																																											valUtilizadoCampEnxoval: retornoPVPrepostoTopo.results[i].Valtotabcampenx,
 																																																																											valTotalExcedenteNaoDirecionadoDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirdesc),
 																																																																											valTotalExcedenteNaoDirecionadoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirprazo),
 																																																																											valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido),
@@ -1905,23 +1915,23 @@ sap.ui.define([
 																																																																													zzPercDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdesctotal),
 																																																																													zzPercom: parseFloat(retornoPVPrepostoItem.results[i].Zzpercom),
 																																																																													zzPervm: parseFloat(retornoPVPrepostoItem.results[i].Zzpervm),
-																																																																													zzQnt: parseInt(retornoPVPrepostoItem.results[i].Zzqnt),
+																																																																													zzQnt: parseInt(retornoPVPrepostoItem.results[i].Zzqnt, 10),
 																																																																													zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
 																																																																													zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
 																																																																													zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
-								
 																																																																													zzVprodABB: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodabb),
-																																																																													aumng: parseInt(retornoPVPrepostoItem.results[i].Aumng),
+																																																																													aumng: parseInt(retornoPVPrepostoItem.results[i].Aumng, 10),
 																																																																													zzVprodDesc2: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc2),
 																																																																													zzVprodMinPermitido: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodminpermitido),
 																																																																													zzValorDiluido: parseFloat(retornoPVPrepostoItem.results[i].Zzvalordiluido),
 																																																																													zzValExcedidoItem: parseFloat(retornoPVPrepostoItem.results[i].Zzvalexcedidoitem),
-																																																																													zzQntDiluicao: parseInt(retornoPVPrepostoItem.results[i].Zzqntdiluicao),
+																																																																													zzQntDiluicao: parseInt(retornoPVPrepostoItem.results[i].Zzqntdiluicao, 10),
 																																																																													tipoItem2: retornoPVPrepostoItem.results[i].Tipoitem2,
 																																																																													maxDescPermitidoExtra: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitido),
 																																																																													maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra),
 																																																																													mtpos: retornoPVPrepostoItem.results[i].Mtpos,
-																																																																													kbetr: retornoPVPrepostoItem.results[i].Kbetr
+																																																																													kbetr: retornoPVPrepostoItem.results[i].Kbetr,
+																																																																													zzQntAmostra: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntamostra, 10))
 																																																																												};
 								
 																																																																												var requestPVPrepostoItem = objPVPrepostoItem.put(objBancoPVPrepostoItem);

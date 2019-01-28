@@ -180,10 +180,6 @@
 				"name": "PedidoDetalheAprov",
 				"pattern": "PedidoDetalheAprov",
 				"target": "PedidoDetalheAprov"
-			}, {
-				"name": "consultaVerba",
-				"pattern": "consultaVerba",
-				"target": "consultaVerba"
 			}],
 			"targets": {
 				"login": {
@@ -278,11 +274,6 @@
 				"PedidoDetalheAprov": {
 					"viewType": "XML",
 					"viewName": "PedidoDetalheAprov"
-				},
-				"consultaVerba": {
-					"viewType": "XML",
-					"viewName": "consultaVerba",
-					"viewLevel": 1
 				}
 			}
 		}

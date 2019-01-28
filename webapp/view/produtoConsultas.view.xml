@@ -13,7 +13,7 @@
 			</Toolbar>
 		</subHeader>
 		<content>
-			<Table id="tableProdutos" noDataText="Sem dados." busyIndicatorDelay="0" width="100%" alternateRowColors="true" items="{ path: 'consultasProdutos>/', sorter: { path: 'matnr', descending: false, parameter: 'matnr'}}">
+			<Table id="tableProdutos" noDataText="Sem dados." growing="true" growingThreshold="100" growingTriggerText="Próximos >>" busyIndicatorDelay="0" width="100%" alternateRowColors="true" items="{ path: 'consultasProdutos>/', sorter: { path: 'matnr', descending: false, parameter: 'matnr'}}">
 				<columns>
 					<Column minScreenWidth="320px" hAlign="Left" demandPopin="false" width="100px">
 						<Text text="Código"/>

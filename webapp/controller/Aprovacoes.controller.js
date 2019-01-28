@@ -1089,25 +1089,70 @@ sap.ui.define([
 		},
 
 		onAprovar: function() {
+			var that = this;
+			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
+			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-			if (this._ItemDialog) {
-				this._ItemDialog.destroy(true);
-			}
+			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
-			if (!this._CreateMaterialFragment) {
-
-				this._ItemDialog = sap.ui.xmlfragment(
-					"testeui5.view.observacoesAprovador",
-					this
+			var amostra = itemAprovar.ValtotexcndirAmostra;
+			var brinde = itemAprovar.ValtotexcndirBrinde;
+			var prazo = itemAprovar.Valtotexcndirprazo;
+			var bonificacao = itemAprovar.ValtotexcndirBonif;
+			var desconto = itemAprovar.Valtotexcndirdesc;
+			
+			if(amostra > 0 || brinde > 0 || prazo > 0 || bonificacao > 0 || desconto > 0){
+				
+				sap.m.MessageBox.show(
+					"Existem valores excedentes a serem destinados! Deseja continuar? ", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Campos incompletos!",
+						actions: ["Continuar", "Cancelar"],
+						onClose: function(oAction) {
+							
+							if(oAction == "Continuar"){
+								
+								if (that._ItemDialog) {
+									that._ItemDialog.destroy(true);
+								}
+					
+								if (!that._CreateMaterialFragment) {
+					
+									that._ItemDialog = sap.ui.xmlfragment(
+										"testeui5.view.observacoesAprovador",
+										that
+									);
+					
+									that.getView().addDependent(this._ItemDialog);
+								}
+					
+								that.onBloquearCampos();
+					
+								that._ItemDialog.open();
+							}
+						}
+					}
 				);
-
-				this.getView().addDependent(this._ItemDialog);
 			}
-
-			this.onBloquearCampos();
-
-			this._ItemDialog.open();
-
+			else {
+				if (that._ItemDialog) {
+					that._ItemDialog.destroy(true);
+				}
+	
+				if (!that._CreateMaterialFragment) {
+	
+					that._ItemDialog = sap.ui.xmlfragment(
+						"testeui5.view.observacoesAprovador",
+						that
+					);
+	
+					that.getView().addDependent(this._ItemDialog);
+				}
+	
+				that.onBloquearCampos();
+	
+				that._ItemDialog.open();
+			}
 		},
 
 		onReprovar: function() {

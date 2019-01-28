@@ -57,6 +57,22 @@ sap.ui.define([
 			this.byId("tabTotalStep").setProperty("enabled", false);
 			// this.byId("tabItensDiluicaoPedidoStep").setProperty("enabled", false);
 			
+			if(that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == 2){
+				
+				this.byId("idComissaoAbaTotal").setVisible(false);
+				this.byId("idLabelComissao").setVisible(false);
+				this.byId("idLabelVerba").setVisible(false);
+				this.byId("idVerbaAbaTotal").setVisible(false);
+				
+			} else{
+				
+				this.byId("idComissaoAbaTotal").setVisible(true);
+				this.byId("idLabelComissao").setVisible(true);
+				this.byId("idLabelVerba").setVisible(true);
+				this.byId("idVerbaAbaTotal").setVisible(true);
+				
+			}
+			
 			var open = indexedDB.open("VB_DataBase");
 			
 			open.onerror = function() {
@@ -177,13 +193,16 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/FormaPagamento", "");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/zlsch", "L");
-
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantidadeParcelasPedido", "");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/EntradaPedido", "");
+			
 			this.byId("idTabelaPreco").setSelectedKey();
 			this.byId("idTipoTransporte").setSelectedKey();
 			this.byId("idTipoNegociacao").setSelectedKey();
 			this.byId("idTipoPedido").setSelectedKey();
 			this.byId("idFormaPagamento").setSelectedKey();
-
+				
 			that.objItensPedidoTemplate = [];
 			var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 			this.getView().setModel(oModel, "ItensPedidoGrid");
@@ -2686,7 +2705,7 @@ sap.ui.define([
 									}
 
 									if (inseridoAux == false) {
-
+										
 										if (that.objItensPedidoTemplate[i].kbetr == undefined) {
 											that.objItensPedidoTemplate[i].kbetr = 0;
 										}
@@ -3192,7 +3211,7 @@ sap.ui.define([
 
 					} else if (vetorGeralExtra.length > 1 && (o + 1) < vetorGeralExtra.length) {
 
-						if (vetorGeralExtra[o].zzGrpmat == vetorGeralExtra[o + 1].zzGrpmat) {
+						if (vetorGeralExtra[o].zzGrpmatExtra == vetorGeralExtra[o + 1].zzGrpmatExtra) {
 
 							proximoItemDiferente = false;
 							vetorFamilia.push(vetorGeralExtra[o]);
@@ -4314,8 +4333,9 @@ sap.ui.define([
 			var that = this;
 			var idStatusPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			var valorParcelas = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValParcelasPedido");
-			var formaPagamento = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento");
-			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			var formaPagamento = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento");
+			var tipoPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
 			
 			if (idStatusPedido == 3) {
 				
@@ -4331,6 +4351,17 @@ sap.ui.define([
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
+				});
+				
+			} else if(codCliente == undefined || codCliente == ""){
+				
+				MessageBox.show("Esse pedido está sem cliente. Retorne no menu de pedidos e escolha o cliente novamente.", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function(){
+						sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+					}
 				});
 				
 			} else {
@@ -4490,15 +4521,29 @@ sap.ui.define([
 
 		onLiberarItensPedido: function() {
 			var that = this;
-
+			
 			var idStatusPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
-
+			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
+			
 			if (idStatusPedido == 3) {
+				
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
 					actions: [MessageBox.Action.OK]
 				});
+				
+			}  else if(codCliente == undefined || codCliente == ""){
+				
+				MessageBox.show("Esse pedido está sem cliente. Retorne no menu de pedidos e escolha o cliente novamente.", {
+					icon: MessageBox.Icon.WARNING,
+					title: "Não Permitido",
+					actions: [MessageBox.Action.OK],
+					onClose: function(){
+						sap.ui.core.UIComponent.getRouterFor(that).navTo("pedido");
+					}
+				});
+				
 			} else {
 				var date = new Date();
 				this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", true);

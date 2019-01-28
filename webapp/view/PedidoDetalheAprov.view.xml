@@ -88,6 +88,12 @@
 											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">
 												<Text text="Valor UN"/>
 											</Column>
+											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">
+												<Text text="Valor Perm UN"/>
+											</Column>
+											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">
+												<Text text="Valor Exc UN"/>
+											</Column>
 											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">
 												<Text text="Valor Total"/>
 											</Column>
@@ -104,6 +110,8 @@
 													<Text text="{path: 'PedidosAprovarItens>Zzqnt', type: 'sap.ui.model.type.Integer'}"/>
 													<Text text="{path: 'PedidosAprovarItens>Zzpercdesctotal', type: 'sap.ui.model.type.Float', formatOptions: {decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} %"/>
 													<Text text="R$: {path: 'PedidosAprovarItens>Zzvproddesc', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+													<Text text="R$: {path: 'PedidosAprovarItens>Zzvprodminpermitido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
+													<Text text="R$: {path: 'PedidosAprovarItens>Zzvalexcedidoitem', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 													<Text text="R$: {path: 'PedidosAprovarItens>Zzvproddesctotal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 												</cells>
 											</ColumnListItem>

@@ -51,13 +51,6 @@
 		"visible": true,
 		"number": ""
 	}, {
-		"id": "consultaVerba",
-		"icon": "my-sales-order",
-		"title": "Consulta verbas",
-		"info": "Verbas Representantes",
-		"visible": true,
-		"number": ""
-	}, {
 		"id": "relatorioEnvSaldo",
 		"icon": "expense-report",
 		"title": "Envio Saldo",

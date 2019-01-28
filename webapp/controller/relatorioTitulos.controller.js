@@ -80,7 +80,7 @@ sap.ui.define([
 
 				sTitulos.getAll().onsuccess = function(event) {
 					oTitulos = event.target.result;
-
+					
 					var store = db.transaction("Clientes").objectStore("Clientes");
 					store.openCursor().onsuccess = function(event) {
 						var cursor = event.target.result;

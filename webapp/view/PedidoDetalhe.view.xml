@@ -118,7 +118,7 @@
 										noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;"
 										busyIndicatorDelay="0" fixedLayout="false">
 										<columns>
-											<Column minScreenWidth="600px" visible="true" width="20px" hAlign="Left">
+											<Column minScreenWidth="600px" visible="true" width="25px" hAlign="Left">
 												<Text text="Id"/>
 											</Column>
 											<Column minScreenWidth="320px" width="90px" hAlign="Left">
@@ -140,7 +140,7 @@
 											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">
 												<Text text="Valor UN"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">
+											<Column minScreenWidth="360px" demandPopin="false" width="110px" hAlign="Left">
 												<Text text="Valor Total"/>
 											</Column>
 											<!--<Column minScreenWidth="500px" demandPopin="false" hAlign="Left" vAlign="Left" width="110px">-->
@@ -290,9 +290,9 @@
 											<Input id="idTotalItensAbaTotal" value="{path: 'modelDadosPedido>/TotalItensPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.'}, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Number"/>
 											<Label text="Peso Total dos Itens"/>
 											<Input id="idPesoPedidoAbaTotal" value="{path: 'modelDadosPedido>/Ntgew', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }} KG" enabled="false" class="desabilitado" type="Text"/>
-											<Label text="Verba Pedido (R$)"/>
+											<Label id="idLabelVerba" text="Verba Pedido (R$)"/>
 											<Input id="idVerbaAbaTotal" value="{path: 'modelDadosPedido>/ValVerbaPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
-											<Label text="Comissão (R$)"/>
+											<Label id="idLabelComissao" text="Comissão (R$)"/>
 											<Input id="idComissaoAbaTotal" value="{path: 'modelDadosPedido>/ValComissaoPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Parcela "/>
 											<Input id="idParcela" value="{path: 'modelDadosPedido>/EntradaPedido'}{path: 'modelDadosPedido>/QuantidadeParcelasPedido'} R$: {path: 'modelDadosPedido>/ValParcelasPedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado"/>
