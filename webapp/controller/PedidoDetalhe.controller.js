@@ -5226,20 +5226,23 @@ sap.ui.define([
 						that.onGetSaldoAmostra(oAmostras, res4, itemPedido);
 						
 					}).then(function(oAmostras) {
-						
+						// Total de amostras já digitadas considerando o item atual.
 						var dValorTotAmo = iQtde + oAmostras.qtde;
+						
+						// Saldo do representante menos o total de amostras já digitadas
 						var saldoRestante = oSaldo.quantidadeTotal - oAmostras.qtde;
 
 						if (dValorTotAmo > parseInt(oSaldo.quantidadeTotal, 10)) {
+							var excedenteAmostra = (saldoRestante < 0 ? iQtde : iQtde - saldoRestante);
 
 							// MessageBox.show("Não possui saldo de Amostra! (Saldo: " + saldoRestante + ")", {
 							// 	icon: MessageBox.Icon.ERROR,
 							// 	title: "Saldo Indisponível!",
 							// 	actions: [MessageBox.Action.OK],
 							// });
+							itemPedido.zzQntAmostra = excedenteAmostra;
 							
 							//Grava a quantidade de saldo excedente de amsotra .. pra gerar dos brindes.
-							itemPedido.zzQntAmostra = iQtde - parseInt(oSaldo.quantidadeTotal, 10);
 							
 							resII();
 							// rejII();
