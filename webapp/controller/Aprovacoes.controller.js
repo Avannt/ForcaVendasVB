@@ -17,320 +17,320 @@ sap.ui.define([
 		_onLoadFields: function(evt) {
 			this.onBuscaPedidos();
 		},
-		
+
 		onCarregaExcedentes: function() {
-			
+
 			var Vlrdsc = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
-			if(Vlrdsc == "" || Vlrdsc == undefined){
-				
+			if (Vlrdsc == "" || Vlrdsc == undefined) {
+
 				Vlrdsc = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdsc", Vlrdsc);
-				 
-			} else{
-				
+
+			} else {
+
 				Vlrdsc = parseFloat(Vlrdsc);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdsc", Vlrdsc);
-				
+
 			}
-			
+
 			var Vlrdsccom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom"));
-			if(Vlrdsccom == "" || Vlrdsccom == undefined){
-				
+			if (Vlrdsccom == "" || Vlrdsccom == undefined) {
+
 				Vlrdsccom = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdsccom", Vlrdsccom);
-				 
-			} else{
-				
+
+			} else {
+
 				Vlrdsccom = parseFloat(Vlrdsccom);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdsccom", Vlrdsccom);
-				
+
 			}
-			
+
 			var Vlrdscdd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd"));
-			if(Vlrdscdd == "" || Vlrdscdd == undefined){
+			if (Vlrdscdd == "" || Vlrdscdd == undefined) {
 				Vlrdscdd = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscdd", Vlrdscdd);
-				 
-			} else{
-				
+
+			} else {
+
 				Vlrdscdd = parseFloat(Vlrdscdd);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscdd", Vlrdscdd);
-				
+
 			}
-			
+
 			var Vlrdscvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm"));
-			if(Vlrdscvm == "" || Vlrdscvm == undefined){
+			if (Vlrdscvm == "" || Vlrdscvm == undefined) {
 				Vlrdscvm = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscvm", Vlrdscvm);
-				 
-			} else{
-				
+
+			} else {
+
 				Vlrdscvm = parseFloat(Vlrdscvm);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscvm", Vlrdscvm);
-				
+
 			}
-			
+
 			var Vlrdscvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb"));
-			if(Vlrdscvvb == "" || Vlrdscvvb == undefined){
-				
-				Vlrdscvvb = 0; 
+			if (Vlrdscvvb == "" || Vlrdscvvb == undefined) {
+
+				Vlrdscvvb = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscvvb", Vlrdscvvb);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrdscvvb = parseFloat(Vlrdscvvb);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrdscvvb", Vlrdscvvb);
-				
+
 			}
-			
+
 			var Valtotexcndirdesc = Vlrdsc - (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb).toFixed(2);
 
 			var Vlrprz = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprz"));
-			if(Vlrprz == "" || Vlrprz == undefined){
+			if (Vlrprz == "" || Vlrprz == undefined) {
 				Vlrprz = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprz", Vlrprz);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrprz = parseFloat(Vlrprz);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprz", Vlrprz);
-				
+
 			}
-			
+
 			var Vlrprzcom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
-			if(Vlrprzcom == "" || Vlrprzcom == undefined){
+			if (Vlrprzcom == "" || Vlrprzcom == undefined) {
 				Vlrprzcom = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzcom", Vlrprzcom);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrprzcom = parseFloat(Vlrprzcom);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzcom", Vlrprzcom);
-				
+
 			}
-			
+
 			var Vlrprzdd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
-			if(Vlrprzdd == "" || Vlrprzdd == undefined){
+			if (Vlrprzdd == "" || Vlrprzdd == undefined) {
 				Vlrprzdd = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzdd", Vlrprzdd);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrprzdd = parseFloat(Vlrprzdd);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzdd", Vlrprzdd);
-				
+
 			}
-			
+
 			var Vlrprzvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
-			if(Vlrprzvm == "" || Vlrprzvm == undefined){
+			if (Vlrprzvm == "" || Vlrprzvm == undefined) {
 				Vlrprzvm = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvm", Vlrprzvm);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrprzvm = parseFloat(Vlrprzvm);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvm", Vlrprzvm);
-				
+
 			}
-			
+
 			var Vlrprzvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
-			if(Vlrprzvvb == "" || Vlrprzvvb == undefined){
+			if (Vlrprzvvb == "" || Vlrprzvvb == undefined) {
 				Vlrprzvvb = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrprzvvb);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrprzvvb = parseFloat(Vlrprzvvb);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrprzvvb);
-				
+
 			}
-			
+
 			var Valtotexcndirprazo = Vlrprz - (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb).toFixed(2);
 
 			var Vlrbri = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbri"));
-			if(Vlrbri == "" || Vlrbri == undefined){
+			if (Vlrbri == "" || Vlrbri == undefined) {
 				Vlrbri = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbri", Vlrbri);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbri = parseFloat(Vlrbri);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbri", Vlrbri);
-				
+
 			}
-			
+
 			var Vlrbrivm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
-			if(Vlrbrivm == "" || Vlrbrivm == undefined){
+			if (Vlrbrivm == "" || Vlrbrivm == undefined) {
 				Vlrbrivm = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrbrivm);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbrivm = parseFloat(Vlrbrivm);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbrivm", Vlrbrivm);
-				
+
 			}
-			
+
 			var Vlrbricom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
-			if(Vlrbricom == "" || Vlrbricom == undefined){
+			if (Vlrbricom == "" || Vlrbricom == undefined) {
 				Vlrbricom = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbricom", Vlrbricom);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbricom = parseFloat(Vlrbricom);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbricom", Vlrbricom);
-				
+
 			}
-			
+
 			var Vlrbridd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
-			if(Vlrbridd == "" || Vlrbridd == undefined){
+			if (Vlrbridd == "" || Vlrbridd == undefined) {
 				Vlrbridd = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrbridd);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbridd = parseFloat(Vlrbridd);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbridd", Vlrbridd);
-				
+
 			}
-			
+
 			var Vlrbrivvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
-			if(Vlrbrivvb == "" || Vlrbrivvb == undefined){
+			if (Vlrbrivvb == "" || Vlrbrivvb == undefined) {
 				Vlrbrivvb = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbrivvb", Vlrbrivvb);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbrivvb = parseFloat(Vlrbrivvb);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbrivvb", Vlrbrivvb);
-				
+
 			}
-			
+
 			var ValtotexcndirBrinde = Vlrbri - (Vlrbrivm + Vlrbricom + Vlrbridd + Vlrbrivvb).toFixed(2);
 
 			var Vlramo = (this.getView().getModel("ItemAprovar").getProperty("/Vlramo"));
-			if(Vlramo == "" || Vlramo == undefined){
+			if (Vlramo == "" || Vlramo == undefined) {
 				Vlramo = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramo", Vlramo);
-				
-			} else{
-				
+
+			} else {
+
 				Vlramo = parseFloat(Vlramo);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramo", Vlramo);
-				
+
 			}
-			
+
 			var Vlramovm = (this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
-			if(Vlramovm == "" || Vlramovm == undefined){
+			if (Vlramovm == "" || Vlramovm == undefined) {
 				Vlramovm = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramovm", Vlramovm);
-				
-			} else{
-				
+
+			} else {
+
 				Vlramovm = parseFloat(Vlramovm);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramovm", Vlramovm);
-				
+
 			}
-			
+
 			var Vlramocom = (this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
-			if(Vlramocom == "" || Vlramocom == undefined){
+			if (Vlramocom == "" || Vlramocom == undefined) {
 				Vlramocom = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramocom", Vlramocom);
-				
-			} else{
-				
+
+			} else {
+
 				Vlramocom = parseFloat(Vlramocom);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramocom", Vlramocom);
-				
+
 			}
-			
+
 			var Vlramodd = (this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
-			if(Vlramodd == "" || Vlramodd == undefined){
+			if (Vlramodd == "" || Vlramodd == undefined) {
 				Vlramodd = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramodd", Vlramodd);
-				
-			} else{
-				
+
+			} else {
+
 				Vlramodd = parseFloat(Vlramodd);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramodd", Vlramodd);
-				
+
 			}
-			
+
 			var Vlramovvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
-			if(Vlramovvb == "" || Vlramovvb == undefined){
+			if (Vlramovvb == "" || Vlramovvb == undefined) {
 				Vlramovvb = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramovvb", Vlramovvb);
-				
-			} else{
-				
+
+			} else {
+
 				Vlramovvb = parseFloat(Vlramovvb);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlramovvb", Vlramovvb);
-				
+
 			}
-			
+
 			var ValtotexcndirAmostra = Vlramo - (Vlramovm + Vlramocom + Vlramodd + Vlramovvb).toFixed(2);
 
 			var Vlrbon = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbon"));
-			if(Vlrbon == "" || Vlrbon == undefined){
+			if (Vlrbon == "" || Vlrbon == undefined) {
 				Vlrbon = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbon", Vlrbon);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbon = parseFloat(Vlrbon);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbon", Vlrbon);
-				
+
 			}
-			
+
 			var Vlrbonvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
-			if(Vlrbonvm == "" || Vlrbonvm == undefined){
+			if (Vlrbonvm == "" || Vlrbonvm == undefined) {
 				Vlrbonvm = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbonvm", Vlrbonvm);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbonvm = parseFloat(Vlrbonvm);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbonvm", Vlrbonvm);
-				
+
 			}
-			
+
 			var Vlrboncom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
-			if(Vlrboncom == "" || Vlrboncom == undefined){
+			if (Vlrboncom == "" || Vlrboncom == undefined) {
 				Vlrboncom = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrboncom", Vlrboncom);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrboncom = parseFloat(Vlrboncom);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrboncom", Vlrboncom);
-				
+
 			}
-			
+
 			var Vlrbondd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
-			if(Vlrbondd == "" || Vlrbondd == undefined){
+			if (Vlrbondd == "" || Vlrbondd == undefined) {
 				Vlrbondd = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbondd", Vlrbondd);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbondd = parseFloat(Vlrbondd);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbondd", Vlrbondd);
-				
+
 			}
-			
+
 			var Vlrbonvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
-			if(Vlrbonvvb == "" || Vlrbonvvb == undefined){
+			if (Vlrbonvvb == "" || Vlrbonvvb == undefined) {
 				Vlrbonvvb = 0;
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbonvvb", Vlrbonvvb);
-				
-			} else{
-				
+
+			} else {
+
 				Vlrbonvvb = parseFloat(Vlrbonvvb);
 				this.getView().getModel("ItemAprovar").setProperty("/Vlrbonvvb", Vlrbonvvb);
-				
+
 			}
-			
+
 			var ValtotexcndirBonif = Vlrbon - (Vlrbonvm + Vlrboncom + Vlrbondd + Vlrbonvvb).toFixed(2);
 
 			this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirdesc", Valtotexcndirdesc.toFixed(2));
@@ -344,22 +344,22 @@ sap.ui.define([
 			this.getView().getModel("ItemAprovar").setProperty("/Vlrexc", totalExc.toFixed(2));
 
 		},
-		
+
 		onCarregaLimites: function() {
 
 			var that = this;
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
 			var oModel = that.getView().getModel();
-			
+
 			// var oModel = new sap.ui.model.odata.v2.ODataModel("http:// /sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
 			// 	password: "sap123"
 			// });
-			
+
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
-			
+
 			oModel.read("/PedidosAprovar(IAprovador='" + codRepres + "')", {
 				success: function(retorno) {
 					var oModelAprovacoes = new sap.ui.model.json.JSONModel(oItensAprovar);
@@ -388,17 +388,17 @@ sap.ui.define([
 		myFormatterName: function(value) {
 
 			if (value.length > 30) {
-				
+
 				return value.substring(0, 28) + "...";
-				
+
 			} else {
-				
+
 				return value;
 			}
 		},
-		
+
 		onItemPress: function(oEvent) {
-			
+
 			var that = this;
 			var oItem = oEvent.getParameter("listItem") || oEvent.getSource();
 			var Nrpedcli = oItem.getBindingContext("PedidosAprovar").getProperty("Nrpedcli");
@@ -406,24 +406,24 @@ sap.ui.define([
 			var Kunnr = oItem.getBindingContext("PedidosAprovar").getProperty("Kunnr");
 			var Namerep = oItem.getBindingContext("PedidosAprovar").getProperty("Namerep");
 			var Lifnr = oItem.getBindingContext("PedidosAprovar").getProperty("Lifnr");
-			
+
 			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", Nrpedcli);
-			
+
 			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", Kunnr);
 			that.getOwnerComponent().getModel("modelAux").setProperty("/Namecli", Namecli);
-			
+
 			that.getOwnerComponent().getModel("modelAux").setProperty("/Namerep", Namerep);
 			that.getOwnerComponent().getModel("modelAux").setProperty("/Lifnr", Lifnr);
-			
+
 			MessageBox.show("Deseja mesmo detalhar o Pedido?", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Detalhamento Solicitado",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
 				onClose: function(oAction) {
 					if (oAction == sap.m.MessageBox.Action.YES) {
-						
+
 						sap.ui.core.UIComponent.getRouterFor(that).navTo("PedidoDetalheAprov");
-						
+
 					}
 				}
 			});
@@ -433,7 +433,7 @@ sap.ui.define([
 
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
-			
+
 			var oFilter = [
 				new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Namecli", sap.ui.model.FilterOperator.Contains, sValue),
@@ -461,19 +461,18 @@ sap.ui.define([
 		},
 
 		onOpenDialog: function() {
-			
+
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
-			
+
 			if (oSelectedItems.length == 0) {
 				MessageBox.show("Selecione um pedido para aprovar", {
 					icon: sap.m.MessageBox.Icon.INFORMATION,
 					title: "escolher um pedido!",
 					actions: [MessageBox.Action.OK],
-					onClose: function() {
-					}
+					onClose: function() {}
 				});
 			} else {
-				
+
 				var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
 				var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
@@ -532,35 +531,35 @@ sap.ui.define([
 
 			var Valtotexcndirdesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirdesc")).toFixed(2);
 			var vlrTotalDesc = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Vlrdsc"));
-			
+
 			var Vlrdsccom = this.getView().getModel("ItemAprovar").getProperty("/Vlrdsccom");
-			if(Vlrdsccom == "" || Vlrdsccom == undefined){
+			if (Vlrdsccom == "" || Vlrdsccom == undefined) {
 				Vlrdsccom = 0;
-			} else{
+			} else {
 				Vlrdsccom = parseFloat(Vlrdsccom);
 			}
-			
+
 			var Vlrdscdd = this.getView().getModel("ItemAprovar").getProperty("/Vlrdscdd");
-			if(Vlrdscdd == "" || Vlrdscdd == undefined){
+			if (Vlrdscdd == "" || Vlrdscdd == undefined) {
 				Vlrdscdd = 0;
 			} else {
 				Vlrdscdd = parseFloat(Vlrdscdd);
 			}
-			
+
 			var Vlrdscvm = this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvm");
-			if(Vlrdscvm == "" || Vlrdscvm == undefined){
+			if (Vlrdscvm == "" || Vlrdscvm == undefined) {
 				Vlrdscvm = 0;
 			} else {
 				Vlrdscvm = parseFloat(Vlrdscvm);
 			}
-			
+
 			var Vlrdscvvb = this.getView().getModel("ItemAprovar").getProperty("/Vlrdscvvb");
-			if(Vlrdscvvb == "" || Vlrdscvvb == undefined){
+			if (Vlrdscvvb == "" || Vlrdscvvb == undefined) {
 				Vlrdscvvb = 0;
 			} else {
 				Vlrdscvvb = parseFloat(Vlrdscvvb);
 			}
-			
+
 			var somaDosDestinados = (Vlrdsccom + Vlrdscdd + Vlrdscvm + Vlrdscvvb).toFixed(2);
 			var msg = "Valores destinados para abater o excedente de descontos, ultrapassou o valor total necessário. Valor Excedente (" + vlrTotalDesc + ")";
 
@@ -604,54 +603,54 @@ sap.ui.define([
 			var Valtotexcndirprazo = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/Valtotexcndirprazo"));
 
 			var Vlrprz = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprz")).toFixed(2);
-			if(Vlrprz == "" || Vlrprz == undefined){
+			if (Vlrprz == "" || Vlrprz == undefined) {
 				Vlrprz = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrprz", 0);
-				
+
 			} else {
 				Vlrprz = parseFloat(Vlrprz);
 			}
-			
+
 			var Vlrprzcom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom"));
-			if(Vlrprzcom == "" || Vlrprzcom == undefined){
+			if (Vlrprzcom == "" || Vlrprzcom == undefined) {
 				Vlrprzcom = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzcom", 0);
-				
+
 			} else {
 				Vlrprzcom = parseFloat(Vlrprzcom);
 			}
-			
+
 			var Vlrprzdd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd"));
-			if(Vlrprzdd == "" || Vlrprzdd == undefined){
+			if (Vlrprzdd == "" || Vlrprzdd == undefined) {
 				Vlrprzdd = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzdd", 0);
-				
+
 			} else {
 				Vlrprzdd = parseFloat(Vlrprzdd);
 			}
-			
+
 			var Vlrprzvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm"));
-			if(Vlrprzvm == "" || Vlrprzvm == undefined){
+			if (Vlrprzvm == "" || Vlrprzvm == undefined) {
 				Vlrprzvm = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvm", 0);
-				
+
 			} else {
 				Vlrprzvm = parseFloat(Vlrprzvm);
 			}
-			
+
 			var Vlrprzvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb"));
-			if(Vlrprzvvb == "" || Vlrprzvvb == undefined){
+			if (Vlrprzvvb == "" || Vlrprzvvb == undefined) {
 				Vlrprzvvb = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrprzvvb", 0);
 			} else {
 				Vlrprzvvb = parseFloat(Vlrprzvvb);
 			}
-			
+
 			var somaDosDestinados = (Vlrprzcom + Vlrprzdd + Vlrprzvm + Vlrprzvvb).toFixed(2);
 			var msg = "Valores destinados para abater o excedente de Prazos, ultrapassou o valor total necessário. Valor Excedente (" + Vlrprz + ")";
 
 			if (somaDosDestinados > Vlrprz) {
-				
+
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueState("Error");
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").setValueStateText(msg);
 				sap.ui.getCore().byId("idVerbaUtilizadaPrazo").focus();
@@ -666,7 +665,7 @@ sap.ui.define([
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueStateText(msg);
 
 			} else {
-				
+
 				Valtotexcndirprazo = Vlrprz - somaDosDestinados;
 				this.getView().getModel("ItemAprovar").setProperty("/Valtotexcndirprazo", Valtotexcndirprazo.toFixed(2));
 
@@ -686,55 +685,55 @@ sap.ui.define([
 				sap.ui.getCore().byId("idVerbaVBUtilizadaPrazo").setValueStateText();
 			}
 		},
-		
+
 		onDestinaBonif: function(evt) {
 			var ValtotexcndirBonif = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBonif"));
 
 			var Vlrbon = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbon")).toFixed(2);
-			if(Vlrbon == "" || Vlrbon == undefined){
+			if (Vlrbon == "" || Vlrbon == undefined) {
 				Vlrbon = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrbon", 0);
-				
+
 			} else {
 				Vlrbon = parseFloat(Vlrbon);
 			}
-			
+
 			var Vlrboncom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom"));
-			if(Vlrboncom == "" || Vlrboncom == undefined){
+			if (Vlrboncom == "" || Vlrboncom == undefined) {
 				Vlrboncom = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrboncom", 0);
-				
+
 			} else {
 				Vlrboncom = parseFloat(Vlrboncom);
 			}
-			
+
 			var Vlrbondd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd"));
-			if(Vlrbondd == "" || Vlrbondd == undefined){
+			if (Vlrbondd == "" || Vlrbondd == undefined) {
 				Vlrbondd = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrbondd", 0);
-				
+
 			} else {
 				Vlrbondd = parseFloat(Vlrbondd);
 			}
-			
+
 			var Vlrbonvm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm"));
-			if(Vlrbonvm == "" || Vlrbonvm == undefined){
+			if (Vlrbonvm == "" || Vlrbonvm == undefined) {
 				Vlrbonvm = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvm", 0);
-				
+
 			} else {
 				Vlrbonvm = parseFloat(Vlrbonvm);
 			}
-			
+
 			var Vlrbonvvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb"));
-			if(Vlrbonvvb == "" || Vlrbonvvb == undefined){
+			if (Vlrbonvvb == "" || Vlrbonvvb == undefined) {
 				Vlrbonvvb = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlrbonvvb", 0);
-				
+
 			} else {
 				Vlrbonvvb = parseFloat(Vlrbonvvb);
 			}
-			
+
 			var somaDosDestinados = (Vlrboncom + Vlrbondd + Vlrbonvm + Vlrbonvvb).toFixed(2);
 			var msg = "Valores destinados para abater o excedente de Bonificação, ultrapassou o valor total necessário. Valor Excedente (" + Vlrbon + ")";
 
@@ -771,55 +770,55 @@ sap.ui.define([
 				sap.ui.getCore().byId("idVerbaVBUtilizadaBonf").setValueStateText();
 			}
 		},
-		
+
 		onDestinaAmostra: function(evt) {
 			var ValtotexcndirAmostra = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirAmostra"));
 
 			var Vlramo = (this.getView().getModel("ItemAprovar").getProperty("/Vlramo")).toFixed(2);
-			if(Vlramo == "" || Vlramo == undefined){
+			if (Vlramo == "" || Vlramo == undefined) {
 				Vlramo = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramo", 0);
-				
+
 			} else {
 				Vlramo = parseFloat(Vlramo);
 			}
-			
+
 			var Vlramocom = (this.getView().getModel("ItemAprovar").getProperty("/Vlramocom"));
-			if(Vlramocom == "" || Vlramocom == undefined){
+			if (Vlramocom == "" || Vlramocom == undefined) {
 				Vlramocom = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramocom", 0);
-				
+
 			} else {
 				Vlramocom = parseFloat(Vlramocom);
 			}
-			
+
 			var Vlramodd = (this.getView().getModel("ItemAprovar").getProperty("/Vlramodd"));
-			if(Vlramodd == "" || Vlramodd == undefined){
+			if (Vlramodd == "" || Vlramodd == undefined) {
 				Vlramodd = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramodd", 0);
-				
+
 			} else {
 				Vlramodd = parseFloat(Vlramodd);
 			}
-			
+
 			var Vlramovm = (this.getView().getModel("ItemAprovar").getProperty("/Vlramovm"));
-			if(Vlramovm == "" || Vlramovm == undefined){
+			if (Vlramovm == "" || Vlramovm == undefined) {
 				Vlramovm = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramovm", 0);
-				
+
 			} else {
 				Vlramovm = parseFloat(Vlramovm);
 			}
-			
+
 			var Vlramovvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb"));
-			if(Vlramovvb == "" || Vlramovvb == undefined){
+			if (Vlramovvb == "" || Vlramovvb == undefined) {
 				Vlramovvb = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
-				
+
 			} else {
 				Vlramovvb = parseFloat(Vlramovvb);
 			}
-			
+
 			var somaDosDestinados = (Vlramocom + Vlramodd + Vlramovm + Vlramovvb).toFixed(2);
 			var msg = "Valores destinados para abater o excedente de Amostra, ultrapassou o valor total necessário. Valor Excedente (" + Vlramo + ")";
 
@@ -862,50 +861,50 @@ sap.ui.define([
 			var ValtotexcndirBrinde = parseFloat(this.getView().getModel("ItemAprovar").getProperty("/ValtotexcndirBrinde"));
 
 			var Vlrbri = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbri")).toFixed(2);
-			if(Vlrbri == "" || Vlrbri == undefined){
+			if (Vlrbri == "" || Vlrbri == undefined) {
 				Vlrbri = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
-				
+
 			} else {
 				Vlrbri = parseFloat(Vlrbri);
 			}
-			
+
 			var Vlrbricom = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbricom"));
-			if(Vlrbricom == "" || Vlrbricom == undefined){
+			if (Vlrbricom == "" || Vlrbricom == undefined) {
 				Vlrbricom = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
-				
+
 			} else {
 				Vlrbricom = parseFloat(Vlrbricom);
 			}
-			
+
 			var Vlrbridd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
-			if(Vlrbridd == "" || Vlrbridd == undefined){
+			if (Vlrbridd == "" || Vlrbridd == undefined) {
 				Vlrbridd = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
-				
+
 			} else {
 				Vlrbridd = parseFloat(Vlrbridd);
 			}
-			
+
 			var Vlrbrivm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
-			if(Vlrbrivm == "" || Vlrbrivm == undefined){
+			if (Vlrbrivm == "" || Vlrbrivm == undefined) {
 				Vlrbrivm = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
-				
+
 			} else {
 				Vlrbrivm = parseFloat(Vlrbrivm);
 			}
-			
+
 			var Vlrbrivvb = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivvb"));
-			if(Vlrbrivvb == "" || Vlrbrivvb == undefined){
+			if (Vlrbrivvb == "" || Vlrbrivvb == undefined) {
 				Vlrbrivvb = 0;
 				this.getView().getModel("ItemAprovar").getProperty("/Vlramovvb", 0);
-				
+
 			} else {
 				Vlrbrivvb = parseFloat(Vlrbrivvb);
 			}
-			
+
 			var somaDosDestinados = (Vlrbricom + Vlrbridd + Vlrbrivm + Vlrbrivvb).toFixed(2);
 			var msg = "Valores destinados para abater o excedente de Brinde, ultrapassou o valor total necessário. Valor Excedente (" + Vlrbri + ")";
 
@@ -962,13 +961,13 @@ sap.ui.define([
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
 			var oModel = that.getView().getModel();
-			
+
 			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
 			// 	password: "sap123"
 			// });
-				
+
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
 			oModel.read("/PedidosAprovar", {
@@ -985,9 +984,9 @@ sap.ui.define([
 
 						var hora = retorno.results[i].Horaped;
 						hora = hora.substring(0, 2) + ":" + hora.substring(2, 4);
-						
+
 						retorno.results[i].Vlrexc = parseFloat(retorno.results[i].Vlramo) + parseFloat(retorno.results[i].Vlrprz) + parseFloat(retorno.results[i].Vlrbri) + parseFloat(retorno.results[i].Vlrbon) + parseFloat(retorno.results[i].Vlrdsc);
-						
+
 						var aux = {
 							IAprovador: retorno.results[i].IAprovador,
 							Nivel: retorno.results[i].Nivel,
@@ -1090,69 +1089,25 @@ sap.ui.define([
 
 		onAprovar: function() {
 			var that = this;
-			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
-			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
 
-			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
+			if (that._ItemDialog) {
+				that._ItemDialog.destroy(true);
+			}
 
-			var amostra = itemAprovar.ValtotexcndirAmostra;
-			var brinde = itemAprovar.ValtotexcndirBrinde;
-			var prazo = itemAprovar.Valtotexcndirprazo;
-			var bonificacao = itemAprovar.ValtotexcndirBonif;
-			var desconto = itemAprovar.Valtotexcndirdesc;
-			
-			if(amostra > 0 || brinde > 0 || prazo > 0 || bonificacao > 0 || desconto > 0){
-				
-				sap.m.MessageBox.show(
-					"Existem valores excedentes a serem destinados! Deseja continuar? ", {
-						icon: sap.m.MessageBox.Icon.WARNING,
-						title: "Campos incompletos!",
-						actions: ["Continuar", "Cancelar"],
-						onClose: function(oAction) {
-							
-							if(oAction == "Continuar"){
-								
-								if (that._ItemDialog) {
-									that._ItemDialog.destroy(true);
-								}
-					
-								if (!that._CreateMaterialFragment) {
-					
-									that._ItemDialog = sap.ui.xmlfragment(
-										"testeui5.view.observacoesAprovador",
-										that
-									);
-					
-									that.getView().addDependent(this._ItemDialog);
-								}
-					
-								that.onBloquearCampos();
-					
-								that._ItemDialog.open();
-							}
-						}
-					}
+			if (!that._CreateMaterialFragment) {
+
+				that._ItemDialog = sap.ui.xmlfragment(
+					"testeui5.view.observacoesAprovador",
+					that
 				);
+
+				that.getView().addDependent(this._ItemDialog);
 			}
-			else {
-				if (that._ItemDialog) {
-					that._ItemDialog.destroy(true);
-				}
-	
-				if (!that._CreateMaterialFragment) {
-	
-					that._ItemDialog = sap.ui.xmlfragment(
-						"testeui5.view.observacoesAprovador",
-						that
-					);
-	
-					that.getView().addDependent(this._ItemDialog);
-				}
-	
-				that.onBloquearCampos();
-	
-				that._ItemDialog.open();
-			}
+
+			that.onBloquearCampos();
+
+			that._ItemDialog.open();
+
 		},
 
 		onReprovar: function() {
@@ -1161,9 +1116,9 @@ sap.ui.define([
 
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
-			
+
 			var oModel = this.getView().getModel();
-			
+
 			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
@@ -1252,11 +1207,11 @@ sap.ui.define([
 			var that = this;
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
-			
+
 			that._ItemDialog.setBusy(true);
-			
+
 			var oModel = this.getView().getModel();
-			
+
 			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
 			// 	user: "appadmin",
@@ -1268,109 +1223,236 @@ sap.ui.define([
 
 			var itemAprovar = refModel.getModel().oData[refModel.getPath().substring(1, refModel.getPath().length)];
 
-			var aux = {
-				Nrpedcli: String(itemAprovar.Nrpedcli),
-				Aprov: String(itemAprovar.Aprov),
-				Nivel: String(itemAprovar.Nivel),
-				Vlrprz: String(itemAprovar.Vlrprz),
-				VlrprzCom: String(itemAprovar.Vlrprzcom),
-				VlrprzVm: String(itemAprovar.Vlrprzvm),
-				VlrprzDd: String(itemAprovar.Vlrprzdd),
-				VlrprzVvb: String(itemAprovar.Vlrprzvvb),
-				Vlrdsc: String(itemAprovar.Vlrdsc),
-				VlrdscCom: String(itemAprovar.Vlrdsccom),
-				VlrdscVm: String(itemAprovar.Vlrdscvm),
-				VlrdscDd: String(itemAprovar.Vlrdscdd),
-				VlrdscVvb: String(itemAprovar.Vlrdscvvb),
-				Vlramo: String(itemAprovar.Vlramo),
-				VlramoCom: String(itemAprovar.Vlramocom),
-				VlramoVm: String(itemAprovar.Vlramovm),
-				VlramoDd: String(itemAprovar.Vlramodd),
-				VlramoVvb: String(itemAprovar.Vlramovvb),
-				Vlrbri: String(itemAprovar.Vlrbri),
-				VlrbriCom: String(itemAprovar.Vlrbricom),
-				VlrbriDd: String(itemAprovar.Vlrbridd),
-				VlrbriVm: String(itemAprovar.Vlrbrivm),
-				VlrbriVvb: String(itemAprovar.Vlrbrivvb),
-				Vlrbon: String(itemAprovar.Vlrbon),
-				VlrbonCom: String(itemAprovar.Vlrboncom),
-				VlrbonVm: String(itemAprovar.Vlrbonvm),
-				VlrbonDd: String(itemAprovar.Vlrbondd),
-				VlrbonVvb: String(itemAprovar.Vlrbonvvb),
-				Vlrdst: String(itemAprovar.Vlrdst),
-				Obscom: String(itemAprovar.Obscom),
-				Obsdd: String(itemAprovar.Obsdd),
-				Obsvm: String(itemAprovar.Obsvm),
-				Obsvvb: String(itemAprovar.Obsvvb),
-				IvReprov: ""
-			};
+			var amostra = itemAprovar.ValtotexcndirAmostra;
+			var brinde = itemAprovar.ValtotexcndirBrinde;
+			var prazo = itemAprovar.Valtotexcndirprazo;
+			var bonificacao = itemAprovar.ValtotexcndirBonif;
+			var desconto = itemAprovar.Valtotexcndirdesc;
 
-			oModel.create("/AprovarOV", aux, {
-				success: function(retorno) {
-					oItensAprovar = [];
+			if (amostra > 0 || brinde > 0 || prazo > 0 || bonificacao > 0 || desconto > 0) {
 
-					if (retorno.ENumber == "104") {
-						sap.m.MessageBox.show(
-							retorno.Message, {
-								icon: sap.m.MessageBox.Icon.WARNING,
-								title: "Destinação dos valores!",
-								actions: [sap.m.MessageBox.Action.OK],
-								onClose: function(oAction) {
-									
-									that._ItemDialog.setBusy(true);
+				sap.m.MessageBox.show(
+					"Existem valores excedentes a serem destinados! Deseja continuar? ", {
+						icon: sap.m.MessageBox.Icon.WARNING,
+						title: "Campos incompletos!",
+						actions: ["Continuar", "Cancelar"],
+						onClose: function(oAction) {
 
-									if (that._ItemDialog) {
-										that._ItemDialog.destroy(true);
+							if (oAction == "Continuar") {
+
+								var aux = {
+									Nrpedcli: String(itemAprovar.Nrpedcli),
+									Aprov: String(itemAprovar.Aprov),
+									Nivel: String(itemAprovar.Nivel),
+									Vlrprz: String(itemAprovar.Vlrprz),
+									VlrprzCom: String(itemAprovar.Vlrprzcom),
+									VlrprzVm: String(itemAprovar.Vlrprzvm),
+									VlrprzDd: String(itemAprovar.Vlrprzdd),
+									VlrprzVvb: String(itemAprovar.Vlrprzvvb),
+									Vlrdsc: String(itemAprovar.Vlrdsc),
+									VlrdscCom: String(itemAprovar.Vlrdsccom),
+									VlrdscVm: String(itemAprovar.Vlrdscvm),
+									VlrdscDd: String(itemAprovar.Vlrdscdd),
+									VlrdscVvb: String(itemAprovar.Vlrdscvvb),
+									Vlramo: String(itemAprovar.Vlramo),
+									VlramoCom: String(itemAprovar.Vlramocom),
+									VlramoVm: String(itemAprovar.Vlramovm),
+									VlramoDd: String(itemAprovar.Vlramodd),
+									VlramoVvb: String(itemAprovar.Vlramovvb),
+									Vlrbri: String(itemAprovar.Vlrbri),
+									VlrbriCom: String(itemAprovar.Vlrbricom),
+									VlrbriDd: String(itemAprovar.Vlrbridd),
+									VlrbriVm: String(itemAprovar.Vlrbrivm),
+									VlrbriVvb: String(itemAprovar.Vlrbrivvb),
+									Vlrbon: String(itemAprovar.Vlrbon),
+									VlrbonCom: String(itemAprovar.Vlrboncom),
+									VlrbonVm: String(itemAprovar.Vlrbonvm),
+									VlrbonDd: String(itemAprovar.Vlrbondd),
+									VlrbonVvb: String(itemAprovar.Vlrbonvvb),
+									Vlrdst: String(itemAprovar.Vlrdst),
+									Obscom: String(itemAprovar.Obscom),
+									Obsdd: String(itemAprovar.Obsdd),
+									Obsvm: String(itemAprovar.Obsvm),
+									Obsvvb: String(itemAprovar.Obsvvb),
+									IvReprov: ""
+								};
+
+								oModel.create("/AprovarOV", aux, {
+									success: function(retorno) {
+										oItensAprovar = [];
+
+										if (retorno.ENumber == "104") {
+											sap.m.MessageBox.show(
+												retorno.Message, {
+													icon: sap.m.MessageBox.Icon.WARNING,
+													title: "Destinação dos valores!",
+													actions: [sap.m.MessageBox.Action.OK],
+													onClose: function(oAction) {
+
+														that._ItemDialog.setBusy(true);
+
+														if (that._ItemDialog) {
+															that._ItemDialog.destroy(true);
+														}
+
+														that.onOpenDialog();
+
+													}
+												}
+											);
+										} else if (retorno.ENumber == "001") {
+
+											that._ItemDialog.setBusy(true);
+
+											if (that._ItemDialog) {
+												that._ItemDialog.destroy(true);
+											}
+
+											sap.m.MessageBox.show(
+												retorno.Message, {
+													icon: sap.m.MessageBox.Icon.SUCCESS,
+													title: "Sucesso!",
+													actions: [sap.m.MessageBox.Action.OK],
+													onClose: function(oAction) {
+														that.onBuscaPedidos();
+													}
+												}
+											);
+
+										} else {
+
+											if (that._ItemDialog) {
+												that._ItemDialog.destroy(true);
+											}
+
+											sap.m.MessageBox.show(
+												retorno.Message, {
+													icon: sap.m.MessageBox.Icon.SUCCESS,
+													title: "Sucesso!",
+													actions: [sap.m.MessageBox.Action.OK],
+													onClose: function(oAction) {
+														that.onBuscaPedidos();
+													}
+												}
+											);
+										}
+									},
+									error: function(error) {
+										console.log(error);
+										that.byId("idTableEnvioPedidos").setBusy(false);
+										that.onMensagemErroODATA(error.statusCode);
 									}
-
-									that.onOpenDialog();
-									
-								}
+								});
 							}
-						);
-					} else if (retorno.ENumber == "001") {
-						
-						that._ItemDialog.setBusy(true);
-
-						if (that._ItemDialog) {
-							that._ItemDialog.destroy(true);
 						}
-
-						sap.m.MessageBox.show(
-							retorno.Message, {
-								icon: sap.m.MessageBox.Icon.SUCCESS,
-								title: "Sucesso!",
-								actions: [sap.m.MessageBox.Action.OK],
-								onClose: function(oAction) {
-									that.onBuscaPedidos();
-								}
-							}
-						);
-
-					} else {
-
-						if (that._ItemDialog) {
-							that._ItemDialog.destroy(true);
-						}
-
-						sap.m.MessageBox.show(
-							retorno.Message, {
-								icon: sap.m.MessageBox.Icon.SUCCESS,
-								title: "Sucesso!",
-								actions: [sap.m.MessageBox.Action.OK],
-								onClose: function(oAction) {
-									that.onBuscaPedidos();
-								}
-							}
-						);
 					}
-				},
-				error: function(error) {
-					console.log(error);
-					that.byId("idTableEnvioPedidos").setBusy(false);
-					that.onMensagemErroODATA(error.statusCode);
-				}
-			});
+				);
+			} else {
+
+				var aux = {
+					Nrpedcli: String(itemAprovar.Nrpedcli),
+					Aprov: String(itemAprovar.Aprov),
+					Nivel: String(itemAprovar.Nivel),
+					Vlrprz: String(itemAprovar.Vlrprz),
+					VlrprzCom: String(itemAprovar.Vlrprzcom),
+					VlrprzVm: String(itemAprovar.Vlrprzvm),
+					VlrprzDd: String(itemAprovar.Vlrprzdd),
+					VlrprzVvb: String(itemAprovar.Vlrprzvvb),
+					Vlrdsc: String(itemAprovar.Vlrdsc),
+					VlrdscCom: String(itemAprovar.Vlrdsccom),
+					VlrdscVm: String(itemAprovar.Vlrdscvm),
+					VlrdscDd: String(itemAprovar.Vlrdscdd),
+					VlrdscVvb: String(itemAprovar.Vlrdscvvb),
+					Vlramo: String(itemAprovar.Vlramo),
+					VlramoCom: String(itemAprovar.Vlramocom),
+					VlramoVm: String(itemAprovar.Vlramovm),
+					VlramoDd: String(itemAprovar.Vlramodd),
+					VlramoVvb: String(itemAprovar.Vlramovvb),
+					Vlrbri: String(itemAprovar.Vlrbri),
+					VlrbriCom: String(itemAprovar.Vlrbricom),
+					VlrbriDd: String(itemAprovar.Vlrbridd),
+					VlrbriVm: String(itemAprovar.Vlrbrivm),
+					VlrbriVvb: String(itemAprovar.Vlrbrivvb),
+					Vlrbon: String(itemAprovar.Vlrbon),
+					VlrbonCom: String(itemAprovar.Vlrboncom),
+					VlrbonVm: String(itemAprovar.Vlrbonvm),
+					VlrbonDd: String(itemAprovar.Vlrbondd),
+					VlrbonVvb: String(itemAprovar.Vlrbonvvb),
+					Vlrdst: String(itemAprovar.Vlrdst),
+					Obscom: String(itemAprovar.Obscom),
+					Obsdd: String(itemAprovar.Obsdd),
+					Obsvm: String(itemAprovar.Obsvm),
+					Obsvvb: String(itemAprovar.Obsvvb),
+					IvReprov: ""
+				};
+
+				oModel.create("/AprovarOV", aux, {
+					success: function(retorno) {
+						oItensAprovar = [];
+
+						if (retorno.ENumber == "104") {
+							sap.m.MessageBox.show(
+								retorno.Message, {
+									icon: sap.m.MessageBox.Icon.WARNING,
+									title: "Destinação dos valores!",
+									actions: [sap.m.MessageBox.Action.OK],
+									onClose: function(oAction) {
+
+										that._ItemDialog.setBusy(true);
+
+										if (that._ItemDialog) {
+											that._ItemDialog.destroy(true);
+										}
+
+										that.onOpenDialog();
+
+									}
+								}
+							);
+						} else if (retorno.ENumber == "001") {
+
+							that._ItemDialog.setBusy(true);
+
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+
+							sap.m.MessageBox.show(
+								retorno.Message, {
+									icon: sap.m.MessageBox.Icon.SUCCESS,
+									title: "Sucesso!",
+									actions: [sap.m.MessageBox.Action.OK],
+									onClose: function(oAction) {
+										that.onBuscaPedidos();
+									}
+								}
+							);
+
+						} else {
+
+							if (that._ItemDialog) {
+								that._ItemDialog.destroy(true);
+							}
+
+							sap.m.MessageBox.show(
+								retorno.Message, {
+									icon: sap.m.MessageBox.Icon.SUCCESS,
+									title: "Sucesso!",
+									actions: [sap.m.MessageBox.Action.OK],
+									onClose: function(oAction) {
+										that.onBuscaPedidos();
+									}
+								}
+							);
+						}
+					},
+					error: function(error) {
+						console.log(error);
+						that.byId("idTableEnvioPedidos").setBusy(false);
+						that.onMensagemErroODATA(error.statusCode);
+					}
+				});
+			}
 
 		},
 
