@@ -1,23 +1,58 @@
 /*eslint-disable no-console, no-alert */
+/*eslint-disable no-console, sap-no-hardcoded-url */
 sap.ui.define([
 		"sap/ui/core/mvc/Controller",
+		"testeui5/controller/BaseController",
 		"sap/m/MessageBox",
 		"testeui5/util/mensagem",
 		"testeui5/js/index"
 	],
-	function(Controller, MessageBox, mensagem, index) {
+	function(Controller, BaseController, MessageBox, mensagem, index) {
 		"use strict";
 		var idbSupported = false;
 		var ImeiResult = [];
 
-		return Controller.extend("testeui5.controller.Login", {
+		return BaseController.extend("testeui5.controller.Login", {
 			
-			onInit: function() {
+			onInit: function(){
+				this.getRouter().getRoute("login").attachPatternMatched(this._onLoadFields, this);
+			},
+			
+			_onLoadFields: function() {
 				var that = this;
 				
-				// this.getView().setModel(oModel2, "VBModel");
-				
 				this.onInicializaModels();
+				
+				// this.getView().setModel(oModel2, "VBModel");
+				/* 
+				Alterar aqui o ambiente:
+				PRD => ReleasePRD = TRUE
+				QAS => ReleasePRD = FALSE
+				*/
+				this.getOwnerComponent().getModel("modelAux").setProperty("/ReleasePRD", false);
+				
+				var sUrl;
+				//Versão App
+				if(this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")){
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.28");
+					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/";
+					
+					var oModel = new sap.ui.model.odata.v2.ODataModel(sUrl, {
+						json: true,
+						user: "appadmin",
+						password: "sap123"
+					});
+					
+					this.getView().setModel(oModel);
+					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", oModel);
+				}else{ // QAS
+					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", this.getView().getModel());
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.19");
+				}
+				
+				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
+				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
+				
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
 				//sap.ui.getCore().byId("label").visible = false;
@@ -581,12 +616,6 @@ sap.ui.define([
 				});
 				
 				this.getOwnerComponent().setModel(oModelItemPedido, "modelItemPedido");
-
-				//Versão App
-				this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.19");
-				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
-				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
-
 			},
 			
 			retornaDataAtualizacao: function() {
@@ -703,7 +732,8 @@ sap.ui.define([
 				var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 				var CodUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
 
-				var oModel = that.getView().getModel();
+				//var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+				var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 				// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
 				// 	json     : true,
@@ -2318,7 +2348,7 @@ sap.ui.define([
 
 						// 		if (oPrincipal[i].id == "aprovacoes") {
 						// 			var oMenuAprovar = oPrincipal[i];
-						// 			var oModel = that.getView().getModel();
+						// 			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
 						// 			var codRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
 
 						// 			oModel.read("/PedidosAprovar/$count", {
@@ -2607,7 +2637,7 @@ sap.ui.define([
 					);
 				} else {
 
-					var oModel = this.getView().getModel();
+					var oModel = this.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
 
 					// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
 					// 	json     : true,
@@ -2854,7 +2884,7 @@ sap.ui.define([
 					
 				} else{
 					
-					var oModel = this.getView().getModel();
+					var oModel = this.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
 					
 					// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
 					// 	json     : true,

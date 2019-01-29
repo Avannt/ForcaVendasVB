@@ -1,4 +1,5 @@
 /*eslint-disable no-console, no-alert */
+/*eslint-disable no-console, sap-no-hardcoded-url */
 sap.ui.define([
 	"testeui5/controller/BaseController",
 	"sap/ui/core/mvc/Controller",
@@ -350,13 +351,7 @@ sap.ui.define([
 			var that = this;
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
-			var oModel = that.getView().getModel();
-
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http:// /sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
-			// 	json: true,
-			// 	user: "appadmin",
-			// 	password: "sap123"
-			// });
+			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
 
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
@@ -960,13 +955,7 @@ sap.ui.define([
 			var that = this;
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
-			var oModel = that.getView().getModel();
-
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
-			// 	json: true,
-			// 	user: "appadmin",
-			// 	password: "sap123"
-			// });
+			var	oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
 
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
@@ -1117,13 +1106,7 @@ sap.ui.define([
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
 
-			var oModel = this.getView().getModel();
-
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
-			// 	json: true,
-			// 	user: "appadmin",
-			// 	password: "sap123"
-			// });
+			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
 
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
@@ -1210,13 +1193,7 @@ sap.ui.define([
 
 			that._ItemDialog.setBusy(true);
 
-			var oModel = this.getView().getModel();
-
-			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
-			// 	json: true,
-			// 	user: "appadmin",
-			// 	password: "sap123"
-			// });
+			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
 
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
@@ -1343,6 +1320,15 @@ sap.ui.define([
 										that.onMensagemErroODATA(error.statusCode);
 									}
 								});
+							} else {
+								that._ItemDialog.setBusy(true);
+
+								if (that._ItemDialog) {
+									that._ItemDialog.destroy(true);
+								}
+
+								that.onOpenDialog();
+
 							}
 						}
 					}

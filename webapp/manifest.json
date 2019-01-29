@@ -12,11 +12,11 @@
 		},
 		"dataSources": {
 			"ZFORCA_VENDAS_VB_SRV": {
-				"uri": "/VB_GWD/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
+				"uri": "/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/",
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
-					"localUri": "localService/ZFORCA_VENDAS_VB_SRV/metadata.xml"
+					"localUri": "localService/metadata.xml"
 				}
 			}
 		},
@@ -68,10 +68,11 @@
 				"type": "sap.ui.model.odata.v2.ODataModel",
 				"settings": {
 					"defaultOperationMode": "Server",
-					"defaultBindingMode": "OneWay",
+					"defaultBindingMode": "TwoWay",
 					"defaultCountMode": "Request"
 				},
-				"dataSource": "ZFORCA_VENDAS_VB_SRV"
+				"dataSource": "ZFORCA_VENDAS_VB_SRV",
+				"preload": true
 			}
 		},
 		"resources": {

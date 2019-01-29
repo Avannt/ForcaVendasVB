@@ -62,7 +62,7 @@ tr[data-mydata="Normal"], tr[data-mydata="Normal"] + tr.sapMListTblSubRow {
 }
 
 .sapMStdTileTitle{
-	font-size: 1.10rem !important;
+	font-size: 1.05rem !important;
 	font-weight:bold;
 }
 

@@ -30,7 +30,7 @@ sap.ui.define([
 			var usrped = that.getOwnerComponent().getModel("modelAux").getProperty("/Usrped");
 			var usrapr = that.getOwnerComponent().getModel("modelAux").getProperty("/Usrapr");
 			
-			var oModel = this.getView().getModel();
+			var oModel = this.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
 			this.getView().getModel("modelAux");
 			
 			var open1 = indexedDB.open("VB_DataBase");
