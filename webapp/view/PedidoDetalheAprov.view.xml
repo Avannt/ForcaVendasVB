@@ -162,7 +162,7 @@
 										<f:content>
 											<Label text="Valor excedente bonificação (R$)" class="bold"/>
 											<Input id="idExcedenteBonif"
-												value="{path: 'PedidosAprovarDetalhe>/Vlrbri', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}"
+												value="{path: 'PedidosAprovarDetalhe>/Vlrbon', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}"
 												enabled="false" class="desabilitado" type="Text"/>
 										</f:content>
 									</f:SimpleForm>

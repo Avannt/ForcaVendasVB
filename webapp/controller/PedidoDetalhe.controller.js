@@ -2200,21 +2200,21 @@ sap.ui.define([
 				Total += that.objItensPedidoTemplate[i].zzVprod * that.objItensPedidoTemplate[i].zzQnt;
 				Qnt += that.objItensPedidoTemplate[i].zzQnt;
 				QntProdutos += 1;
-
+				
 				if (that.objItensPedidoTemplate[i].ntgew > 0) {
 					Ntgew += that.objItensPedidoTemplate[i].ntgew * that.objItensPedidoTemplate[i].zzQnt;
 				}
-
+				
 				// >>>>>>>>>>>> PADRÃO PARA AMBOS OS TIPOS DE ITEM (NORMAL / DILUÍDO) >>>>>>>>>>>>
-
+				
 				if (that.objItensPedidoTemplate[i].mtpos == "YBRI") {
 				
 					valTotalExcedenteBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
-
+					
 				} else if (that.objItensPedidoTemplate[i].mtpos == "YAMO" && that.objItensPedidoTemplate[i].zzQntAmostra > 0) {
-
+					
 					valTotalExcedenteAmostra += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQntAmostra;
-
+					
 				} else if (that.objItensPedidoTemplate[i].mtpos == "NORM") {
 
 					if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
@@ -5239,7 +5239,7 @@ sap.ui.define([
 							// });
 							
 							//Grava a quantidade de saldo excedente de amsotra .. pra gerar dos brindes.
-							itemPedido.zzQntAmostra = iQtde + oAmostras.qtde - parseInt(oSaldo.quantidadeTotal, 10);
+							itemPedido.zzQntAmostra = iQtde - parseInt(oSaldo.quantidadeTotal, 10);
 							
 							resII();
 							// rejII();
