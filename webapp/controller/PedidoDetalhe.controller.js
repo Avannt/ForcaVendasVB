@@ -893,9 +893,22 @@ sap.ui.define([
 		},
 
 		onChangeFormaPagamento: function(evt) {
+			
 			var oSource = evt.getSource();
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/FormaPagamento", oSource.getSelectedKey());
 			this.getOwnerComponent().getModel("modelAux").setProperty("/ObrigaSalvar", false);
+			
+			if(oSource.getSelectedKey() == "J"){
+				
+				this.byId("idFormParcelamento").setVisible(false);
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 0);
+				
+			}else{
+				
+				this.byId("idFormParcelamento").setVisible(true);
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantParcelas", 1);
+				
+			}
 		},
 
 		onChangeDataPedido: function() {
@@ -917,7 +930,7 @@ sap.ui.define([
 
 		/// FIM EVENTOS CAMPOS
 
-		/// EVENTOS UTILITARIOS						<<<<<<<<<<<<
+		/// EVENTOS UTILITARIOS <<<<<<<<<<<<
 
 		bloquearCampos: function() {
 
@@ -3365,6 +3378,11 @@ sap.ui.define([
 			var existeEntrada = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido");
 			var intervaloParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IntervaloParcelas"));
 			var quantidadeParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"));
+			//TRATATIVA PRA QUANDO FOR FORMA DE PAGAMENTO TIPO J - ANTECIPADO QUE DEVE PASSAR quantidadeParcelas = 0 PRA CRIAÇÃO DO PEDIDO.
+			if(quantidadeParcelas == 0){
+				quantidadeParcelas = 1;
+			}
+			
 			var diasPrimeiraParcela = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasPrimeiraParcela"));
 			var valorEntradaPedido = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido"));
 			var percEntradaPedido = parseFloat(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido"));
@@ -4616,7 +4634,7 @@ sap.ui.define([
 				// 		actions: [MessageBox.Action.OK]
 				// 	});
 				// } 
-				else if (this.byId("idQuantParcelas").getValue() <= 0) {
+				else if (this.byId("idQuantParcelas").getValue() <= 0 && that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento") != "J") {
 					MessageBox.show("Quantidade de parcelas deve ser maior que 0.", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Corrigir o campo!",
