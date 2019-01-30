@@ -176,7 +176,7 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", 0);
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/valUtilizadoCampEnxoval", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", 0);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", 0);
 
@@ -1469,6 +1469,8 @@ sap.ui.define([
 							that.oItemPedido.zzGrpmatExtra = 0;
 							that.oItemPedido.zzPercDescDiluicao = 0;
 							that.oItemPedido.zzQntAmostra = 0;
+							that.oItemPedido.maxdescpermitido = 0;
+							that.oItemPedido.maxdescpermitidoExtra = 0;
 
 							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Normal") {
@@ -1504,6 +1506,8 @@ sap.ui.define([
 										zzQntDiluicao: 0,
 										zzValorDiluido: 0,
 										zzVprodABB: 0,
+										maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
+										maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,										
 										zzQntAmostra: 0
 									};
 
@@ -2186,6 +2190,10 @@ sap.ui.define([
 				valUtilizadoComissaoBonif = parseFloat(valUtilizadoComissaoBonif);
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBonif", valUtilizadoComissaoBonif);
 			}
+			
+			var dValUtilizadoCampEnxoval = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", (dValUtilizadoCampEnxoval ? dValUtilizadoCampEnxoval : 0));
+
 
 			var valTotalExcedenteBonif = 0;
 			// valTotalExcedenteBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
@@ -2815,6 +2823,8 @@ sap.ui.define([
 											tipoItem2: that.objItensPedidoTemplate[i].tipoItem2,
 											zzValorDiluido: 0,
 											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
+											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
+											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,											
 											zzQntAmostra: that.objItensPedidoTemplate[i].zzQntAmostra
 										};
 
@@ -2861,8 +2871,9 @@ sap.ui.define([
 								vetorAux[m].zzPercDescTotal = Math.round((1 - (vetorAux[m].zzVprodDesc / vetorAux[m].zzVprod)) * 10000) / 100;
 
 								//Arredondamento
-								vetorAux[m].zzVprodDescTotal = Math.round(parseFloat((vetorAux[m].zzVprodDescTotal) * 100)) / 100;
-								vetorAux[m].zzVprodDesc = Math.round(parseFloat(vetorAux[m].zzVprodDesc * 100)) / 100;
+								vetorAux[m].zzVprodDescTotal = Math.round(parseFloat((vetorAux[m].zzVprodDescTotal) * 10000)) / 10000;
+								vetorAux[m].zzVprodDesc = Math.round(parseFloat(vetorAux[m].zzVprodDesc * 10000)) / 10000;
+								vetorAux[m].zzVprodDesc = vetorAux[m].zzVprodDesc.toFixed(4);
 
 								//Calculo do percentual Desc Dado
 							}
@@ -3092,11 +3103,14 @@ sap.ui.define([
 								if (that.objItensPedidoTemplate[p].tipoItem2 == "Diluicao") {
 									that.objItensPedidoTemplate[p].zzValExcedidoItem = 0;
 								} else {
-									that.objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(that.objItensPedidoTemplate[p].zzValExcedidoItem * 1000) / 1000;
+									that.objItensPedidoTemplate[p].zzValExcedidoItem = Math.round(that.objItensPedidoTemplate[p].zzValExcedidoItem * 10000) / 10000;
 								}
 		
-								that.objItensPedidoTemplate[p].zzVprodDesc2 = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc2 * 1000) / 1000);
-								that.objItensPedidoTemplate[p].zzVprodDesc = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc * 1000) / 1000);
+								that.objItensPedidoTemplate[p].zzVprodDesc2 = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc2 * 10000) / 10000);
+								that.objItensPedidoTemplate[p].zzVprodDesc = (Math.round(that.objItensPedidoTemplate[p].zzVprodDesc * 10000) / 10000);
+
+								that.objItensPedidoTemplate[p].zzVprodDesc2 = that.objItensPedidoTemplate[p].zzVprodDesc2.toFixed(4);
+								that.objItensPedidoTemplate[p].zzVprodDesc = that.objItensPedidoTemplate[p].zzVprodDesc.toFixed(4);
 		
 								var requestADDItem = objItensPedido.put(that.objItensPedidoTemplate[p]);
 		

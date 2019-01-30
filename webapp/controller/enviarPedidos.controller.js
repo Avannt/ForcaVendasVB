@@ -380,7 +380,7 @@ sap.ui.define([
 
 							if (oAction == "Enviar") {
 
-								var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+								var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 								// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 								// 	json: true,
@@ -680,7 +680,7 @@ sap.ui.define([
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
 
-						var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+						var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 						// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 						// 	json: true,
@@ -977,7 +977,7 @@ sap.ui.define([
 
 		onDeletarPedido: function(oEvent) {
 			var that = this;
-			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
@@ -1166,7 +1166,7 @@ sap.ui.define([
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
 
-						var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+						var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 						// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 						// 	json: true,
