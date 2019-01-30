@@ -91,6 +91,16 @@
 							<layout:GridData span="L4 M2"/>
 						</layoutData>
 					</Input>
+					<Label text="" visible="false">
+						<layoutData>
+							<layout:GridData span="L2 M2"/>
+						</layoutData>
+					</Label>
+					<Image id="idImgProduto" width="100%" height="70%">
+						<layoutData>
+							<layout:GridData span="L2 M2"/>
+						</layoutData>
+					</Image>
 				</form:content>
 			</form:SimpleForm>
 		</content>

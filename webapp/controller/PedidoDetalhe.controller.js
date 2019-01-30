@@ -1037,6 +1037,7 @@ sap.ui.define([
 							
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
+							that.oItemPedido.pathImg = "./img/materiais/" + oMaterial.matnr + ".png";
 							that.oItemPedido.maktx = oMaterial.maktx;
 							that.oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
 							that.oItemPedido.aumng = parseInt(oMaterial.aumng, 10);
@@ -1457,6 +1458,7 @@ sap.ui.define([
 
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
+							that.oItemPedido.pathImg = "./img/materiais/" + oMaterial.matnr + ".png";
 							that.oItemPedido.maktx = oMaterial.maktx;
 							that.oItemPedido.mtpos = oMaterial.mtpos;
 							that.oItemPedido.ntgew = oMaterial.ntgew;
@@ -3648,6 +3650,7 @@ sap.ui.define([
 			sap.ui.getCore().byId("idComissao").setValue(that.oItemPedido.zzPercom);
 			sap.ui.getCore().byId("idPrecoCheio").setValue(that.oItemPedido.zzVprod);
 			sap.ui.getCore().byId("idDesconto").setValue(that.oItemPedido.zzDesitem);
+			sap.ui.getCore().byId("idImgProduto").setSrc(that.oItemPedido.pathImg);
 			// sap.ui.getCore().byId("idPrecoDesconto").setValue(that.oItemPedido.zzVprodDescTotal);
 			// this.getView().setModel(this.getOwnerComponent().setModel("modelItemPedido").setProperty("/valorTotal", that.oItemPedido.zzVprodDescTotal);
 			this.getOwnerComponent().getModel("modelItemPedido").setProperty("/valorTotal", that.oItemPedido.zzVprodDescTotal);
@@ -5498,65 +5501,65 @@ sap.ui.define([
 						
 					}
 				};
-			}
+			},
 			
 			//Agrupa os itens da campanha pelo grupo e verifica se atingiu a regra para ver a quantidade de bonificação
-			//que o kra pode inserir.
-			// onAgrupaItensGlobal: function(){
-			// 	var that = this;
-			// 	var proximoItemDiferente = false;
-			// 	var vetorItemAux = [];
+			// que o kra pode inserir.
+			onAgrupaItensGlobal: function(){
+				var that = this;
+				var proximoItemDiferente = false;
+				var vetorItemAux = [];
 				
-			// 	//Ordenando para desconto Familia normal
-			// 	that.objItensPedidoTemplate.sort(function(a, b) {
-			// 		return a.grupoGlobal - b.grupoGlobal;
-			// 	});
+				//Ordenando para desconto Familia normal
+				that.objItensPedidoTemplate.sort(function(a, b) {
+					return a.grupoGlobal - b.grupoGlobal;
+				});
 				
-			// 	/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
-			// 	for(var i=0; that.objItensPedidoTemplate; i++){
+				/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
+				for(var i=0; that.objItensPedidoTemplate; i++){
 					
-			// 		if (proximoItemDiferente == true) {
-			// 			proximoItemDiferente = false; 
-			// 			vetorItemAux = [];
-			// 		}
+					if (proximoItemDiferente == true) {
+						proximoItemDiferente = false; 
+						vetorItemAux = [];
+					}
 
-			// 		if (vetorItemAux.length == 0 && that.objItensPedidoTemplate.length == 1) {
+					if (vetorItemAux.length == 0 && that.objItensPedidoTemplate.length == 1) {
 						
-			// 			vetorItemAux.push(that.objItensPedidoTemplate[i]);
+						vetorItemAux.push(that.objItensPedidoTemplate[i]);
 						
 						
-			// 		} else if (vetorItemAux.length > 1 && (i + 1) < vetorItemAux.length) {
+					} else if (vetorItemAux.length > 1 && (i + 1) < vetorItemAux.length) {
 
-			// 			if (vetorItemAux[i].zzGrpmat == vetorItemAux[i + 1].zzGrpmat) {
+						if (vetorItemAux[i].zzGrpmat == vetorItemAux[i + 1].zzGrpmat) {
 
-			// 				proximoItemDiferente = false;
-			// 				vetorFamilia.push(vetorGeral[o]);
+							proximoItemDiferente = false;
+							vetorFamilia.push(vetorGeral[o]);
 
-			// 			} else {
-			// 				//Nesse momento tenho os itens daquela familia.. tendo os itens da familia .. somar as quantidades
-			// 				// e verificar se o desconto aplicado é maior que o permitido.
-			// 				//fazendo ( preço cheio - preço de venda )
-			// 				vetorFamilia.push(vetorGeral[o]);
-			// 				this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
-			// 				proximoItemDiferente = true;
-			// 			}
+						} else {
+							//Nesse momento tenho os itens daquela familia.. tendo os itens da familia .. somar as quantidades
+							// e verificar se o desconto aplicado é maior que o permitido.
+							//fazendo ( preço cheio - preço de venda )
+							vetorFamilia.push(vetorGeral[o]);
+							this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
+							proximoItemDiferente = true;
+						}
 
-			// 		} else if ((o + 1) == vetorGeral.length) {
+					} else if ((o + 1) == vetorGeral.length) {
 
-			// 			//sinal proximoItemDiferente = true e limpou
-			// 			if (vetorFamilia.length > 0) {
+						//sinal proximoItemDiferente = true e limpou
+						if (vetorFamilia.length > 0) {
 
-			// 				vetorFamilia.push(vetorGeral[o]);
-			// 				this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
+							vetorFamilia.push(vetorGeral[o]);
+							this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
 
-			// 			} else {
-			// 				//ultimo item e é diferente do antepenultimo
-			// 				vetorFamilia.push(vetorGeral[o]);
-			// 				this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
-			// 			}
-			// 		}
-			// 	}
+						} else {
+							//ultimo item e é diferente do antepenultimo
+							vetorFamilia.push(vetorGeral[o]);
+							this.onBuscaPorcentagem(vetorFamilia, vetorRange, tipoDesconto);
+						}
+					}
+				}
 				
-			// }
+			}
 	});
 });
