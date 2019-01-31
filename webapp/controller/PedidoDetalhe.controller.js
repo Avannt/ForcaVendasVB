@@ -1050,7 +1050,7 @@ sap.ui.define([
 							
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
-							that.oItemPedido.pathImg = "./img/materiais/" + oMaterial.matnr + ".png";
+							that.oItemPedido.pathImg = "./img/materiais/" + oMaterial.matnr + ".jpg";
 							that.oItemPedido.maktx = oMaterial.maktx;
 							that.oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
 							that.oItemPedido.aumng = parseInt(oMaterial.aumng, 10);
@@ -1471,7 +1471,7 @@ sap.ui.define([
 
 							that.oItemPedido.zzQnt = 1;
 							that.oItemPedido.matnr = oMaterial.matnr;
-							that.oItemPedido.pathImg = "./img/materiais/" + oMaterial.matnr + ".png";
+							that.oItemPedido.pathImg = "./img/materiais/" + oMaterial.matnr + ".jpg";
 							that.oItemPedido.maktx = oMaterial.maktx;
 							that.oItemPedido.mtpos = oMaterial.mtpos;
 							that.oItemPedido.ntgew = oMaterial.ntgew;
@@ -1810,6 +1810,10 @@ sap.ui.define([
 			sap.ui.getCore().byId("idDescricao").setValue();
 			sap.ui.getCore().byId("idQuantidade").setValue();
 			sap.ui.getCore().byId("idComissao").setValue();
+			sap.ui.getCore().byId("idImgProduto").setSrc(that.oItemPedido.pathImg);
+			// sap.ui.getCore().byId("idPrecoDesconto").setValue(that.oItemPedido.zzVprodDescTotal);
+			// this.getView().setModel(this.getOwnerComponent().setModel("modelItemPedido").setProperty("/valorTotal", that.oItemPedido.zzVprodDescTotal);
+			this.getOwnerComponent().getModel("modelItemPedido").setProperty("/valorTotal", that.oItemPedido.zzVprodDescTotal);
 
 		},
 
@@ -5527,6 +5531,7 @@ sap.ui.define([
 				var that = this;
 				var proximoItemDiferente = false;
 				var vetorItemAux = [];
+				var vetorFamilia = [];
 				
 				//Ordenando para desconto Familia normal
 				that.objItensPedidoTemplate.sort(function(a, b) {
@@ -5548,7 +5553,7 @@ sap.ui.define([
 						
 					} else if (vetorItemAux.length > 1 && (i + 1) < vetorItemAux.length) {
 
-						if (vetorItemAux[i].zzGrpmat == vetorItemAux[i + 1].zzGrpmat) {
+						if (vetorItemAux[i].grupoGlobal == vetorItemAux[i + 1].grupoGlobal) {
 
 							proximoItemDiferente = false;
 							vetorFamilia.push(vetorGeral[o]);

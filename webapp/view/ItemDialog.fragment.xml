@@ -126,7 +126,7 @@
 							<layout:GridData span="L2 M2"/>
 						</layoutData>
 					</Label>
-					<Image id="idImgProduto"  width="50%" height="50%">
+					<Image id="idImgProduto" width="50%" height="50%">
 						<layoutData>
 							<layout:GridData span="L4 M2"/> 
 						</layoutData>
