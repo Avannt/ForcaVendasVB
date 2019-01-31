@@ -142,6 +142,15 @@
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
+											<Label text="Valor excedente bonificação (R$)" class="bold"/>
+											<Input id="idExcedenteBonif"
+												value="{path: 'PedidosAprovarDetalhe>/Vlrbon', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false" class="desabilitado" type="Text"/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
 											<Label text="Valor excedente brinde (R$)" class="bold"/>
 											<Input id="idExcedenteBrinde"
 												value="{path: 'PedidosAprovarDetalhe>/Vlrbri', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}"
@@ -154,15 +163,6 @@
 											<Label text="Valor excedente amostra (R$)" class="bold"/>
 											<Input id="idExcedenteAmostra"
 												value="{path: 'PedidosAprovarDetalhe>/Vlramo', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}"
-												enabled="false" class="desabilitado" type="Text"/>
-										</f:content>
-									</f:SimpleForm>
-									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
-										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
-										<f:content>
-											<Label text="Valor excedente bonificação (R$)" class="bold"/>
-											<Input id="idExcedenteBonif"
-												value="{path: 'PedidosAprovarDetalhe>/Vlrbon', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}"
 												enabled="false" class="desabilitado" type="Text"/>
 										</f:content>
 									</f:SimpleForm>

@@ -207,6 +207,19 @@
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
+											<Label text="Valor excedente bonificação (R$)" class="bold"/>
+											<Input id="idExcedenteBonif" value="{path: 'modelDadosPedido>/ValTotalExcedenteBonif', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
+											<Label text="Verba de Marketing (R$)" visible="{path:'modelAux>/Usuario/utilverbBon'}"/>
+											<Input id="idVerbaUtilizadaBonif" visible="{path:'modelAux>/Usuario/utilverbBon'}" value="{modelDadosPedido>/ValUtilizadoVerbaBonif}"
+												liveChange="onValidaVerbaUtilizadaBonif" enabled="true" type="Text"/>
+											<Label text="Comissão (R$)" visible="{path:'modelAux>/Usuario/utilcomBon'}"/>
+											<Input id="idComissaoUtilizadaBonif" visible="{path:'modelAux>/Usuario/utilcomBon'}" value="{modelDadosPedido>/ValUtilizadoComissaoBonif}"
+												liveChange="onValidaComissaoUtilizadaBonif" enabled="true" type="Text"/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
 											<Label text="Valor excedente brinde (R$)" class="bold"/>
 											<Input id="idExcedenteBrinde" value="{path: 'modelDadosPedido>/ValTotalExcedenteBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Verba de Marketing (R$)" visible="{path:'modelAux>/Usuario/utilverbBri'}"/>
@@ -228,19 +241,6 @@
 											<Label text="Comissão (R$)" visible="{path:'modelAux>/Usuario/utilcomAmo'}"/>
 											<Input id="idComissaoUtilizadaAmostra" visible="{path:'modelAux>/Usuario/utilcomAmo'}"
 												value="{modelDadosPedido>/ValUtilizadoComissaoAmostra}" liveChange="onValidaComissaoUtilizadaAmostra" enabled="true" type="Text"/>
-										</f:content>
-									</f:SimpleForm>
-									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
-										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
-										<f:content>
-											<Label text="Valor excedente bonificação (R$)" class="bold"/>
-											<Input id="idExcedenteBonif" value="{path: 'modelDadosPedido>/ValTotalExcedenteBonif', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',' }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
-											<Label text="Verba de Marketing (R$)" visible="{path:'modelAux>/Usuario/utilverbBon'}"/>
-											<Input id="idVerbaUtilizadaBonif" visible="{path:'modelAux>/Usuario/utilverbBon'}" value="{modelDadosPedido>/ValUtilizadoVerbaBonif}"
-												liveChange="onValidaVerbaUtilizadaBonif" enabled="true" type="Text"/>
-											<Label text="Comissão (R$)" visible="{path:'modelAux>/Usuario/utilcomBon'}"/>
-											<Input id="idComissaoUtilizadaBonif" visible="{path:'modelAux>/Usuario/utilcomBon'}" value="{modelDadosPedido>/ValUtilizadoComissaoBonif}"
-												liveChange="onValidaComissaoUtilizadaBonif" enabled="true" type="Text"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
