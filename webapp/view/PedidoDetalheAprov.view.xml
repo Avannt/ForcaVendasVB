@@ -66,7 +66,7 @@
 							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" icon="sap-icon://add" key="tab3">
 								<ScrollContainer height="100%" width="100%" horizontal="true" vertical="true">
 									<Table id="table_pedidos" width="100%" items="{ path:'PedidosAprovarItens>/', sorter: { path: 'index', ascending: true }}"
-										updateFinished="onListUpdateFinished" mode="Delete" delete="onDeletarItemPedido" itemPress="onEditarItemPress"
+										updateFinished="onListUpdateFinished" mode="None" delete="onDeletarItemPedido" itemPress="onEditarItemPress"
 										noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;"
 										busyIndicatorDelay="0" fixedLayout="false">
 										<columns>
@@ -82,16 +82,16 @@
 											<Column minScreenWidth="320px" width="80px" hAlign="Left">
 												<Text text="Qnt"/>
 											</Column>
-											<Column minScreenWidth="360px" demandPopin="true" popinDisplay="WithoutHeader" hAlign="Left">
+											<Column minScreenWidth="360px" width="80px" demandPopin="true" popinDisplay="WithoutHeader" hAlign="Left">
 												<Text text="Desc"/>
 											</Column>
 											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">
 												<Text text="Valor UN"/>
 											</Column>
-											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">
+											<Column minScreenWidth="550px" demandPopin="false" width="auto" hAlign="Left">
 												<Text text="Valor Perm UN"/>
 											</Column>
-											<Column minScreenWidth="450px" demandPopin="false" width="auto" hAlign="Left">
+											<Column minScreenWidth="680px" demandPopin="false" width="auto" hAlign="Left">
 												<Text text="Valor Exc UN"/>
 											</Column>
 											<Column minScreenWidth="360px" demandPopin="false" width="100px" hAlign="Left">

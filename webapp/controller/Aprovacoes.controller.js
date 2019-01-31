@@ -163,7 +163,7 @@ sap.ui.define([
 			var Vlrbrivm = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbrivm"));
 			if (Vlrbrivm == "" || Vlrbrivm == undefined) {
 				Vlrbrivm = 0;
-				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrbrivm);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbrivm", Vlrbrivm);
 
 			} else {
 
@@ -187,7 +187,7 @@ sap.ui.define([
 			var Vlrbridd = (this.getView().getModel("ItemAprovar").getProperty("/Vlrbridd"));
 			if (Vlrbridd == "" || Vlrbridd == undefined) {
 				Vlrbridd = 0;
-				this.getView().getModel("ItemAprovar").setProperty("/Vlrprzvvb", Vlrbridd);
+				this.getView().getModel("ItemAprovar").setProperty("/Vlrbridd", Vlrbridd);
 
 			} else {
 
@@ -351,7 +351,7 @@ sap.ui.define([
 			var that = this;
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
-			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
@@ -478,6 +478,7 @@ sap.ui.define([
 				this.getView().setModel(oModelAprovacoes, "ItemAprovar");
 
 				this.onCarregaExcedentes();
+				
 				this.onCalculaTotalDestinar();
 
 				if (this._ItemDialog) {
@@ -955,7 +956,7 @@ sap.ui.define([
 			var that = this;
 			this.byId("idTableEnvioPedidos").setBusy(true);
 
-			var	oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+			var	oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
@@ -1078,6 +1079,8 @@ sap.ui.define([
 
 		onAprovar: function() {
 			var that = this;
+			
+			that.onCarregaExcedentes();
 
 			if (that._ItemDialog) {
 				that._ItemDialog.destroy(true);
@@ -1106,7 +1109,7 @@ sap.ui.define([
 			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 			var teste = this.getView().getModel("ItemAprovar");
 
-			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");
@@ -1193,7 +1196,7 @@ sap.ui.define([
 
 			that._ItemDialog.setBusy(true);
 
-			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
 			var oSelectedItems = this.getView().byId("idTableEnvioPedidos").getSelectedItems();
 			var refModel = oSelectedItems[0].getBindingContext("PedidosAprovar");

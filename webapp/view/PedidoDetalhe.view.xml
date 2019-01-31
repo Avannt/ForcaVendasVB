@@ -118,7 +118,7 @@
 										noDataText="Nenhum item inserido" growing="true" growingThreshold="99" modeAnimationOn="true" growingTriggerText="Próximo &gt;&gt;&gt;"
 										busyIndicatorDelay="0" fixedLayout="false">
 										<columns>
-											<Column minScreenWidth="600px" visible="true" width="25px" hAlign="Left">
+											<Column minScreenWidth="600px" visible="true" width="35px" hAlign="Left">
 												<Text text="Id"/>
 											</Column>
 											<Column minScreenWidth="320px" width="90px" hAlign="Left">

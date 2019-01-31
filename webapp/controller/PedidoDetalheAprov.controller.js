@@ -15,7 +15,7 @@ sap.ui.define([
 		_onLoadFields: function(){
 			var that = this;
 			this.byId("idPedAprovar").setBusy(true);
-			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
+			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 			
 			// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", {
 			// 	json: true,
