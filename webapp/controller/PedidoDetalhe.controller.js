@@ -3226,7 +3226,11 @@ sap.ui.define([
 
 				//Ordenando para desconto Familia normal
 				vetorGeralExtra.sort(function(a, b) {
-					return a.zzGrpmatExtra - b.zzGrpmatExtra;
+					var x = a.zzGrpmatExtra;
+					var y = b.zzGrpmatExtra;
+					if (x < y) {return -1;}
+					if (x > y) {return 1;}
+					return 0;
 				});
 
 				for (o = 0; o < vetorGeralExtra.length; o++) {
