@@ -13,16 +13,16 @@ sap.ui.define([
 		var ImeiResult = [];
 
 		return BaseController.extend("testeui5.controller.Login", {
-			
-			onInit: function(){
+
+			onInit: function() {
 				this.getRouter().getRoute("login").attachPatternMatched(this._onLoadFields, this);
 			},
-			
+
 			_onLoadFields: function() {
 				var that = this;
-				
+
 				this.onInicializaModels();
-				
+
 				// this.getView().setModel(oModel2, "VBModel");
 				/* 
 				Alterar aqui o ambiente:
@@ -30,41 +30,41 @@ sap.ui.define([
 				QAS => ReleasePRD = FALSE
 				*/
 				this.getOwnerComponent().getModel("modelAux").setProperty("/ReleasePRD", false);
-				
+
 				var sUrl;
 				//Versão App
-				if(this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")){
-					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.28");
+				if (this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")) {
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.29");
 					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/";
-					
+
 					var oModel = new sap.ui.model.odata.v2.ODataModel(sUrl, {
 						json: true,
 						user: "appadmin",
 						password: "sap123"
 					});
-					
+
 					this.getView().setModel(oModel);
 					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", oModel);
-				}else{ // QAS
+				} else { // QAS
 					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", this.getView().getModel());
 					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.19");
 				}
-				
+
 				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
 				this.getOwnerComponent().getModel("modelAux").setProperty("/EditarIndexItem", 0);
-				
+
 				this.getOwnerComponent().getModel("modelAux").setProperty("/bConectado", false);
 
 				//sap.ui.getCore().byId("label").visible = false;
-				
+
 				if ("indexedDB" in window) {
 					idbSupported = true;
 				}
-				
+
 				if (idbSupported) {
-					
+
 					var open = indexedDB.open("VB_DataBase", 46);
-					
+
 					// Create the Tables
 					open.onupgradeneeded = function(e) {
 						var db = e.target.result;
@@ -161,16 +161,16 @@ sap.ui.define([
 								keyPath: "idEntregaFutura",
 								unique: true
 							});
-							
+
 							objEntregaFutura3.createIndex("Vbeln", "Vbeln", {
 								unique: false
 							});
-							
+
 							objEntregaFutura3.createIndex("Kunrg", "Kunrg", {
 								unique: false
 							});
 						}
-						
+
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE PEDIDOS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						if (!db.objectStoreNames.contains("PrePedidos")) {
 							var objPedido = db.createObjectStore("PrePedidos", {
@@ -390,7 +390,7 @@ sap.ui.define([
 								unique: false
 							});
 						}
-						
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpEnxoval (ZSDMF_CAMPANHA_ENXOVAL) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpEnxoval – Tabela de campanha de enxoval
 						if (!db.objectStoreNames.contains("CmpEnxoval")) {
@@ -400,7 +400,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-						
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbGrpProdsAcabs (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpGbGrpProdsAcabs – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpGbGrpProdsAcabs")) {
@@ -409,12 +409,12 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
-							
+
 							objCmpGbGrpProdsAcabs.createIndex("material", "material", {
 								unique: false
 							});
 						}
-						
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbItensBrindes (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpGbItensBrindes – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpGbItensBrindes")) {
@@ -423,7 +423,7 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
-							
+
 							objCmpGbItensBrindes.createIndex("material", "material", {
 								unique: false
 							});
@@ -437,7 +437,7 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
-							
+
 							objCmpGbProdsAcabs.createIndex("grupo", "grupo", {
 								unique: false
 							});
@@ -452,7 +452,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-						
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpProdsAcabs (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpProdsAcabs – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("CmpProdsAcabs")) {
@@ -461,7 +461,7 @@ sap.ui.define([
 								unique: true,
 								autoIncrement: true
 							});
-							
+
 							objCmpProdsAcabs.createIndex("material", "material", {
 								unique: false
 							});
@@ -486,7 +486,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
-						
+
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE ZSDT040 (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpSldBrindes – Tabela de campanha Global grupo Produto Acabado 
 						if (!db.objectStoreNames.contains("ControleAmostra")) {
@@ -530,7 +530,7 @@ sap.ui.define([
 					};
 				}
 			},
-			
+
 			onInicializaModels: function() {
 
 				var oModel = new sap.ui.model.json.JSONModel({
@@ -583,9 +583,9 @@ sap.ui.define([
 					bEnviarPedido: true,
 					TelaAprovação: false
 				});
-				
+
 				this.getOwnerComponent().setModel(oModelAux, "modelAux");
-				
+
 				var oModelCliente = new sap.ui.model.json.JSONModel({
 					Kunnr: "",
 					Land1: "",
@@ -614,10 +614,10 @@ sap.ui.define([
 					zzDesext: "", // – Desconto Extra
 					zzValmim: "" // – Valor Mínimo
 				});
-				
+
 				this.getOwnerComponent().setModel(oModelItemPedido, "modelItemPedido");
 			},
-			
+
 			retornaDataAtualizacao: function() {
 				var date = new Date();
 				var dia = String(date.getDate());
@@ -652,7 +652,7 @@ sap.ui.define([
 
 				return data + " - " + horario;
 			},
-			
+
 			getPermissao: function() {
 				var that = this;
 
@@ -671,7 +671,7 @@ sap.ui.define([
 					that.getImei();
 				}
 			},
-			
+
 			getImei: function() {
 				var that = this;
 				var isTablet = this.getOwnerComponent().getModel("modelAux").getProperty("/isTablet");
@@ -798,7 +798,7 @@ sap.ui.define([
 									}
 								});
 						} else {
-							
+
 							MessageBox.show("Você deseja atualizar as tabelas?", {
 								icon: MessageBox.Icon.QUESTION,
 								title: "Atualização das tabelas.",
@@ -810,36 +810,36 @@ sap.ui.define([
 											"Materiais", "TitulosAbertos", "Konm", "TiposPedidos", "FormasPagamentos", "StatusPedidos", "CmpGbItensBrindes",
 											"CmpSldBrindes", "CmpProdsAcabs", "CmpGbQtdItens", "CmpGbProdsAcabs", "CmpGbGrpProdsAcabs", "CmpEnxoval", "EntregaFutura", "ControleAmostra"
 										];
-										
+
 										that.DropDBTables(vTables);
-										
+
 										if (!that._CreateMaterialFragment) {
-											
+
 											that._ItemDialog = sap.ui.xmlfragment(
 												"testeui5.view.busyDialog",
 												that
 											);
 											that.getView().addDependent(that._ItemDialog);
 										}
-										
+
 										that._ItemDialog.open();
-														
+
 										var tx = db.transaction("Usuarios", "readwrite");
 										var objUsuarios = tx.objectStore("Usuarios");
-										
+
 										request = objUsuarios.get(Werks);
-										
+
 										request.onsuccess = function(e1) {
-											
+
 											var result1 = e1.target.result;
-											
+
 											if (result1 !== null && result1 !== undefined) {
-												
+
 												oModel.read("/Login(IvCodRepres='" + result1.codUsr + "',IvWerks='" + Werks + "',IvSenha='" + result1.senha +
 													"',IvImei='" + ImeiCelular + "',IvVersaoapp='" + NumVersao + "')", {
 														success: function(retorno) {
 															if (retorno.EvRettyp == "E") {
-							
+
 																sap.m.MessageBox.show(
 																	retorno.EvReturn, {
 																		icon: sap.m.MessageBox.Icon.WARNING,
@@ -852,16 +852,16 @@ sap.ui.define([
 																		}
 																	}
 																);
-																
+
 															} else if (retorno.EvRettyp == "S") {
-																
+
 																oModel.read("/A959", {
 																	success: function(retornoA959) {
 																		var txA959 = db.transaction("A959", "readwrite");
 																		var objA959 = txA959.objectStore("A959");
-																		
+
 																		for (var i = 0; i < retornoA959.results.length; i++) {
-																			
+
 																			var objBancoA959 = {
 																				idA959: retornoA959.results[i].Werks + "." +
 																					retornoA959.results[i].Pltyp,
@@ -880,33 +880,33 @@ sap.ui.define([
 																				kbstat: retornoA959.results[i].Kbstat,
 																				knumh: retornoA959.results[i].Knumh
 																			};
-																			
+
 																			var requestA959 = objA959.add(objBancoA959);
-																			
+
 																			requestA959.onsuccess = function(event) {
 																				console.log("Dados A959 inseridos. " + event);
 																			};
-																			
+
 																			requestA959.onerror = function(event) {
 																				console.log("Dados A959 não foram inseridos :" + event);
 																			};
 																		}
-																		
+
 																		oModel.read("/TiposPedidos", {
 																			success: function(retornoTiposPedidos) {
-					
+
 																				var txTiposPedidos = db.transaction("TiposPedidos", "readwrite");
 																				var objTiposPedidos = txTiposPedidos.objectStore("TiposPedidos");
-					
+
 																				for (i = 0; i < retornoTiposPedidos.results.length; i++) {
-					
+
 																					var objBancoTiposPedidos = {
 																						idTipoPedido: retornoTiposPedidos.results[i].IdTipoPedido,
 																						descricao: retornoTiposPedidos.results[i].Descricao
 																					};
-																					
+
 																					var requestTiposPedidos = objTiposPedidos.add(objBancoTiposPedidos);
-																					
+
 																					requestTiposPedidos.onsuccess = function(event) {
 																						console.log("Dados TiposPedidos inseridos");
 																					};
@@ -914,28 +914,28 @@ sap.ui.define([
 																						console.log("Dados TiposPedidos não foram inseridos :" + event);
 																					};
 																				}
-																				
+
 																				oModel.read("/TitulosAbertos", {
 																					urlParameters: {
 																						"$filter": "IvRepres eq '" + CodRepres + "'"
 																					},
 																					success: function(retornoTitulosAbertos) {
-																						
+
 																						var txTitulosAbertos = db.transaction("TitulosAbertos", "readwrite");
 																						var objTitulosAbertos = txTitulosAbertos.objectStore("TitulosAbertos");
 																						// objTitulosAbertos.autoIncrement();
-																						
-																						Date.prototype.shiftDays = function(days){    
-																						  days = parseInt(days, 10);
-																						  this.setDate(this.getDate() + days);
-																						  return this;
+
+																						Date.prototype.shiftDays = function(days) {
+																							days = parseInt(days, 10);
+																							this.setDate(this.getDate() + days);
+																							return this;
 																						};
-																						
+
 																						for (i = 0; i < retornoTitulosAbertos.results.length; i++) {
-																							
+
 																							var dataVenc = retornoTitulosAbertos.results[i].Zfbdt;
 																							dataVenc = dataVenc.shiftDays(1);
-																							
+
 																							var auxDmbtr = parseFloat(retornoTitulosAbertos.results[i].Dmbtr);
 																							var date = retornoTitulosAbertos.results[i].Budat;
 																							var dia = String(date.getDate());
@@ -945,15 +945,15 @@ sap.ui.define([
 																							var minuto = String(date.getMinutes());
 																							var hora = String(date.getHours());
 																							var seg = String(date.getSeconds());
-					
+
 																							if (dia.length == 1) {
 																								dia = "0" + String(dia);
 																							}
-					
+
 																							if (mes.length == 1) {
 																								mes = "0" + String(mes);
 																							}
-					
+
 																							if (minuto.length == 1) {
 																								minuto = "0" + String(minuto);
 																							}
@@ -966,7 +966,7 @@ sap.ui.define([
 																							//HRIMP E DATIMP
 																							//var horario = String(hora) + ":" + String(minuto) + ":" + String(seg);
 																							var data = String(dia + "/" + mes + "/" + ano);
-																							
+
 																							var objBancoTitulosAbertos = {
 																								// idTituloAberto: retornoTitulosAbertos.results[i].Belnr + "." + retornoTitulosAbertos.results[
 																								// 		i].Kunnr + "." +
@@ -979,9 +979,9 @@ sap.ui.define([
 																								dmbtr: auxDmbtr,
 																								kunnr: retornoTitulosAbertos.results[i].Kunnr
 																							};
-					
+
 																							var requestTitulosAbertos = objTitulosAbertos.add(objBancoTitulosAbertos);
-					
+
 																							requestTitulosAbertos.onsuccess = function(event) {
 																								event.stopPropagation();
 																								console.log("Dados TitulosAbertos inseridos");
@@ -991,19 +991,19 @@ sap.ui.define([
 																								console.log("Dados TitulosAbertos não foram inseridos :" + event.srcElement.error);
 																							};
 																						}
-					
+
 																						//Clientes
 																						oModel.read("/Clientes", {
 																							urlParameters: {
 																								"$filter": "IvRepres eq '" + CodRepres + "' and IvUsuario eq '" + CodUsuario + "'"
 																							},
 																							success: function(retornoCliente) {
-					
+
 																								var txCliente = db.transaction("Clientes", "readwrite");
 																								var objCliente = txCliente.objectStore("Clientes");
-					
+
 																								for (i = 0; i < retornoCliente.results.length; i++) {
-					
+
 																									var objBancoCliente = {
 																										kunnr: retornoCliente.results[i].Kunnr,
 																										land1: retornoCliente.results[i].Land1,
@@ -1022,9 +1022,9 @@ sap.ui.define([
 																										efetuoucompra: retornoCliente.results[i].Efetuoucompra,
 																										telf1: retornoCliente.results[i].Telf1
 																									};
-					
+
 																									var requestCliente = objCliente.add(objBancoCliente);
-					
+
 																									objBancoCliente = {
 																										kunnr: "",
 																										land1: "",
@@ -1043,7 +1043,7 @@ sap.ui.define([
 																										telf1: "",
 																										efetuoucompra: ""
 																									};
-					
+
 																									requestCliente.onsuccess = function(event) {
 																										console.log("Dados Clientes inseridos");
 																									};
@@ -1051,15 +1051,15 @@ sap.ui.define([
 																										console.log("Dados Clientes não foram inseridos :" + event);
 																									};
 																								}
-					
+
 																								oModel.read("/Materiais", {
 																									success: function(retornoMateriais) {
-					
+
 																										var txMateriais = db.transaction("Materiais", "readwrite");
 																										var objMateriais = txMateriais.objectStore("Materiais");
-					
+
 																										for (i = 0; i < retornoMateriais.results.length; i++) {
-					
+
 																											var objBancoMateriais = {
 																												matnr: retornoMateriais.results[i].Matnr,
 																												meins: retornoMateriais.results[i].Meins,
@@ -1069,27 +1069,27 @@ sap.ui.define([
 																												vrkme: retornoMateriais.results[i].Vrkme,
 																												mtpos: retornoMateriais.results[i].Mtpos,
 																												ntgew: retornoMateriais.results[i].Ntgew,
-																												provg:  retornoMateriais.results[i].Provg,
-																												extwg:  retornoMateriais.results[i].Extwg
+																												provg: retornoMateriais.results[i].Provg,
+																												extwg: retornoMateriais.results[i].Extwg
 																											};
-					
+
 																											var requestMateriais = objMateriais.add(objBancoMateriais);
-					
+
 																											requestMateriais.onsuccess = function(event) {
 																												console.log("Dados Materiais inseridos. " + event);
 																											};
-					
+
 																											requestMateriais.onerror = function(event) {
 																												console.log("Dados Materiais não foram inseridos :" + event);
 																											};
 																										}
-					
+
 																										oModel.read("/A960", {
 																											success: function(retornoA960) {
-					
+
 																												var txA960 = db.transaction("A960", "readwrite");
 																												var objA960 = txA960.objectStore("A960");
-					
+
 																												for (i = 0; i < retornoA960.results.length; i++) {
 																													var objBancoA960 = {
 																														idA960: retornoA960.results[i].Werks + "." + retornoA960.results[i]
@@ -1110,26 +1110,26 @@ sap.ui.define([
 																														zzPervm: retornoA960.results[i].ZzPervm,
 																														knumh: retornoA960.results[i].Knumh
 																													};
-					
+
 																													var requestA960 = objA960.add(objBancoA960);
-					
+
 																													requestA960.onsuccess = function(event) {
 																														console.log("Dados A960 inseridos. " + event);
 																													};
-					
+
 																													requestA960.onerror = function(event) {
 																														console.log("Dados A960 não foram inseridos :" + event);
 																													};
 																												}
-					
+
 																												oModel.read("/A961 ", {
 																													success: function(retornoA961) {
-					
+
 																														var txClienteTabPreco = db.transaction("A961", "readwrite");
 																														var objClienteTabPreco = txClienteTabPreco.objectStore("A961");
-					
+
 																														for (i = 0; i < retornoA961.results.length; i++) {
-					
+
 																															var objBancoA961 = {
 																																idA961: retornoA961.results[i].Werks + "." +
 																																	retornoA961.results[i].Kunnr + "." + retornoA961.results[i].Pltyp,
@@ -1138,25 +1138,25 @@ sap.ui.define([
 																																pltyp: retornoA961.results[i].Pltyp,
 																																ptext: retornoA961.results[i].Ptext
 																															};
-					
+
 																															var requestA961 = objClienteTabPreco.add(objBancoA961);
 																															requestA961.onsuccess = function(event) {
 																																console.log("Dados A961 inseridos. " + event);
 																															};
-					
+
 																															requestA961.onerror = function(event) {
 																																console.log("Dados A961 não foram inseridos :" + event);
 																															};
 																														}
-					
+
 																														oModel.read("/A962 ", {
 																															success: function(retornoA962) {
-					
+
 																																var txA962 = db.transaction("A962", "readwrite");
 																																var objA962 = txA962.objectStore("A962");
-					
+
 																																for (i = 0; i < retornoA962.results.length; i++) {
-					
+
 																																	var objBancoA962 = {
 																																		idA962: retornoA962.results[i].Werks + "." +
 																																			retornoA962.results[i].ZzGrpmat + "." +
@@ -1165,29 +1165,29 @@ sap.ui.define([
 																																		werks: retornoA962.results[i].Werks,
 																																		matnr: retornoA962.results[i].Matnr
 																																	};
-					
+
 																																	var requestA962 = objA962.add(objBancoA962);
-					
+
 																																	requestA962.onsuccess = function(event) {
 																																		console.log("Dados A962 inseridos. " + event);
 																																	};
-					
+
 																																	requestA962.onerror = function(event) {
 																																		console.log("Dados A962 não foram inseridos :" + event);
 																																	};
 																																}
-					
+
 																																oModel.read("/A963 ", {
 																																	urlParameters: {
 																																		"$filter": "IRepres eq '" + CodRepres + "'"
 																																	},
 																																	success: function(retornoA963) {
-																																		
+
 																																		var txA963 = db.transaction("A963", "readwrite");
 																																		var objA963 = txA963.objectStore("A963");
-																																		
+
 																																		for (i = 0; i < retornoA963.results.length; i++) {
-																																			
+
 																																			var objBancoA963 = {
 																																				idA963: retornoA963.results[i].Werks + "." +
 																																					retornoA963.results[i].Lifnr + "." + retornoA963.results[i].Pltyp,
@@ -1196,55 +1196,55 @@ sap.ui.define([
 																																				pltyp: retornoA963.results[i].Pltyp,
 																																				ptext: retornoA963.results[i].Ptext
 																																			};
-					
+
 																																			var requestA963 = objA963.add(objBancoA963);
-					
+
 																																			requestA963.onsuccess = function(event) {
 																																				console.log("Dados A963 inseridos. " + event);
 																																			};
-																																			
+
 																																			requestA963.onerror = function(event) {
 																																				console.log("Dados A963 não foram inseridos :" +
 																																					event);
 																																			};
 																																		}
-																																		
+
 																																		oModel.read("/A964", {
 																																			success: function(retornoA964) {
-																																				
+
 																																				var txA964 = db.transaction("A964", "readwrite");
 																																				var objA964 = txA964.objectStore("A964");
-					
+
 																																				for (i = 0; i < retornoA964.results.length; i++) {
-					
+
 																																					var objBancoA964 = {
 																																						idA964: retornoA964.results[i].Werks + "." +
 																																							retornoA964.results[i].ZzPerjur,
 																																						werks: retornoA964.results[i].Werks,
 																																						zzPerjur: retornoA964.results[i].ZzPerjur
 																																					};
-					
+
 																																					var requestA964 = objA964.add(objBancoA964);
-					
+
 																																					requestA964.onsuccess = function(event) {
 																																						console.log("Dados A964 inseridos. " + event);
 																																					};
-					
+
 																																					requestA964.onerror = function(event) {
 																																						console.log("Dados A964 não foram inseridos :" +
 																																							event);
 																																					};
 																																				}
-					
+
 																																				oModel.read("/A965", { // A965
 																																					success: function(retornoA965) {
-					
+
 																																						var txA965 = db.transaction("A965",
 																																							"readwrite");
 																																						var objA965 = txA965.objectStore("A965");
-					
+
 																																						for (i = 0; i < retornoA965.results.length; i++) {
-					
+
 																																							var objBancoA965 = {
 																																								idA965: retornoA965.results[i].Werks + "." +
 																																									retornoA965.results[i].ZzGrpmat + "." +
@@ -1253,28 +1253,28 @@ sap.ui.define([
 																																								zzGrpmat: retornoA965.results[i].ZzGrpmat,
 																																								matnr: retornoA965.results[i].Matnr
 																																							};
-					
+
 																																							var requestA965 = objA965.add(objBancoA965);
-					
+
 																																							requestA965.onsuccess = function(event) {
 																																								console.log("Dados A965 inseridos. " + event);
 																																							};
-					
+
 																																							requestA965.onerror = function(event) {
 																																								console.log(
 																																									"Dados A965 não foram inseridos :" + event);
 																																							};
 																																						}
-					
+
 																																						oModel.read("/A966", {
 																																							success: function(retornoA966) {
-					
+
 																																								var txA966 = db.transaction("A966",
 																																									"readwrite");
 																																								var objA966 = txA966.objectStore("A966");
-					
+
 																																								for (i = 0; i < retornoA966.results.length; i++) {
-					
+
 																																									var objBancoA966 = {
 																																										idA966: retornoA966.results[i].Werks + "." +
 																																											retornoA966.results[i].ZzRegra + "." +
@@ -1286,31 +1286,31 @@ sap.ui.define([
 																																										pltyp: retornoA966.results[i].Pltyp,
 																																										zzTexto: retornoA966.results[i].ZzTexto
 																																									};
-					
+
 																																									var requestA966 = objA966.add(
 																																										objBancoA966);
-					
+
 																																									requestA966.onsuccess = function(event) {
 																																										console.log("Dados A966 inseridos. " +
 																																											event);
 																																									};
-					
+
 																																									requestA966.onerror = function(event) {
 																																										console.log(
 																																											"Dados A966 não foram inseridos :" +
 																																											event);
 																																									};
-					
+
 																																								}
-					
+
 																																								oModel.read("/A967", {
 																																									success: function(retornoA967) {
-					
+
 																																										var txA967 = db.transaction("A967", "readwrite");
 																																										var objA967 = txA967.objectStore("A967");
-					
+
 																																										for (i = 0; i < retornoA967.results.length; i++) {
-					
+
 																																											var objBancoA967 = {
 																																												idA967: retornoA967.results[i].Werks + "." +
 																																													retornoA967.results[i].ZzRegra + "." +
@@ -1319,28 +1319,28 @@ sap.ui.define([
 																																												zzRegra: retornoA967.results[i].ZzRegra,
 																																												knumh: retornoA967.results[i].Knumh
 																																											};
-					
+
 																																											var requestA967 = objA967.add(
 																																												objBancoA967);
-					
+
 																																											requestA967.onsuccess = function(event) {
 																																												console.log("Dados A967 inseridos. " + event);
 																																											};
-					
+
 																																											requestA967.onerror = function(event) {
 																																												console.log(
 																																													"Dados A967 não foram inseridos :" + event);
 																																											};
 																																										}
-					
+
 																																										oModel.read("/Konm", {
 																																											success: function(retornoKonm) {
-					
+
 																																												var txKonm = db.transaction("Konm", "readwrite");
 																																												var objKonm = txKonm.objectStore("Konm");
-					
+
 																																												for (i = 0; i < retornoKonm.results.length; i++) {
-				
+
 																																													var objBancoKonm = {
 																																														idKonm: retornoKonm.results[i].Knumh + "." +
 																																															retornoKonm.results[i].Kstbm + "." +
@@ -1349,30 +1349,30 @@ sap.ui.define([
 																																														kstbm: retornoKonm.results[i].Kstbm, //Escala até
 																																														kbetr: retornoKonm.results[i].Kbetr //Percentual de desconto
 																																													};
-					
+
 																																													var requestKonm = objKonm.add(
 																																														objBancoKonm);
-					
+
 																																													requestKonm.onsuccess =
 																																														function(event) {
 																																															console.log("Dados Konm inseridos. " + event);
 																																														};
-					
+
 																																													requestKonm.onerror =
 																																														function(event) {
 																																															console.log(
 																																																"Dados Konm não foram inseridos :" + event);
 																																														};
 																																												}
-					
+
 																																												oModel.read("/A968", {
 																																													success: function(retornoA968) {
-					
+
 																																														var txA968 = db.transaction("A968", "readwrite");
 																																														var objA968 = txA968.objectStore("A968");
-					
+
 																																														for (i = 0; i < retornoA968.results.length; i++) {
-					
+
 																																															var objBancoA968 = {
 																																																idA968: retornoA968.results[i].Werks + "." +
 																																																	retornoA968.results[i].ZzRegra + "." +
@@ -1387,27 +1387,27 @@ sap.ui.define([
 																																															var requestA968 =
 																																																objA968.add(
 																																																	objBancoA968);
-					
+
 																																															requestA968.onsuccess = function(event) {
 																																																console.log(
 																																																	"Dados A968 inseridos. " +
 																																																	event);
 																																															};
-					
+
 																																															requestA968.onerror = function(event) {
 																																																console.log(
 																																																	"Dados A968 não foram inseridos :" +
 																																																	event);
 																																															};
 																																														}
-					
+
 																																														oModel.read("/A969", {
 																																															success: function(retornoA969) {
 																																																var txA969 = db.transaction("A969", "readwrite");
 																																																var objA969 = txA969.objectStore("A969");
-					
+
 																																																for (i = 0; i < retornoA969.results.length; i++) {
-					
+
 																																																	var objBancoA969 = {
 																																																		idA969: retornoA969.results[i].Werks + "." +
 																																																			retornoA969.results[i].ZzRegra + "." +
@@ -1416,20 +1416,20 @@ sap.ui.define([
 																																																		zzRegra: retornoA969.results[i].ZzRegra,
 																																																		knumh: retornoA969.results[i].Knumh
 																																																	};
-					
+
 																																																	var requestA969 = objA969.add(objBancoA969);
-					
+
 																																																	requestA969.onsuccess = function(event) {
 																																																		console.log("Dados A969 inseridos. " + event);
 																																																	};
-					
+
 																																																	requestA969.onerror = function(event) {
 																																																		console.log("Dados A969 não foram inseridos :" + event);
 																																																	};
 																																																}
-					
+
 																																																console.log("CARREGAMENTO DAS CAMPANHAS");
-					
+
 																																																oModel.read("/CmpEnxoval", {
 																																																	urlParameters: {
 																																																		"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1437,9 +1437,9 @@ sap.ui.define([
 																																																	success: function(retornoCmpEnxoval) {
 																																																		var txCmpEnxoval = db.transaction("CmpEnxoval", "readwrite");
 																																																		var objCmpEnxoval = txCmpEnxoval.objectStore("CmpEnxoval");
-					
+
 																																																		for (i = 0; i < retornoCmpEnxoval.results.length; i++) {
-					
+
 																																																			var objBancoCmpEnxoval = {
 																																																				idCmpEnxoval: i,
 																																																				ValorTotal: retornoCmpEnxoval.results[i].ValorTotal,
@@ -1449,18 +1449,18 @@ sap.ui.define([
 																																																				DataInicio: retornoCmpEnxoval.results[i].DataInicio,
 																																																				DataFim: retornoCmpEnxoval.results[i].DataFim
 																																																			};
-					
+
 																																																			var requestCmpEnxoval = objCmpEnxoval.add(objBancoCmpEnxoval);
-					
+
 																																																			requestCmpEnxoval.onsuccess = function(event) {
 																																																				console.log("Dados CmpEnxoval inseridos. " + event);
 																																																			};
-					
+
 																																																			requestCmpEnxoval.onerror = function(event) {
 																																																				console.log("Dados CmpEnxoval não foram inseridos :" + event);
 																																																			};
 																																																		}
-					
+
 																																																		oModel.read("/CmpGbGrpProdsAcabs", {
 																																																			urlParameters: {
 																																																				"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1468,9 +1468,9 @@ sap.ui.define([
 																																																			success: function(retornoCmpGbGrpProdsAcabs) {
 																																																				var txCmpGbGrpProdsAcabs = db.transaction("CmpGbGrpProdsAcabs", "readwrite");
 																																																				var objCmpGbGrpProdsAcabs = txCmpGbGrpProdsAcabs.objectStore("CmpGbGrpProdsAcabs");
-					
+
 																																																				for (i = 0; i < retornoCmpGbGrpProdsAcabs.results.length; i++) {
-					
+
 																																																					var objBancoCmpGbGrpProdsAcabs = {
 																																																						idCmpGbGrpProdsAcabs: i,
 																																																						material: retornoCmpGbGrpProdsAcabs.results[i].Material,
@@ -1482,18 +1482,18 @@ sap.ui.define([
 																																																						dataInicio: retornoCmpGbGrpProdsAcabs.results[i].DataInicio,
 																																																						dataFim: retornoCmpGbGrpProdsAcabs.results[i].DataFim
 																																																					};
-					
+
 																																																					var requestCmpGbGrpProdsAcabs = objCmpGbGrpProdsAcabs.add(objBancoCmpGbGrpProdsAcabs);
-					
+
 																																																					requestCmpGbGrpProdsAcabs.onsuccess = function(event) {
 																																																						console.log("Dados CmpGbGrpProdsAcabs inseridos. " + event);
 																																																					};
-					
+
 																																																					requestCmpGbGrpProdsAcabs.onerror = function(event) {
 																																																						console.log("Dados CmpGbGrpProdsAcabs não foram inseridos :" + event);
 																																																					};
 																																																				}
-					
+
 																																																				oModel.read("/CmpGbProdsAcabs", {
 																																																					urlParameters: {
 																																																						"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1501,9 +1501,9 @@ sap.ui.define([
 																																																					success: function(retornoCmpGbProdsAcabs) {
 																																																						var txCmpGbProdsAcabs = db.transaction("CmpGbProdsAcabs", "readwrite");
 																																																						var objCmpGbProdsAcabs = txCmpGbProdsAcabs.objectStore("CmpGbProdsAcabs");
-					
+
 																																																						for (i = 0; i < retornoCmpGbProdsAcabs.results.length; i++) {
-					
+
 																																																							var objBancoCmpGbProdsAcabs = {
 																																																								idCmpGbProdsAcabs: i,
 																																																								representante: retornoCmpGbProdsAcabs.results[i].Representante,
@@ -1514,18 +1514,18 @@ sap.ui.define([
 																																																								descricaoGrupo: retornoCmpGbProdsAcabs.results[i].DescricaoGrupo,
 																																																								quantidade: retornoCmpGbProdsAcabs.results[i].Quantidade,
 																																																							};
-					
+
 																																																							var requestCmpGbProdsAcabs = objCmpGbProdsAcabs.add(objBancoCmpGbProdsAcabs);
-					
+
 																																																							requestCmpGbProdsAcabs.onsuccess = function(event) {
 																																																								console.log("Dados CmpGbProdsAcabs inseridos. " + event);
 																																																							};
-					
+
 																																																							requestCmpGbProdsAcabs.onerror = function(event) {
 																																																								console.log("Dados CmpGbProdsAcabs não foram inseridos :" + event);
 																																																							};
 																																																						}
-					
+
 																																																						oModel.read("/CmpGbQtdItens", {
 																																																							urlParameters: {
 																																																								"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1533,9 +1533,9 @@ sap.ui.define([
 																																																							success: function(retornoCmpGbQtdItens) {
 																																																								var txCmpGbQtdItens = db.transaction("CmpGbQtdItens", "readwrite");
 																																																								var objCmpGbQtdItens = txCmpGbQtdItens.objectStore("CmpGbQtdItens");
-					
+
 																																																								for (i = 0; i < retornoCmpGbQtdItens.results.length; i++) {
-					
+
 																																																									var objBancoCmpGbQtdItens = {
 																																																										idCmpGbQtdItens: i,
 																																																										representante: retornoCmpGbQtdItens.results[i].Representante,
@@ -1546,18 +1546,18 @@ sap.ui.define([
 																																																										quantidade: retornoCmpGbQtdItens.results[i].Quantidade,
 																																																										descricaoGrupo: retornoCmpGbQtdItens.results[i].DescricaoGrupo
 																																																									};
-					
+
 																																																									var requestCmpGbQtdItens = objCmpGbQtdItens.add(objBancoCmpGbQtdItens);
-					
+
 																																																									requestCmpGbQtdItens.onsuccess = function(event) {
 																																																										console.log("Dados CmpGbQtdItens inseridos. " + event);
 																																																									};
-					
+
 																																																									requestCmpGbQtdItens.onerror = function(event) {
 																																																										console.log("Dados CmpGbQtdItens não foram inseridos :" + event);
 																																																									};
 																																																								}
-					
+
 																																																								oModel.read("/CmpProdsAcabs", {
 																																																									urlParameters: {
 																																																										"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1565,9 +1565,9 @@ sap.ui.define([
 																																																									success: function(retornoCmpProdsAcabs) {
 																																																										var txCmpProdsAcabs = db.transaction("CmpProdsAcabs", "readwrite");
 																																																										var objCmpProdsAcabs = txCmpProdsAcabs.objectStore("CmpProdsAcabs");
-					
+
 																																																										for (i = 0; i < retornoCmpProdsAcabs.results.length; i++) {
-					
+
 																																																											var objBancoCmpProdsAcabs = {
 																																																												idCmpProdsAcabs: i,
 																																																												representante: retornoCmpProdsAcabs.results[i].Representante,
@@ -1578,18 +1578,18 @@ sap.ui.define([
 																																																												quantidadeTotal: retornoCmpProdsAcabs.results[i].QuantidadeTotal,
 																																																												quantidadeMaxima: retornoCmpProdsAcabs.results[i].QuantidadeMaxima
 																																																											};
-					
+
 																																																											var requestCmpProdsAcabs = objCmpProdsAcabs.add(objBancoCmpProdsAcabs);
-					
+
 																																																											requestCmpProdsAcabs.onsuccess = function(event) {
 																																																												console.log("Dados CmpProdsAcabs inseridos. " + event);
 																																																											};
-					
+
 																																																											requestCmpProdsAcabs.onerror = function(event) {
 																																																												console.log("Dados CmpProdsAcabs não foram inseridos :" + event);
 																																																											};
 																																																										}
-					
+
 																																																										oModel.read("/CmpSldBrindes", {
 																																																											urlParameters: {
 																																																												"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1597,9 +1597,9 @@ sap.ui.define([
 																																																											success: function(retornoCmpSldBrindes) {
 																																																												var txCmpSldBrindes = db.transaction("CmpSldBrindes", "readwrite");
 																																																												var objCmpSldBrindes = txCmpSldBrindes.objectStore("CmpSldBrindes");
-					
+
 																																																												for (i = 0; i < retornoCmpSldBrindes.results.length; i++) {
-					
+
 																																																													var objBancoCmpSldBrindes = {
 																																																														idCmpSldBrindes: i,
 																																																														material: retornoCmpSldBrindes.results[i].Material,
@@ -1610,18 +1610,18 @@ sap.ui.define([
 																																																														representante: retornoCmpSldBrindes.results[i].Representante,
 																																																														descricaoRepresentante: retornoCmpSldBrindes.results[i].DescricaoRepresentante
 																																																													};
-					
+
 																																																													var requestCmpSldBrindes = objCmpSldBrindes.add(objBancoCmpSldBrindes);
-					
+
 																																																													requestCmpSldBrindes.onsuccess = function(event) {
 																																																														console.log("Dados CmpSldBrindes inseridos. " + event);
 																																																													};
-					
+
 																																																													requestCmpSldBrindes.onerror = function(event) {
 																																																														console.log("Dados CmpSldBrindes não foram inseridos :" + event);
 																																																													};
 																																																												}
-					
+
 																																																												oModel.read("/CmpGbItensBrindes", {
 																																																													urlParameters: {
 																																																														"$filter": "IRepresentante eq '" + CodRepres + "'"
@@ -1629,9 +1629,9 @@ sap.ui.define([
 																																																													success: function(retornoCmpGbItensBrindes) {
 																																																														var txCmpGbItensBrindes = db.transaction("CmpGbItensBrindes", "readwrite");
 																																																														var objCmpGbItensBrindes = txCmpGbItensBrindes.objectStore("CmpGbItensBrindes");
-					
+
 																																																														for (i = 0; i < retornoCmpGbItensBrindes.results.length; i++) {
-					
+
 																																																															var objBancoCmpProdAcab = {
 																																																																idCmpGbItensBrindes: i,
 																																																																representante: retornoCmpGbItensBrindes.results[i].Representante,
@@ -1643,18 +1643,18 @@ sap.ui.define([
 																																																																grupo: retornoCmpGbItensBrindes.results[i].Grupo,
 																																																																descricaoGrupo: retornoCmpGbItensBrindes.results[i].DescricaoGrupo
 																																																															};
-					
+
 																																																															var requestCmpGbItensBrindes = objCmpGbItensBrindes.add(objBancoCmpProdAcab);
-					
+
 																																																															requestCmpGbItensBrindes.onsuccess = function(event) {
 																																																																console.log("Dados CmpGbItensBrindes inseridos. " + event);
 																																																															};
-					
+
 																																																															requestCmpGbItensBrindes.onerror = function(event) {
 																																																																console.log("Dados CmpGbItensBrindes não foram inseridos :" + event);
 																																																															};
 																																																														}
-					
+
 																																																														oModel.read("/EntregaFutura", {
 																																																															urlParameters: {
 																																																																"$filter": "IRepresentante eq '" + CodRepres + "' and IUsuario eq '" + CodUsuario + "'"
@@ -1662,11 +1662,11 @@ sap.ui.define([
 																																																															success: function(retornoEntregaFutura) {
 																																																																var txEntregaFutura = db.transaction("EntregaFutura", "readwrite");
 																																																																var objEntregaFutura = txEntregaFutura.objectStore("EntregaFutura");
-					
+
 																																																																for (i = 0; i < retornoEntregaFutura.results.length; i++) {
 																																																																	txEntregaFutura = db.transaction("EntregaFutura", "readwrite");
 																																																																	objEntregaFutura = txEntregaFutura.objectStore("EntregaFutura");
-					
+
 																																																																	var objBancoEntregaFutura = {
 																																																																		idEntregaFutura: retornoEntregaFutura.results[i].Vbeln + retornoEntregaFutura.results[i].Matnr,
 																																																																		IRepresentante: retornoEntregaFutura.results[i].IRepresentante,
@@ -1688,332 +1688,384 @@ sap.ui.define([
 																																																																		// codUsr: "99203453", //retornoEntregaFutura.results[i].codUsr, 
 																																																																		Slddia: "0"
 																																																																	};
-					
+
 																																																																	var requestEntregaFutura = objEntregaFutura.add(objBancoEntregaFutura);
-					
+
 																																																																	requestEntregaFutura.onsuccess = function(event) {
 																																																																		console.log("Dados Entrega Futura inseridos. " + event);
 																																																																	};
-					
+
 																																																																	requestEntregaFutura.onerror = function(event) {
 																																																																		console.log("Dados Entrega Futura não foram inseridos :" + event);
 																																																																	};
 																																																																}
-					
-																																																																oModel.read("/AcompPedidos", {
+
+																																																																oModel.read("/EntregaFuturaPendentes", {
 																																																																	urlParameters: {
-																																																																		"$filter": "IRepres eq '" + CodRepres + "'"
+																																																																		"$filter": "ICodrepres eq '" + CodRepres + "'"
 																																																																	},
-																																																																	success: function(retornoAcompPedidos) {
-																																																																		var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
-																																																																		var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
-																																																																		
-																																																																		for (i = 0; i < retornoAcompPedidos.results.length; i++) {
-																																																																			
-																																																																			var dataPedido = retornoAcompPedidos.results[i].Nrpedcli.split(".");
-																																																																			dataPedido = dataPedido[1];
-																																																																			dataPedido = dataPedido.substring(6,8) + "/" + dataPedido.substring(4,6) + "/" + dataPedido.substring(0,4);
-																																																																			
-																																																																			var objBancoAcompPedidos = {
-																																																																				idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
-																																																																				Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
-																																																																				Kunnr: retornoAcompPedidos.results[i].Kunnr,
-																																																																				NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
-																																																																				Erdat: dataPedido,
-																																																																				Aprov: retornoAcompPedidos.results[i].Aprov,
-																																																																				AprovNome: retornoAcompPedidos.results[i].AprovNome,
-																																																																				Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
-																																																																				Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
-																																																																				Aprovado: retornoAcompPedidos.results[i].Aprovado,
-																																																																				PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png",
-																																																																				Vbeln: retornoAcompPedidos.results[i].Vbeln
+																																																																	success: function(retornoEFPendentes) {
+																																																																		var txEFPendentes = db.transaction("EntregaFutura2", "readwrite");
+																																																																		var objEFPendentes = txEFPendentes.objectStore("EntregaFutura2");
+
+																																																																		for (i = 0; i < retornoEFPendentes.results.length; i++) {
+																																																																			txEFPendentes = db.transaction("EntregaFutura2", "readwrite");
+																																																																			objEFPendentes = txEFPendentes.objectStore("EntregaFutura2");
+
+																																																																			var objBancoEFPendentes = {
+																																																																				Arktx: retornoEFPendentes.results[i].Arktx,
+																																																																				Aubel: retornoEFPendentes.results[i].Aubel,
+																																																																				Aupos: retornoEFPendentes.results[i].Aupos,
+																																																																				Bstkd: retornoEFPendentes.results[i].Bstkd,
+																																																																				Fkimg: retornoEFPendentes.results[i].Fkimg,
+																																																																				Fkimg2: retornoEFPendentes.results[i].Fkimg2,
+																																																																				IRepresentante: retornoEFPendentes.results[i].ICodrepres,
+																																																																				Kunrg: retornoEFPendentes.results[i].Kunrg,
+																																																																				Lifnr: retornoEFPendentes.results[i].Lifnr,
+																																																																				Matnr: retornoEFPendentes.results[i].Matnr,
+																																																																				NameOrg1: retornoEFPendentes.results[i].NameOrg1,
+																																																																				NameOrg2: retornoEFPendentes.results[i].NameOrg2,
+																																																																				Posnr: retornoEFPendentes.results[i].Posnr,
+																																																																				// Slddia: retornoEFPendentes.results[i].Sldfut,
+																																																																				Sldfut: retornoEFPendentes.results[i].Sldfut,
+																																																																				Vbeln: retornoEFPendentes.results[i].Vbeln,
+																																																																				codRepres: retornoEFPendentes.results[i].Codrepres,
+																																																																				codUsr: retornoEFPendentes.results[i].Codusr,
+																																																																				idEntregaFutura: retornoEFPendentes.results[i].Identregafutura,
+																																																																				tipoUsuario: retornoEFPendentes.results[i].Tipousuario
 																																																																			};
-																																																																			
-																																																																			var sDescAprovado = "";
-																																																																			
-																																																																			switch (retornoAcompPedidos.results[i].Aprovado) {
-																																																																				case "S":
-																																																																					sDescAprovado = "Aprovado";
-																																																																					break;
-																																																																				case "R":
-																																																																					sDescAprovado = "Reprovado";
-																																																																					break;
-																																																																				default:
-																																																																					sDescAprovado = "Pendente";
-																																																																			}
-					
-																																																																			objBancoAcompPedidos.AprovadoDesc = sDescAprovado;
-					
-																																																																			var requestAcompPedidos = objAcompPedidos.put(objBancoAcompPedidos);
-					
-																																																																			requestAcompPedidos.onsuccess = function(event) {
-																																																																				console.log("Dados Status Pedido inseridos. " + event);
+
+																																																																			var requestEFPendentes = objEFPendentes.put(objBancoEFPendentes);
+
+																																																																			requestEFPendentes.onsuccess = function(event) {
+																																																																				console.log("Dados EF Pendentes inseridos. " + event);
 																																																																			};
-					
-																																																																			requestAcompPedidos.onerror = function(event) {
-																																																																				console.log("Dados Status Pedido não foram inseridos :" + event);
+
+																																																																			requestEFPendentes.onerror = function(event) {
+																																																																				console.log("Dados EF Pendentes não foram inseridos :" + event);
 																																																																			};
 																																																																		}
-					
-																																																																		oModel.read("/FormasPagamentos", {
+
+																																																																		oModel.read("/AcompPedidos", {
 																																																																			urlParameters: {
-																																																																				"$filter": "IvCodRepres eq '" + CodRepres + "'"
+																																																																				"$filter": "IRepres eq '" + CodRepres + "'"
 																																																																			},
-																																																																			success: function(retornoFormasPagamentos) {
-																																																																				var txFormasPagamentos = db.transaction("FormasPagamentos", "readwrite");
-																																																																				var objFormasPagamentos = txFormasPagamentos.objectStore("FormasPagamentos");
-					
-																																																																				for (i = 0; i < retornoFormasPagamentos.results.length; i++) {
-					
-																																																																					var objBancoFormasPagamentos = {
-																																																																						idFormasPagamentos: i,
-																																																																						zlsch: retornoFormasPagamentos.results[i].Zlsch,
-																																																																						text1: retornoFormasPagamentos.results[i].Text1
+																																																																			success: function(retornoAcompPedidos) {
+																																																																				var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
+																																																																				var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
+
+																																																																				for (i = 0; i < retornoAcompPedidos.results.length; i++) {
+
+																																																																					var dataPedido = retornoAcompPedidos.results[i].Nrpedcli.split(".");
+																																																																					dataPedido = dataPedido[1];
+																																																																					dataPedido = dataPedido.substring(6, 8) + "/" + dataPedido.substring(4, 6) + "/" + dataPedido.substring(0, 4);
+
+																																																																					var objBancoAcompPedidos = {
+																																																																						idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
+																																																																						Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
+																																																																						Kunnr: retornoAcompPedidos.results[i].Kunnr,
+																																																																						NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
+																																																																						Erdat: dataPedido,
+																																																																						Aprov: retornoAcompPedidos.results[i].Aprov,
+																																																																						AprovNome: retornoAcompPedidos.results[i].AprovNome,
+																																																																						Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
+																																																																						Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
+																																																																						Aprovado: retornoAcompPedidos.results[i].Aprovado,
+																																																																						PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png",
+																																																																						Vbeln: retornoAcompPedidos.results[i].Vbeln
 																																																																					};
-					
-																																																																					var requestFormasPagamentos = objFormasPagamentos.put(objBancoFormasPagamentos);
-					
-																																																																					requestFormasPagamentos.onsuccess = function(event) {
-																																																																						console.log("Dados FormasPagamentos inseridos. " + event);
+
+																																																																					var sDescAprovado = "";
+
+																																																																					switch (retornoAcompPedidos.results[i].Aprovado) {
+																																																																						case "S":
+																																																																							sDescAprovado = "Aprovado";
+																																																																							break;
+																																																																						case "R":
+																																																																							sDescAprovado = "Reprovado";
+																																																																							break;
+																																																																						default:
+																																																																							sDescAprovado = "Pendente";
+																																																																					}
+
+																																																																					objBancoAcompPedidos.AprovadoDesc = sDescAprovado;
+
+																																																																					var requestAcompPedidos = objAcompPedidos.put(objBancoAcompPedidos);
+
+																																																																					requestAcompPedidos.onsuccess = function(event) {
+																																																																						console.log("Dados Status Pedido inseridos. " + event);
 																																																																					};
-																																																																					
-																																																																					requestFormasPagamentos.onerror = function(event) {
-																																																																						console.log("Dados FormasPagamentos não foram inseridos :" + event);
+
+																																																																					requestAcompPedidos.onerror = function(event) {
+																																																																						console.log("Dados Status Pedido não foram inseridos :" + event);
 																																																																					};
 																																																																				}
-																																																																				
-																																																																				oModel.read("/ControleAmostras", {
+
+																																																																				oModel.read("/FormasPagamentos", {
 																																																																					urlParameters: {
-																																																																						"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																																						"$filter": "IvCodRepres eq '" + CodRepres + "'"
 																																																																					},
-																																																																					success: function(retornoControleAmostras) {
-																																																																						var txControleAmostras = db.transaction("ControleAmostra", "readwrite");
-																																																																						var objControleAmostras = txControleAmostras.objectStore("ControleAmostra");
-						
-																																																																						for (i = 0; i < retornoControleAmostras.results.length; i++) {
-																																																																							var valor = retornoControleAmostras.results[i].QuantidadeTotal;
-																																																																							
-																																																																							if(valor < 0){
-																																																																								valor = 0;
-																																																																							}
-																																																																							
-																																																																							var objBancoControleAmostras = {
-																																																																								idControleAmostra: i,
-																																																																								representante: retornoControleAmostras.results[i].IRepresentante,
-																																																																								quantidadeTotal: valor,
-																																																																								quantidadePedido: retornoControleAmostras.results[i].QuantidadePedido
+																																																																					success: function(retornoFormasPagamentos) {
+																																																																						var txFormasPagamentos = db.transaction("FormasPagamentos", "readwrite");
+																																																																						var objFormasPagamentos = txFormasPagamentos.objectStore("FormasPagamentos");
+
+																																																																						for (i = 0; i < retornoFormasPagamentos.results.length; i++) {
+
+																																																																							var objBancoFormasPagamentos = {
+																																																																								idFormasPagamentos: i,
+																																																																								zlsch: retornoFormasPagamentos.results[i].Zlsch,
+																																																																								text1: retornoFormasPagamentos.results[i].Text1
 																																																																							};
-																																																																							
-																																																																							var requestControleAmostras = objControleAmostras.put(objBancoControleAmostras);
-																																																																							
-																																																																							requestControleAmostras.onsuccess = function(event) {
-																																																																								console.log("Dados ControleAmostras inseridos. " + event);
+
+																																																																							var requestFormasPagamentos = objFormasPagamentos.put(objBancoFormasPagamentos);
+
+																																																																							requestFormasPagamentos.onsuccess = function(event) {
+																																																																								console.log("Dados FormasPagamentos inseridos. " + event);
 																																																																							};
-																																																																							
-																																																																							requestControleAmostras.onerror = function(event) {
-																																																																								console.log("Dados ControleAmostras não foram inseridos :" + event);
+
+																																																																							requestFormasPagamentos.onerror = function(event) {
+																																																																								console.log("Dados FormasPagamentos não foram inseridos :" + event);
 																																																																							};
 																																																																						}
-																																																																						
-																																																																						/* Carrego os pedidos de vendas e itens somente para usuários do tipo Representante */
-																																																																						if (TipoUsuario == 1) {
-																																																																							/* GetPedidoPrepostoTopo */
-																																																																							oModel.read("/GetPedidoPrepostoTopo", {
-																																																																								urlParameters: {
-																																																																									"$filter": "IRepresentante eq '" + CodRepres + "'"
-																																																																								},
-																																																																								success: function(retornoPVPrepostoTopo) {
-								
-																																																																									var txPVPrepostoTopo = db.transaction("PrePedidos", "readwrite");
-																																																																									var objPVPrepostoTopo = txPVPrepostoTopo.objectStore("PrePedidos");
-								
-																																																																									for (i = 0; i < retornoPVPrepostoTopo.results.length; i++) {
-																																																																										var objBancoPVPrepostoTopo = {
-																																																																											nrPedCli: retornoPVPrepostoTopo.results[i].Nrpedcli,
-																																																																											idStatusPedido: parseInt(retornoPVPrepostoTopo.results[i].Idstatuspedido),
-																																																																											kunnr: retornoPVPrepostoTopo.results[i].Kunnr,
-																																																																											werks: retornoPVPrepostoTopo.results[i].Werks,
-																																																																											// repres: retornoPVPrepostoTopo.results[i].Lifnr,
-																																																																											tipoPedido: retornoPVPrepostoTopo.results[i].Auart,
-																																																																											situacaoPedido: retornoPVPrepostoTopo.results[i].Situacaopedido,
-																																																																											ntgew: parseInt(retornoPVPrepostoTopo.results[i].Ntgew),
-																																																																											tabPreco: retornoPVPrepostoTopo.results[i].Pltyp,
-																																																																											completo: "Não",
-																																																																											valMinPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valminped),
-																																																																											dataPedido: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
-																																																																												retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
-																																																																												retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4),
-																																																																											dataImpl: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
-																																																																												retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
-																																																																												retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4) + "-" +
-																																																																												retornoPVPrepostoTopo.results[i].Horaped.substring(0, 2) + ":" +
-																																																																												retornoPVPrepostoTopo.results[i].Horaped.substring(2, 4) + ":" +
-																																																																												retornoPVPrepostoTopo.results[i].Horaped.substring(4, 6),
-																																																																											observacaoPedido: retornoPVPrepostoTopo.results[i].Obsped,
-																																																																											observacaoAuditoriaPedido: retornoPVPrepostoTopo.results[i].Obsaudped,
-																																																																											existeEntradaPedido: (retornoPVPrepostoTopo.results[i].Existeentradapedido == "true"),
-																																																																											percEntradaPedido: parseInt(retornoPVPrepostoTopo.results[i].Percentradapedido),
-																																																																											valorEntradaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorentradapedido),
-																																																																											tipoTransporte: retornoPVPrepostoTopo.results[i].Inco1,
-																																																																											diasPrimeiraParcela: parseInt(retornoPVPrepostoTopo.results[i].Diasprimeiraparcela),
-																																																																											quantParcelas: parseInt(retornoPVPrepostoTopo.results[i].Quantparcelas),
-																																																																											intervaloParcelas: parseInt(retornoPVPrepostoTopo.results[i].Intervaloparcelas),
-																																																																											tipoNegociacao: retornoPVPrepostoTopo.results[i].Tiponego,
-																																																																											totalItensPedido: parseInt(retornoPVPrepostoTopo.results[i].Totitens),
-																																																																											valComissaoPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorcomissao),
-																																																																											valTotPed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotpedido),
-																																																																											valTotalAbatidoComissao: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcomissao),
-																																																																											valTotalAbatidoVerba: parseFloat(retornoPVPrepostoTopo.results[i].Valabverba),
-																																																																											valTotalExcedentePrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Vlrprz),
-																																																																											valUtilizadoComissaoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].VlrprzCom),
-																																																																											valTotalExcedenteDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Vlrdsc),
-																																																																											valComissaoUtilizadaDesconto: parseFloat(retornoPVPrepostoTopo.results[i].VlrdscCom),
-																																																																											valVerbaUtilizadaDesconto: parseFloat(retornoPVPrepostoTopo.results[i].VlrdscVm),
-																																																																											valTotalExcedenteAmostra: parseFloat(retornoPVPrepostoTopo.results[i].Vlramo),
-																																																																											valUtilizadoComissaoAmostra: parseFloat(retornoPVPrepostoTopo.results[i].VlramoCom),
-																																																																											valUtilizadoVerbaAmostra: parseFloat(retornoPVPrepostoTopo.results[i].VlramoVm),
-																																																																											valTotalExcedenteBrinde: parseFloat(retornoPVPrepostoTopo.results[i].Vlrbri),
-																																																																											valUtilizadoComissaoBrinde: parseFloat(retornoPVPrepostoTopo.results[i].VlrbriCom),
-																																																																											valUtilizadoVerbaBrinde: parseFloat(retornoPVPrepostoTopo.results[i].VlrbriVm),
-																																																																											valTotalExcedenteBonif: parseFloat(retornoPVPrepostoTopo.results[i].Vlrbon),
-																																																																											valUtilizadoComissaoBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonCom),
-																																																																											valUtilizadoVerbaBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonVm),
-																																																																											valUtilizadoCampProdutoAcabado: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcamppa),
-																																																																											valUtilizadoCampBrinde: retornoPVPrepostoTopo.results[i].Valtotabcampbrinde,
-																																																																											valUtilizadoCampEnxoval: retornoPVPrepostoTopo.results[i].Valtotabcampenx,
-																																																																											valTotalExcedenteNaoDirecionadoDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirdesc),
-																																																																											valTotalExcedenteNaoDirecionadoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirprazo),
-																																																																											valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido),
-								
-																																																																											valTotalCampEnxoval: parseFloat(0),
-																																																																											valTotalCampGlobal: parseFloat(0),
-																																																																											valTotalCampProdutoAcabado: parseFloat(0),
-																																																																											valUtilizadoVerbaPrazoMed: parseFloat(0),
-																																																																											
-																																																																											codRepres: CodRepres,
-																																																																											codUsr: parseInt(retornoPVPrepostoTopo.results[i].Usuario),
-																																																																											tipoUsuario: retornoPVPrepostoTopo.results[i].Tipousuario,
-																																																																											valCampBrinde: parseFloat(0),
-																																																																											valCampEnxoval: parseFloat(0),
-																																																																											valCampGlobal: parseFloat(0),
-																																																																											
-																																																																											valTotalExcedenteNaoDirecionadoBrinde: 0,
-																																																																											valTotalExcedenteNaoDirecionadoAmostra: 0,
-																																																																											valTotalExcedenteNaoDirecionadoBonif: 0,
-																																																																											zlsch: retornoPVPrepostoTopo.results[i].Zlsch
-																																																																										};
-								
-																																																																										var requestPVPrepostoTopo = objPVPrepostoTopo.put(objBancoPVPrepostoTopo);
-								
-																																																																										requestPVPrepostoTopo.onsuccess = function(event) {
-																																																																											console.log("Dados Topo PV Preposto inseridos. " + event);
-																																																																										};
-																																																																										
-																																																																										requestPVPrepostoTopo.onerror = function(event) {
-																																																																											console.log("Dados Topo PV Preposto não foram inseridos :" + event);
-																																																																										};
+
+																																																																						oModel.read("/ControleAmostras", {
+																																																																							urlParameters: {
+																																																																								"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																																							},
+																																																																							success: function(retornoControleAmostras) {
+																																																																								var txControleAmostras = db.transaction("ControleAmostra", "readwrite");
+																																																																								var objControleAmostras = txControleAmostras.objectStore("ControleAmostra");
+
+																																																																								for (i = 0; i < retornoControleAmostras.results.length; i++) {
+																																																																									var valor = retornoControleAmostras.results[i].QuantidadeTotal;
+
+																																																																									if (valor < 0) {
+																																																																										valor = 0;
 																																																																									}
-																																																																									
-																																																																									/* GetPedidoPrepostoItem */
-																																																																									oModel.read("/GetPedidoPrepostoItem", {
+
+																																																																									var objBancoControleAmostras = {
+																																																																										idControleAmostra: i,
+																																																																										representante: retornoControleAmostras.results[i].IRepresentante,
+																																																																										quantidadeTotal: valor,
+																																																																										quantidadePedido: retornoControleAmostras.results[i].QuantidadePedido
+																																																																									};
+
+																																																																									var requestControleAmostras = objControleAmostras.put(objBancoControleAmostras);
+
+																																																																									requestControleAmostras.onsuccess = function(event) {
+																																																																										console.log("Dados ControleAmostras inseridos. " + event);
+																																																																									};
+
+																																																																									requestControleAmostras.onerror = function(event) {
+																																																																										console.log("Dados ControleAmostras não foram inseridos :" + event);
+																																																																									};
+																																																																								}
+
+																																																																								/* Carrego os pedidos de vendas e itens somente para usuários do tipo Representante */
+																																																																								if (TipoUsuario == 1) {
+																																																																									/* GetPedidoPrepostoTopo */
+																																																																									oModel.read("/GetPedidoPrepostoTopo", {
 																																																																										urlParameters: {
 																																																																											"$filter": "IRepresentante eq '" + CodRepres + "'"
 																																																																										},
-																																																																										success: function(retornoPVPrepostoItem) {
-																																																																											var txPVPrepostoItem = db.transaction("ItensPedido", "readwrite");
-																																																																											var objPVPrepostoItem = txPVPrepostoItem.objectStore("ItensPedido");
-								
-																																																																											for (var i = 0; i < retornoPVPrepostoItem.results.length; i++) {
-																																																																												
-																																																																												var objBancoPVPrepostoItem = {
-																																																																													idItemPedido: retornoPVPrepostoItem.results[i].Iditempedido,
-																																																																													index: parseInt(retornoPVPrepostoItem.results[i].Tindex),
-																																																																													knumh: retornoPVPrepostoItem.results[i].Knumh,
-																																																																													knumhExtra: retornoPVPrepostoItem.results[i].Knumhextra,
-																																																																													zzRegra: retornoPVPrepostoItem.results[i].Zzregra,
-																																																																													zzGrpmatExtra: retornoPVPrepostoItem.results[i].Zzgrpmatextra,
-																																																																													zzGrpmat: retornoPVPrepostoItem.results[i].Zzgrpmat,
-																																																																													zzRegraExtra: retornoPVPrepostoItem.results[i].Zzregraextra,
-																																																																													maktx: retornoPVPrepostoItem.results[i].Maktx,
-																																																																													matnr: retornoPVPrepostoItem.results[i].Matnr,
-																																																																													nrPedCli: retornoPVPrepostoItem.results[i].Nrpedcli,
-																																																																													ntgew: parseFloat(retornoPVPrepostoItem.results[i].Ntgew),
-																																																																													tipoItem: retornoPVPrepostoItem.results[i].Tipoitem,
-																																																																													zzDesext: parseFloat(retornoPVPrepostoItem.results[i].Zzdesext),
-																																																																													zzDesitem: parseFloat(retornoPVPrepostoItem.results[i].Zzdesitem),
-																																																																													zzPercDescDiluicao: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdescdiluicao),
-																																																																													zzPercDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdesctotal),
-																																																																													zzPercom: parseFloat(retornoPVPrepostoItem.results[i].Zzpercom),
-																																																																													zzPervm: parseFloat(retornoPVPrepostoItem.results[i].Zzpervm),
-																																																																													zzQnt: parseInt(retornoPVPrepostoItem.results[i].Zzqnt, 10),
-																																																																													zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
-																																																																													zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
-																																																																													zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
-																																																																													zzVprodABB: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodabb),
-																																																																													aumng: parseInt(retornoPVPrepostoItem.results[i].Aumng, 10),
-																																																																													zzVprodDesc2: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc2),
-																																																																													zzVprodMinPermitido: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodminpermitido),
-																																																																													zzValorDiluido: parseFloat(retornoPVPrepostoItem.results[i].Zzvalordiluido),
-																																																																													zzValExcedidoItem: parseFloat(retornoPVPrepostoItem.results[i].Zzvalexcedidoitem),
-																																																																													zzQntDiluicao: parseInt(retornoPVPrepostoItem.results[i].Zzqntdiluicao, 10),
-																																																																													tipoItem2: retornoPVPrepostoItem.results[i].Tipoitem2,
-																																																																													maxDescPermitidoExtra: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitido),
-																																																																													maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra),
-																																																																													mtpos: retornoPVPrepostoItem.results[i].Mtpos,
-																																																																													kbetr: retornoPVPrepostoItem.results[i].Kbetr,
-																																																																													zzQntAmostra: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntamostra, 10))
+																																																																										success: function(retornoPVPrepostoTopo) {
+
+																																																																											var txPVPrepostoTopo = db.transaction("PrePedidos", "readwrite");
+																																																																											var objPVPrepostoTopo = txPVPrepostoTopo.objectStore("PrePedidos");
+
+																																																																											for (i = 0; i < retornoPVPrepostoTopo.results.length; i++) {
+																																																																												var objBancoPVPrepostoTopo = {
+																																																																													nrPedCli: retornoPVPrepostoTopo.results[i].Nrpedcli,
+																																																																													idStatusPedido: parseInt(retornoPVPrepostoTopo.results[i].Idstatuspedido),
+																																																																													kunnr: retornoPVPrepostoTopo.results[i].Kunnr,
+																																																																													werks: retornoPVPrepostoTopo.results[i].Werks,
+																																																																													// repres: retornoPVPrepostoTopo.results[i].Lifnr,
+																																																																													tipoPedido: retornoPVPrepostoTopo.results[i].Auart,
+																																																																													situacaoPedido: retornoPVPrepostoTopo.results[i].Situacaopedido,
+																																																																													ntgew: parseInt(retornoPVPrepostoTopo.results[i].Ntgew),
+																																																																													tabPreco: retornoPVPrepostoTopo.results[i].Pltyp,
+																																																																													completo: "Não",
+																																																																													valMinPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valminped),
+																																																																													dataPedido: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
+																																																																														retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
+																																																																														retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4),
+																																																																													dataImpl: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
+																																																																														retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
+																																																																														retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4) + "-" +
+																																																																														retornoPVPrepostoTopo.results[i].Horaped.substring(0, 2) + ":" +
+																																																																														retornoPVPrepostoTopo.results[i].Horaped.substring(2, 4) + ":" +
+																																																																														retornoPVPrepostoTopo.results[i].Horaped.substring(4, 6),
+																																																																													observacaoPedido: retornoPVPrepostoTopo.results[i].Obsped,
+																																																																													observacaoAuditoriaPedido: retornoPVPrepostoTopo.results[i].Obsaudped,
+																																																																													existeEntradaPedido: (retornoPVPrepostoTopo.results[i].Existeentradapedido == "true"),
+																																																																													percEntradaPedido: parseInt(retornoPVPrepostoTopo.results[i].Percentradapedido),
+																																																																													valorEntradaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorentradapedido),
+																																																																													tipoTransporte: retornoPVPrepostoTopo.results[i].Inco1,
+																																																																													diasPrimeiraParcela: parseInt(retornoPVPrepostoTopo.results[i].Diasprimeiraparcela),
+																																																																													quantParcelas: parseInt(retornoPVPrepostoTopo.results[i].Quantparcelas),
+																																																																													intervaloParcelas: parseInt(retornoPVPrepostoTopo.results[i].Intervaloparcelas),
+																																																																													tipoNegociacao: retornoPVPrepostoTopo.results[i].Tiponego,
+																																																																													totalItensPedido: parseInt(retornoPVPrepostoTopo.results[i].Totitens),
+																																																																													valComissaoPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorcomissao),
+																																																																													valTotPed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotpedido),
+																																																																													valTotalAbatidoComissao: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcomissao),
+																																																																													valTotalAbatidoVerba: parseFloat(retornoPVPrepostoTopo.results[i].Valabverba),
+																																																																													valTotalExcedentePrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Vlrprz),
+																																																																													valUtilizadoComissaoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].VlrprzCom),
+																																																																													valTotalExcedenteDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Vlrdsc),
+																																																																													valComissaoUtilizadaDesconto: parseFloat(retornoPVPrepostoTopo.results[i].VlrdscCom),
+																																																																													valVerbaUtilizadaDesconto: parseFloat(retornoPVPrepostoTopo.results[i].VlrdscVm),
+																																																																													valTotalExcedenteAmostra: parseFloat(retornoPVPrepostoTopo.results[i].Vlramo),
+																																																																													valUtilizadoComissaoAmostra: parseFloat(retornoPVPrepostoTopo.results[i].VlramoCom),
+																																																																													valUtilizadoVerbaAmostra: parseFloat(retornoPVPrepostoTopo.results[i].VlramoVm),
+																																																																													valTotalExcedenteBrinde: parseFloat(retornoPVPrepostoTopo.results[i].Vlrbri),
+																																																																													valUtilizadoComissaoBrinde: parseFloat(retornoPVPrepostoTopo.results[i].VlrbriCom),
+																																																																													valUtilizadoVerbaBrinde: parseFloat(retornoPVPrepostoTopo.results[i].VlrbriVm),
+																																																																													valTotalExcedenteBonif: parseFloat(retornoPVPrepostoTopo.results[i].Vlrbon),
+																																																																													valUtilizadoComissaoBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonCom),
+																																																																													valUtilizadoVerbaBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonVm),
+																																																																													valUtilizadoCampProdutoAcabado: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcamppa),
+																																																																													valUtilizadoCampBrinde: retornoPVPrepostoTopo.results[i].Valtotabcampbrinde,
+																																																																													valUtilizadoCampEnxoval: retornoPVPrepostoTopo.results[i].Valtotabcampenx,
+																																																																													valTotalExcedenteNaoDirecionadoDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirdesc),
+																																																																													valTotalExcedenteNaoDirecionadoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirprazo),
+																																																																													valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido),
+
+																																																																													valTotalCampEnxoval: parseFloat(0),
+																																																																													valTotalCampGlobal: parseFloat(0),
+																																																																													valTotalCampProdutoAcabado: parseFloat(0),
+																																																																													valUtilizadoVerbaPrazoMed: parseFloat(0),
+
+																																																																													codRepres: CodRepres,
+																																																																													codUsr: parseInt(retornoPVPrepostoTopo.results[i].Usuario),
+																																																																													tipoUsuario: retornoPVPrepostoTopo.results[i].Tipousuario,
+																																																																													valCampBrinde: parseFloat(0),
+																																																																													valCampEnxoval: parseFloat(0),
+																																																																													valCampGlobal: parseFloat(0),
+
+																																																																													valTotalExcedenteNaoDirecionadoBrinde: 0,
+																																																																													valTotalExcedenteNaoDirecionadoAmostra: 0,
+																																																																													valTotalExcedenteNaoDirecionadoBonif: 0,
+																																																																													zlsch: retornoPVPrepostoTopo.results[i].Zlsch
 																																																																												};
-								
-																																																																												var requestPVPrepostoItem = objPVPrepostoItem.put(objBancoPVPrepostoItem);
-								
-																																																																												requestPVPrepostoItem.onsuccess = function(event) {
-																																																																													console.log("Dados Item PV Preposto inseridos. " + event);
+
+																																																																												var requestPVPrepostoTopo = objPVPrepostoTopo.put(objBancoPVPrepostoTopo);
+
+																																																																												requestPVPrepostoTopo.onsuccess = function(event) {
+																																																																													console.log("Dados Topo PV Preposto inseridos. " + event);
 																																																																												};
-								
-																																																																												requestPVPrepostoItem.onerror = function(event) {
-																																																																													console.log("Dados Item PV Preposto não foram inseridos :" + event);
+
+																																																																												requestPVPrepostoTopo.onerror = function(event) {
+																																																																													console.log("Dados Topo PV Preposto não foram inseridos :" + event);
 																																																																												};
 																																																																											}
-								
-																																																																											MessageBox.show(
-																																																																												"Tabelas carregadas com sucesso!", {
-																																																																													icon: MessageBox.Icon.SUCCESS,
-																																																																													title: "Carregamento Completo",
-																																																																													actions: [MessageBox.Action.OK],
-																																																																													onClose: function() {
-																																																																														if (that._ItemDialog) {
-																																																																															that._ItemDialog.destroy(true);
-																																																																														}
-																																																																														that.onUpdateDateTime();
+
+																																																																											/* GetPedidoPrepostoItem */
+																																																																											oModel.read("/GetPedidoPrepostoItem", {
+																																																																												urlParameters: {
+																																																																													"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																																												},
+																																																																												success: function(retornoPVPrepostoItem) {
+																																																																													var txPVPrepostoItem = db.transaction("ItensPedido", "readwrite");
+																																																																													var objPVPrepostoItem = txPVPrepostoItem.objectStore("ItensPedido");
+
+																																																																													for (var i = 0; i < retornoPVPrepostoItem.results.length; i++) {
+
+																																																																														var objBancoPVPrepostoItem = {
+																																																																															idItemPedido: retornoPVPrepostoItem.results[i].Iditempedido,
+																																																																															index: parseInt(retornoPVPrepostoItem.results[i].Tindex),
+																																																																															knumh: retornoPVPrepostoItem.results[i].Knumh,
+																																																																															knumhExtra: retornoPVPrepostoItem.results[i].Knumhextra,
+																																																																															zzRegra: retornoPVPrepostoItem.results[i].Zzregra,
+																																																																															zzGrpmatExtra: retornoPVPrepostoItem.results[i].Zzgrpmatextra,
+																																																																															zzGrpmat: retornoPVPrepostoItem.results[i].Zzgrpmat,
+																																																																															zzRegraExtra: retornoPVPrepostoItem.results[i].Zzregraextra,
+																																																																															maktx: retornoPVPrepostoItem.results[i].Maktx,
+																																																																															matnr: retornoPVPrepostoItem.results[i].Matnr,
+																																																																															nrPedCli: retornoPVPrepostoItem.results[i].Nrpedcli,
+																																																																															ntgew: parseFloat(retornoPVPrepostoItem.results[i].Ntgew),
+																																																																															tipoItem: retornoPVPrepostoItem.results[i].Tipoitem,
+																																																																															zzDesext: parseFloat(retornoPVPrepostoItem.results[i].Zzdesext),
+																																																																															zzDesitem: parseFloat(retornoPVPrepostoItem.results[i].Zzdesitem),
+																																																																															zzPercDescDiluicao: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdescdiluicao),
+																																																																															zzPercDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdesctotal),
+																																																																															zzPercom: parseFloat(retornoPVPrepostoItem.results[i].Zzpercom),
+																																																																															zzPervm: parseFloat(retornoPVPrepostoItem.results[i].Zzpervm),
+																																																																															zzQnt: parseInt(retornoPVPrepostoItem.results[i].Zzqnt, 10),
+																																																																															zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
+																																																																															zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
+																																																																															zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
+																																																																															zzVprodABB: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodabb),
+																																																																															aumng: parseInt(retornoPVPrepostoItem.results[i].Aumng, 10),
+																																																																															zzVprodDesc2: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc2),
+																																																																															zzVprodMinPermitido: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodminpermitido),
+																																																																															zzValorDiluido: parseFloat(retornoPVPrepostoItem.results[i].Zzvalordiluido),
+																																																																															zzValExcedidoItem: parseFloat(retornoPVPrepostoItem.results[i].Zzvalexcedidoitem),
+																																																																															zzQntDiluicao: parseInt(retornoPVPrepostoItem.results[i].Zzqntdiluicao, 10),
+																																																																															tipoItem2: retornoPVPrepostoItem.results[i].Tipoitem2,
+																																																																															maxDescPermitidoExtra: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitido),
+																																																																															maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra),
+																																																																															mtpos: retornoPVPrepostoItem.results[i].Mtpos,
+																																																																															kbetr: retornoPVPrepostoItem.results[i].Kbetr,
+																																																																															zzQntAmostra: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntamostra, 10))
+																																																																														};
+
+																																																																														var requestPVPrepostoItem = objPVPrepostoItem.put(objBancoPVPrepostoItem);
+
+																																																																														requestPVPrepostoItem.onsuccess = function(event) {
+																																																																															console.log("Dados Item PV Preposto inseridos. " + event);
+																																																																														};
+
+																																																																														requestPVPrepostoItem.onerror = function(event) {
+																																																																															console.log("Dados Item PV Preposto não foram inseridos :" + event);
+																																																																														};
 																																																																													}
-																																																																												});
-								
+
+																																																																													MessageBox.show(
+																																																																														"Tabelas carregadas com sucesso!", {
+																																																																															icon: MessageBox.Icon.SUCCESS,
+																																																																															title: "Carregamento Completo",
+																																																																															actions: [MessageBox.Action.OK],
+																																																																															onClose: function() {
+																																																																																if (that._ItemDialog) {
+																																																																																	that._ItemDialog.destroy(true);
+																																																																																}
+																																																																																that.onUpdateDateTime();
+																																																																															}
+																																																																														});
+
+																																																																												},
+																																																																												error: function(error) {
+																																																																													console.log(error);
+																																																																													that.onMensagemErroODATA(error.statusCode);
+																																																																												}
+																																																																											}); // GetPedidoPrepostoItem
 																																																																										},
 																																																																										error: function(error) {
 																																																																											console.log(error);
 																																																																											that.onMensagemErroODATA(error.statusCode);
 																																																																										}
-																																																																									}); // GetPedidoPrepostoItem
-																																																																								},
-																																																																								error: function(error) {
-																																																																									console.log(error);
-																																																																									that.onMensagemErroODATA(error.statusCode);
+																																																																									}); // GetPedidoPrepostoTopo
+																																																																								} else {
+																																																																									MessageBox.show(
+																																																																										"Tabelas carregadas com sucesso!", {
+																																																																											icon: MessageBox.Icon.SUCCESS,
+																																																																											title: "Carregamento Completo",
+																																																																											actions: [MessageBox.Action.OK],
+																																																																											onClose: function() {
+																																																																												if (that._ItemDialog) {
+																																																																													that._ItemDialog.destroy(true);
+																																																																												}
+																																																																												that.onUpdateDateTime();
+																																																																											}
+																																																																										});
 																																																																								}
-																																																																							}); // GetPedidoPrepostoTopo
-																																																																						} else {
-																																																																							MessageBox.show(
-																																																																								"Tabelas carregadas com sucesso!", {
-																																																																									icon: MessageBox.Icon.SUCCESS,
-																																																																									title: "Carregamento Completo",
-																																																																									actions: [MessageBox.Action.OK],
-																																																																									onClose: function() {
-																																																																										if (that._ItemDialog) {
-																																																																											that._ItemDialog.destroy(true);
-																																																																										}
-																																																																										that.onUpdateDateTime();
-																																																																									}
-																																																																								});
-																																																																						}
+																																																																							},
+																																																																							error: function(error) {
+																																																																								console.log(error);
+																																																																								that.onMensagemErroODATA(error.statusCode);
+																																																																							}
+																																																																						});
 																																																																					},
 																																																																					error: function(error) {
 																																																																						console.log(error);
@@ -2038,7 +2090,7 @@ sap.ui.define([
 																																																																that.onMensagemErroODATA(error.statusCode);
 																																																															}
 																																																														});
-					
+
 																																																													},
 																																																													error: function(error) {
 																																																														console.log(error);
@@ -2172,7 +2224,7 @@ sap.ui.define([
 																				console.log(error);
 																				that.onMensagemErroODATA(error.statusCode);
 																			}
-															});
+																		});
 																	},
 																	error: function(error) {
 																		console.log(error);
@@ -2198,12 +2250,12 @@ sap.ui.define([
 													});
 											}
 										};
-										
+
 										request.onerror = function(ex) {
 											console.log(ex);
 											console.log("Não foi possivel encontrar o registro na tabela de usuários");
 										};
-											
+
 									}
 								}
 							});
@@ -2301,7 +2353,7 @@ sap.ui.define([
 									}
 								});
 						}
-						
+
 						that.getOwnerComponent().getModel("modelAux").setProperty("/Usuario", result1);
 						var oPrincipal = that.getView().getModel("menu").getProperty("/Principal");
 
@@ -2503,11 +2555,11 @@ sap.ui.define([
 
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DIALOG CREDENCIAIS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 			onOpenCredenciais: function() {
-				
+
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-				
+
 				var that = this;
 
 				if (!this._CreateMaterialFragment) {
@@ -2515,9 +2567,9 @@ sap.ui.define([
 						"testeui5.view.salvarLogin",
 						this
 					);
-					
+
 					this.getView().addDependent(this._ItemDialog);
-					
+
 				}
 
 				this._ItemDialog.open();
@@ -2543,10 +2595,10 @@ sap.ui.define([
 
 						var result = e.target.result;
 						if (result !== null && result !== undefined) {
-							
+
 							sap.ui.getCore().byId("idUsuario").setValue(result.codUsr);
 							that.getOwnerComponent().getModel("modelAux").setProperty("/CodUsr", result.codUsr);
-							
+
 							sap.ui.getCore().byId("idUsuario").setEnabled(false);
 							sap.ui.getCore().byId("idSenha").setValue(result.senha);
 
@@ -2554,7 +2606,7 @@ sap.ui.define([
 					};
 				};
 			},
-			
+
 			onUpdateDateTime: function() {
 				var that = this;
 				var open = indexedDB.open("VB_DataBase");
@@ -2794,8 +2846,8 @@ sap.ui.define([
 				}
 
 			},
-			
-			onOpenMudarSenha: function(){
+
+			onOpenMudarSenha: function() {
 				var that = this;
 				var open = indexedDB.open("VB_DataBase");
 
@@ -2818,15 +2870,15 @@ sap.ui.define([
 
 						var result = e.target.result;
 						if (result !== null && result !== undefined) {
-							
+
 							sap.ui.getCore().byId("idUsuario").setValue(result.codUsr);
 							that.getOwnerComponent().getModel("modelAux").setProperty("/CodUsr", result.codUsr);
 							that.getOwnerComponent().getModel("modelAux").setProperty("/SenhaAlterar", result.senha);
-							
+
 							if (that._ItemDialog) {
 								that._ItemDialog.destroy(true);
 							}
-							
+
 							if (!that._CreateMaterialFragment) {
 								that._ItemDialog = sap.ui.xmlfragment(
 									"testeui5.view.AlterarSenha",
@@ -2835,15 +2887,14 @@ sap.ui.define([
 								that.getView().addDependent(that._ItemDialog);
 							}
 							that._ItemDialog.open();
-						}
-						else{
+						} else {
 							sap.m.MessageBox.show(
 								"Faça a autenticação com Usuário e Senha primeiro!", {
 									icon: sap.m.MessageBox.Icon.WARNING,
 									title: "Autenticação no sistema!",
 									actions: [sap.m.MessageBox.Action.OK],
 									onClose: function(oAction) {
-										
+
 									}
 								}
 							);
@@ -2851,26 +2902,26 @@ sap.ui.define([
 					};
 				};
 			},
-			
-			onFecharAlteracaoSenha:function(){
-				
+
+			onFecharAlteracaoSenha: function() {
+
 				if (this._ItemDialog) {
 					this._ItemDialog.destroy(true);
 				}
-				
+
 				this.onOpenCredenciais();
 			},
-			
-			onDialogMudarSenha: function(){
+
+			onDialogMudarSenha: function() {
 				var that = this;
 				var senha = sap.ui.getCore().byId("idSenha").getValue();
 				var senhaNova = sap.ui.getCore().byId("idSenhaNova").getValue();
 				var senhaNova2 = sap.ui.getCore().byId("idSenhaNova2").getValue();
 				var codUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
 				var werks = this.getOwnerComponent().getModel("modelAux").getProperty("/Werks");
-				
-				if(senhaNova != senhaNova2){
-					
+
+				if (senhaNova != senhaNova2) {
+
 					sap.m.MessageBox.show(
 						"As senhas são diferentes!", {
 							icon: sap.m.MessageBox.Icon.WARNING,
@@ -2881,94 +2932,93 @@ sap.ui.define([
 							}
 						}
 					);
-					
-				} else{
-					
+
+				} else {
+
 					var oModel = this.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
-					
+
 					// var oModel = new sap.ui.model.odata.v2.ODataModel("http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/", { 
 					// 	json     : true,
 					// 	user     : "appadmin",
 					// 	password : "sap123"
 					// });
-					
+
 					sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(true);
-	
-					oModel.read("/MudarSenha(IvCodRepres='" + codUsuario + "',IvWerks='" + werks + "',IvSenha='" + senha  
-						+ "',IvNovaSenha='" + senhaNova + "')", {
-							success: function(retorno) {
-								if (retorno.EvRettyp == "E") {
-	
-									sap.m.MessageBox.show(
-										retorno.EvReturn, {
-											icon: sap.m.MessageBox.Icon.WARNING,
-											title: "Falha ao atualizar Senha!",
-											actions: [sap.m.MessageBox.Action.OK],
-											onClose: function(oAction) {
-												sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(false);
-	
-											}
+
+					oModel.read("/MudarSenha(IvCodRepres='" + codUsuario + "',IvWerks='" + werks + "',IvSenha='" + senha + "',IvNovaSenha='" + senhaNova + "')", {
+						success: function(retorno) {
+							if (retorno.EvRettyp == "E") {
+
+								sap.m.MessageBox.show(
+									retorno.EvReturn, {
+										icon: sap.m.MessageBox.Icon.WARNING,
+										title: "Falha ao atualizar Senha!",
+										actions: [sap.m.MessageBox.Action.OK],
+										onClose: function(oAction) {
+											sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(false);
+
 										}
-									);
-	
-								} else if (retorno.EvRettyp == "S") {
-									
-									var open = indexedDB.open("VB_DataBase");
-									
-									open.onerror = function(hxr) {
-										console.log("Erro ao abrir tabelas.");
-										console.log(hxr.Message);
-									};
-	
-									//Load tables
-									open.onsuccess = function(e) {
-	
-										var db = e.target.result;
-	
-										var objUsuarios = db.transaction(["Usuarios"], "readwrite");
-										var objectStoreUsuarios = objUsuarios.objectStore("Usuarios");
-	
-										var request = objectStoreUsuarios.get(werks);
-	
-										request.onsuccess = function(e1) {
-											var result = e1.target.result;
-											
-											if (result != null || result != undefined) {
-												
-												result.senha = senhaNova;
-	
-												var requestUsuariosAdd = objectStoreUsuarios.put(result);
-	
-												requestUsuariosAdd.onsuccess = function() {
-	
-													MessageBox.show(retorno.EvReturn, {
-														icon: MessageBox.Icon.SUCCESS,
-														title: "Confirmação",
-														actions: [MessageBox.Action.OK],
-														onClose: function() {
-															if (that._ItemDialog) {
-																that._ItemDialog.destroy(true);
-															}
+									}
+								);
+
+							} else if (retorno.EvRettyp == "S") {
+
+								var open = indexedDB.open("VB_DataBase");
+
+								open.onerror = function(hxr) {
+									console.log("Erro ao abrir tabelas.");
+									console.log(hxr.Message);
+								};
+
+								//Load tables
+								open.onsuccess = function(e) {
+
+									var db = e.target.result;
+
+									var objUsuarios = db.transaction(["Usuarios"], "readwrite");
+									var objectStoreUsuarios = objUsuarios.objectStore("Usuarios");
+
+									var request = objectStoreUsuarios.get(werks);
+
+									request.onsuccess = function(e1) {
+										var result = e1.target.result;
+
+										if (result != null || result != undefined) {
+
+											result.senha = senhaNova;
+
+											var requestUsuariosAdd = objectStoreUsuarios.put(result);
+
+											requestUsuariosAdd.onsuccess = function() {
+
+												MessageBox.show(retorno.EvReturn, {
+													icon: MessageBox.Icon.SUCCESS,
+													title: "Confirmação",
+													actions: [MessageBox.Action.OK],
+													onClose: function() {
+														if (that._ItemDialog) {
+															that._ItemDialog.destroy(true);
 														}
-													});
-	
-												};
-												requestUsuariosAdd.onerror = function() {
-													console.log("Erro ao adicionar dados de login.");
-												};
-	
-											} 
-										};
+													}
+												});
+
+											};
+											requestUsuariosAdd.onerror = function() {
+												console.log("Erro ao adicionar dados de login.");
+											};
+
+										}
 									};
-								}
-							},
-							error: function(error) {
-	
-								sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(false);
-								that.onMensagemErroODATA(error.statusCode);
-	
+								};
 							}
-						});
+						},
+						error: function(error) {
+
+							sap.ui.getCore().byId("idDialogAlterarSenha").setBusy(false);
+							that.onMensagemErroODATA(error.statusCode);
+
+						}
+					});
 				}
 			},
 

@@ -34,7 +34,7 @@ tr[data-mydataAprov="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubR
 }
 
 tr[data-mydataEF="2"], tr[data-mydataEF="2"] + tr.sapMListTblSubRow, tr[data-mydataPED="9"], tr[data-mydataPED="9"] + tr.sapMListTblSubRow {	
-  background:  #fff10d7d !important;
+  background:  rgba(255, 238, 13, 0.34) !important;
 }
 
 tr[data-mydata="Diluido"], tr[data-mydata="Diluido"] + tr.sapMListTblSubRow  {	
