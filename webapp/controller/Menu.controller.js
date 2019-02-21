@@ -120,7 +120,8 @@ sap.ui.define([
 								// 	password : "sap123"
 								// });
 								
-								var codRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
+								var codRepres = that.getView().getModel("modelAux").getProperty("/CodUsr");
+								//var codRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
 								oMenuAprovar.visible = true;
 								oMenuAprovar.busy = true;
 								

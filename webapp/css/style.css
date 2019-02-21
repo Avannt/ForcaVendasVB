@@ -33,6 +33,10 @@ tr[data-mydataAprov="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubR
   background:  #FF8484 !important;
 }
 
+tr[data-mydataRP="Inconsistente"], tr[data-mydataRP="Inconsistente"] + tr.sapMListTblSubRow {	
+  background:  rgba(255, 0, 0, 0.34) !important;
+}
+
 tr[data-mydataEF="2"], tr[data-mydataEF="2"] + tr.sapMListTblSubRow, tr[data-mydataPED="9"], tr[data-mydataPED="9"] + tr.sapMListTblSubRow {	
   background:  rgba(255, 238, 13, 0.34) !important;
 }

@@ -364,14 +364,77 @@ sap.ui.define([
 				var db = open1.result;
 
 				var NrPedido = oNumeroPedido.getBindingContext("pedidosCadastrados").getProperty("nrPedCli");
+				var sStatus = oNumeroPedido.getBindingContext("pedidosCadastrados").getProperty("situacaoPedido");
+				
 				that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", NrPedido);
-
-				var promise = new Promise(function(resolve, reject) {
-					that.carregaModelCliente(db, resolve, reject);
-				});
-
-				promise.then(function() {
-					sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+				
+				new Promise(function(res1, rej1){
+					/* Se o status for PEN (Pendente), devo perguntar se o usuário deseja editar o pedido */
+					if (sStatus == "PEN" || sStatus == "Preposto"){
+						MessageBox.show("Deseja reabrir o pedido?", {
+							icon: MessageBox.Icon.WARNING,
+							title: "Pedido finalizado.",
+							actions: ["Reabrir", "Vizualizar", sap.m.MessageBox.Action.CANCEL],
+							onClose: function(oAction) {
+								
+								/* Caso afirmativo, altero o status do pedido para 2 (Em digitação) (idStatusPedido = 2)*/
+								if (oAction == "Reabrir") {
+									var store1 = db.transaction("PrePedidos", "readwrite");
+									var objPedido = store1.objectStore("PrePedidos");
+									var req = objPedido.get(NrPedido);
+									
+									req.onsuccess = function(ret) {
+										var result = ret.target.result;
+										var oPed = result;
+										oPed.idStatusPedido = 1; // Em digitação
+										oPed.situacaoPedido = "EM DIGITAÇÃO";
+						
+										store1 = db.transaction("PrePedidos", "readwrite");
+										objPedido = store1.objectStore("PrePedidos");
+										req = objPedido.put(oPed);
+						
+										req.onsuccess = function() {
+											/* Pedido reaberto */
+											res1();
+											console.log("O pedido foi reaberto.");
+										};
+										
+										req.onerror = function() {
+											/* Erro ao reabir pedido */
+											rej1("Erro ao reabrir pedido!");
+											console.log("Erro ao abrir o Pedido > " + NrPedido);
+										};
+									};
+								}
+								
+								/* Se o usuário escolher Vizualizar, levo o usuário direto para o pedido sem alterar o status */
+								if (oAction == "Vizualizar") {
+									res1();
+								}
+								
+								/* Caso negativo, mantenho o status do pedido em 3 (Finalizado) (idStatusPedido = 3)*/
+							}
+						});
+					} else {
+						res1();
+					}
+					/* ---------------------------------------------- */
+					
+				}).then(function(){
+					var promise = new Promise(function(resolve, reject) {
+						that.carregaModelCliente(db, resolve, reject);
+					});
+	
+					promise.then(function() {
+						sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+					});
+				}).catch(function(err){
+					MessageBox.error(err, {
+						icon: MessageBox.Icon.WARNING,
+						title: "Reabrir pedido.",
+						actions: [sap.m.MessageBox.Action.OK]
+					});
+					
 				});
 			};
 		},

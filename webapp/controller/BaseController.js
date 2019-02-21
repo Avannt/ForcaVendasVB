@@ -224,6 +224,20 @@ sap.ui.define([
 			} else {
 				this.getRouter().navTo("NotFoun", {}, true);
 			}
+		},
+
+		mErro: function() {
+
+		},
+
+		mSuc: function(sErro, sTempTitulo) {
+			var sTitulo = sTempTitulo;
+			
+			sap.m.MessageBox.show(sErro, {
+				icon: sap.m.MessageBox.Icon.SUCCESS,
+				title: sTitulo,
+				actions: ["Sim", "Cancelar"]
+			});
 		}
 	});
 });

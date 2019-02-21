@@ -54,7 +54,7 @@
 			"icon": "waiver",
 			"title": "Verbas",
 			"info": "Movim. e Saldo",
-			"visible": false,
+			"visible": true,
 			"number": ""
 	},
 		{

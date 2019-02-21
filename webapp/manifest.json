@@ -174,13 +174,25 @@
 				"pattern": "Aprovacoes",
 				"target": "Aprovacoes"
 			}, {
-				"name": "relatorioEnvSaldo",
+				"name": "relatorioEntregaFutura",
 				"pattern": "relatorioEnvSaldo",
-				"target": "relatorioEnvSaldo"
+				"target": "relatorioEntregaFutura"
 			}, {
 				"name": "PedidoDetalheAprov",
 				"pattern": "PedidoDetalheAprov",
 				"target": "PedidoDetalheAprov"
+			}, {
+				"name": "VerbaConsultas",
+				"pattern": "verbaConsultas",
+				"titleTarget": "",
+				"greedy": false,
+				"target": "VerbaConsultas"
+			}, {
+				"name": "PedidoDetalheRel",
+				"pattern": "PedidoDetalheRel",
+				"titleTarget": "",
+				"greedy": false,
+				"target": "PedidoDetalheRel"
 			}],
 			"targets": {
 				"login": {
@@ -275,6 +287,14 @@
 				"PedidoDetalheAprov": {
 					"viewType": "XML",
 					"viewName": "PedidoDetalheAprov"
+				},
+				"relatorioEntregaFutura": {
+					"viewType": "XML",
+					"viewName": "relatorioEntregaFutura"
+				},
+				"PedidoDetalheRel": {
+					"viewType": "XML",
+					"viewName": "PedidoDetalheRel"
 				}
 			}
 		}

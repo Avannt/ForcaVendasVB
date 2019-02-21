@@ -353,7 +353,8 @@ sap.ui.define([
 
 			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
-			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
+			//var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
 			oModel.read("/PedidosAprovar(IAprovador='" + codRepres + "')", {
 				success: function(retorno) {
@@ -958,7 +959,8 @@ sap.ui.define([
 
 			var	oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
-			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+			var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
+			//var codRepres = that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
 
 			oModel.read("/PedidosAprovar", {
 				urlParameters: {

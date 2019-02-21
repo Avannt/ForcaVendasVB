@@ -5,7 +5,7 @@
 		<content>
 			<Table id="table_entregas" width="100%" backgroundDesign="Translucent" visible="false" items="{ path:'EntregasEnviar>/' }"
 				mode="MultiSelect" itemPress="onItemPressEF" growingThreshold="3"
-				growingTriggerText="Proximas entregas &gt;&gt;" growing="true" noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0"
+				growingTriggerText="Proximas entregas " growing="true" noDataText="Nenhum pedido pendente para envio" busyIndicatorDelay="0"
 				fixedLayout="false">
 				<headerToolbar>
 					<Toolbar>

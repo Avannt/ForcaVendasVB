@@ -541,9 +541,10 @@ sap.ui.define([
 							var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
 							that.getView().setModel(oModel, "ItensPedidoGrid");
 
-							if (oPrePedido.idStatusPedido == 3) {
+							if (oPrePedido.idStatusPedido == 3 || oPrePedido.idStatusPedido == 2 || oPrePedido.idStatusPedido == 9) {
 								that.onBloqueiaPrePedidoTotal(false);
 							} else {
+								that.onBloqueiaPrePedidoTotal(true);
 								that.onBloqueiaPrePedido();
 								that.byId("idTopLevelIconTabBar").setSelectedKey("tab1");
 							}
@@ -806,6 +807,9 @@ sap.ui.define([
 
 				this.byId("idPercEntrada").setVisible(false);
 				this.byId("idValorEntrada").setVisible(false);
+				
+				// Se o 'flag' Existe entrada for desmarcado, zero o valor da entrada.
+				this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValorEntradaPedido", 0);
 			}
 		},
 
@@ -2083,7 +2087,10 @@ sap.ui.define([
 			var existeParcelas = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ExisteEntradaPedido");
 			var valorEntradaPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido");
 			var percEntradaPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
+			
 			var quantidadeParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"));
+			quantidadeParcelas = (quantidadeParcelas == 0 ? 1 : quantidadeParcelas);
+			
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			var totalExcedenteDescontosDiluicao = 0;
 
@@ -2416,6 +2423,9 @@ sap.ui.define([
 				valorParcelas = parseFloat(Math.round(valorParcelas * 100) / 100).toFixed(2);
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", valorParcelas);
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantidadeParcelasPedido", quantidadeParcelas + " x");
+
+				// Se não houve entrada, zero a informação
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/EntradaPedido", "");
 
 			} else if (existeParcelas == true) {
 
@@ -4164,7 +4174,7 @@ sap.ui.define([
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			that.oItemPedido = [];
 
-			if (statusPedido == 3) {
+			if (statusPedido == 3 || statusPedido == 2 || statusPedido == 9) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
@@ -4199,7 +4209,7 @@ sap.ui.define([
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			that.oItemPedido = [];
 
-			if (statusPedido == 3) {
+			if (statusPedido == 3 || statusPedido == 2 || statusPedido == 9) {
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
 					title: "Não Permitido",
@@ -4246,7 +4256,7 @@ sap.ui.define([
 			that.getOwnerComponent().getModel("modelAux").setProperty("/EditarindexItem", itemPedido);
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 
-			if (statusPedido == 3) {
+			if (statusPedido == 3 || statusPedido == 2 || statusPedido == 9) {
 
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
@@ -4298,7 +4308,7 @@ sap.ui.define([
 			var idItemPedido = oItem.getBindingContext("ItensPedidoGrid").getProperty("idItemPedido");
 			var idItem = oItem.getBindingContext("ItensPedidoGrid").getProperty("matnr");
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
-			if (statusPedido == 3) {
+			if (statusPedido == 3 || statusPedido == 2 || statusPedido == 9) {
 
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
@@ -4388,7 +4398,7 @@ sap.ui.define([
 			var tipoPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
 			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
 
-			if (idStatusPedido == 3) {
+			if (idStatusPedido == 3 || idStatusPedido == 2 || idStatusPedido == 9) {
 
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,
@@ -4460,6 +4470,8 @@ sap.ui.define([
 							if (that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == 2) {
 								that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 9);
 								that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "Preposto");
+							}else{
+								that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 2);
 							}
 
 							var objBancoPrePedido = {
@@ -4468,7 +4480,8 @@ sap.ui.define([
 								werks: that.getOwnerComponent().getModel("modelAux").getProperty("/Werks"),
 								codRepres: that.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres"),
 								tipoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido"),
-								idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
+								//idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"),
+								idStatusPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido"), /* Forço o status para finalizado */
 								situacaoPedido: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/SituacaoPedido"),
 								tabPreco: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"),
 								completo: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/Completo"),
@@ -4576,7 +4589,7 @@ sap.ui.define([
 			var idStatusPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
 			var codCliente = that.getOwnerComponent().getModel("modelAux").getProperty("/Kunnr");
 
-			if (idStatusPedido == 3) {
+			if (idStatusPedido == 3 || idStatusPedido == 2 || idStatusPedido == 9) {
 
 				MessageBox.show("Este pedido não pode mais ser alterado", {
 					icon: MessageBox.Icon.WARNING,

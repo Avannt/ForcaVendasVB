@@ -51,10 +51,10 @@
 		"visible": true,
 		"number": ""
 	}, {
-		"id": "relatorioEnvSaldo",
-		"icon": "expense-report",
-		"title": "Envio Saldo",
-		"info": "Históricos",
+		"id": "verbaConsultas",
+		"icon": "waiver",
+		"title": "Verbas",
+		"info": "Movim. e Saldo",
 		"visible": true,
 		"number": ""
 	}, {
