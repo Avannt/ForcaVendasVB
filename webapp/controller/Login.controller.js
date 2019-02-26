@@ -34,7 +34,7 @@ sap.ui.define([
 				var sUrl;
 				//Versão App
 				if (this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")) {
-					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.32");
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.34");
 					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/";
 
 					var oModel = new sap.ui.model.odata.v2.ODataModel(sUrl, {
@@ -856,7 +856,7 @@ sap.ui.define([
 									if (oAction === sap.m.MessageBox.Action.YES) {
 
 										var vTables = ["Clientes", "A969", "A959", "A960", "A961", "A962", "A963", "A964", "A965", "A966", "A967", "A968",
-											"Materiais", "TitulosAbertos", "Konm", "TiposPedidos", "FormasPagamentos", "StatusPedidos", "CmpGbItensBrindes",
+											"Materiais", "TitulosAbertos", "Konm", "TiposPedidos", "FormasPagamentos", "StatusPedidos", "CmpGbItensBrindes", "EntregaFutura3",
 											"CmpSldBrindes", "CmpProdsAcabs", "CmpGbQtdItens", "CmpGbProdsAcabs", "CmpGbGrpProdsAcabs", "CmpEnxoval", "EntregaFutura", "ControleAmostra", "SaldoVerba"
 										];
 
@@ -1794,577 +1794,625 @@ sap.ui.define([
 																																																																				console.log("Dados EF Pendentes não foram inseridos :" + event);
 																																																																			};
 																																																																		}
-
-																																																																		oModel.read("/AcompPedidos", {
+																																																																		oModel.read("/StatusPedidoEF", {
 																																																																			urlParameters: {
-																																																																				"$filter": "IRepres eq '" + CodRepres + "'"
+																																																																				"$filter": "IReprs eq '" + CodRepres + "'"
 																																																																			},
-																																																																			success: function(retornoAcompPedidos) {
-																																																																				var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
-																																																																				var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
+																																																																			success: function(retornoStatusPedidoEF) {
+																																																																				var txStatusPedidoEF;
+																																																																				var objStatusPedidoEF;
 
-																																																																				for (i = 0; i < retornoAcompPedidos.results.length; i++) {
+																																																																				for (i = 0; i < retornoStatusPedidoEF.results.length; i++) {
+																																																																					txStatusPedidoEF = db.transaction("EntregaFutura3", "readwrite");
+																																																																					objStatusPedidoEF = txStatusPedidoEF.objectStore("EntregaFutura3");
 
-																																																																					var dataPedido = retornoAcompPedidos.results[i].Nrpedcli.split(".");
-																																																																					dataPedido = dataPedido[1];
-																																																																					dataPedido = dataPedido.substring(6, 8) + "/" + dataPedido.substring(4, 6) + "/" + dataPedido.substring(0, 4);
-
-																																																																					var objBancoAcompPedidos = {
-																																																																						idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
-																																																																						Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
-																																																																						Kunnr: retornoAcompPedidos.results[i].Kunnr,
-																																																																						NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
-																																																																						Erdat: dataPedido,
-																																																																						Aprov: retornoAcompPedidos.results[i].Aprov,
-																																																																						AprovNome: retornoAcompPedidos.results[i].AprovNome,
-																																																																						Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
-																																																																						Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
-																																																																						Aprovado: retornoAcompPedidos.results[i].Aprovado,
-																																																																						PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png",
-																																																																						Vbeln: retornoAcompPedidos.results[i].Vbeln,
-																																																																						AprovadoDesc: retornoAcompPedidos.results[i].Status,
-																																																																						Auart: retornoAcompPedidos.results[i].Auart,
-																																																																						PedInconsistente: ""
+																																																																					var objBancoStatusPedidoEF = {
+																																																																						Arktx: retornoStatusPedidoEF.results[i].Arktx,
+																																																																						Aubel: retornoStatusPedidoEF.results[i].Aubel,
+																																																																						Aupos: retornoStatusPedidoEF.results[i].Aupos,
+																																																																						Bstkd: retornoStatusPedidoEF.results[i].Bstkd,
+																																																																						Fkimg: retornoStatusPedidoEF.results[i].Fkimg,
+																																																																						// Fkimg2: retornoStatusPedidoEF.results[i].Fkimg2,
+																																																																						IReprs: retornoStatusPedidoEF.results[i].IReprs,
+																																																																						Kunrg: retornoStatusPedidoEF.results[i].Kunrg,
+																																																																						Lifnr: retornoStatusPedidoEF.results[i].Lifnr,
+																																																																						Matnr: retornoStatusPedidoEF.results[i].Matnr,
+																																																																						NameOrg1: retornoStatusPedidoEF.results[i].NameOrg1,
+																																																																						NameOrg2: retornoStatusPedidoEF.results[i].NameOrg2,
+																																																																						Posnr: retornoStatusPedidoEF.results[i].Posnr,
+																																																																						Status: retornoStatusPedidoEF.results[i].Status,
+																																																																						// Sldfut: retornoStatusPedidoEF.results[i].Sldfut,
+																																																																						Vbeln: retornoStatusPedidoEF.results[i].Vbeln,
+																																																																						idEntregaFutura: retornoStatusPedidoEF.results[i].Vbeln + retornoStatusPedidoEF.results[i].Posnr
 																																																																					};
 
-																																																																					if (objBancoAcompPedidos.Auart == "YVEN") {
-																																																																						objBancoAcompPedidos.Auart = "YVEN - VENDA NORMAL";
-																																																																					} else if (objBancoAcompPedidos.Auart == "YVEF") {
-																																																																						objBancoAcompPedidos.Auart = "YVEF - VENDA FUTURA";
-																																																																					} else if (objBancoAcompPedidos.Auart == "YBON") {
-																																																																						objBancoAcompPedidos.Auart = "YBON - BONIFICAÇÃO/AMOSTRA/BRINDE";
-																																																																					} else if (objBancoAcompPedidos.Auart == "YTRO") {
-																																																																						objBancoAcompPedidos.Auart = "YTRO - TROCAS";
-																																																																					} else if (objBancoAcompPedidos == "YVEX") {
-																																																																						objBancoAcompPedidos.Auart = "YVEX - EXPORTAÇÃO";
-																																																																					} else if (objBancoAcompPedidos == "YENF") {
-																																																																						objBancoAcompPedidos.Auart = "YENF - ENTREGA DE SALDO";
-																																																																					}
+																																																																					var requestStatusPedidoEF = objStatusPedidoEF.put(objBancoStatusPedidoEF);
 
-																																																																					/* Regra para identificar pedidos inconsistenstes no sap:
-																																																																					Se o pedido tiver aprovado (objBancoAcompPedidos.Aprovado == "S")
-																																																																					e sem número (objBancoAcompPedidos.Vbeln == "")
-																																																																					Marco ele como inconsistente para pintar a linha de vermelho
-																																																																					no relatório do representante
-																																																																					*/
-
-																																																																					if (objBancoAcompPedidos.Aprovado) {
-																																																																						if (objBancoAcompPedidos.Aprovado == "S") {
-																																																																							if (objBancoAcompPedidos.Vbeln) {
-																																																																								if (objBancoAcompPedidos.Vbeln == "") {
-																																																																									objBancoAcompPedidos.PedInconsistente = "Inconsistente";
-																																																																								}
-																																																																							} else {
-																																																																								objBancoAcompPedidos.PedInconsistente = "Inconsistente";
-																																																																							}
-																																																																						}
-																																																																					}
-
-																																																																					var requestAcompPedidos = objAcompPedidos.put(objBancoAcompPedidos);
-
-																																																																					requestAcompPedidos.onsuccess = function(event) {
-																																																																						console.log("Dados Status Pedido inseridos. " + event);
+																																																																					requestStatusPedidoEF.onsuccess = function(event) {
+																																																																						console.log("Dados StatusPedidoEF inseridos. " + event);
 																																																																					};
 
-																																																																					requestAcompPedidos.onerror = function(event) {
-																																																																						console.log("Dados Status Pedido não foram inseridos :" + event);
+																																																																					requestStatusPedidoEF.onerror = function(event) {
+																																																																						console.log("Dados StatusPedidoEF não foram inseridos :" + event);
 																																																																					};
 																																																																				}
-																																																																				oModel.read("/AcompPedidoTopo", {
+
+																																																																				oModel.read("/AcompPedidos", {
 																																																																					urlParameters: {
-																																																																						"$filter": "IReprs eq '" + CodRepres + "'"
+																																																																						"$filter": "IRepres eq '" + CodRepres + "'"
 																																																																					},
-																																																																					success: function(retornoAcompPedidosT) {
-																																																																						var txAcompPedidosT = db.transaction("AcompPedidoTopo", "readwrite");
-																																																																						var objAcompPedidosT = txAcompPedidosT.objectStore("AcompPedidoTopo");
+																																																																					success: function(retornoAcompPedidos) {
+																																																																						var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
+																																																																						var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
 
-																																																																						for (i = 0; i < retornoAcompPedidosT.results.length; i++) {
+																																																																						for (i = 0; i < retornoAcompPedidos.results.length; i++) {
 
-																																																																							var dataPedidoT = retornoAcompPedidosT.results[i].Nrpedcli.split(".");
-																																																																							dataPedidoT = dataPedidoT[1];
-																																																																							dataPedidoT = dataPedidoT.substring(6, 8) + "/" + dataPedidoT.substring(4, 6) + "/" + dataPedidoT.substring(0, 4);
+																																																																							var dataPedido = retornoAcompPedidos.results[i].Nrpedcli.split(".");
+																																																																							dataPedido = dataPedido[1];
+																																																																							dataPedido = dataPedido.substring(6, 8) + "/" + dataPedido.substring(4, 6) + "/" + dataPedido.substring(0, 4);
 
-																																																																							var objBancoAcompPedidosT = {
-																																																																								Nrpedcli: retornoAcompPedidosT.results[i].Nrpedcli,
-																																																																								Idstatuspedido: parseInt(retornoAcompPedidosT.results[i].Idstatuspedido),
-																																																																								Kunnr: retornoAcompPedidosT.results[i].Kunnr,
-																																																																								Werks: retornoAcompPedidosT.results[i].Werks,
-																																																																								Auart: retornoAcompPedidosT.results[i].Auart,
-																																																																								Situacaopedido: retornoAcompPedidosT.results[i].Situacaopedido,
-																																																																								Ntgew: parseInt(retornoAcompPedidosT.results[i].Ntgew),
-																																																																								Pltyp: retornoAcompPedidosT.results[i].Pltyp,
-																																																																								Erdat: retornoAcompPedidosT.results[i].Erdat,
-																																																																								Horaped: retornoAcompPedidosT.results[i].Horaped,
-																																																																								completo: "Não",
-																																																																								valMinPedido: parseFloat(retornoAcompPedidosT.results[i].Valminped),
-																																																																								Valminped: retornoAcompPedidosT.results[i].Erdat.substring(8, 6) + "/" +
-																																																																									retornoAcompPedidosT.results[i].Erdat.substring(6, 4) + "/" +
-																																																																									retornoAcompPedidosT.results[i].Erdat.substring(0, 4),
-																																																																								dataImpl: retornoAcompPedidosT.results[i].Erdat.substring(8, 6) + "/" +
-																																																																									retornoAcompPedidosT.results[i].Erdat.substring(6, 4) + "/" +
-																																																																									retornoAcompPedidosT.results[i].Erdat.substring(0, 4) + "-" +
-																																																																									retornoAcompPedidosT.results[i].Horaped.substring(0, 2) + ":" +
-																																																																									retornoAcompPedidosT.results[i].Horaped.substring(2, 4) + ":" +
-																																																																									retornoAcompPedidosT.results[i].Horaped.substring(4, 6),
-																																																																								Obsped: retornoAcompPedidosT.results[i].Obsped,
-																																																																								Obsaudped: retornoAcompPedidosT.results[i].Obsaudped,
-																																																																								existeEntradaPedido: (retornoAcompPedidosT.results[i].Existeentradapedido == "true"),
-																																																																								Percentradapedido: parseInt(retornoAcompPedidosT.results[i].Percentradapedido),
-																																																																								Valorentradapedido: parseFloat(retornoAcompPedidosT.results[i].Valorentradapedido),
-																																																																								Inco1: retornoAcompPedidosT.results[i].Inco1,
-																																																																								Diasprimeiraparcela: parseInt(retornoAcompPedidosT.results[i].Diasprimeiraparcela),
-																																																																								Quantparcelas: parseInt(retornoAcompPedidosT.results[i].Quantparcelas),
-																																																																								Intervaloparcelas: parseInt(retornoAcompPedidosT.results[i].Intervaloparcelas),
-																																																																								Tiponego: retornoAcompPedidosT.results[i].Tiponego,
-																																																																								Totitens: parseInt(retornoAcompPedidosT.results[i].Totitens),
-																																																																								Valorcomissao: parseFloat(retornoAcompPedidosT.results[i].Valorcomissao),
-																																																																								Valtotpedido: parseFloat(retornoAcompPedidosT.results[i].Valtotpedido),
-																																																																								Valtotabcomissao: parseFloat(retornoAcompPedidosT.results[i].Valtotabcomissao),
-																																																																								Valabverba: parseFloat(retornoAcompPedidosT.results[i].Valabverba),
-																																																																								Vlrprz: parseFloat(retornoAcompPedidosT.results[i].Vlrprz),
-																																																																								VlrprzCom: parseFloat(retornoAcompPedidosT.results[i].VlrprzCom),
-																																																																								Vlrdsc: parseFloat(retornoAcompPedidosT.results[i].Vlrdsc),
-																																																																								VlrdscCom: parseFloat(retornoAcompPedidosT.results[i].VlrdscCom),
-																																																																								VlrdscVm: parseFloat(retornoAcompPedidosT.results[i].VlrdscVm),
-																																																																								Vlramo: parseFloat(retornoAcompPedidosT.results[i].Vlramo),
-																																																																								VlramoCom: parseFloat(retornoAcompPedidosT.results[i].VlramoCom),
-																																																																								VlramoVm: parseFloat(retornoAcompPedidosT.results[i].VlramoVm),
-																																																																								Vlrbri: parseFloat(retornoAcompPedidosT.results[i].Vlrbri),
-																																																																								VlrbriCom: parseFloat(retornoAcompPedidosT.results[i].VlrbriCom),
-																																																																								VlrbriVm: parseFloat(retornoAcompPedidosT.results[i].VlrbriVm),
-																																																																								Vlrbon: parseFloat(retornoAcompPedidosT.results[i].Vlrbon),
-																																																																								VlrbonCom: parseFloat(retornoAcompPedidosT.results[i].VlrbonCom),
-																																																																								VlrbonVm: parseFloat(retornoAcompPedidosT.results[i].VlrbonVm),
-																																																																								Valtotabcamppa: parseFloat(retornoAcompPedidosT.results[i].Valtotabcamppa),
-																																																																								Valtotabcampbrinde: retornoAcompPedidosT.results[i].Valtotabcampbrinde,
-																																																																								Valtotabcampenx: retornoAcompPedidosT.results[i].Valtotabcampenx,
-																																																																								Valtotexcndirdesc: parseFloat(retornoAcompPedidosT.results[i].Valtotexcndirdesc),
-																																																																								Valtotexcndirprazo: parseFloat(retornoAcompPedidosT.results[i].Valtotexcndirprazo),
-																																																																								Valverbapedido: parseFloat(retornoAcompPedidosT.results[i].Valverbapedido),
-																																																																								Zzprazomed: parseFloat(retornoAcompPedidosT.results[i].Zzprazomed),
-
-																																																																								valTotalCampEnxoval: parseFloat(0),
-																																																																								valTotalCampGlobal: parseFloat(0),
-																																																																								valTotalCampProdutoAcabado: parseFloat(0),
-																																																																								valUtilizadoVerbaPrazoMed: parseFloat(0),
-
-																																																																								codRepres: CodRepres,
-																																																																								Usuario: parseInt(retornoAcompPedidosT.results[i].Usuario),
-																																																																								Tipousuario: retornoAcompPedidosT.results[i].Tipousuario,
-																																																																								valCampBrinde: parseFloat(0),
-																																																																								valCampEnxoval: parseFloat(0),
-																																																																								valCampGlobal: parseFloat(0),
-
-																																																																								valTotalExcedenteNaoDirecionadoBrinde: 0,
-																																																																								valTotalExcedenteNaoDirecionadoAmostra: 0,
-																																																																								valTotalExcedenteNaoDirecionadoBonif: 0,
-																																																																								zlsch: retornoAcompPedidosT.results[i].Zlsch
+																																																																							var objBancoAcompPedidos = {
+																																																																								idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
+																																																																								Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
+																																																																								Kunnr: retornoAcompPedidos.results[i].Kunnr,
+																																																																								NameOrg1: retornoAcompPedidos.results[i].NameOrg1,
+																																																																								Erdat: dataPedido,
+																																																																								Aprov: retornoAcompPedidos.results[i].Aprov,
+																																																																								AprovNome: retornoAcompPedidos.results[i].AprovNome,
+																																																																								Valtotpedido: retornoAcompPedidos.results[i].Valtotpedido,
+																																																																								Vlrexc: retornoAcompPedidos.results[i].Vlrexc,
+																																																																								Aprovado: retornoAcompPedidos.results[i].Aprovado,
+																																																																								PathImg: sap.ui.require.toUrl("testeui5/img/") + retornoAcompPedidos.results[i].Aprovado + ".png",
+																																																																								Vbeln: retornoAcompPedidos.results[i].Vbeln,
+																																																																								AprovadoDesc: retornoAcompPedidos.results[i].Status,
+																																																																								Auart: retornoAcompPedidos.results[i].Auart,
+																																																																								PedInconsistente: ""
 																																																																							};
 
-																																																																							if (objBancoAcompPedidosT.Auart == "YVEN") {
-																																																																								objBancoAcompPedidosT.Auart = "YVEN - VENDA NORMAL";
-																																																																							} else if (objBancoAcompPedidosT.Auart == "YVEF") {
-																																																																								objBancoAcompPedidosT.Auart = "YVEF - VENDA FUTURA";
-																																																																							} else if (objBancoAcompPedidosT.Auart == "YBON") {
-																																																																								objBancoAcompPedidosT.Auart = "YBON - BONIFICAÇÃO/AMOSTRA/BRINDE";
-																																																																							} else if (objBancoAcompPedidosT.Auart == "YTRO") {
-																																																																								objBancoAcompPedidosT.Auart = "YTRO - TROCAS";
-																																																																							} else if (objBancoAcompPedidosT.Auart == "YVEX") {
-																																																																								objBancoAcompPedidosT.Auart = "YVEX - EXPORTAÇÃO";
-																																																																							} else if (objBancoAcompPedidosT.Auart == "YENF") {
-																																																																								objBancoAcompPedidosT.Auart = "YENF - ENTREGA DE SALDO";
-																																																																							}
-																																																																							objBancoAcompPedidosT.Erdat = objBancoAcompPedidosT.Erdat.substring(4, 6) + "/" + objBancoAcompPedidosT.Erdat.substring(6, 8) + "/" + objBancoAcompPedidosT.Erdat.substring(0, 4);
-																																																																							objBancoAcompPedidosT.Hora = objBancoAcompPedidosT.Horaped.substring(0, 2) + ":" + objBancoAcompPedidosT.Horaped.substring(2, 4) + ":" + objBancoAcompPedidosT.Horaped.substring(4, 6);
-
-																																																																							if (objBancoAcompPedidosT.Tiponego == "01") {
-																																																																								objBancoAcompPedidosT.Tiponego = "01 - Á vista";
-																																																																							} else if (objBancoAcompPedidosT.Tiponego == "02") {
-																																																																								objBancoAcompPedidosT.Tiponego = "02 - A prazo";
+																																																																							if (objBancoAcompPedidos.Auart == "YVEN") {
+																																																																								objBancoAcompPedidos.Auart = "YVEN - VENDA NORMAL";
+																																																																							} else if (objBancoAcompPedidos.Auart == "YVEF") {
+																																																																								objBancoAcompPedidos.Auart = "YVEF - VENDA FUTURA";
+																																																																							} else if (objBancoAcompPedidos.Auart == "YBON") {
+																																																																								objBancoAcompPedidos.Auart = "YBON - BONIFICAÇÃO/AMOSTRA/BRINDE";
+																																																																							} else if (objBancoAcompPedidos.Auart == "YTRO") {
+																																																																								objBancoAcompPedidos.Auart = "YTRO - TROCAS";
+																																																																							} else if (objBancoAcompPedidos == "YVEX") {
+																																																																								objBancoAcompPedidos.Auart = "YVEX - EXPORTAÇÃO";
+																																																																							} else if (objBancoAcompPedidos == "YENF") {
+																																																																								objBancoAcompPedidos.Auart = "YENF - ENTREGA DE SALDO";
 																																																																							}
 
-																																																																							objBancoAcompPedidosT.Quantparcelas = parseInt(objBancoAcompPedidosT.Quantparcelas, 10);
-																																																																							objBancoAcompPedidosT.Diasprimeiraparcela = parseInt(objBancoAcompPedidosT.Diasprimeiraparcela, 10);
+																																																																							/* Regra para identificar pedidos inconsistenstes no sap:
+																																																																							Se o pedido tiver aprovado (objBancoAcompPedidos.Aprovado == "S")
+																																																																							e sem número (objBancoAcompPedidos.Vbeln == "")
+																																																																							Marco ele como inconsistente para pintar a linha de vermelho
+																																																																							no relatório do representante
+																																																																							*/
 
-																																																																							objBancoAcompPedidosT.Existeentradapedido = Boolean(objBancoAcompPedidosT.Existeentradapedido);
-																																																																							objBancoAcompPedidosT.Zzprazomed = parseFloat(objBancoAcompPedidosT.Zzprazomed);
+																																																																							if (objBancoAcompPedidos.Aprovado) {
+																																																																								if (objBancoAcompPedidos.Aprovado == "S") {
+																																																																									if (objBancoAcompPedidos.Vbeln) {
+																																																																										if (objBancoAcompPedidos.Vbeln == "") {
+																																																																											objBancoAcompPedidos.PedInconsistente = "Inconsistente";
+																																																																										}
+																																																																									} else {
+																																																																										objBancoAcompPedidos.PedInconsistente = "Inconsistente";
+																																																																									}
+																																																																								}
+																																																																							}
 
-																																																																							var requestAcompPedidosT = objAcompPedidosT.put(objBancoAcompPedidosT);
+																																																																							var requestAcompPedidos = objAcompPedidos.put(objBancoAcompPedidos);
 
-																																																																							requestAcompPedidosT.onsuccess = function(event) {
-																																																																								console.log("Dados Status Pedido Topo inseridos. " + event);
+																																																																							requestAcompPedidos.onsuccess = function(event) {
+																																																																								console.log("Dados Status Pedido inseridos. " + event);
 																																																																							};
 
-																																																																							requestAcompPedidosT.onerror = function(event) {
-																																																																								console.log("Dados Status Pedido Topo não foram inseridos :" + event);
+																																																																							requestAcompPedidos.onerror = function(event) {
+																																																																								console.log("Dados Status Pedido não foram inseridos :" + event);
 																																																																							};
 																																																																						}
-
-																																																																						oModel.read("/AcompPedidoDetalhe", {
+																																																																						oModel.read("/AcompPedidoTopo", {
 																																																																							urlParameters: {
 																																																																								"$filter": "IReprs eq '" + CodRepres + "'"
 																																																																							},
-																																																																							success: function(retornoAcompPedidosD) {
-																																																																								var txAcompPedidosD = db.transaction("AcompPedidoDetalhe", "readwrite");
-																																																																								var objAcompPedidosD = txAcompPedidosD.objectStore("AcompPedidoDetalhe");
+																																																																							success: function(retornoAcompPedidosT) {
+																																																																								var txAcompPedidosT = db.transaction("AcompPedidoTopo", "readwrite");
+																																																																								var objAcompPedidosT = txAcompPedidosT.objectStore("AcompPedidoTopo");
 
-																																																																								for (i = 0; i < retornoAcompPedidosD.results.length; i++) {
+																																																																								for (i = 0; i < retornoAcompPedidosT.results.length; i++) {
 
-																																																																									var dataPedidoD = retornoAcompPedidosD.results[i].Nrpedcli.split(".");
-																																																																									dataPedidoD = dataPedidoD[1];
-																																																																									dataPedidoD = dataPedidoD.substring(6, 8) + "/" + dataPedidoD.substring(4, 6) + "/" + dataPedidoD.substring(0, 4);
+																																																																									var dataPedidoT = retornoAcompPedidosT.results[i].Nrpedcli.split(".");
+																																																																									dataPedidoT = dataPedidoT[1];
+																																																																									dataPedidoT = dataPedidoT.substring(6, 8) + "/" + dataPedidoT.substring(4, 6) + "/" + dataPedidoT.substring(0, 4);
 
-																																																																									var objBancoAcompPedidosD = {
-																																																																										idItemPedido: retornoAcompPedidosD.results[i].Iditempedido,
-																																																																										Iditempedido: retornoAcompPedidosD.results[i].Iditempedido,
-																																																																										Tindex: parseInt(retornoAcompPedidosD.results[i].Tindex),
-																																																																										Knumh: retornoAcompPedidosD.results[i].Knumh,
-																																																																										Knumhextra: retornoAcompPedidosD.results[i].Knumhextra,
-																																																																										Zzregra: retornoAcompPedidosD.results[i].Zzregra,
-																																																																										Zzgrpmatextra: retornoAcompPedidosD.results[i].Zzgrpmatextra,
-																																																																										Zzgrpmat: retornoAcompPedidosD.results[i].Zzgrpmat,
-																																																																										Zzregraextra: retornoAcompPedidosD.results[i].Zzregraextra,
-																																																																										Maktx: retornoAcompPedidosD.results[i].Maktx,
-																																																																										Matnr: retornoAcompPedidosD.results[i].Matnr,
-																																																																										nrPedCli: retornoAcompPedidosD.results[i].Nrpedcli,
-																																																																										Nrpedcli: retornoAcompPedidosD.results[i].Nrpedcli,
-																																																																										Ntgew: parseFloat(retornoAcompPedidosD.results[i].Ntgew),
-																																																																										Tipoitem: retornoAcompPedidosD.results[i].Tipoitem,
-																																																																										Zzdesext: parseFloat(retornoAcompPedidosD.results[i].Zzdesext),
-																																																																										Zzdesitem: parseFloat(retornoAcompPedidosD.results[i].Zzdesitem),
-																																																																										Zzpercdescdiluicao: parseFloat(retornoAcompPedidosD.results[i].Zzpercdescdiluicao),
-																																																																										Zzpercdesctotal: parseFloat(retornoAcompPedidosD.results[i].Zzpercdesctotal),
-																																																																										Zzpercom: parseFloat(retornoAcompPedidosD.results[i].Zzpercom),
-																																																																										Zzpervm: parseFloat(retornoAcompPedidosD.results[i].Zzpervm),
-																																																																										Zzqnt: parseInt(retornoAcompPedidosD.results[i].Zzqnt, 10),
-																																																																										Zzvprod: parseFloat(retornoAcompPedidosD.results[i].Zzvprod),
-																																																																										Zzvproddesc: parseFloat(retornoAcompPedidosD.results[i].Zzvproddesc),
-																																																																										Zzvproddesctotal: parseFloat(retornoAcompPedidosD.results[i].Zzvproddesctotal),
-																																																																										Zzvprodabb: parseFloat(retornoAcompPedidosD.results[i].Zzvprodabb),
-																																																																										Aumng: parseInt(retornoAcompPedidosD.results[i].Aumng, 10),
-																																																																										Zzvproddesc2: parseFloat(retornoAcompPedidosD.results[i].Zzvproddesc2),
-																																																																										Zzvprodminpermitido: parseFloat(retornoAcompPedidosD.results[i].Zzvprodminpermitido),
-																																																																										Zzvalordiluido: parseFloat(retornoAcompPedidosD.results[i].Zzvalordiluido),
-																																																																										Zzvalexcedidoitem: parseFloat(retornoAcompPedidosD.results[i].Zzvalexcedidoitem),
-																																																																										Zzqntdiluicao: parseInt(retornoAcompPedidosD.results[i].Zzqntdiluicao, 10),
-																																																																										Tipoitem2: retornoAcompPedidosD.results[i].Tipoitem2,
-																																																																										Maxdescpermitido: parseFloat(retornoAcompPedidosD.results[i].Maxdescpermitido),
-																																																																										Maxdescpermitidoextra: parseFloat(retornoAcompPedidosD.results[i].Maxdescpermitidoextra),
-																																																																										Mtpos: retornoAcompPedidosD.results[i].Mtpos,
-																																																																										Kbetr: retornoAcompPedidosD.results[i].Kbetr,
-																																																																										Zzqntamostra: String(parseInt(retornoAcompPedidosD.results[i].Zzqntamostra, 10))
+																																																																									var objBancoAcompPedidosT = {
+																																																																										Nrpedcli: retornoAcompPedidosT.results[i].Nrpedcli,
+																																																																										Idstatuspedido: parseInt(retornoAcompPedidosT.results[i].Idstatuspedido),
+																																																																										Kunnr: retornoAcompPedidosT.results[i].Kunnr,
+																																																																										Werks: retornoAcompPedidosT.results[i].Werks,
+																																																																										Auart: retornoAcompPedidosT.results[i].Auart,
+																																																																										Situacaopedido: retornoAcompPedidosT.results[i].Situacaopedido,
+																																																																										Ntgew: parseInt(retornoAcompPedidosT.results[i].Ntgew),
+																																																																										Pltyp: retornoAcompPedidosT.results[i].Pltyp,
+																																																																										Erdat: retornoAcompPedidosT.results[i].Erdat,
+																																																																										Horaped: retornoAcompPedidosT.results[i].Horaped,
+																																																																										completo: "Não",
+																																																																										valMinPedido: parseFloat(retornoAcompPedidosT.results[i].Valminped),
+																																																																										Valminped: retornoAcompPedidosT.results[i].Erdat.substring(8, 6) + "/" +
+																																																																											retornoAcompPedidosT.results[i].Erdat.substring(6, 4) + "/" +
+																																																																											retornoAcompPedidosT.results[i].Erdat.substring(0, 4),
+																																																																										dataImpl: retornoAcompPedidosT.results[i].Erdat.substring(8, 6) + "/" +
+																																																																											retornoAcompPedidosT.results[i].Erdat.substring(6, 4) + "/" +
+																																																																											retornoAcompPedidosT.results[i].Erdat.substring(0, 4) + "-" +
+																																																																											retornoAcompPedidosT.results[i].Horaped.substring(0, 2) + ":" +
+																																																																											retornoAcompPedidosT.results[i].Horaped.substring(2, 4) + ":" +
+																																																																											retornoAcompPedidosT.results[i].Horaped.substring(4, 6),
+																																																																										Obsped: retornoAcompPedidosT.results[i].Obsped,
+																																																																										Obsaudped: retornoAcompPedidosT.results[i].Obsaudped,
+																																																																										existeEntradaPedido: (retornoAcompPedidosT.results[i].Existeentradapedido == "true"),
+																																																																										Percentradapedido: parseInt(retornoAcompPedidosT.results[i].Percentradapedido),
+																																																																										Valorentradapedido: parseFloat(retornoAcompPedidosT.results[i].Valorentradapedido),
+																																																																										Inco1: retornoAcompPedidosT.results[i].Inco1,
+																																																																										Diasprimeiraparcela: parseInt(retornoAcompPedidosT.results[i].Diasprimeiraparcela),
+																																																																										Quantparcelas: parseInt(retornoAcompPedidosT.results[i].Quantparcelas),
+																																																																										Intervaloparcelas: parseInt(retornoAcompPedidosT.results[i].Intervaloparcelas),
+																																																																										Tiponego: retornoAcompPedidosT.results[i].Tiponego,
+																																																																										Totitens: parseInt(retornoAcompPedidosT.results[i].Totitens),
+																																																																										Valorcomissao: parseFloat(retornoAcompPedidosT.results[i].Valorcomissao),
+																																																																										Valtotpedido: parseFloat(retornoAcompPedidosT.results[i].Valtotpedido),
+																																																																										Valtotabcomissao: parseFloat(retornoAcompPedidosT.results[i].Valtotabcomissao),
+																																																																										Valabverba: parseFloat(retornoAcompPedidosT.results[i].Valabverba),
+																																																																										Vlrprz: parseFloat(retornoAcompPedidosT.results[i].Vlrprz),
+																																																																										VlrprzCom: parseFloat(retornoAcompPedidosT.results[i].VlrprzCom),
+																																																																										Vlrdsc: parseFloat(retornoAcompPedidosT.results[i].Vlrdsc),
+																																																																										VlrdscCom: parseFloat(retornoAcompPedidosT.results[i].VlrdscCom),
+																																																																										VlrdscVm: parseFloat(retornoAcompPedidosT.results[i].VlrdscVm),
+																																																																										Vlramo: parseFloat(retornoAcompPedidosT.results[i].Vlramo),
+																																																																										VlramoCom: parseFloat(retornoAcompPedidosT.results[i].VlramoCom),
+																																																																										VlramoVm: parseFloat(retornoAcompPedidosT.results[i].VlramoVm),
+																																																																										Vlrbri: parseFloat(retornoAcompPedidosT.results[i].Vlrbri),
+																																																																										VlrbriCom: parseFloat(retornoAcompPedidosT.results[i].VlrbriCom),
+																																																																										VlrbriVm: parseFloat(retornoAcompPedidosT.results[i].VlrbriVm),
+																																																																										Vlrbon: parseFloat(retornoAcompPedidosT.results[i].Vlrbon),
+																																																																										VlrbonCom: parseFloat(retornoAcompPedidosT.results[i].VlrbonCom),
+																																																																										VlrbonVm: parseFloat(retornoAcompPedidosT.results[i].VlrbonVm),
+																																																																										Valtotabcamppa: parseFloat(retornoAcompPedidosT.results[i].Valtotabcamppa),
+																																																																										Valtotabcampbrinde: retornoAcompPedidosT.results[i].Valtotabcampbrinde,
+																																																																										Valtotabcampenx: retornoAcompPedidosT.results[i].Valtotabcampenx,
+																																																																										Valtotexcndirdesc: parseFloat(retornoAcompPedidosT.results[i].Valtotexcndirdesc),
+																																																																										Valtotexcndirprazo: parseFloat(retornoAcompPedidosT.results[i].Valtotexcndirprazo),
+																																																																										Valverbapedido: parseFloat(retornoAcompPedidosT.results[i].Valverbapedido),
+																																																																										Zzprazomed: parseFloat(retornoAcompPedidosT.results[i].Zzprazomed),
+
+																																																																										valTotalCampEnxoval: parseFloat(0),
+																																																																										valTotalCampGlobal: parseFloat(0),
+																																																																										valTotalCampProdutoAcabado: parseFloat(0),
+																																																																										valUtilizadoVerbaPrazoMed: parseFloat(0),
+
+																																																																										codRepres: CodRepres,
+																																																																										Usuario: parseInt(retornoAcompPedidosT.results[i].Usuario),
+																																																																										Tipousuario: retornoAcompPedidosT.results[i].Tipousuario,
+																																																																										valCampBrinde: parseFloat(0),
+																																																																										valCampEnxoval: parseFloat(0),
+																																																																										valCampGlobal: parseFloat(0),
+
+																																																																										valTotalExcedenteNaoDirecionadoBrinde: 0,
+																																																																										valTotalExcedenteNaoDirecionadoAmostra: 0,
+																																																																										valTotalExcedenteNaoDirecionadoBonif: 0,
+																																																																										zlsch: retornoAcompPedidosT.results[i].Zlsch
 																																																																									};
 
-																																																																									var requestAcompPedidosD = objAcompPedidosD.put(objBancoAcompPedidosD);
+																																																																									if (objBancoAcompPedidosT.Auart == "YVEN") {
+																																																																										objBancoAcompPedidosT.Auart = "YVEN - VENDA NORMAL";
+																																																																									} else if (objBancoAcompPedidosT.Auart == "YVEF") {
+																																																																										objBancoAcompPedidosT.Auart = "YVEF - VENDA FUTURA";
+																																																																									} else if (objBancoAcompPedidosT.Auart == "YBON") {
+																																																																										objBancoAcompPedidosT.Auart = "YBON - BONIFICAÇÃO/AMOSTRA/BRINDE";
+																																																																									} else if (objBancoAcompPedidosT.Auart == "YTRO") {
+																																																																										objBancoAcompPedidosT.Auart = "YTRO - TROCAS";
+																																																																									} else if (objBancoAcompPedidosT.Auart == "YVEX") {
+																																																																										objBancoAcompPedidosT.Auart = "YVEX - EXPORTAÇÃO";
+																																																																									} else if (objBancoAcompPedidosT.Auart == "YENF") {
+																																																																										objBancoAcompPedidosT.Auart = "YENF - ENTREGA DE SALDO";
+																																																																									}
+																																																																									objBancoAcompPedidosT.Erdat = objBancoAcompPedidosT.Erdat.substring(4, 6) + "/" + objBancoAcompPedidosT.Erdat.substring(6, 8) + "/" + objBancoAcompPedidosT.Erdat.substring(0, 4);
+																																																																									objBancoAcompPedidosT.Hora = objBancoAcompPedidosT.Horaped.substring(0, 2) + ":" + objBancoAcompPedidosT.Horaped.substring(2, 4) + ":" + objBancoAcompPedidosT.Horaped.substring(4, 6);
 
-																																																																									requestAcompPedidosD.onsuccess = function(event) {
-																																																																										console.log("Dados Status Pedido Det inseridos. " + event);
+																																																																									if (objBancoAcompPedidosT.Tiponego == "01") {
+																																																																										objBancoAcompPedidosT.Tiponego = "01 - Á vista";
+																																																																									} else if (objBancoAcompPedidosT.Tiponego == "02") {
+																																																																										objBancoAcompPedidosT.Tiponego = "02 - A prazo";
+																																																																									}
+
+																																																																									objBancoAcompPedidosT.Quantparcelas = parseInt(objBancoAcompPedidosT.Quantparcelas, 10);
+																																																																									objBancoAcompPedidosT.Diasprimeiraparcela = parseInt(objBancoAcompPedidosT.Diasprimeiraparcela, 10);
+
+																																																																									objBancoAcompPedidosT.Existeentradapedido = Boolean(objBancoAcompPedidosT.Existeentradapedido);
+																																																																									objBancoAcompPedidosT.Zzprazomed = parseFloat(objBancoAcompPedidosT.Zzprazomed);
+
+																																																																									var requestAcompPedidosT = objAcompPedidosT.put(objBancoAcompPedidosT);
+
+																																																																									requestAcompPedidosT.onsuccess = function(event) {
+																																																																										console.log("Dados Status Pedido Topo inseridos. " + event);
 																																																																									};
 
-																																																																									requestAcompPedidosD.onerror = function(event) {
-																																																																										console.log("Dados Status Pedido Det não foram inseridos :" + event);
+																																																																									requestAcompPedidosT.onerror = function(event) {
+																																																																										console.log("Dados Status Pedido Topo não foram inseridos :" + event);
 																																																																									};
 																																																																								}
-																																																																								oModel.read("/GetSaldoVerba", {
+
+																																																																								oModel.read("/AcompPedidoDetalhe", {
 																																																																									urlParameters: {
-																																																																										"$filter": "IAprov eq '" + CodRepres + "'"
+																																																																										"$filter": "IReprs eq '" + CodRepres + "'"
 																																																																									},
-																																																																									success: function(retornoSaldoVerba) {
-																																																																										var txSaldoVerba = db.transaction("SaldoVerba", "readwrite");
-																																																																										var objSaldoVerba = txSaldoVerba.objectStore("SaldoVerba");
+																																																																									success: function(retornoAcompPedidosD) {
+																																																																										var txAcompPedidosD = db.transaction("AcompPedidoDetalhe", "readwrite");
+																																																																										var objAcompPedidosD = txAcompPedidosD.objectStore("AcompPedidoDetalhe");
 
-																																																																										for (i = 0; i < retornoSaldoVerba.results.length; i++) {
+																																																																										for (i = 0; i < retornoAcompPedidosD.results.length; i++) {
 
-																																																																											var objBancoSaldoVerba = {
-																																																																												IAprov: retornoSaldoVerba.results[i].IAprov,
-																																																																												Reprs: retornoSaldoVerba.results[i].Reprs,
-																																																																												Name: retornoSaldoVerba.results[i].Name,
-																																																																												TotalVm: retornoSaldoVerba.results[i].TotalVm
+																																																																											var dataPedidoD = retornoAcompPedidosD.results[i].Nrpedcli.split(".");
+																																																																											dataPedidoD = dataPedidoD[1];
+																																																																											dataPedidoD = dataPedidoD.substring(6, 8) + "/" + dataPedidoD.substring(4, 6) + "/" + dataPedidoD.substring(0, 4);
+
+																																																																											var objBancoAcompPedidosD = {
+																																																																												idItemPedido: retornoAcompPedidosD.results[i].Iditempedido,
+																																																																												Iditempedido: retornoAcompPedidosD.results[i].Iditempedido,
+																																																																												Tindex: parseInt(retornoAcompPedidosD.results[i].Tindex),
+																																																																												Knumh: retornoAcompPedidosD.results[i].Knumh,
+																																																																												Knumhextra: retornoAcompPedidosD.results[i].Knumhextra,
+																																																																												Zzregra: retornoAcompPedidosD.results[i].Zzregra,
+																																																																												Zzgrpmatextra: retornoAcompPedidosD.results[i].Zzgrpmatextra,
+																																																																												Zzgrpmat: retornoAcompPedidosD.results[i].Zzgrpmat,
+																																																																												Zzregraextra: retornoAcompPedidosD.results[i].Zzregraextra,
+																																																																												Maktx: retornoAcompPedidosD.results[i].Maktx,
+																																																																												Matnr: retornoAcompPedidosD.results[i].Matnr,
+																																																																												nrPedCli: retornoAcompPedidosD.results[i].Nrpedcli,
+																																																																												Nrpedcli: retornoAcompPedidosD.results[i].Nrpedcli,
+																																																																												Ntgew: parseFloat(retornoAcompPedidosD.results[i].Ntgew),
+																																																																												Tipoitem: retornoAcompPedidosD.results[i].Tipoitem,
+																																																																												Zzdesext: parseFloat(retornoAcompPedidosD.results[i].Zzdesext),
+																																																																												Zzdesitem: parseFloat(retornoAcompPedidosD.results[i].Zzdesitem),
+																																																																												Zzpercdescdiluicao: parseFloat(retornoAcompPedidosD.results[i].Zzpercdescdiluicao),
+																																																																												Zzpercdesctotal: parseFloat(retornoAcompPedidosD.results[i].Zzpercdesctotal),
+																																																																												Zzpercom: parseFloat(retornoAcompPedidosD.results[i].Zzpercom),
+																																																																												Zzpervm: parseFloat(retornoAcompPedidosD.results[i].Zzpervm),
+																																																																												Zzqnt: parseInt(retornoAcompPedidosD.results[i].Zzqnt, 10),
+																																																																												Zzvprod: parseFloat(retornoAcompPedidosD.results[i].Zzvprod),
+																																																																												Zzvproddesc: parseFloat(retornoAcompPedidosD.results[i].Zzvproddesc),
+																																																																												Zzvproddesctotal: parseFloat(retornoAcompPedidosD.results[i].Zzvproddesctotal),
+																																																																												Zzvprodabb: parseFloat(retornoAcompPedidosD.results[i].Zzvprodabb),
+																																																																												Aumng: parseInt(retornoAcompPedidosD.results[i].Aumng, 10),
+																																																																												Zzvproddesc2: parseFloat(retornoAcompPedidosD.results[i].Zzvproddesc2),
+																																																																												Zzvprodminpermitido: parseFloat(retornoAcompPedidosD.results[i].Zzvprodminpermitido),
+																																																																												Zzvalordiluido: parseFloat(retornoAcompPedidosD.results[i].Zzvalordiluido),
+																																																																												Zzvalexcedidoitem: parseFloat(retornoAcompPedidosD.results[i].Zzvalexcedidoitem),
+																																																																												Zzqntdiluicao: parseInt(retornoAcompPedidosD.results[i].Zzqntdiluicao, 10),
+																																																																												Tipoitem2: retornoAcompPedidosD.results[i].Tipoitem2,
+																																																																												Maxdescpermitido: parseFloat(retornoAcompPedidosD.results[i].Maxdescpermitido),
+																																																																												Maxdescpermitidoextra: parseFloat(retornoAcompPedidosD.results[i].Maxdescpermitidoextra),
+																																																																												Mtpos: retornoAcompPedidosD.results[i].Mtpos,
+																																																																												Kbetr: retornoAcompPedidosD.results[i].Kbetr,
+																																																																												Zzqntamostra: String(parseInt(retornoAcompPedidosD.results[i].Zzqntamostra, 10))
 																																																																											};
 
-																																																																											var requestSaldoVerba = objSaldoVerba.put(objBancoSaldoVerba);
+																																																																											var requestAcompPedidosD = objAcompPedidosD.put(objBancoAcompPedidosD);
 
-																																																																											requestSaldoVerba.onsuccess = function(event) {
-																																																																												console.log("Dados Saldo Verba inseridos. " + event);
+																																																																											requestAcompPedidosD.onsuccess = function(event) {
+																																																																												console.log("Dados Status Pedido Det inseridos. " + event);
 																																																																											};
 
-																																																																											requestSaldoVerba.onerror = function(event) {
-																																																																												console.log("Dados Saldo Verba não foram inseridos :" + event);
+																																																																											requestAcompPedidosD.onerror = function(event) {
+																																																																												console.log("Dados Status Pedido Det não foram inseridos :" + event);
 																																																																											};
 																																																																										}
-
-																																																																										oModel.read("/FormasPagamentos", {
+																																																																										oModel.read("/GetSaldoVerba", {
 																																																																											urlParameters: {
-																																																																												"$filter": "IvCodRepres eq '" + CodRepres + "'"
+																																																																												"$filter": "IAprov eq '" + CodUsuario + "'"
 																																																																											},
-																																																																											success: function(retornoFormasPagamentos) {
-																																																																												var txFormasPagamentos = db.transaction("FormasPagamentos", "readwrite");
-																																																																												var objFormasPagamentos = txFormasPagamentos.objectStore("FormasPagamentos");
+																																																																											success: function(retornoSaldoVerba) {
+																																																																												var txSaldoVerba = db.transaction("SaldoVerba", "readwrite");
+																																																																												var objSaldoVerba = txSaldoVerba.objectStore("SaldoVerba");
 
-																																																																												for (i = 0; i < retornoFormasPagamentos.results.length; i++) {
+																																																																												for (i = 0; i < retornoSaldoVerba.results.length; i++) {
 
-																																																																													var objBancoFormasPagamentos = {
-																																																																														idFormasPagamentos: i,
-																																																																														zlsch: retornoFormasPagamentos.results[i].Zlsch,
-																																																																														text1: retornoFormasPagamentos.results[i].Text1
+																																																																													var objBancoSaldoVerba = {
+																																																																														IAprov: retornoSaldoVerba.results[i].IAprov,
+																																																																														Reprs: retornoSaldoVerba.results[i].Reprs,
+																																																																														Name: retornoSaldoVerba.results[i].Name,
+																																																																														TotalVm: retornoSaldoVerba.results[i].TotalVm
 																																																																													};
 
-																																																																													var requestFormasPagamentos = objFormasPagamentos.put(objBancoFormasPagamentos);
+																																																																													var requestSaldoVerba = objSaldoVerba.put(objBancoSaldoVerba);
 
-																																																																													requestFormasPagamentos.onsuccess = function(event) {
-																																																																														console.log("Dados FormasPagamentos inseridos. " + event);
+																																																																													requestSaldoVerba.onsuccess = function(event) {
+																																																																														console.log("Dados Saldo Verba inseridos. " + event);
 																																																																													};
 
-																																																																													requestFormasPagamentos.onerror = function(event) {
-																																																																														console.log("Dados FormasPagamentos não foram inseridos :" + event);
+																																																																													requestSaldoVerba.onerror = function(event) {
+																																																																														console.log("Dados Saldo Verba não foram inseridos :" + event);
 																																																																													};
 																																																																												}
 
-																																																																												oModel.read("/ControleAmostras", {
+																																																																												oModel.read("/FormasPagamentos", {
 																																																																													urlParameters: {
-																																																																														"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																																														"$filter": "IvCodRepres eq '" + CodRepres + "'"
 																																																																													},
-																																																																													success: function(retornoControleAmostras) {
-																																																																														var txControleAmostras = db.transaction("ControleAmostra", "readwrite");
-																																																																														var objControleAmostras = txControleAmostras.objectStore("ControleAmostra");
+																																																																													success: function(retornoFormasPagamentos) {
+																																																																														var txFormasPagamentos = db.transaction("FormasPagamentos", "readwrite");
+																																																																														var objFormasPagamentos = txFormasPagamentos.objectStore("FormasPagamentos");
 
-																																																																														for (i = 0; i < retornoControleAmostras.results.length; i++) {
-																																																																															var valor = retornoControleAmostras.results[i].QuantidadeTotal;
+																																																																														for (i = 0; i < retornoFormasPagamentos.results.length; i++) {
 
-																																																																															if (valor < 0) {
-																																																																																valor = 0;
-																																																																															}
-
-																																																																															var objBancoControleAmostras = {
-																																																																																idControleAmostra: i,
-																																																																																representante: retornoControleAmostras.results[i].IRepresentante,
-																																																																																quantidadeTotal: valor,
-																																																																																quantidadePedido: retornoControleAmostras.results[i].QuantidadePedido
+																																																																															var objBancoFormasPagamentos = {
+																																																																																idFormasPagamentos: i,
+																																																																																zlsch: retornoFormasPagamentos.results[i].Zlsch,
+																																																																																text1: retornoFormasPagamentos.results[i].Text1
 																																																																															};
 
-																																																																															var requestControleAmostras = objControleAmostras.put(objBancoControleAmostras);
+																																																																															var requestFormasPagamentos = objFormasPagamentos.put(objBancoFormasPagamentos);
 
-																																																																															requestControleAmostras.onsuccess = function(event) {
-																																																																																console.log("Dados ControleAmostras inseridos. " + event);
+																																																																															requestFormasPagamentos.onsuccess = function(event) {
+																																																																																console.log("Dados FormasPagamentos inseridos. " + event);
 																																																																															};
 
-																																																																															requestControleAmostras.onerror = function(event) {
-																																																																																console.log("Dados ControleAmostras não foram inseridos :" + event);
+																																																																															requestFormasPagamentos.onerror = function(event) {
+																																																																																console.log("Dados FormasPagamentos não foram inseridos :" + event);
 																																																																															};
 																																																																														}
 
-																																																																														/* Carrego os pedidos de vendas e itens somente para usuários do tipo Representante */
-																																																																														if (TipoUsuario == 1) {
-																																																																															/* GetPedidoPrepostoTopo */
-																																																																															oModel.read("/GetPedidoPrepostoTopo", {
-																																																																																urlParameters: {
-																																																																																	"$filter": "IRepresentante eq '" + CodRepres + "'"
-																																																																																},
-																																																																																success: function(retornoPVPrepostoTopo) {
+																																																																														oModel.read("/ControleAmostras", {
+																																																																															urlParameters: {
+																																																																																"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																																															},
+																																																																															success: function(retornoControleAmostras) {
+																																																																																var txControleAmostras = db.transaction("ControleAmostra", "readwrite");
+																																																																																var objControleAmostras = txControleAmostras.objectStore("ControleAmostra");
 
-																																																																																	var txPVPrepostoTopo = db.transaction("PrePedidos", "readwrite");
-																																																																																	var objPVPrepostoTopo = txPVPrepostoTopo.objectStore("PrePedidos");
+																																																																																for (i = 0; i < retornoControleAmostras.results.length; i++) {
+																																																																																	var valor = retornoControleAmostras.results[i].QuantidadeTotal;
 
-																																																																																	for (i = 0; i < retornoPVPrepostoTopo.results.length; i++) {
-																																																																																		var objBancoPVPrepostoTopo = {
-																																																																																			nrPedCli: retornoPVPrepostoTopo.results[i].Nrpedcli,
-																																																																																			idStatusPedido: parseInt(retornoPVPrepostoTopo.results[i].Idstatuspedido),
-																																																																																			kunnr: retornoPVPrepostoTopo.results[i].Kunnr,
-																																																																																			werks: retornoPVPrepostoTopo.results[i].Werks,
-																																																																																			// repres: retornoPVPrepostoTopo.results[i].Lifnr,
-																																																																																			tipoPedido: retornoPVPrepostoTopo.results[i].Auart,
-																																																																																			situacaoPedido: retornoPVPrepostoTopo.results[i].Situacaopedido,
-																																																																																			ntgew: parseInt(retornoPVPrepostoTopo.results[i].Ntgew),
-																																																																																			tabPreco: retornoPVPrepostoTopo.results[i].Pltyp,
-																																																																																			completo: "Não",
-																																																																																			valMinPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valminped),
-																																																																																			dataPedido: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
-																																																																																				retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
-																																																																																				retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4),
-																																																																																			dataImpl: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
-																																																																																				retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
-																																																																																				retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4) + "-" +
-																																																																																				retornoPVPrepostoTopo.results[i].Horaped.substring(0, 2) + ":" +
-																																																																																				retornoPVPrepostoTopo.results[i].Horaped.substring(2, 4) + ":" +
-																																																																																				retornoPVPrepostoTopo.results[i].Horaped.substring(4, 6),
-																																																																																			observacaoPedido: retornoPVPrepostoTopo.results[i].Obsped,
-																																																																																			observacaoAuditoriaPedido: retornoPVPrepostoTopo.results[i].Obsaudped,
-																																																																																			existeEntradaPedido: (retornoPVPrepostoTopo.results[i].Existeentradapedido == "true"),
-																																																																																			percEntradaPedido: parseInt(retornoPVPrepostoTopo.results[i].Percentradapedido),
-																																																																																			valorEntradaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorentradapedido),
-																																																																																			tipoTransporte: retornoPVPrepostoTopo.results[i].Inco1,
-																																																																																			diasPrimeiraParcela: parseInt(retornoPVPrepostoTopo.results[i].Diasprimeiraparcela),
-																																																																																			quantParcelas: parseInt(retornoPVPrepostoTopo.results[i].Quantparcelas),
-																																																																																			intervaloParcelas: parseInt(retornoPVPrepostoTopo.results[i].Intervaloparcelas),
-																																																																																			tipoNegociacao: retornoPVPrepostoTopo.results[i].Tiponego,
-																																																																																			totalItensPedido: parseInt(retornoPVPrepostoTopo.results[i].Totitens),
-																																																																																			valComissaoPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorcomissao),
-																																																																																			valTotPed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotpedido),
-																																																																																			valTotalAbatidoComissao: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcomissao),
-																																																																																			valTotalAbatidoVerba: parseFloat(retornoPVPrepostoTopo.results[i].Valabverba),
-																																																																																			valTotalExcedentePrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Vlrprz),
-																																																																																			valUtilizadoComissaoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].VlrprzCom),
-																																																																																			valTotalExcedenteDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Vlrdsc),
-																																																																																			valComissaoUtilizadaDesconto: parseFloat(retornoPVPrepostoTopo.results[i].VlrdscCom),
-																																																																																			valVerbaUtilizadaDesconto: parseFloat(retornoPVPrepostoTopo.results[i].VlrdscVm),
-																																																																																			valTotalExcedenteAmostra: parseFloat(retornoPVPrepostoTopo.results[i].Vlramo),
-																																																																																			valUtilizadoComissaoAmostra: parseFloat(retornoPVPrepostoTopo.results[i].VlramoCom),
-																																																																																			valUtilizadoVerbaAmostra: parseFloat(retornoPVPrepostoTopo.results[i].VlramoVm),
-																																																																																			valTotalExcedenteBrinde: parseFloat(retornoPVPrepostoTopo.results[i].Vlrbri),
-																																																																																			valUtilizadoComissaoBrinde: parseFloat(retornoPVPrepostoTopo.results[i].VlrbriCom),
-																																																																																			valUtilizadoVerbaBrinde: parseFloat(retornoPVPrepostoTopo.results[i].VlrbriVm),
-																																																																																			valTotalExcedenteBonif: parseFloat(retornoPVPrepostoTopo.results[i].Vlrbon),
-																																																																																			valUtilizadoComissaoBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonCom),
-																																																																																			valUtilizadoVerbaBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonVm),
-																																																																																			valUtilizadoCampProdutoAcabado: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcamppa),
-																																																																																			valUtilizadoCampBrinde: retornoPVPrepostoTopo.results[i].Valtotabcampbrinde,
-																																																																																			valUtilizadoCampEnxoval: retornoPVPrepostoTopo.results[i].Valtotabcampenx,
-																																																																																			valTotalExcedenteNaoDirecionadoDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirdesc),
-																																																																																			valTotalExcedenteNaoDirecionadoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirprazo),
-																																																																																			valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido),
-
-																																																																																			valTotalCampEnxoval: parseFloat(0),
-																																																																																			valTotalCampGlobal: parseFloat(0),
-																																																																																			valTotalCampProdutoAcabado: parseFloat(0),
-																																																																																			valUtilizadoVerbaPrazoMed: parseFloat(0),
-
-																																																																																			codRepres: CodRepres,
-																																																																																			codUsr: parseInt(retornoPVPrepostoTopo.results[i].Usuario),
-																																																																																			tipoUsuario: retornoPVPrepostoTopo.results[i].Tipousuario,
-																																																																																			valCampBrinde: parseFloat(0),
-																																																																																			valCampEnxoval: parseFloat(0),
-																																																																																			valCampGlobal: parseFloat(0),
-
-																																																																																			valTotalExcedenteNaoDirecionadoBrinde: 0,
-																																																																																			valTotalExcedenteNaoDirecionadoAmostra: 0,
-																																																																																			valTotalExcedenteNaoDirecionadoBonif: 0,
-																																																																																			zlsch: retornoPVPrepostoTopo.results[i].Zlsch
-																																																																																		};
-
-																																																																																		var requestPVPrepostoTopo = objPVPrepostoTopo.put(objBancoPVPrepostoTopo);
-
-																																																																																		requestPVPrepostoTopo.onsuccess = function(event) {
-																																																																																			console.log("Dados Topo PV Preposto inseridos. " + event);
-																																																																																		};
-
-																																																																																		requestPVPrepostoTopo.onerror = function(event) {
-																																																																																			console.log("Dados Topo PV Preposto não foram inseridos :" + event);
-																																																																																		};
+																																																																																	if (valor < 0) {
+																																																																																		valor = 0;
 																																																																																	}
 
-																																																																																	/* GetPedidoPrepostoItem */
-																																																																																	oModel.read("/GetPedidoPrepostoItem", {
+																																																																																	var objBancoControleAmostras = {
+																																																																																		idControleAmostra: i,
+																																																																																		representante: retornoControleAmostras.results[i].IRepresentante,
+																																																																																		quantidadeTotal: valor,
+																																																																																		quantidadePedido: retornoControleAmostras.results[i].QuantidadePedido
+																																																																																	};
+
+																																																																																	var requestControleAmostras = objControleAmostras.put(objBancoControleAmostras);
+
+																																																																																	requestControleAmostras.onsuccess = function(event) {
+																																																																																		console.log("Dados ControleAmostras inseridos. " + event);
+																																																																																	};
+
+																																																																																	requestControleAmostras.onerror = function(event) {
+																																																																																		console.log("Dados ControleAmostras não foram inseridos :" + event);
+																																																																																	};
+																																																																																}
+
+																																																																																/* Carrego os pedidos de vendas e itens somente para usuários do tipo Representante */
+																																																																																if (TipoUsuario == 1) {
+																																																																																	/* GetPedidoPrepostoTopo */
+																																																																																	oModel.read("/GetPedidoPrepostoTopo", {
 																																																																																		urlParameters: {
 																																																																																			"$filter": "IRepresentante eq '" + CodRepres + "'"
 																																																																																		},
-																																																																																		success: function(retornoPVPrepostoItem) {
-																																																																																			var txPVPrepostoItem = db.transaction("ItensPedido", "readwrite");
-																																																																																			var objPVPrepostoItem = txPVPrepostoItem.objectStore("ItensPedido");
+																																																																																		success: function(retornoPVPrepostoTopo) {
 
-																																																																																			for (var i = 0; i < retornoPVPrepostoItem.results.length; i++) {
+																																																																																			var txPVPrepostoTopo = db.transaction("PrePedidos", "readwrite");
+																																																																																			var objPVPrepostoTopo = txPVPrepostoTopo.objectStore("PrePedidos");
 
-																																																																																				var objBancoPVPrepostoItem = {
-																																																																																					idItemPedido: retornoPVPrepostoItem.results[i].Iditempedido,
-																																																																																					index: parseInt(retornoPVPrepostoItem.results[i].Tindex),
-																																																																																					knumh: retornoPVPrepostoItem.results[i].Knumh,
-																																																																																					knumhExtra: retornoPVPrepostoItem.results[i].Knumhextra,
-																																																																																					zzRegra: retornoPVPrepostoItem.results[i].Zzregra,
-																																																																																					zzGrpmatExtra: retornoPVPrepostoItem.results[i].Zzgrpmatextra,
-																																																																																					zzGrpmat: retornoPVPrepostoItem.results[i].Zzgrpmat,
-																																																																																					zzRegraExtra: retornoPVPrepostoItem.results[i].Zzregraextra,
-																																																																																					maktx: retornoPVPrepostoItem.results[i].Maktx,
-																																																																																					matnr: retornoPVPrepostoItem.results[i].Matnr,
-																																																																																					nrPedCli: retornoPVPrepostoItem.results[i].Nrpedcli,
-																																																																																					ntgew: parseFloat(retornoPVPrepostoItem.results[i].Ntgew),
-																																																																																					tipoItem: retornoPVPrepostoItem.results[i].Tipoitem,
-																																																																																					zzDesext: parseFloat(retornoPVPrepostoItem.results[i].Zzdesext),
-																																																																																					zzDesitem: parseFloat(retornoPVPrepostoItem.results[i].Zzdesitem),
-																																																																																					zzPercDescDiluicao: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdescdiluicao),
-																																																																																					zzPercDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdesctotal),
-																																																																																					zzPercom: parseFloat(retornoPVPrepostoItem.results[i].Zzpercom),
-																																																																																					zzPervm: parseFloat(retornoPVPrepostoItem.results[i].Zzpervm),
-																																																																																					zzQnt: parseInt(retornoPVPrepostoItem.results[i].Zzqnt, 10),
-																																																																																					zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
-																																																																																					zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
-																																																																																					zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
-																																																																																					zzVprodABB: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodabb),
-																																																																																					aumng: parseInt(retornoPVPrepostoItem.results[i].Aumng, 10),
-																																																																																					zzVprodDesc2: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc2),
-																																																																																					zzVprodMinPermitido: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodminpermitido),
-																																																																																					zzValorDiluido: parseFloat(retornoPVPrepostoItem.results[i].Zzvalordiluido),
-																																																																																					zzValExcedidoItem: parseFloat(retornoPVPrepostoItem.results[i].Zzvalexcedidoitem),
-																																																																																					zzQntDiluicao: parseInt(retornoPVPrepostoItem.results[i].Zzqntdiluicao, 10),
-																																																																																					tipoItem2: retornoPVPrepostoItem.results[i].Tipoitem2,
-																																																																																					maxDescPermitidoExtra: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitido),
-																																																																																					maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra),
-																																																																																					mtpos: retornoPVPrepostoItem.results[i].Mtpos,
-																																																																																					kbetr: retornoPVPrepostoItem.results[i].Kbetr,
-																																																																																					zzQntAmostra: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntamostra, 10))
+																																																																																			for (i = 0; i < retornoPVPrepostoTopo.results.length; i++) {
+																																																																																				var objBancoPVPrepostoTopo = {
+																																																																																					nrPedCli: retornoPVPrepostoTopo.results[i].Nrpedcli,
+																																																																																					idStatusPedido: parseInt(retornoPVPrepostoTopo.results[i].Idstatuspedido),
+																																																																																					kunnr: retornoPVPrepostoTopo.results[i].Kunnr,
+																																																																																					werks: retornoPVPrepostoTopo.results[i].Werks,
+																																																																																					// repres: retornoPVPrepostoTopo.results[i].Lifnr,
+																																																																																					tipoPedido: retornoPVPrepostoTopo.results[i].Auart,
+																																																																																					situacaoPedido: retornoPVPrepostoTopo.results[i].Situacaopedido,
+																																																																																					ntgew: parseInt(retornoPVPrepostoTopo.results[i].Ntgew),
+																																																																																					tabPreco: retornoPVPrepostoTopo.results[i].Pltyp,
+																																																																																					completo: "Não",
+																																																																																					valMinPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valminped),
+																																																																																					dataPedido: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
+																																																																																						retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
+																																																																																						retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4),
+																																																																																					dataImpl: retornoPVPrepostoTopo.results[i].Erdat.substring(8, 6) + "/" +
+																																																																																						retornoPVPrepostoTopo.results[i].Erdat.substring(6, 4) + "/" +
+																																																																																						retornoPVPrepostoTopo.results[i].Erdat.substring(0, 4) + "-" +
+																																																																																						retornoPVPrepostoTopo.results[i].Horaped.substring(0, 2) + ":" +
+																																																																																						retornoPVPrepostoTopo.results[i].Horaped.substring(2, 4) + ":" +
+																																																																																						retornoPVPrepostoTopo.results[i].Horaped.substring(4, 6),
+																																																																																					observacaoPedido: retornoPVPrepostoTopo.results[i].Obsped,
+																																																																																					observacaoAuditoriaPedido: retornoPVPrepostoTopo.results[i].Obsaudped,
+																																																																																					existeEntradaPedido: (retornoPVPrepostoTopo.results[i].Existeentradapedido == "true"),
+																																																																																					percEntradaPedido: parseInt(retornoPVPrepostoTopo.results[i].Percentradapedido),
+																																																																																					valorEntradaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorentradapedido),
+																																																																																					tipoTransporte: retornoPVPrepostoTopo.results[i].Inco1,
+																																																																																					diasPrimeiraParcela: parseInt(retornoPVPrepostoTopo.results[i].Diasprimeiraparcela),
+																																																																																					quantParcelas: parseInt(retornoPVPrepostoTopo.results[i].Quantparcelas),
+																																																																																					intervaloParcelas: parseInt(retornoPVPrepostoTopo.results[i].Intervaloparcelas),
+																																																																																					tipoNegociacao: retornoPVPrepostoTopo.results[i].Tiponego,
+																																																																																					totalItensPedido: parseInt(retornoPVPrepostoTopo.results[i].Totitens),
+																																																																																					valComissaoPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valorcomissao),
+																																																																																					valTotPed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotpedido),
+																																																																																					valTotalAbatidoComissao: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcomissao),
+																																																																																					valTotalAbatidoVerba: parseFloat(retornoPVPrepostoTopo.results[i].Valabverba),
+																																																																																					valTotalExcedentePrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Vlrprz),
+																																																																																					valUtilizadoComissaoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].VlrprzCom),
+																																																																																					valTotalExcedenteDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Vlrdsc),
+																																																																																					valComissaoUtilizadaDesconto: parseFloat(retornoPVPrepostoTopo.results[i].VlrdscCom),
+																																																																																					valVerbaUtilizadaDesconto: parseFloat(retornoPVPrepostoTopo.results[i].VlrdscVm),
+																																																																																					valTotalExcedenteAmostra: parseFloat(retornoPVPrepostoTopo.results[i].Vlramo),
+																																																																																					valUtilizadoComissaoAmostra: parseFloat(retornoPVPrepostoTopo.results[i].VlramoCom),
+																																																																																					valUtilizadoVerbaAmostra: parseFloat(retornoPVPrepostoTopo.results[i].VlramoVm),
+																																																																																					valTotalExcedenteBrinde: parseFloat(retornoPVPrepostoTopo.results[i].Vlrbri),
+																																																																																					valUtilizadoComissaoBrinde: parseFloat(retornoPVPrepostoTopo.results[i].VlrbriCom),
+																																																																																					valUtilizadoVerbaBrinde: parseFloat(retornoPVPrepostoTopo.results[i].VlrbriVm),
+																																																																																					valTotalExcedenteBonif: parseFloat(retornoPVPrepostoTopo.results[i].Vlrbon),
+																																																																																					valUtilizadoComissaoBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonCom),
+																																																																																					valUtilizadoVerbaBonif: parseFloat(retornoPVPrepostoTopo.results[i].VlrbonVm),
+																																																																																					valUtilizadoCampProdutoAcabado: parseFloat(retornoPVPrepostoTopo.results[i].Valtotabcamppa),
+																																																																																					valUtilizadoCampBrinde: retornoPVPrepostoTopo.results[i].Valtotabcampbrinde,
+																																																																																					valUtilizadoCampEnxoval: retornoPVPrepostoTopo.results[i].Valtotabcampenx,
+																																																																																					valTotalExcedenteNaoDirecionadoDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirdesc),
+																																																																																					valTotalExcedenteNaoDirecionadoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirprazo),
+																																																																																					valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido),
+
+																																																																																					valTotalCampEnxoval: parseFloat(0),
+																																																																																					valTotalCampGlobal: parseFloat(0),
+																																																																																					valTotalCampProdutoAcabado: parseFloat(0),
+																																																																																					valUtilizadoVerbaPrazoMed: parseFloat(0),
+
+																																																																																					codRepres: CodRepres,
+																																																																																					codUsr: parseInt(retornoPVPrepostoTopo.results[i].Usuario),
+																																																																																					tipoUsuario: retornoPVPrepostoTopo.results[i].Tipousuario,
+																																																																																					valCampBrinde: parseFloat(0),
+																																																																																					valCampEnxoval: parseFloat(0),
+																																																																																					valCampGlobal: parseFloat(0),
+
+																																																																																					valTotalExcedenteNaoDirecionadoBrinde: 0,
+																																																																																					valTotalExcedenteNaoDirecionadoAmostra: 0,
+																																																																																					valTotalExcedenteNaoDirecionadoBonif: 0,
+																																																																																					zlsch: retornoPVPrepostoTopo.results[i].Zlsch
 																																																																																				};
 
-																																																																																				var requestPVPrepostoItem = objPVPrepostoItem.put(objBancoPVPrepostoItem);
+																																																																																				var requestPVPrepostoTopo = objPVPrepostoTopo.put(objBancoPVPrepostoTopo);
 
-																																																																																				requestPVPrepostoItem.onsuccess = function(event) {
-																																																																																					console.log("Dados Item PV Preposto inseridos. " + event);
+																																																																																				requestPVPrepostoTopo.onsuccess = function(event) {
+																																																																																					console.log("Dados Topo PV Preposto inseridos. " + event);
 																																																																																				};
 
-																																																																																				requestPVPrepostoItem.onerror = function(event) {
-																																																																																					console.log("Dados Item PV Preposto não foram inseridos :" + event);
+																																																																																				requestPVPrepostoTopo.onerror = function(event) {
+																																																																																					console.log("Dados Topo PV Preposto não foram inseridos :" + event);
 																																																																																				};
 																																																																																			}
 
-																																																																																			MessageBox.show(
-																																																																																				"Tabelas carregadas com sucesso!", {
-																																																																																					icon: MessageBox.Icon.SUCCESS,
-																																																																																					title: "Carregamento Completo",
-																																																																																					actions: [MessageBox.Action.OK],
-																																																																																					onClose: function() {
-																																																																																						if (that._ItemDialog) {
-																																																																																							that._ItemDialog.destroy(true);
-																																																																																						}
-																																																																																						that.onUpdateDateTime();
-																																																																																					}
-																																																																																				});
+																																																																																			/* GetPedidoPrepostoItem */
+																																																																																			oModel.read("/GetPedidoPrepostoItem", {
+																																																																																				urlParameters: {
+																																																																																					"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																																																				},
+																																																																																				success: function(retornoPVPrepostoItem) {
+																																																																																					var txPVPrepostoItem = db.transaction("ItensPedido", "readwrite");
+																																																																																					var objPVPrepostoItem = txPVPrepostoItem.objectStore("ItensPedido");
 
+																																																																																					for (var i = 0; i < retornoPVPrepostoItem.results.length; i++) {
+
+																																																																																						var objBancoPVPrepostoItem = {
+																																																																																							idItemPedido: retornoPVPrepostoItem.results[i].Iditempedido,
+																																																																																							index: parseInt(retornoPVPrepostoItem.results[i].Tindex),
+																																																																																							knumh: retornoPVPrepostoItem.results[i].Knumh,
+																																																																																							knumhExtra: retornoPVPrepostoItem.results[i].Knumhextra,
+																																																																																							zzRegra: retornoPVPrepostoItem.results[i].Zzregra,
+																																																																																							zzGrpmatExtra: retornoPVPrepostoItem.results[i].Zzgrpmatextra,
+																																																																																							zzGrpmat: retornoPVPrepostoItem.results[i].Zzgrpmat,
+																																																																																							zzRegraExtra: retornoPVPrepostoItem.results[i].Zzregraextra,
+																																																																																							maktx: retornoPVPrepostoItem.results[i].Maktx,
+																																																																																							matnr: retornoPVPrepostoItem.results[i].Matnr,
+																																																																																							nrPedCli: retornoPVPrepostoItem.results[i].Nrpedcli,
+																																																																																							ntgew: parseFloat(retornoPVPrepostoItem.results[i].Ntgew),
+																																																																																							tipoItem: retornoPVPrepostoItem.results[i].Tipoitem,
+																																																																																							zzDesext: parseFloat(retornoPVPrepostoItem.results[i].Zzdesext),
+																																																																																							zzDesitem: parseFloat(retornoPVPrepostoItem.results[i].Zzdesitem),
+																																																																																							zzPercDescDiluicao: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdescdiluicao),
+																																																																																							zzPercDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzpercdesctotal),
+																																																																																							zzPercom: parseFloat(retornoPVPrepostoItem.results[i].Zzpercom),
+																																																																																							zzPervm: parseFloat(retornoPVPrepostoItem.results[i].Zzpervm),
+																																																																																							zzQnt: parseInt(retornoPVPrepostoItem.results[i].Zzqnt, 10),
+																																																																																							zzVprod: parseFloat(retornoPVPrepostoItem.results[i].Zzvprod),
+																																																																																							zzVprodDesc: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc),
+																																																																																							zzVprodDescTotal: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesctotal),
+																																																																																							zzVprodABB: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodabb),
+																																																																																							aumng: parseInt(retornoPVPrepostoItem.results[i].Aumng, 10),
+																																																																																							zzVprodDesc2: parseFloat(retornoPVPrepostoItem.results[i].Zzvproddesc2),
+																																																																																							zzVprodMinPermitido: parseFloat(retornoPVPrepostoItem.results[i].Zzvprodminpermitido),
+																																																																																							zzValorDiluido: parseFloat(retornoPVPrepostoItem.results[i].Zzvalordiluido),
+																																																																																							zzValExcedidoItem: parseFloat(retornoPVPrepostoItem.results[i].Zzvalexcedidoitem),
+																																																																																							zzQntDiluicao: parseInt(retornoPVPrepostoItem.results[i].Zzqntdiluicao, 10),
+																																																																																							tipoItem2: retornoPVPrepostoItem.results[i].Tipoitem2,
+																																																																																							maxDescPermitidoExtra: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitido),
+																																																																																							maxDescPermitido: parseFloat(retornoPVPrepostoItem.results[i].Maxdescpermitidoextra),
+																																																																																							mtpos: retornoPVPrepostoItem.results[i].Mtpos,
+																																																																																							kbetr: retornoPVPrepostoItem.results[i].Kbetr,
+																																																																																							zzQntAmostra: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntamostra, 10))
+																																																																																						};
+
+																																																																																						var requestPVPrepostoItem = objPVPrepostoItem.put(objBancoPVPrepostoItem);
+
+																																																																																						requestPVPrepostoItem.onsuccess = function(event) {
+																																																																																							console.log("Dados Item PV Preposto inseridos. " + event);
+																																																																																						};
+
+																																																																																						requestPVPrepostoItem.onerror = function(event) {
+																																																																																							console.log("Dados Item PV Preposto não foram inseridos :" + event);
+																																																																																						};
+																																																																																					}
+
+																																																																																					MessageBox.show(
+																																																																																						"Tabelas carregadas com sucesso!", {
+																																																																																							icon: MessageBox.Icon.SUCCESS,
+																																																																																							title: "Carregamento Completo",
+																																																																																							actions: [MessageBox.Action.OK],
+																																																																																							onClose: function() {
+																																																																																								if (that._ItemDialog) {
+																																																																																									that._ItemDialog.destroy(true);
+																																																																																								}
+																																																																																								that.onUpdateDateTime();
+																																																																																							}
+																																																																																						});
+
+																																																																																				},
+																																																																																				error: function(error) {
+																																																																																					console.log(error);
+																																																																																					that.onMensagemErroODATA(error.statusCode);
+																																																																																				}
+																																																																																			}); // GetPedidoPrepostoItem
 																																																																																		},
 																																																																																		error: function(error) {
 																																																																																			console.log(error);
 																																																																																			that.onMensagemErroODATA(error.statusCode);
 																																																																																		}
-																																																																																	}); // GetPedidoPrepostoItem
-																																																																																},
-																																																																																error: function(error) {
-																																																																																	console.log(error);
-																																																																																	that.onMensagemErroODATA(error.statusCode);
+																																																																																	}); // GetPedidoPrepostoTopo
+																																																																																} else {
+																																																																																	MessageBox.show(
+																																																																																		"Tabelas carregadas com sucesso!", {
+																																																																																			icon: MessageBox.Icon.SUCCESS,
+																																																																																			title: "Carregamento Completo",
+																																																																																			actions: [MessageBox.Action.OK],
+																																																																																			onClose: function() {
+																																																																																				if (that._ItemDialog) {
+																																																																																					that._ItemDialog.destroy(true);
+																																																																																				}
+																																																																																				that.onUpdateDateTime();
+																																																																																			}
+																																																																																		});
 																																																																																}
-																																																																															}); // GetPedidoPrepostoTopo
-																																																																														} else {
-																																																																															MessageBox.show(
-																																																																																"Tabelas carregadas com sucesso!", {
-																																																																																	icon: MessageBox.Icon.SUCCESS,
-																																																																																	title: "Carregamento Completo",
-																																																																																	actions: [MessageBox.Action.OK],
-																																																																																	onClose: function() {
-																																																																																		if (that._ItemDialog) {
-																																																																																			that._ItemDialog.destroy(true);
-																																																																																		}
-																																																																																		that.onUpdateDateTime();
-																																																																																	}
-																																																																																});
-																																																																														}
+																																																																															},
+																																																																															error: function(error) {
+																																																																																console.log(error);
+																																																																																that.onMensagemErroODATA(error.statusCode);
+																																																																															}
+																																																																														});
 																																																																													},
 																																																																													error: function(error) {
 																																																																														console.log(error);
 																																																																														that.onMensagemErroODATA(error.statusCode);
 																																																																													}
 																																																																												});
+
 																																																																											},
 																																																																											error: function(error) {
 																																																																												console.log(error);
 																																																																												that.onMensagemErroODATA(error.statusCode);
 																																																																											}
 																																																																										});
-
 																																																																									},
 																																																																									error: function(error) {
 																																																																										console.log(error);
@@ -2668,71 +2716,6 @@ sap.ui.define([
 						that.getOwnerComponent().getModel("modelAux").setProperty("/Usuario", result1);
 						var oPrincipal = that.getView().getModel("menu").getProperty("/Principal");
 
-						/* TRATAMENTO DE EXIBIÇÃO DOS MENUS */
-						// Oculto alguns menus para o usuário Preposto
-						// var sTipoUsuario = that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario");
-
-						// // VERT -> Representante
-						// // Diferente de VERT -> Aprovador
-						// var bAprovador = result1.buGroup = !"VERT";
-						// // var bAprovador = true;
-
-						// var bPreposto = sTipoUsuario == "2";
-						// var bRepresentante = (sTipoUsuario == "1" && !bAprovador);
-
-						// /*Preposto-> Oculto aprovações e entrega futura*/
-						// if (bRepresentante) {
-						// 	for (var i = 0; i < oPrincipal.length; i++) {
-
-						// 		if (oPrincipal[i].id == "aprovacoes") {
-						// 			oPrincipal[i].visible = false;
-						// 		}
-						// 	}
-						// }
-
-						// /*Preposto-> Oculto aprovações e entrega futura*/
-						// if (bPreposto) {
-						// 	for (var i = 0; i < oPrincipal.length; i++) {
-
-						// 		if (oPrincipal[i].id == "aprovacoes" || oPrincipal[i].id == "entregaFutura") {
-						// 			oPrincipal[i].visible = false;
-						// 		}
-						// 	}
-						// }
-
-						// /* Aprovador-> Ocultar pedido de vendas e entrega futura
-						// 			-> Verifico a quantidade de pedidos para aprovação*/
-						// if (bAprovador) {
-						// 	for (var i = 0; i < oPrincipal.length; i++) {
-
-						// 		if (oPrincipal[i].id == "pedido" || oPrincipal[i].id == "entregaFutura") {
-						// 			oPrincipal[i].visible = false;
-						// 		}
-
-						// 		if (oPrincipal[i].id == "aprovacoes") {
-						// 			var oMenuAprovar = oPrincipal[i];
-						// 			var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
-						// 			var codRepres = that.getView().getModel("modelAux").getProperty("/CodRepres");
-
-						// 			oModel.read("/PedidosAprovar/$count", {
-						// 				urlParameters: {
-						// 					"$filter": "IAprovador eq '" + codRepres + "'"
-						// 				},
-						// 				success: function(retorno) {
-						// 					// oMenuAprovar.number = retorno;
-						// 					oMenuAprovar.number = retorno;
-						// 					that.getView().getModel("menu").refresh();
-						// 				},
-						// 				error: function(error) {
-						// 					console.log(error);
-						// 					that.byId("idTableEnvioPedidos").setBusy(false);
-						// 					that.onMensagemErroODATA(error.statusCode);
-						// 				}
-						// 			});
-						// 		}
-						// 	}
-						// }
-
 						var bAtualizarTabelas = false;
 
 						var sData = result1.dataAtualizacao;
@@ -2838,6 +2821,8 @@ sap.ui.define([
 								});
 
 						} else {
+
+							that.getOwnerComponent().getModel("modelAux").setProperty("/Usuario", result1);
 
 							sap.m.MessageBox.warning(
 								"Escolha o documento que gostaria de enviar.", {
@@ -3353,7 +3338,7 @@ sap.ui.define([
 							open.onsuccess = function() {
 								// Tabelas para serem limpadas
 								var vTables = ["Clientes", "A969", "Usuarios", "A959", "A960", "A961", "A962", "A963", "A964", "A965", "A966", "A967", "A968",
-									"Materiais", "PrePedidos", "ItensPedido", "TitulosAbertos", "Konm", "EntregaFutura", "EntregaFutura2", "TiposPedidos", "FormasPagamentos",
+									"Materiais", "PrePedidos", "ItensPedido", "TitulosAbertos", "Konm", "EntregaFutura", "EntregaFutura2", "EntregaFutura3", "TiposPedidos", "FormasPagamentos",
 									"StatusPedidos", "CmpGbItensBrindes", "CmpSldBrindes", "CmpProdsAcabs", "CmpGbQtdItens", "CmpGbProdsAcabs", "CmpGbGrpProdsAcabs", "CmpEnxoval", "ControleAmostra", "SaldoVerba"
 								];
 

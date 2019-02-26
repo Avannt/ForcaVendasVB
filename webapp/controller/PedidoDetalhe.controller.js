@@ -1494,308 +1494,312 @@ sap.ui.define([
 							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Normal") {
 
-									objAuxItem = {
-										idItemPedido: "",
-										index: "",
-										knumh: that.objItensPedidoTemplate[i].knumh,
-										zzGrpmat: that.objItensPedidoTemplate[i].zzGrpmat,
-										zzRegra: that.objItensPedidoTemplate[i].zzRegra,
-										knumhExtra: that.objItensPedidoTemplate[i].knumhExtra,
-										zzGrpmatExtra: that.objItensPedidoTemplate[i].zzGrpmatExtra,
-										zzRegraExtra: that.objItensPedidoTemplate[i].zzRegraExtra,
-										maktx: that.objItensPedidoTemplate[i].maktx,
-										mtpos: that.objItensPedidoTemplate[i].mtpos,
-										matnr: that.objItensPedidoTemplate[i].matnr,
-										nrPedCli: that.objItensPedidoTemplate[i].nrPedCli,
-										tipoItem: that.objItensPedidoTemplate[i].tipoItem,
-										zzDesext: that.objItensPedidoTemplate[i].zzDesext,
-										zzDesitem: that.objItensPedidoTemplate[i].zzDesitem,
-										zzPercom: that.objItensPedidoTemplate[i].zzPercom,
-										zzPervm: that.objItensPedidoTemplate[i].zzPervm,
-										zzQnt: that.objItensPedidoTemplate[i].zzQnt,
-										zzVprod: that.objItensPedidoTemplate[i].zzVprod,
-										zzVprodDesc: that.objItensPedidoTemplate[i].zzVprodDesc,
-										zzVprodDescTotal: that.objItensPedidoTemplate[i].zzVprodDescTotal,
-										zzPercDescTotal: that.objItensPedidoTemplate[i].zzPercDescTotal,
-										zzVprodMinPermitido: 0,
-										ntgew: that.objItensPedidoTemplate[i].ntgew,
-										//Desconto normal. *****
-										zzVprodDesc2: that.objItensPedidoTemplate[i].zzVprodDesc,
-										tipoItem2: "Diluicao",
-										zzQntDiluicao: 0,
-										zzValorDiluido: 0,
-										zzVprodABB: 0,
-										maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
-										maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
-										zzQntAmostra: 0
-									};
+									that.oItemPedido.idItemPedido= "";
+									that.oItemPedido.index= "";
+									that.oItemPedido.knumh= that.objItensPedidoTemplate[i].knumh;
+									that.oItemPedido.zzGrpmat= that.objItensPedidoTemplate[i].zzGrpmat;
+									that.oItemPedido.zzRegra= that.objItensPedidoTemplate[i].zzRegra;
+									that.oItemPedido.knumhExtra= that.objItensPedidoTemplate[i].knumhExtra;
+									that.oItemPedido.zzGrpmatExtra= that.objItensPedidoTemplate[i].zzGrpmatExtra;
+									that.oItemPedido.zzRegraExtra= that.objItensPedidoTemplate[i].zzRegraExtra;
+									that.oItemPedido.maktx= that.objItensPedidoTemplate[i].maktx;
+									that.oItemPedido.mtpos= that.objItensPedidoTemplate[i].mtpos;
+									that.oItemPedido.matnr= that.objItensPedidoTemplate[i].matnr;
+									that.oItemPedido.nrPedCli= that.objItensPedidoTemplate[i].nrPedCli;
+									that.oItemPedido.tipoItem= that.objItensPedidoTemplate[i].tipoItem;
+									that.oItemPedido.zzDesext= that.objItensPedidoTemplate[i].zzDesext;
+									that.oItemPedido.zzDesitem= that.objItensPedidoTemplate[i].zzDesitem;
+									that.oItemPedido.zzPercom= that.objItensPedidoTemplate[i].zzPercom;
+									that.oItemPedido.zzPervm= that.objItensPedidoTemplate[i].zzPervm;
+									that.oItemPedido.zzQnt= 1;//that.objItensPedidoTemplate[i].zzQnt;
+									that.oItemPedido.zzVprod= that.objItensPedidoTemplate[i].zzVprod;
+									that.oItemPedido.zzVprodDesc= that.objItensPedidoTemplate[i].zzVprodDesc;
+									that.oItemPedido.zzVprodDescTotal= that.objItensPedidoTemplate[i].zzVprodDescTotal;
+									that.oItemPedido.zzPercDescTotal= that.objItensPedidoTemplate[i].zzPercDescTotal;
+									that.oItemPedido.zzVprodMinPermitido= 0;
+									that.oItemPedido.ntgew= that.objItensPedidoTemplate[i].ntgew;
+									that.oItemPedido.zzVprodDesc2= that.objItensPedidoTemplate[i].zzVprodDesc;
+									that.oItemPedido.tipoItem = "Diluicao";
+									that.oItemPedido.tipoItem2= "Diluicao";
+									that.oItemPedido.zzQntDiluicao= 0;
+									that.oItemPedido.zzValorDiluido= 0;
+									that.oItemPedido.zzVprodABB= 0;
+									that.oItemPedido.maxdescpermitido= that.objItensPedidoTemplate[i].maxdescpermitido;
+									that.oItemPedido.maxdescpermitidoExtra= that.objItensPedidoTemplate[i].maxdescpermitidoExtra;
+									that.oItemPedido.zzQntAmostra= 0;
 
 									itemEncontradoDiluicao = true;
+									that.calculaPrecoItem();
+									that.popularCamposItemPedido();
 								}
 							}
 
-							//REGRA DILUIÇÃO - > SENÃO EXISTIR ITEM NA GRID  .. ACHAR O VALOR MINIMO DO ITEM
-							var storeA960 = db.transaction("A960", "readwrite");
-							var objA960 = storeA960.objectStore("A960");
+							if (itemEncontradoDiluicao == false){
+								//REGRA DILUIÇÃO - > SENÃO EXISTIR ITEM NA GRID  .. ACHAR O VALOR MINIMO DO ITEM
+								var storeA960 = db.transaction("A960", "readwrite");
+								var objA960 = storeA960.objectStore("A960");
 
-							var idA960 = werks + "." + tabPreco + "." + oMaterial.matnr;
+								var idA960 = werks + "." + tabPreco + "." + oMaterial.matnr;
 
-							var requesA960 = objA960.get(idA960);
+								var requesA960 = objA960.get(idA960);
 
-							requesA960.onsuccess = function(e) {
-								var oA960 = e.target.result;
+								requesA960.onsuccess = function(e) {
+									var oA960 = e.target.result;
 
-								if (oA960 == undefined) {
-									oPanel.setBusy(false);
+									if (oA960 == undefined) {
+										oPanel.setBusy(false);
 
-									sap.ui.getCore().byId("idItemPedido").setValue("");
+										sap.ui.getCore().byId("idItemPedido").setValue("");
 
-									MessageBox.show("Não existe preço para o produto: " + codItem + " de acordo com a tabela de preço: " +
-										that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"), {
-											icon: MessageBox.Icon.ERROR,
-											title: "Preço do produto não encontrado.",
-											actions: [MessageBox.Action.YES],
-											onClose: function() {
-												that.onResetaCamposDialog();
-											}
-										});
+										MessageBox.show("Não existe preço para o produto: " + codItem + " de acordo com a tabela de preço: " +
+											that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco"), {
+												icon: MessageBox.Icon.ERROR,
+												title: "Preço do produto não encontrado.",
+												actions: [MessageBox.Action.YES],
+												onClose: function() {
+													that.onResetaCamposDialog();
+												}
+											});
 
-								} else {
+									} else {
 
-									if (oA960.zzPervm !== "" || oA960.zzPervm !== undefined) {
-										oA960.zzPervm = parseFloat(oA960.zzPervm);
-									}
-									if (oA960.zzPercom !== "" || oA960.zzPercom !== undefined) {
-										oA960.zzPercom = parseFloat(oA960.zzPercom);
-									}
-									if (oA960.zzVprod !== "" || oA960.zzVprod !== undefined) {
-										oA960.zzVprod = parseFloat(oA960.zzVprod);
-									}
+										if (oA960.zzPervm !== "" || oA960.zzPervm !== undefined) {
+											oA960.zzPervm = parseFloat(oA960.zzPervm);
+										}
+										if (oA960.zzPercom !== "" || oA960.zzPercom !== undefined) {
+											oA960.zzPercom = parseFloat(oA960.zzPercom);
+										}
+										if (oA960.zzVprod !== "" || oA960.zzVprod !== undefined) {
+											oA960.zzVprod = parseFloat(oA960.zzVprod);
+										}
 
-									// Desconto Extra aplicado depois do dento digitado no item
-									that.oItemPedido.zzDesext = 0;
-									that.oItemPedido.zzPervm = oA960.zzPervm; //Verba
-									that.oItemPedido.zzPercom = oA960.zzPercom; //Comissão
-									that.oItemPedido.zzVprod = oA960.zzVprod;
-									that.oItemPedido.knumh = 0;
-									that.oItemPedido.zzRegra = 0;
-									that.oItemPedido.zzGrpmat = 0;
+										// Desconto Extra aplicado depois do dento digitado no item
+										that.oItemPedido.zzDesext = 0;
+										that.oItemPedido.zzPervm = oA960.zzPervm; //Verba
+										that.oItemPedido.zzPercom = oA960.zzPercom; //Comissão
+										that.oItemPedido.zzVprod = oA960.zzVprod;
+										that.oItemPedido.knumh = 0;
+										that.oItemPedido.zzRegra = 0;
+										that.oItemPedido.zzGrpmat = 0;
 
-									that.oItemPedido.knumhExtra = 0;
-									that.oItemPedido.zzRegraExtra = 0;
-									that.oItemPedido.zzGrpmatExtra = 0;
+										that.oItemPedido.knumhExtra = 0;
+										that.oItemPedido.zzRegraExtra = 0;
+										that.oItemPedido.zzGrpmatExtra = 0;
 
-									that.oItemPedido.zzDesitem = 0;
-									that.oItemPedido.zzPercDescTotal = 0;
-									that.oItemPedido.zzVprodMinPermitido = 0;
-									that.oItemPedido.tipoItem = "Diluicao";
+										that.oItemPedido.zzDesitem = 0;
+										that.oItemPedido.zzPercDescTotal = 0;
+										that.oItemPedido.zzVprodMinPermitido = 0;
+										that.oItemPedido.tipoItem = "Diluicao";
 
-									//De inicio atribuir zzVprodDesc COM O VALOR CHEIO. DAI DIRECIONAR PARA OS DESCONTOS
-									that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
+										//De inicio atribuir zzVprodDesc COM O VALOR CHEIO. DAI DIRECIONAR PARA OS DESCONTOS
+										that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
 
-									//Desconto normal. *****
-									that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
+										//Desconto normal. *****
+										that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 
-									that.oItemPedido.tipoItem2 = "Diluicao";
-									that.oItemPedido.zzQntDiluicao = 0;
-									that.oItemPedido.zzValorDiluido = 0;
+										that.oItemPedido.tipoItem2 = "Diluicao";
+										that.oItemPedido.zzQntDiluicao = 0;
+										that.oItemPedido.zzValorDiluido = 0;
 
-									var vetorAuxFamilias = [];
-									var vetorAuxFamiliasExtra = [];
-									var objA965 = db.transaction("A965").objectStore("A965");
-									objA965.openCursor().onsuccess = function(event) {
+										var vetorAuxFamilias = [];
+										var vetorAuxFamiliasExtra = [];
+										var objA965 = db.transaction("A965").objectStore("A965");
+										objA965.openCursor().onsuccess = function(event) {
 
-										var cursor = event.target.result;
+											var cursor = event.target.result;
 
-										if (cursor) {
-											if (cursor.value.matnr === that.oItemPedido.matnr && cursor.value.werks === werks) {
+											if (cursor) {
+												if (cursor.value.matnr === that.oItemPedido.matnr && cursor.value.werks === werks) {
 
-												vetorAuxFamilias.push(cursor.value);
-												console.log("Familia: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
-											}
+													vetorAuxFamilias.push(cursor.value);
+													console.log("Familia: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
+												}
 
-											cursor.continue();
+												cursor.continue();
 
-										} else {
+											} else {
 
-											var objA966 = db.transaction("A966").objectStore("A966");
-											objA966.openCursor().onsuccess = function(event2) {
-												var cursor2 = event2.target.result;
+												var objA966 = db.transaction("A966").objectStore("A966");
+												objA966.openCursor().onsuccess = function(event2) {
+													var cursor2 = event2.target.result;
 
-												if (cursor2) {
-													for (var i = 0; i < vetorAuxFamilias.length; i++) {
+													if (cursor2) {
+														for (var i = 0; i < vetorAuxFamilias.length; i++) {
 
-														if (cursor2.value.zzGrpmat === vetorAuxFamilias[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
+															if (cursor2.value.zzGrpmat === vetorAuxFamilias[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
 
-															that.oItemPedido.zzGrpmat = cursor2.value.zzGrpmat; //Código Familia
-															that.oItemPedido.zzRegra = cursor2.value.zzRegra; //Grupo de preço 
-															console.log("Grupo de Preço:" + that.oItemPedido.zzRegra + " do grupo da familia: " + cursor2.value.zzGrpmat);
-														}
-													}
-													cursor2.continue();
-
-												} else {
-													// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-													var objA967 = db.transaction("A967").objectStore("A967");
-													objA967.openCursor().onsuccess = function(event3) {
-														var cursorA967 = event3.target.result;
-
-														if (cursorA967) {
-
-															if (cursorA967.value.zzRegra === that.oItemPedido.zzRegra) {
-
-																that.oItemPedido.knumh = cursorA967.value.knumh; // Registro de condição 
-
-																console.log("Registro de condição :" + that.oItemPedido.knumh);
+																that.oItemPedido.zzGrpmat = cursor2.value.zzGrpmat; //Código Familia
+																that.oItemPedido.zzRegra = cursor2.value.zzRegra; //Grupo de preço 
+																console.log("Grupo de Preço:" + that.oItemPedido.zzRegra + " do grupo da familia: " + cursor2.value.zzGrpmat);
 															}
+														}
+														cursor2.continue();
 
-															cursorA967.continue();
+													} else {
+														// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+														var objA967 = db.transaction("A967").objectStore("A967");
+														objA967.openCursor().onsuccess = function(event3) {
+															var cursorA967 = event3.target.result;
 
-														} else {
+															if (cursorA967) {
 
-															var auxRangeQuant = 0;
-															var objKonm = db.transaction("Konm").objectStore("Konm");
-															objKonm.openCursor().onsuccess = function(event2) {
-																var cursor3 = event2.target.result;
+																if (cursorA967.value.zzRegra === that.oItemPedido.zzRegra) {
 
-																if (cursor3) {
+																	that.oItemPedido.knumh = cursorA967.value.knumh; // Registro de condição 
 
-																	if (cursor3.value.knumh === that.oItemPedido.knumh && auxRangeQuant < parseFloat(cursor3.value.kbetr)) {
+																	console.log("Registro de condição :" + that.oItemPedido.knumh);
+																}
 
-																		auxRangeQuant = parseFloat(cursor3.value.kbetr); //Desconto total a aplicar
+																cursorA967.continue();
 
-																	}
+															} else {
 
-																	cursor3.continue();
+																var auxRangeQuant = 0;
+																var objKonm = db.transaction("Konm").objectStore("Konm");
+																objKonm.openCursor().onsuccess = function(event2) {
+																	var cursor3 = event2.target.result;
 
-																} else {
+																	if (cursor3) {
 
-																	that.oItemPedido.kbetr = auxRangeQuant;
-																	console.log("Percentual de Desconto Permitido: " + that.oItemPedido.kbetr);
+																		if (cursor3.value.knumh === that.oItemPedido.knumh && auxRangeQuant < parseFloat(cursor3.value.kbetr)) {
 
-																	//Buscando Familia de desconto extra
+																			auxRangeQuant = parseFloat(cursor3.value.kbetr); //Desconto total a aplicar
 
-																	var objA962 = db.transaction("A962").objectStore("A962");
-																	objA962.openCursor().onsuccess = function(event) {
+																		}
 
-																		var cursor = event.target.result;
+																		cursor3.continue();
 
-																		if (cursor) {
-																			if (cursor.value.matnr === that.oItemPedido.matnr && cursor.value.werks === werks) {
+																	} else {
 
-																				vetorAuxFamiliasExtra.push(cursor.value);
-																				console.log("Familia Extra: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
-																			}
+																		that.oItemPedido.kbetr = auxRangeQuant;
+																		console.log("Percentual de Desconto Permitido: " + that.oItemPedido.kbetr);
 
-																			cursor.continue();
+																		//Buscando Familia de desconto extra
 
-																		} else {
+																		var objA962 = db.transaction("A962").objectStore("A962");
+																		objA962.openCursor().onsuccess = function(event) {
 
-																			var objA968 = db.transaction("A968").objectStore("A968");
-																			objA968.openCursor().onsuccess = function(event2) {
-																				cursor2 = event2.target.result;
+																			var cursor = event.target.result;
 
-																				if (cursor2) {
-																					for (i = 0; i < vetorAuxFamiliasExtra.length; i++) {
+																			if (cursor) {
+																				if (cursor.value.matnr === that.oItemPedido.matnr && cursor.value.werks === werks) {
 
-																						if (cursor2.value.zzGrpmat === vetorAuxFamiliasExtra[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
+																					vetorAuxFamiliasExtra.push(cursor.value);
+																					console.log("Familia Extra: " + cursor.value.zzGrpmat + " para o Item: " + cursor.value.matnr);
+																				}
 
-																							that.oItemPedido.zzGrpmatExtra = cursor2.value.zzGrpmat; //Código Familia Extra
-																							that.oItemPedido.zzRegraExtra = cursor2.value.zzRegra; //Grupo de preço Extra
-																							console.log("Grupo de Preço Extra:" + that.oItemPedido.zzRegraExtra + " do grupo da familia Extra: " +
-																								that.oItemPedido.zzGrpmatExtra);
+																				cursor.continue();
+
+																			} else {
+
+																				var objA968 = db.transaction("A968").objectStore("A968");
+																				objA968.openCursor().onsuccess = function(event2) {
+																					cursor2 = event2.target.result;
+
+																					if (cursor2) {
+																						for (i = 0; i < vetorAuxFamiliasExtra.length; i++) {
+
+																							if (cursor2.value.zzGrpmat === vetorAuxFamiliasExtra[i].zzGrpmat && cursor2.value.pltyp === tabPreco) {
+
+																								that.oItemPedido.zzGrpmatExtra = cursor2.value.zzGrpmat; //Código Familia Extra
+																								that.oItemPedido.zzRegraExtra = cursor2.value.zzRegra; //Grupo de preço Extra
+																								console.log("Grupo de Preço Extra:" + that.oItemPedido.zzRegraExtra + " do grupo da familia Extra: " +
+																									that.oItemPedido.zzGrpmatExtra);
+																							}
 																						}
-																					}
-																					cursor2.continue();
+																						cursor2.continue();
 
-																				} else {
+																					} else {
 
-																					var objA969 = db.transaction("A969").objectStore("A969");
-																					objA969.openCursor().onsuccess = function(event3) {
-																						var cursorA969 = event3.target.result;
+																						var objA969 = db.transaction("A969").objectStore("A969");
+																						objA969.openCursor().onsuccess = function(event3) {
+																							var cursorA969 = event3.target.result;
 
-																						if (cursorA969) {
+																							if (cursorA969) {
 
-																							if (cursorA969.value.zzRegra === that.oItemPedido.zzRegraExtra) {
+																								if (cursorA969.value.zzRegra === that.oItemPedido.zzRegraExtra) {
 
-																								that.oItemPedido.knumhExtra = cursorA969.value.knumh; // Registro de condição 
+																									that.oItemPedido.knumhExtra = cursorA969.value.knumh; // Registro de condição 
 
-																								console.log("Registro de condição :" + that.oItemPedido.knumhExtra);
-																							}
+																									console.log("Registro de condição :" + that.oItemPedido.knumhExtra);
+																								}
 
-																							cursorA969.continue();
+																								cursorA969.continue();
 
-																						} else {
+																							} else {
 
-																							if (that.oItemPedido.mtpos == "YBRI") {
+																								if (that.oItemPedido.mtpos == "YBRI") {
 
-																								var tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbri;
-																								var idA960ABB = werks + "." + tabPreco2 + "." + oMaterial.matnr;
+																									var tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbri;
+																									var idA960ABB = werks + "." + tabPreco2 + "." + oMaterial.matnr;
 
-																							} else if (that.oItemPedido.mtpos == "YAMO") {
+																								} else if (that.oItemPedido.mtpos == "YAMO") {
 
-																								tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabamo;
-																								idA960ABB = werks + "." + tabPreco2 + "." + oMaterial.matnr;
-
-																							}
-
-																							if (tipoPedido == "YBON") {
-
-																								if (that.oItemPedido.mtpos == "NORM") {
-
-																									tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
+																									tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabamo;
 																									idA960ABB = werks + "." + tabPreco2 + "." + oMaterial.matnr;
 
 																								}
-																							} else {
-																								idA960ABB = 0;
-																							}
 
-																							//verificação para definir o preço do brinde / amostra / bonificação para efeito de nota
-																							var storeoA960ABB = db.transaction("A960", "readwrite");
-																							var objA960ABB = storeoA960ABB.objectStore("A960");
+																								if (tipoPedido == "YBON") {
 
-																							var requesA960ABB = objA960ABB.get(idA960ABB);
+																									if (that.oItemPedido.mtpos == "NORM") {
 
-																							requesA960ABB.onsuccess = function(e) {
-																								var oA960ABB = e.target.result;
+																										tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
+																										idA960ABB = werks + "." + tabPreco2 + "." + oMaterial.matnr;
 
-																								if (oA960ABB == undefined) {
-
-																									that.oItemPedido.zzVprodABB = 0;
-																									that.calculaPrecoItem();
-																									that.popularCamposItemPedido();
-
-																									sap.ui.getCore().byId("idQuantidade").focus();
-																									oPanel.setBusy(false);
-
+																									}
 																								} else {
-
-																									that.oItemPedido.zzVprodABB = parseFloat(oA960ABB.zzVprod);
-																									that.calculaPrecoItem();
-																									that.popularCamposItemPedido();
-
-																									sap.ui.getCore().byId("idQuantidade").focus();
-																									oPanel.setBusy(false);
+																									idA960ABB = 0;
 																								}
-																							};
 
-																						}
-																					};
-																				}
-																			};
-																		}
-																	};
-																}
-															};
-														}
-													};
-												}
-											};
-										}
-									};
-								}
-							};
+																								//verificação para definir o preço do brinde / amostra / bonificação para efeito de nota
+																								var storeoA960ABB = db.transaction("A960", "readwrite");
+																								var objA960ABB = storeoA960ABB.objectStore("A960");
+
+																								var requesA960ABB = objA960ABB.get(idA960ABB);
+
+																								requesA960ABB.onsuccess = function(e) {
+																									var oA960ABB = e.target.result;
+
+																									if (oA960ABB == undefined) {
+
+																										that.oItemPedido.zzVprodABB = 0;
+																										that.calculaPrecoItem();
+																										that.popularCamposItemPedido();
+
+																										sap.ui.getCore().byId("idQuantidade").focus();
+																										oPanel.setBusy(false);
+
+																									} else {
+
+																										that.oItemPedido.zzVprodABB = parseFloat(oA960ABB.zzVprod);
+																										that.calculaPrecoItem();
+																										that.popularCamposItemPedido();
+
+																										sap.ui.getCore().byId("idQuantidade").focus();
+																										oPanel.setBusy(false);
+																									}
+																								};
+
+																							}
+																						};
+																					}
+																				};
+																			}
+																		};
+																	}
+																};
+															}
+														};
+													}
+												};
+											}
+										};
+									}
+								};/**/
+							}
+
+
 						}
 					};
 				}

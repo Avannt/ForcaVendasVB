@@ -186,10 +186,10 @@
 											<Input id="idVerbaAbaTotal"
 												value="{path: 'PedidosAprovarDetalhe>/Valverbapedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 												enabled="false" class="desabilitado" type="Text"/>
-											<Label text="Comissão (R$)"/>
-											<Input id="idComissaoAbaTotal"
-												value="{path: 'PedidosAprovarDetalhe>/Valorcomissao', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
-												enabled="false" class="desabilitado" type="Text"/>
+											<!--<Label text="Comissão (R$)"/>-->
+											<!--<Input id="idComissaoAbaTotal"-->
+											<!--	value="{path: 'PedidosAprovarDetalhe>/Valorcomissao', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->
+											<!--	enabled="false" class="desabilitado" type="Text"/>-->
 											<!--<Label text="Parcela "/>-->
 											<!--<Input id="idParcela"-->
 											<!--	value="{path: 'PedidosAprovarDetalhe>/Entradapedido'}{path: 'PedidosAprovarDetalhe>/Quantidadeparcelaspedido'} R$: {path: 'PedidosAprovarDetalhe>/Valparcelaspedido', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"-->

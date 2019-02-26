@@ -1,6 +1,15 @@
 <mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
 	controllerName="testeui5.controller.verbaConsultas" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
 	<Page id="detail" title="Consultas de Verbas" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
+		<subHeader>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<ToolbarSpacer/>
+				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
+				<SearchField id="idConsultaVerba" placeholder="Digite o cód/nome do representante" liveChange="onSearch"
+					width="100%"></SearchField>
+			</Toolbar>
+		</subHeader>
 		<content>
 			<Table id="table_Verbas" width="100%" items="{ path: 'Verbas>/'}" updateFinished="onListUpdateFinished" mode="None" itemPress="onItemPress"
 				noDataText="Nenhuma verba disponivel no momento." busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
@@ -27,7 +36,8 @@
 						<cells>
 							<Text text="{path : 'Verbas>Reprs'}"/>
 							<Text text="{path : 'Verbas>Name'}"/>
-							<Text text="R$ {path : 'Verbas>TotalVm'}" />
+							<Text
+								text="R$ {path : 'Verbas>TotalVm', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"/>
 						</cells>
 					</ColumnListItem>
 				</items>

@@ -249,13 +249,12 @@ sap.ui.define([
 			that.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", variavelCodigoCliente);
 			that.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", nrPedCli);
 
-			MessageBox.show("Deseja mesmo detalhar o Pedido?", {
+			MessageBox.show("Deseja mesmo detalhar o Pedido? O pedido será reaberto.", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Detalhamento Solicitado",
 				actions: [MessageBox.Action.YES, sap.m.MessageBox.Action.CANCEL],
 				onClose: function(oAction) {
 					if (oAction == sap.m.MessageBox.Action.YES) {
-
 						var open = indexedDB.open("VB_DataBase");
 
 						open.onerror = function() {
@@ -270,7 +269,37 @@ sap.ui.define([
 							});
 
 							promise.then(function() {
-								sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+								/* Reabro o pedido */
+								new Promise(function(resAP, rejAP){
+									var store1 = db.transaction("PrePedidos", "readwrite");
+									var objPedido = store1.objectStore("PrePedidos");
+									var req = objPedido.get(nrPedCli);
+									
+									req.onsuccess = function(ret) {
+										var result = ret.target.result;
+										var oPed = result;
+										oPed.idStatusPedido = 1; // Em digitação
+										oPed.situacaoPedido = "EM DIGITAÇÃO";
+						
+										store1 = db.transaction("PrePedidos", "readwrite");
+										objPedido = store1.objectStore("PrePedidos");
+										req = objPedido.put(oPed);
+						
+										req.onsuccess = function() {
+											/* Pedido reaberto */
+											resAP();
+											console.log("O pedido foi reaberto.");
+										};
+										
+										req.onerror = function() {
+											/* Erro ao reabir pedido */
+											rejAP("Erro ao reabrir pedido!");
+											console.log("Erro ao abrir o Pedido > " + nrPedCli);
+										};
+									};
+								}).then(function(){
+									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
+								});
 							});
 						};
 					}

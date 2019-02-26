@@ -8,7 +8,6 @@
 						<ToolbarSpacer/>
 						<ToolbarSpacer/>
 						<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-						<DatePicker visible="false" id="DP6" placeholder="Filtre Data" displayFormat="short" change="handleChange" width="50%"/>
 						<SearchField id="idClientesRelatorio" placeholder="Digite Nº Ped, Cliente, Repres, Status" liveChange="onSearch2" width="100%"></SearchField>
 					</Toolbar>
 				</subHeader>				
@@ -34,6 +33,9 @@
 							</Column>
 							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
 								<Text text="Ref.cliente"/>
+							</Column>
+							<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
+								<Text text="Status"/>
 							</Column>
 							<!--<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">-->
 							<!--	<Text text="Qtde Fat"/>-->
@@ -80,6 +82,7 @@
 									<Text text="{path : 'entregasEnviar>Posnr'}"/>
 									<Text text="{path : 'entregasEnviar>Matnr'}"/>
 									<Text text="{path : 'entregasEnviar>Bstkd'}"/>
+									<Text text="{path : 'entregasEnviar>Status'}"/>
 									<!--<Text text="{path : 'entregasEnviar>Fkimg'}"/>-->
 									<!--<Text text="{path : 'entregasEnviar>Sldfut'}"/>-->
 									<Text text="{path : 'entregasEnviar>IRepresentante'}"/>
@@ -90,7 +93,7 @@
 									<Text text="{path : 'entregasEnviar>NameOrg2'}"/>
 									<Text text="{path : 'entregasEnviar>Aubel'}"/>
 									<Text text="{path : 'entregasEnviar>idEntregaFutura'}"/>
-									<Text text="{path : 'entregasEnviar>Fkimg2'}"/>
+									<Text text="{path : 'entregasEnviar>Fkimg'}"/>
 								</cells>
 							</ColumnListItem>
 						</items>
@@ -99,7 +102,7 @@
 			</Page>
 		</detailPages>
 		<masterPages>
-			<Page id="master" title="Clientes" icon="sap-icon://action" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
+			<Page id="master" title="Entregas de saldo" icon="sap-icon://action" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
 				<headerContent/>
 				<subHeader>
 					<Toolbar id="searchBar">

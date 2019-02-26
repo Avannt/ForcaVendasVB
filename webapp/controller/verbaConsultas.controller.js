@@ -43,6 +43,21 @@ sap.ui.define([
 		onNavBack: function() {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("menuConsultas");
 		},
+		
+		onSearch: function(oEvent) {
+
+			var sValue = oEvent.getSource().getValue();
+			var aFilters = [];
+			var oFilter = [
+				new sap.ui.model.Filter("Reprs", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Name", sap.ui.model.FilterOperator.Contains, sValue)
+			];
+
+			var allFilters = new sap.ui.model.Filter(oFilter, false);
+			aFilters.push(allFilters);
+			this.byId("table_Verbas").getBinding("items").filter(aFilters, sap.ui.model.FilterType.Application);
+
+		},
 
 		onItemPress: function(oEvent) {
 			// 	//popula modelVerba

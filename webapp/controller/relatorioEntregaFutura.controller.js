@@ -25,7 +25,7 @@ sap.ui.define([
 		},
 
 		onNavBack: function() {
-			sap.ui.core.UIComponent.getRouterFor(this).navTo("menu");
+			sap.ui.core.UIComponent.getRouterFor(this).navTo("menuConsultas");
 		},
 
 		onNavBack2: function() {
@@ -129,24 +129,34 @@ sap.ui.define([
 							vClientesUnicosEF.push(cursor.value);
 							cursor.continue();
 						} else {
+							
+							var sUltimoCliente = vClientesUnicosEF[vClientesUnicosEF.length - 1].Kunrg;
 							/* Percorro todos os clientes que possuem vendas futuras pra recupearar cada 1 
 							individualmente do cadastro de clientes */
 							for (var i = 0; i < vClientesUnicosEF.length; i++) {
 								var tCliente = db.transaction("Clientes", "readonly");
 								var osCliente = tCliente.objectStore("Clientes");
 
-								var reqClientes = osCliente.openCursor(vClientesUnicosEF[i].Kunrg);
+								var reqClientes = osCliente.getAll(vClientesUnicosEF[i].Kunrg);
 
 								reqClientes.onsuccess = function(event) {
-									var cursor = event.target.result;
-
-									if (cursor) {
-										vetorCliente.push(event.target.result.value);
-
-										cursor.continue();
-									} else {
-										resolv(vetorCliente);
+									var cliente = event.target.result;
+									
+									if (cliente[0]){
+										vetorCliente.push(cliente[0]);
+										
+										if (cliente[0].kunnr === sUltimoCliente){
+											resolv(vetorCliente);
+										}
 									}
+
+									// if (cursor2) {
+									// 	vetorCliente.push(event.target.result.value);
+
+									// 	cursor2.continue();
+									// } else {
+									// 	resolv(vetorCliente);
+									// }
 								};
 
 								reqClientes.onerror = function(event) {
