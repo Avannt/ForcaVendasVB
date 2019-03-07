@@ -34,7 +34,7 @@ sap.ui.define([
 				var sUrl;
 				//Versão App
 				if (this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")) {
-					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.34");
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.36");
 					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/";
 
 					var oModel = new sap.ui.model.odata.v2.ODataModel(sUrl, {

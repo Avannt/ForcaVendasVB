@@ -7,40 +7,40 @@ sap.ui.define([
 
 	var that;
 
-	return BaseController.extend("testeui5.controller.PedidoDetalheEnxoval", {
+	return BaseController.extend("testeui5.controller.PedidoDetalheBrindes", {
 
 		constructor: function(sView) {
+			console.log("Inicio da verificação de campanha de brindes.");
 			that = this;
 
 			/* CAMPOS - INICIO */
-			/* that.oCmpEnxoval[i].bCampanhaVigente */
+			/* that.oCmpBrinde[i].bCampanhaVigente */
 			that.PDController = undefined;
-			that.oCmpEnxoval = undefined;
-			that.bCampanhaEnxovalAtiva = false;
-			that.bClienteEfetuouCompra = false;
+			that.oCmpBrinde = undefined;
+			that.bCampanhaBrindeAtiva = false;
 			/* CAMPOS - FIM */
 
 			that.PDController = sView;
 
-			this.InicializarEventosCampEnxoval();
+			this.InicializarEventosCampBrinde();
 		} /* constructor */ ,
 
 		onChangeIdTipoPedido: function() {
-			that.VerificarCampanhaEnxoval();
+			that.VerificarCampanhaBrinde();
 		} /* onChangeIdTipoPedido */ ,
 
 		onSelectIconTabBar: function(evt) {
 			var item = evt.getParameters();
 
 			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
-				that.VerificarCampanhaEnxoval();
+				that.VerificarCampanhaBrinde();
 
 				// that.DisponibilizarValoresCampanhaEnxoval();
 			}
 		},
 		/* onSelectIconTabBar */
 
-		InicializarEventosCampEnxoval: function() {
+		InicializarEventosCampBrinde: function() {
 			// this.PDController.byId("idObservacoesAuditoria").attachLiveChange(this.onLiveChangeIdCodCliente);
 			var oEventRegistry = that.PDController.byId("idTipoPedido").mEventRegistry;
 			var bAtribuiuEvento = false;
@@ -58,72 +58,68 @@ sap.ui.define([
 				/* Atribuição de eventos exclusivos da campanha */
 				that.PDController.byId("idTipoPedido").attachChange(this.onChangeIdTipoPedido);
 				that.PDController.byId("idTopLevelIconTabBar").attachSelect(this.onSelectIconTabBar);
+				that.PDController.byId("idInserirItem").attachPress(this.onInserirItemPress);
+				//that.PDController.byId("idItemPedido").attachSearch(this.onSelectIconTabBar);
+				/*idInserirItem*/
 			}
 
 			this.GetCampanha();
-		} /* InicializarEventosCampEnxoval */ ,
+		},
+		/* InicializarEventosCampBrinde */
+		
+		onInserirItemPress: function(){
+			that.PDController.byId("idTipoPedido").setVisible(false);
+			console.log("onInserirItemPress da campanha de brindes!");
+		},
+		/* onInserirItemPress */
+		
+		onSearchItemPedido: function(){
+			console.log("onSearchItemPedido da campanha de brindes!");
+		}, 
+		/* onSearchItemPedido */
 
-		VerificarCampanhaEnxoval: function() {
+		VerificarCampanhaBrinde: function() {
 			/*Restrições (
-				Pedido de bonificação YBON															=> sIdTipoPed
-				Vigência da campanha																=> that.oCmpEnxoval[i].bCampanhaVigente, 
-				Cadastro do cliente (cliente pode ou não permitir compra pela campanha enxoval)		=> that.bClienteEfetuouCompra
+				TABELA DA CAMPANHA S4		=> zsdt025
+				TABELA DA CAMPANNHA LOCAL	=> CmpSldBrindes
+				Tipo de pedido: TODOS																=> sIdTipoPed
+				Vigência da campanha																=> that.oCmpBrinde[i].bCampanhaVigente, 
 				
-				Resultado																			=> that.bCampanhaEnxovalAtiva = true
+				Resultado																			=> that.bCampanhaBrindeAtiva = true
 			)*/
-			/* Verifico se o tipo de pedido é YBON */
-			var sIdTipoPed = that.PDController.byId("idTipoPedido").getSelectedKey();
+			
+			/* Verifico se não existe duas campanhas ativas para o mesmo representante e item */
+			for (var i = 0; i < that.oCmpBrinde.length; i++) {
 
-			/* Se não for pedido de bonificação, não é válido para campanha */
-			if (sIdTipoPed != "YBON") {
-				that.bCampanhaEnxovalAtiva = false;
-
-				console.log("Não usa campanha Enxoval: Não é ped bonificação!");
-				return;
-			}
-			console.log("Passo 1 de 3: Campanha enxoval: YBON, OK");
-
-			/* Verifico se não existe duas campanhas ativas para o mesmo representante */
-			var iQtdeCampanhasValidas = 0;
-			for (var i = 0; i < that.oCmpEnxoval.length; i++) {
-
-				if (that.oCmpEnxoval[i].bCampanhaVigente) {
-					iQtdeCampanhasValidas += 1;
-				}
-
-				if (iQtdeCampanhasValidas > 1) {
-
-					sap.m.MessageBox.error("Duas campanhas vigentes ao mesmo tempo para o representante, campanha de 'Enxoval' não será considerada!", {
-						title: "Inconsitência no cadastro",
-						actions: [sap.m.MessageBox.Action.OK],
-						close: function() {
-							that.bCampanhaEnxovalAtiva = false;
+				if (that.oCmpBrinde[i].bCampanhaVigente) {
+					
+					/* Se existir mais de uma campanha ativa para o mesmo item, bloqueio o processo */
+					var iTempQtdeCampanhasAtivasMesmoItem = 0;
+					
+					/* Para cada campanha ativa, eu preciso percorrer todas novamente para verificar se não existe uma em duplicidade */
+					for (var j = 0; j < that.oCmpBrinde.length; j++) {
+						
+						/* Se forem de materiais iguais, incremento a variável */
+						if (that.oCmpBrinde[i].material === that.oCmpBrinde[j].material){
+							iTempQtdeCampanhasAtivasMesmoItem += 1;
 						}
-					});
-
-					console.log("Não usa campanha Enxoval: Mais de uma campanha ativa!");
-					return;
+					}
+					
+					if (iTempQtdeCampanhasAtivasMesmoItem > 1){
+						sap.m.MessageBox.error("Duas campanhas vigentes ao mesmo tempo para o representante e material, campanha de 'Brinde' não será considerada!", {
+							title: "Inconsitência no cadastro",
+							actions: [sap.m.MessageBox.Action.OK],
+							close: function() {
+								that.bCampanhaBrindesAtiva = false;
+							}
+						});
+	
+						console.log("Não usa campanha Brinde: Mais de uma campanha ativa para o mesmo representante / material!");
+						return;
+					}
 				}
 			}
-
-			/* Verifico se existe somente 1 campanha ativa */
-			if (iQtdeCampanhasValidas == 1) {
-
-				console.log("Passo 2 de 3: Representante possui campanha ativa!");
-
-				/* Verifico se o cliente efetuou compra, para a campanha ser válida, será somente se o cliente NÃO efetuou compra (bClienteEfetuouCompra = false) */
-				if (that.bClienteEfetuouCompra == false) {
-					console.log("Campanha Enxoval Ativada! Todos os pré-requisitos foram atendidos!");
-					that.bCampanhaEnxovalAtiva = true;
-				} else {
-					console.log("Não usa campanha Enxoval: Cliente fora do período de compras! O USO TÁ LIBERADO TEMPORARIAMENTE, LEMBRAR DE RESTRINGIR APÓS OS TESTES");
-					that.bCampanhaEnxovalAtiva = true; //false;
-				}
-			} else {
-				console.log("Não usa campanha Enxoval: Representante não tem campanha!");
-				that.bCampanhaEnxovalAtiva = false;
-			}
-		} /* VerificarCampanhaEnxoval */ ,
+		} /* VerificarCampanhaBrinde */ ,
 
 		GetCampanha: function() {
 			var open = indexedDB.open("VB_DataBase");
@@ -131,15 +127,15 @@ sap.ui.define([
 			open.onsuccess = function() {
 				var db = open.result;
 
-				var tCmpEnxoval = db.transaction("CmpEnxoval", "readonly");
-				var osCmpEnxoval = tCmpEnxoval.objectStore("CmpEnxoval");
+				var tCmpBrinde = db.transaction("CmpSldBrindes", "readonly");
+				var osCmpBrinde = tCmpBrinde.objectStore("CmpSldBrindes");
 
-				if ("getAll" in osCmpEnxoval) {
-					osCmpEnxoval.getAll().onsuccess = function(event) {
+				if ("getAll" in osCmpBrinde) {
+					osCmpBrinde.getAll().onsuccess = function(event) {
 						var tmpCampanha = event.target.result;
 						// var oModel = new sap.ui.model.json.JSONModel(tmpCampanha);
 
-						that.oCmpEnxoval = tmpCampanha;
+						that.oCmpBrinde = tmpCampanha;
 						that.VerificarCampanhasValidas();
 
 						// that.getView().setModel(oModel, "tiposPedidos");
@@ -151,39 +147,29 @@ sap.ui.define([
 		VerificarCampanhasValidas: function() {
 			var dDataAtual = new Date();
 
-			for (var i = 0; i < that.oCmpEnxoval.length; i++) {
+			for (var i = 0; i < that.oCmpBrinde.length; i++) {
 
-				if ((dDataAtual >= that.oCmpEnxoval[i].DataInicio) && (dDataAtual <= that.oCmpEnxoval[i].DataFim)) {
-					that.oCmpEnxoval[i].bCampanhaVigente = true;
+				if ((dDataAtual >= that.oCmpBrinde[i].dataInicio) && (dDataAtual <= that.oCmpBrinde[i].dataFim)) {
+					that.oCmpBrinde[i].bCampanhaVigente = true;
 				} else {
-					that.oCmpEnxoval[i].bCampanhaVigente = false;
+					that.oCmpBrinde[i].bCampanhaVigente = false;
 				}
 			}
-
-			/* A campanha só é válida se o cliente tiver com efetuoucompra = false */
-			that.bClienteEfetuouCompra = that.PDController.getModel("modelCliente").getProperty("/efetuoucompra") == "true";
-
 		},
 		/* VerificarCampanhasValidas */
 
-		ProcessarSaldoCampanhaEnxoval: function() {
-			if (that.bCampanhaEnxovalAtiva) {
-				that.oCmpEnxoval[0].ValorSaldo = 0;
-			}
-		},
-		/* ProcessarSaldoCampanhaEnxoval */
-
-		DisponibilizarValoresCampanhaEnxoval: function() {
+		DisponibilizarValoresCampanhaBrindes: function() {
+			
 			/* Só populo os valores se a campanha estiver ativa para o representante / cliente */
-			if (that.bCampanhaEnxovalAtiva) {
+			if (that.bCampanhaBrindeAtiva) {
 				var dValorLiberar = 0;
 
 				var dValorLimite;
 				var dValorTotal;
 				var dValorBonificacao;
 
-				dValorLimite = parseFloat(that.oCmpEnxoval[0].ValorLimite);
-				dValorTotal = parseFloat(that.oCmpEnxoval[0].ValorTotal);
+				dValorLimite = parseFloat(that.oCmpBrinde[0].ValorLimite);
+				dValorTotal = parseFloat(that.oCmpBrinde[0].ValorTotal);
 				dValorBonificacao = parseFloat(that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
 
 				/* Verifico se o valor total a liberar é menor que o limite disponível por pedido */
@@ -223,7 +209,7 @@ sap.ui.define([
 
 		calculaTotalPedidoEnxoval: function() {
 
-			if (that.bCampanhaEnxovalAtiva) {
+			if (that.bCampanhaBrindeAtiva) {
 				that.DisponibilizarValoresCampanhaEnxoval();
 
 				var dValorLiberado = that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval");
@@ -241,7 +227,7 @@ sap.ui.define([
 					
 					that.ajustarValoresBonificacao();
 				}
-			} /*if bCampanhaEnxovalAtiva */
+			} /*if bCampanhaBrindeAtiva */
 		}
 
 	});

@@ -5,6 +5,7 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"testeui5/model/formatter",
 	"testeui5/controller/PedidoDetalheEnxoval.controller",
+	"testeui5/controller/PedidoDetalheBrindes.controller",
 	"testeui5/controller/PedidoDetalheGlobal.controller"
 
 ], function(BaseController, JSONModel, MessageBox, formatter) {
@@ -26,6 +27,7 @@ sap.ui.define([
 		_onLoadFields: function() {
 			var that = this;
 
+			this.pedidoDetalheBrindes = new testeui5.controller.PedidoDetalheBrindes(that);
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
 			this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
 
@@ -1527,8 +1529,11 @@ sap.ui.define([
 									that.oItemPedido.maxdescpermitido= that.objItensPedidoTemplate[i].maxdescpermitido;
 									that.oItemPedido.maxdescpermitidoExtra= that.objItensPedidoTemplate[i].maxdescpermitidoExtra;
 									that.oItemPedido.zzQntAmostra= 0;
+									that.oItemPedido.kbetr = that.objItensPedidoTemplate[i].zzPercDescTotal;
 
 									itemEncontradoDiluicao = true;
+									that.oItemPedido.itemEncontradoDiluicao = itemEncontradoDiluicao;
+									
 									that.calculaPrecoItem();
 									that.popularCamposItemPedido();
 								}
@@ -1796,8 +1801,8 @@ sap.ui.define([
 											}
 										};
 									}
-								};/**/
-							}
+								};
+							}/**/
 
 
 						}
@@ -1940,10 +1945,13 @@ sap.ui.define([
 				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprodDesc;
 
 			} else if (that.oItemPedido.tipoItem === "Diluicao" && that.oItemPedido.kbetr >= 0) {
+				
+				if (that.oItemPedido.itemEncontradoDiluicao && that.oItemPedido.zzVprodDesc == false){
+					that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
+	
+					that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc * that.oItemPedido.kbetr / 100);
+				}
 
-				that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
-
-				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc * that.oItemPedido.kbetr / 100);
 				that.oItemPedido.zzPercDescTotal = that.oItemPedido.kbetr;
 
 				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
@@ -1968,7 +1976,17 @@ sap.ui.define([
 					//Desconto normal. *****
 					that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 
+				/* ALTERAÇÃO DIEGO 20190227 
+				 - Pelo que eu entendi, o valor com desconto era calculado usando um valor líquido (zzVprodDesc) já processado anteriormente, 
+					foi alterado para calcular usando o valor bruto (zzVprod)
+					INICIO
+				*/
+				} else {
+					that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
+					//Desconto normal. *****
+					that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 				}
+				/* FIM */
 
 				//2º Aplicar o Desconto digitado na tela de digitação dos itens
 				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc) * (that.oItemPedido.zzDesitem / 100);
@@ -3244,8 +3262,8 @@ sap.ui.define([
 
 				//Ordenando para desconto Familia normal
 				vetorGeralExtra.sort(function(a, b) {
-					var x = a.zzGrpmatExtra;
-					var y = b.zzGrpmatExtra;
+					var x = a.zzGrpmatExtra.toString();
+					var y = b.zzGrpmatExtra.toString();
 					if (x < y) {
 						return -1;
 					}
@@ -4172,6 +4190,7 @@ sap.ui.define([
 
 		// EVENTOS DA TABLE 						<<<<<<<<<<<<
 		onNovoItem: function() {
+			console.log("onitempress standard");
 			var that = this;
 
 			var statusPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/IdStatusPedido");
