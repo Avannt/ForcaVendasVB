@@ -57,6 +57,7 @@ sap.ui.define([
 			this.getView().byId("objectAttribute_cnpj").setText();
 			this.getOwnerComponent().getModel("modelAux").setProperty("/NrPedCli", "");
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", "");
+			this.getOwnerComponent().getModel("modelAux").setProperty("/idFiscalCliente", "");
 
 			var oModel = new sap.ui.model.json.JSONModel();
 			that.getView().setModel(oModel, "pedidosCadastrados");
@@ -158,7 +159,11 @@ sap.ui.define([
 			this.getView().byId("objectAttribute_cnpj").setText(oItem.getIntro());
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", oItem.getNumber());
 			this.getSplitContObj().toDetail(this.createId("detail"));
-
+			
+			var iIndexCliente = oEvent.getSource()._aSelectedPaths[0].replace("/", "");
+			var sCnpj = this.getModel("clientesCadastrados").getData()[iIndexCliente].stcd1;
+			this.getOwnerComponent().getModel("modelAux").setProperty("/idFiscalCliente", sCnpj);
+			
 			var open = indexedDB.open("VB_DataBase");
 
 			open.onerror = function() {

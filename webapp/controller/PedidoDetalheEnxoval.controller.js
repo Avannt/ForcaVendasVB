@@ -14,22 +14,22 @@ sap.ui.define([
 
 			/* CAMPOS - INICIO */
 			/* that.oCmpEnxoval[i].bCampanhaVigente */
-			that.PDController = undefined;
+			that.PDControllerCpEnxoval = undefined;
 			that.oCmpEnxoval = undefined;
 			that.bCampanhaEnxovalAtiva = false;
 			that.bClienteEfetuouCompra = false;
 			/* CAMPOS - FIM */
 
-			that.PDController = sView;
+			that.PDControllerCpEnxoval = sView;
 
 			this.InicializarEventosCampEnxoval();
 		} /* constructor */ ,
 
-		onChangeIdTipoPedido: function() {
+		onChangeIdTipoPedidoCpEnxoval: function() {
 			that.VerificarCampanhaEnxoval();
-		} /* onChangeIdTipoPedido */ ,
+		} /* onChangeIdTipoPedidoCpEnxoval */ ,
 
-		onSelectIconTabBar: function(evt) {
+		onSelectIconTabBarCpEnxoval: function(evt) {
 			var item = evt.getParameters();
 
 			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
@@ -38,26 +38,26 @@ sap.ui.define([
 				// that.DisponibilizarValoresCampanhaEnxoval();
 			}
 		},
-		/* onSelectIconTabBar */
+		/* onSelectIconTabBarCpEnxoval */
 
 		InicializarEventosCampEnxoval: function() {
-			// this.PDController.byId("idObservacoesAuditoria").attachLiveChange(this.onLiveChangeIdCodCliente);
-			var oEventRegistry = that.PDController.byId("idTipoPedido").mEventRegistry;
+			// this.PDControllerCpEnxoval.byId("idObservacoesAuditoria").attachLiveChange(this.onLiveChangeIdCodCliente);
+			var oEventRegistry = that.PDControllerCpEnxoval.byId("idTipoPedido").mEventRegistry;
 			var bAtribuiuEvento = false;
 
 			/* Preciso verificar se o evento já não foi atribuído ao controle pelo menos uma vez para 
 			que não chame em duplicidade */
 			for (var i = 0; i < oEventRegistry.change.length; i++) {
 
-				if (oEventRegistry.change[i].fFunction.name == "onChangeIdTipoPedido") {
+				if (oEventRegistry.change[i].fFunction.name == "onChangeIdTipoPedidoCpEnxoval") {
 					bAtribuiuEvento = true;
 				}
 			}
 
 			if (!bAtribuiuEvento) {
 				/* Atribuição de eventos exclusivos da campanha */
-				that.PDController.byId("idTipoPedido").attachChange(this.onChangeIdTipoPedido);
-				that.PDController.byId("idTopLevelIconTabBar").attachSelect(this.onSelectIconTabBar);
+				that.PDControllerCpEnxoval.byId("idTipoPedido").attachChange(this.onChangeIdTipoPedidoCpEnxoval);
+				that.PDControllerCpEnxoval.byId("idTopLevelIconTabBar").attachSelect(this.onSelectIconTabBarCpEnxoval);
 			}
 
 			this.GetCampanha();
@@ -68,11 +68,27 @@ sap.ui.define([
 				Pedido de bonificação YBON															=> sIdTipoPed
 				Vigência da campanha																=> that.oCmpEnxoval[i].bCampanhaVigente, 
 				Cadastro do cliente (cliente pode ou não permitir compra pela campanha enxoval)		=> that.bClienteEfetuouCompra
+				Cliente tem que ser pessoa jurídica													=> ModelAux idFiscalCliente com quantidade de caracteres equivalente a CPNJ
 				
 				Resultado																			=> that.bCampanhaEnxovalAtiva = true
 			)*/
+
+			/* Verifico se o cliente em questão é empresa CNPJ > (stcd1 != "") */
+			var idFiscalCliente = that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelAux").getProperty("/idFiscalCliente");
+			if (idFiscalCliente == false) {
+				console.log("Não usa campanha Enxoval: CNPJ não encontrado!");
+				return;
+			}
+
+			if (idFiscalCliente.length != "14") {
+				console.log("Não usa campanha Enxoval: Cliente pessoa física!");
+				return;
+			}
+
+			console.log("Passo 1 de 4: Campanha enxoval: Cliente é empresa (CPNJ), OK");
+
 			/* Verifico se o tipo de pedido é YBON */
-			var sIdTipoPed = that.PDController.byId("idTipoPedido").getSelectedKey();
+			var sIdTipoPed = that.PDControllerCpEnxoval.byId("idTipoPedido").getSelectedKey();
 
 			/* Se não for pedido de bonificação, não é válido para campanha */
 			if (sIdTipoPed != "YBON") {
@@ -81,7 +97,7 @@ sap.ui.define([
 				console.log("Não usa campanha Enxoval: Não é ped bonificação!");
 				return;
 			}
-			console.log("Passo 1 de 3: Campanha enxoval: YBON, OK");
+			console.log("Passo 2 de 4: Campanha enxoval: YBON, OK");
 
 			/* Verifico se não existe duas campanhas ativas para o mesmo representante */
 			var iQtdeCampanhasValidas = 0;
@@ -109,10 +125,11 @@ sap.ui.define([
 			/* Verifico se existe somente 1 campanha ativa */
 			if (iQtdeCampanhasValidas == 1) {
 
-				console.log("Passo 2 de 3: Representante possui campanha ativa!");
+				console.log("Passo 3 de 4: Representante possui campanha ativa!");
 
 				/* Verifico se o cliente efetuou compra, para a campanha ser válida, será somente se o cliente NÃO efetuou compra (bClienteEfetuouCompra = false) */
 				if (that.bClienteEfetuouCompra == false) {
+					console.log("Passo 4 de 4: Cliente não efetuou compra no período pré-estabelido! OK");
 					console.log("Campanha Enxoval Ativada! Todos os pré-requisitos foram atendidos!");
 					that.bCampanhaEnxovalAtiva = true;
 				} else {
@@ -161,7 +178,7 @@ sap.ui.define([
 			}
 
 			/* A campanha só é válida se o cliente tiver com efetuoucompra = false */
-			that.bClienteEfetuouCompra = that.PDController.getModel("modelCliente").getProperty("/efetuoucompra") == "true";
+			that.bClienteEfetuouCompra = that.PDControllerCpEnxoval.getModel("modelCliente").getProperty("/efetuoucompra") == "true";
 
 		},
 		/* VerificarCampanhasValidas */
@@ -184,7 +201,7 @@ sap.ui.define([
 
 				dValorLimite = parseFloat(that.oCmpEnxoval[0].ValorLimite);
 				dValorTotal = parseFloat(that.oCmpEnxoval[0].ValorTotal);
-				dValorBonificacao = parseFloat(that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
+				dValorBonificacao = parseFloat(that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
 
 				/* Verifico se o valor total a liberar é menor que o limite disponível por pedido */
 				if (dValorTotal < dValorLimite) {
@@ -198,26 +215,30 @@ sap.ui.define([
 					dValorLiberar = dValorBonificacao;
 				}
 
-				// that.PDController.getView().byId("idValorTotalEnxoval").setValue(parseFloat(dValorLiberar).toFixed(2));
-				that.PDController.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
+				// that.PDControllerCpEnxoval.getView().byId("idValorTotalEnxoval").setValue(parseFloat(dValorLiberar).toFixed(2));
+				that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
+				that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
+
+				/* Regra: 20190308 - Em conversa entre o Fernando e o Figueiredo, foi confirmado que a campanha será de uso obrigatória
+				sendo assim todo o valor destinado a ela deverá ser o total disponível*/
 			}
 		},
 		/* DisponibilizarValoresCampanhaEnxoval */
 
 		ajustarValoresBonificacao: function() {
-			var oModelPed = that.PDController.getOwnerComponent().getModel("modelDadosPedido");
-			
+			var oModelPed = that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido");
+
 			var dValorUtilizadoCampanha = parseFloat(oModelPed.getProperty("/ValUtilizadoCampEnxoval"));
 			var dValorBonificacao = parseFloat(oModelPed.getProperty("/ValTotalExcedenteNaoDirecionadoBonif"));
 			var dValorLiquidoBonificacao = dValorBonificacao - dValorUtilizadoCampanha;
-			
+
 			dValorLiquidoBonificacao = Math.round(dValorLiquidoBonificacao * 100) / 100;
-			
+
 			console.log("Valor da bonificação total alterado.");
 			oModelPed.setProperty("/ValTotalExcedenteNaoDirecionadoBonif", dValorLiquidoBonificacao.toString());
 			oModelPed.setProperty("/ValUtilizadoCampEnxoval", dValorUtilizadoCampanha.toString());
 			oModelPed.refresh();
-			
+
 		},
 		/* ajustarValoresBonificacao */
 
@@ -226,19 +247,19 @@ sap.ui.define([
 			if (that.bCampanhaEnxovalAtiva) {
 				that.DisponibilizarValoresCampanhaEnxoval();
 
-				var dValorLiberado = that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval");
-				var dValorUtilizado = that.PDController.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
+				var dValorLiberado = that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampEnxoval");
+				var dValorUtilizado = that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
 
 				if (parseFloat(dValorUtilizado) > parseFloat(dValorLiberado)) {
 					var sMensagem = "Valor destinado para abater a campanha enxonval ultrapassou o valor total permitido.";
-					that.PDController.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
-					that.PDController.byId("idVerbaEnxoval").setValueState("Error");
-					that.PDController.byId("idVerbaEnxoval").setValueStateText(sMensagem);
-					that.PDController.byId("idVerbaEnxoval").focus();
+					that.PDControllerCpEnxoval.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+					that.PDControllerCpEnxoval.byId("idVerbaEnxoval").setValueState("Error");
+					that.PDControllerCpEnxoval.byId("idVerbaEnxoval").setValueStateText(sMensagem);
+					that.PDControllerCpEnxoval.byId("idVerbaEnxoval").focus();
 				} else {
-					that.PDController.byId("idVerbaEnxoval").setValueState("None");
-					that.PDController.byId("idVerbaEnxoval").setValueStateText("");
-					
+					that.PDControllerCpEnxoval.byId("idVerbaEnxoval").setValueState("None");
+					that.PDControllerCpEnxoval.byId("idVerbaEnxoval").setValueStateText("");
+
 					that.ajustarValoresBonificacao();
 				}
 			} /*if bCampanhaEnxovalAtiva */

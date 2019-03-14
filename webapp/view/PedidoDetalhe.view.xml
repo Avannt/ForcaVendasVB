@@ -4,7 +4,7 @@
 		<pages>
 			<Page title="Digitação do Pedido" showNavButton="true" navButtonPress="onNavBack">
 				<content>
-					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true" enableTabReordering="true"
+					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true" enableTabReordering="false"
 						select="onTablFilterEvent">
 						<items>
 							<IconTabFilter id="tabClienteStep" text="Dados Cliente" enabled="true" icon="sap-icon://hint" key="tab1">
@@ -250,7 +250,18 @@
 											<Input id="idValorTotalEnxoval" visible="{path:'modelAux>/Usuario/utilcampDesc'}" value="{path: 'modelDadosPedido>/ValTotalCampEnxoval', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 												enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
-											<Input id="idVerbaEnxoval" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampEnxoval}"
+											<Input id="idVerbaEnxoval" enabled="false" class="desabilitado" value="{modelDadosPedido>/ValUtilizadoCampEnxoval}"
+												visible="{path:'modelAux>/Usuario/utilcampDesc'}" type="Text"/>
+										</f:content>
+									</f:SimpleForm>
+									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
+										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
+										<f:content>
+											<Label text="Valor campanha brinde (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
+											<Input id="idValorTotalBrinde" visible="{path:'modelAux>/Usuario/utilcampDesc'}" value="{path: 'modelDadosPedido>/ValTotalCampBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												enabled="false" class="desabilitado" type="Text"/>
+											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
+											<Input id="idVerbaBrinde" enabled="false" class="desabilitado" value="{modelDadosPedido>/ValUtilizadoCampBrinde}"
 												visible="{path:'modelAux>/Usuario/utilcampDesc'}" type="Text"/>
 										</f:content>
 									</f:SimpleForm>
