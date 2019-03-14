@@ -34,7 +34,7 @@ sap.ui.define([
 				var sUrl;
 				//Versão App
 				if (this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")) {
-					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.36");
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.37");
 					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/";
 
 					var oModel = new sap.ui.model.odata.v2.ODataModel(sUrl, {
@@ -63,7 +63,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 47);
+					var open = indexedDB.open("VB_DataBase", 48);
 
 					// Create the Tables
 					open.onupgradeneeded = function(e) {
@@ -501,6 +501,9 @@ sap.ui.define([
 								autoIncrement: true
 							});
 						}
+						objCmpGbQtdItens.createIndex("grupo", "grupo", {
+							unique: false
+						});
 
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpProdsAcabs (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 						// CmpProdsAcabs – Tabela de campanha Global grupo Produto Acabado 
