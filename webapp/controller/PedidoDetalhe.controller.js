@@ -3935,16 +3935,16 @@ sap.ui.define([
 						title: "Quantidade Inválida.",
 						actions: [MessageBox.Action.OK],
 						onClose: function() {
-
+							
 							oPanel.setBusy(false);
 							oButtonSalvar.setEnabled(true);
 							sap.ui.getCore().byId("idQuantidade").setValue(1);
-
+							
 						}
 					});
-
+					
 				} else if (that.oItemPedido.zzDesitem >= 80) {
-
+					
 					MessageBox.show("Desconto não permitido (" + that.oItemPedido.zzDesitem + ")", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Quantidade de desconto inválida.",
@@ -3978,7 +3978,7 @@ sap.ui.define([
 						//o If exclui se o item que vai ser inserido não é brinde.
 						if(that.oItemPedido.mtpos != "YBRI"){
 							
-							//-> Verifica qual é o grupo e a quantidade permitida que se estiver cadastrado na campanha Global. 
+							//-> Verifica qual é o grupo e a quantidade permitida que se estiver cadastrado na campanha Global.
 							//Senão estiver cadastrado a quantidade e o id e quantidade será 0.
 							//Promise criada para carregar primeiro os dados para validar a regra da campanha depois.
 							new Promise(function(resolveTopo, rejectTopo){
@@ -3990,11 +3990,11 @@ sap.ui.define([
 								that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
 								
 							}).catch(function(){
+								
 								//Matnr: X não possui Grupo Cmp Global.
 								that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
+								
 							});
-							
-							
 						} else{
 							//Verifica se o item de brinde faz parte da Campanha Global. Se fizer parte o kra não pode add ele sem atender a campanha.
 							//1º - Verificar se o item de brinde pertence a campanha. 
@@ -4008,12 +4008,18 @@ sap.ui.define([
 								
 							}).then(function(){
 								
+								//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
+								that.oItemPedido.zzUtilCampGlobal = "Sim";
+								
 								that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
 								
 							}).catch(function(mensagemCmpGlobal){
 								
-								that.oItemPedido.grupoGlobal = 0;
-								that.oItemPedido.zzQtdRegraGb = 0;
+								that.oItemPedido.zzGrupoGlobal = 0;
+								that.oItemPedido.zzQntRegraGb = 0;
+								
+								//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
+								that.oItemPedido.zzUtilCampGlobal = "Não";
 								
 								if(mensagemCmpGlobal == "Pode inserir normalmente"){
 									
@@ -4031,6 +4037,7 @@ sap.ui.define([
 											sap.ui.getCore().byId("idQuantidade").focus();
 											oPanel.setBusy(false);
 											oButtonSalvar.setEnabled(true);
+											
 										}
 									});
 								}
@@ -4218,13 +4225,13 @@ sap.ui.define([
 					oPanel.setBusy(false);
 					
 					//Parâmetro para verificar qual o grupo que o brinde pertence.
-					oItemPedido.grupoGlobal = oBrinde.grupo;
+					oItemPedido.zzGrupoGlobal = oBrinde.grupo;
 					
 					var objStoreBrindeCmpGlobal = db.transaction("CmpGbQtdItens", "readwrite");
 					var objCmpGbQtdItens = objStoreBrindeCmpGlobal.objectStore("CmpGbQtdItens");
 					var indexCmpGbQtdItens = objCmpGbQtdItens.index("grupo");
 					
-					var requestCmpGbQtdItens = indexCmpGbQtdItens.get(oItemPedido.grupoGlobal);
+					var requestCmpGbQtdItens = indexCmpGbQtdItens.get(oItemPedido.zzGrupoGlobal);
 					
 					requestCmpGbQtdItens.onsuccess = function(e) {
 						var oBrindeRange = e.target.result;
@@ -4235,7 +4242,7 @@ sap.ui.define([
 						}
 						
 						//Quantidade de range permitido para o brinde. 
-						oItemPedido.zzQtdRegraGb = oBrindeRange.quantidade;
+						oItemPedido.zzQntRegraGb = oBrindeRange.quantidade;
 						
 						//Insere o item corrente para contabilizar a somatoria dos itens de brindes digitada por ID campanha global. se for == 0 sinal que é item novo,
 						// e item novo não está contido no vetor objItensPedidoTemplate
@@ -4246,7 +4253,7 @@ sap.ui.define([
 						//Verifica a quantidade de brindes que pode utilizar de acordo com a quantidade normais de itens inseridos.
 						//Somar todas as quantidades de brindes já inseridos daquele id de campanha global. Mais a quantidade do item corrente (que está sendo inserido).
 						for(var i=0; i<that.objItensPedidoTemplate.length; i++){
-							if(that.objItensPedidoTemplate[i].grupoGlobal == oItemPedido.grupoGlobal){
+							if(that.objItensPedidoTemplate[i].zzGrupoGlobal == oItemPedido.zzGrupoGlobal){
 								//Consultar quantas vezes esse id atingiu a quantidade para utilizar a campanha.
 								//EX: zzAtingiuCmpGlobal = 2. Significa que atingiu 2 x 20 unidades. Então ele pode inserir 2x o combo de brindes.
 								if(that.objItensPedidoTemplate[i].zzAtingiuCmpGlobal){
@@ -4267,7 +4274,7 @@ sap.ui.define([
 						}
 						
 						// Valor total permitido inserir de itens de brindes.
-						totalItensPermitidos = oItemPedido.zzQtdRegraGb * qntRangeProdutos;
+						totalItensPermitidos = oItemPedido.zzQntRegraGb * qntRangeProdutos;
 						
 						//O kra digitou uma quantidade maior que o permitido. Barrar e gerar uma mensagem pra ele.
 						
@@ -4280,7 +4287,6 @@ sap.ui.define([
 							//Atendeu todas as expectativas e consegue usar a quantidade.
 							res();
 						}
-						
 					};
 				}
 			};
@@ -5312,7 +5318,7 @@ sap.ui.define([
 			var that = this;
 
 			var tipoPed = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
-
+			
 			for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 				if (that.objItensPedidoTemplate[i].tipoItem == "Diluicao") {
 					this.byId("idDiluirItens").setEnabled(true);
@@ -5325,16 +5331,16 @@ sap.ui.define([
 					break;
 				}
 			}
-
+			
 			if (that.objItensPedidoTemplate.length > 0) {
 				this.byId("idTabelaPreco").setEnabled(false);
 				this.byId("idFormaPagamento").setEnabled(false);
 				this.byId("idTipoTransporte").setEnabled(false);
 				this.byId("idTipoNegociacao").setEnabled(false);
 				this.byId("idTipoPedido").setEnabled(false);
-
+				
 			} else {
-
+				
 				this.byId("idTabelaPreco").setEnabled(true);
 				this.byId("idFormaPagamento").setEnabled(true);
 				this.byId("idTipoTransporte").setEnabled(true);
@@ -5347,7 +5353,6 @@ sap.ui.define([
 				this.byId("idPercEntrada").setEnabled(true);
 				this.byId("idInserirItemDiluicao").setEnabled(true);
 				this.byId("idInserirItem").setEnabled(true);
-
 			}
 
 			if (tipoPed == "YTRO") {
@@ -5767,13 +5772,21 @@ sap.ui.define([
 				that.onBuscaGrupoCmpGlobal(db, ItemPedido, resolve, reject);
 				
 			}).then(function() {
+				
+				//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
+				ItemPedido.zzUtilCampGlobal = "Não";
+				
 				//Verifica a quantidade de itens que tem que ser vendidos para entrar na campanha
 				that.onVerifQuantCmpGlobal(db, ItemPedido, resolveTopo, rejectTopo);
 
 			}).catch(function(Matnr) {
 				/* Não achou grupo do material para campanha Global */
-				ItemPedido.zzQtdRegraGb = 0;
-				ItemPedido.grupoGlobal = 0;
+				ItemPedido.zzQntRegraGb = 0;
+				ItemPedido.zzGrupoGlobal = 0;
+				
+				//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
+				ItemPedido.zzUtilCampGlobal = "Não";
+				
 				console.log("Matnr: " + Matnr + " não possui Grupo Cmp Global.");
 				rejectTopo();
 			});
@@ -5783,7 +5796,7 @@ sap.ui.define([
 		//Busca em qual grupo da campanha Global o item pertence.
 		onBuscaGrupoCmpGlobal: function(db, ItemPedido, resolve, reject) {
 
-			//Verifica se o item item grupo de Campanha Global para ser Agrupado. Senão tiver grupoGlobal = 0;
+			//Verifica se o item item grupo de Campanha Global para ser Agrupado. Senão tiver zzGrupoGlobal = 0;
 			var transaction = db.transaction("CmpGbGrpProdsAcabs", "readonly");
 			var objectStoreMaterial = transaction.objectStore("CmpGbGrpProdsAcabs");
 
@@ -5798,7 +5811,7 @@ sap.ui.define([
 				if (result != undefined && result != null) {
 
 					console.log("Matnr: " + result.material + ", Grupo: " + result.grupo);
-					ItemPedido.grupoGlobal = result.grupo;
+					ItemPedido.zzGrupoGlobal = result.grupo;
 					resolve(ItemPedido);
 					
 				} else {
@@ -5817,7 +5830,7 @@ sap.ui.define([
 			var objectStore = transaction.objectStore("CmpGbProdsAcabs");
 			var indexGrupo = objectStore.index("grupo");
 
-			var request = indexGrupo.get(ItemPedido.grupoGlobal);
+			var request = indexGrupo.get(ItemPedido.zzGrupoGlobal);
 
 			request.onsuccess = function(event) {
 
@@ -5825,10 +5838,10 @@ sap.ui.define([
 
 				if (result != undefined && result != null) {
 
-					//zzQtdRegraGb vai ser a variavel para identificar a quantidade que o kra tem que comprar 
+					//zzQntRegraGb vai ser a variavel para identificar a quantidade que o kra tem que comprar 
 					//pra ativar a bonificação
 					console.log("Material: " + ItemPedido.matnr + ", Qtd: " + parseFloat(result.quantidade));
-					ItemPedido.zzQtdRegraGb = parseFloat(result.quantidade);
+					ItemPedido.zzQntRegraGb = parseFloat(result.quantidade);
 					resolveTopo();
 
 				} else {
@@ -5840,7 +5853,7 @@ sap.ui.define([
 						actions: [MessageBox.Action.OK]
 					});
 					//Se o valor estiver zerado ou pq não tem cadastro realizado pra este produto ou não faz parte da regra de campanha.
-					ItemPedido.zzQtdRegraGb = 0;
+					ItemPedido.zzQntRegraGb = 0;
 					rejectTopo();
 				}
 			};
@@ -5873,7 +5886,7 @@ sap.ui.define([
 			for (var i = 0; i<that.objItensPedidoTemplate.length; i++) {
 				var aux = [];
 				
-				if(that.objItensPedidoTemplate[i].mtpos != "YBRI"){
+				if(that.objItensPedidoTemplate[i].mtpos != "YBRI" && that.objItensPedidoTemplate[i].mtpos != "YAMO"){
 					aux = that.objItensPedidoTemplate[i];
 					vetorAuxItensPedido.push(aux);
 				}
@@ -5881,7 +5894,7 @@ sap.ui.define([
 			
 			//Ordenando para desconto Familia normal. Utiliza vetor global de itens (objItensPedidoTemplate).
 			vetorAuxItensPedido.sort(function(a, b) {
-				return a.grupoGlobal - b.grupoGlobal;
+				return a.zzGrupoGlobal - b.zzGrupoGlobal;
 			});
 			
 			/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
@@ -5902,7 +5915,7 @@ sap.ui.define([
 					
 				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
 					
-					if (vetorAuxItensPedido[i].grupoGlobal == vetorAuxItensPedido[i + 1].grupoGlobal) {
+					if (vetorAuxItensPedido[i].zzGrupoGlobal == vetorAuxItensPedido[i + 1].zzGrupoGlobal) {
 						
 						proximoItemDiferente = false;
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
@@ -5941,7 +5954,7 @@ sap.ui.define([
 			var that = this;
 			var qntItens = 0;
 			var valorRange = 0;
-			var grupoGlobal = "";
+			var zzGrupoGlobal = "";
 			//variável que grava quantas vezes o kra pode usar o range de brindes.
 			//Ex: se o range a ser atingido for 20 itens para usar os brindes e a quantidade digita do produto for 40.
 			// essa variavel irá armazenar 2. (Quantidade atingida a ser utilizada).
@@ -5950,8 +5963,8 @@ sap.ui.define([
 			for(var i=0; i<vetorGrpFamilia.length; i++){
 				
 				qntItens += vetorGrpFamilia[i].zzQnt;
-				valorRange = vetorGrpFamilia[i].zzQtdRegraGb;
-				grupoGlobal = vetorGrpFamilia[i].grupoGlobal;
+				valorRange = vetorGrpFamilia[i].zzQntRegraGb;
+				zzGrupoGlobal = vetorGrpFamilia[i].zzGrupoGlobal;
 				
 			}
 			
@@ -5972,7 +5985,7 @@ sap.ui.define([
 				}
 			}
 				
-			console.log("O grupo " + grupoGlobal + " teve " + qntItens + " itens e pode utilizar " + qntParaUtilizar + "x os brindes.");
+			console.log("O grupo " + zzGrupoGlobal + " teve " + qntItens + " itens e pode utilizar " + qntParaUtilizar + "x os brindes.");
 			res();
 		}
 	});
