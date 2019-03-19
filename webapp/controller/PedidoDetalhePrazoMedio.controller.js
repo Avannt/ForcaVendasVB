@@ -116,7 +116,6 @@ sap.ui.define([
 				}
 			}
 			
-			
 		},
 
 		onAtualizaExcedentePrazoMed: function() {
