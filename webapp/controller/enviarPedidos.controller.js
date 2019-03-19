@@ -409,7 +409,9 @@ sap.ui.define([
 							if (oAction == "Enviar") {
 
 								new Promise(function(p1res, p1rej) {
+									
 									that.onVerificarAprovadorUsuario(p1res, p1rej);
+									
 								}).then(function() {
 									var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
@@ -467,8 +469,6 @@ sap.ui.define([
 											Zzpercdesctotal: String(oItensPedidoGridEnviar[j].zzPercDescTotal),
 											Zzpercom: String(oItensPedidoGridEnviar[j].zzPercom),
 											Zzpervm: String(oItensPedidoGridEnviar[j].zzPervm),
-											Zzqnt: String(oItensPedidoGridEnviar[j].zzQnt),
-											Zzqntcpbrinde: String(oItensPedidoGridEnviar[j].zzQntCpBrinde),
 											Zzvprod: String(oItensPedidoGridEnviar[j].zzVprod),
 											Zzvproddesc: String(oItensPedidoGridEnviar[j].zzVprodDesc),
 											Zzvproddesctotal: String(oItensPedidoGridEnviar[j].zzVprodDescTotal),
@@ -485,7 +485,13 @@ sap.ui.define([
 											Kbetr: String(oItensPedidoGridEnviar[j].kbetr),
 											Zzvprodabb: String(oItensPedidoGridEnviar[j].zzVprodABB),
 											Aumng: String(oItensPedidoGridEnviar[j].aumng),
-											Zzqntamostra: String(oItensPedidoGridEnviar[j].zzQntAmostra)
+											Zzqntamostra: String(oItensPedidoGridEnviar[j].zzQntAmostra),
+											Zzqnt: String(oItensPedidoGridEnviar[j].zzQnt),
+											Zzqntcpbrinde: String(oItensPedidoGridEnviar[j].zzQntCpBrinde),
+											Zzgrupoglobal: String(oItensPedidoGridEnviar[j].zzGrupoGlobal),
+											Zzqntregragb: String(oItensPedidoGridEnviar[j].zzQntRegraGb),
+											Zzutilcampglobal: String(oItensPedidoGridEnviar[j].zzUtilCampGlobal),
+											Zzatingiucmpglobal: String(oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal)
 										};
 
 										oModel.create("/InserirLinhaOV", objItensPedido, {
@@ -644,6 +650,7 @@ sap.ui.define([
 									}
 
 									oModel.submitChanges();
+									
 								}).catch(function(sErro) {
 
 									MessageBox.error(sErro, {

@@ -246,42 +246,42 @@
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2" title="Campanhas">
 										<f:content>
-											<Label text="Valor campanha enxoval (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
-											<Input id="idValorTotalEnxoval" visible="{path:'modelAux>/Usuario/utilcampDesc'}" value="{path: 'modelDadosPedido>/ValTotalCampEnxoval', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+											<Label text="Valor campanha enxoval (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampEnxoval'}"/>
+											<Input id="idValorTotalEnxoval" visible="{path:'modelAux>/Usuario/utilcampEnxoval'}" value="{path: 'modelDadosPedido>/ValTotalCampEnxoval', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 												enabled="false" class="desabilitado" type="Text"/>
-											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
+											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampEnxoval'}"/>
 											<Input id="idVerbaEnxoval" enabled="false" class="desabilitado" value="{modelDadosPedido>/ValUtilizadoCampEnxoval}"
-												visible="{path:'modelAux>/Usuario/utilcampDesc'}" type="Text"/>
+												visible="{path:'modelAux>/Usuario/utilcampEnxoval'}" type="Text"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
-											<Label text="Valor campanha brinde (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
-											<Input id="idValorTotalBrinde" visible="{path:'modelAux>/Usuario/utilcampDesc'}" value="{path: 'modelDadosPedido>/ValTotalCampBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+											<Label text="Valor campanha brinde (R$)" class="bold" visible="{path:'modelAux>/Usuario/UtilcampBri'}"/>
+											<Input id="idValorTotalBrinde" visible="{path:'modelAux>/Usuario/UtilcampBri'}" value="{path: 'modelDadosPedido>/ValTotalCampBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
 												enabled="false" class="desabilitado" type="Text"/>
-											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampDesc'}"/>
-											<Input id="idVerbaBrinde" enabled="false" class="desabilitado" value="{modelDadosPedido>/ValUtilizadoCampBrinde}"
-												visible="{path:'modelAux>/Usuario/utilcampDesc'}" type="Text"/>
+											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/UtilcampBri'}"/>
+											<Input id="idVerbaBrinde" enabled="false" class="desabilitado" value="{path: 'modelDadosPedido>/ValUtilizadoCampBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}"
+												visible="{path:'modelAux>/Usuario/UtilcampBri'}" type="Text"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
-											<Label text="Valor campanha produto acabado (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampPrz'}"/>
-											<Input id="idValTotCampProdutoAcabado" visible="{path:'modelAux>/Usuario/utilcampPrz'}" value="{path: 'modelDadosPedido>/ValTotalCampProdutoAcabado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
-											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampPrz'}"/>
-											<Input id="idValCampProdAcabado" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampProdutoAcabado}" visible="{path:'modelAux>/Usuario/utilcampPrz'}" type="Text"/>
+											<Label text="Valor campanha produto acabado (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampProdAcab'}"/>
+											<Input id="idValTotCampProdutoAcabado" visible="{path:'modelAux>/Usuario/utilcampProdAcab'}" value="{path: 'modelDadosPedido>/ValTotalCampProdutoAcabado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
+											<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampProdAcab'}"/>
+											<Input id="idValCampProdAcabado" enabled="true" value="{modelDadosPedido>/ValUtilizadoCampProdutoAcabado}" visible="{path:'modelAux>/Usuario/utilcampProdAcab'}" type="Text"/>
 										</f:content>
 									</f:SimpleForm>
 									<f:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 										<f:content>
-											<Label text="Valor campanha global (R$)" class="bold" visible="false"/>
-											<Input id="idValTotCampGlobal" value="{path: 'modelDadosPedido>/ValTotalCampGlobal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" visible="false" class="desabilitado"
-												type="Text"/>
-											<Label text="Valor a ser utilizado (R$)" visible="false"/>
-											<Input id="idValCampGlobal" enabled="true" visible="false" value="{modelDadosPedido>/ValUtilizadoCampGlobal}" type="Text"/>
+											<Label text="Valor campanha global (R$)" class="bold" visible="{path:'modelAux>/Usuario/utilcampGbl'}"/>
+											<Input id="idValTotCampGlobal" value="{path: 'modelDadosPedido>/ValUtilizadoCampGlobal', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" 
+												visible="{path:'modelAux>/Usuario/utilcampGbl'}" enabled="false" class="desabilitado" type="Text"/>
+											<!--<Label text="Valor a ser utilizado (R$)" visible="{path:'modelAux>/Usuario/utilcampGbl'}"/>-->
+											<!--<Input id="idValCampGlobal" enabled="true" visible="{path:'modelAux>/Usuario/utilcampGbl'}" value="{modelDadosPedido>/ValUtilizadoCampGlobal}" type="Text"/>-->
 										</f:content>
 									</f:SimpleForm>
 									<Toolbar>
@@ -357,7 +357,7 @@
 											<Label text="Campanha Enxoval (R$)"/>
 											<Input id="idAbaterCampEnxoval" value="{path: 'modelDadosPedido>/ValUtilizadoCampEnxoval', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Campanha Brindes (R$)"/>
-												<Input id="idAbaterCampBrinde" value="{path: 'modelDadosPedido>/ValUtilizadoCampBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
+											<Input id="idAbaterCampBrinde" value="{path: 'modelDadosPedido>/ValUtilizadoCampBrinde', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 											<Label text="Campanha Produto Acabado (R$)"/>
 											<Input id="idAbaterProdutoAcabado" value="{path: 'modelDadosPedido>/ValUtilizadoCampProdutoAcabado', type: 'sap.ui.model.type.Float', formatOptions: {milharSeparetor: '.', decimalSeparator: ',', maxFractionDigits: 2, minFractionDigits : 2 }, constraints : { minimum: '0', maximum: '99' }}" enabled="false" class="desabilitado" type="Text"/>
 										</f:content>

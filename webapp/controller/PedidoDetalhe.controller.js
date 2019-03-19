@@ -6,11 +6,10 @@ sap.ui.define([
 	"testeui5/model/formatter",
 	"testeui5/controller/PedidoDetalheEnxoval.controller",
 	"testeui5/controller/PedidoDetalheBrindes.controller",
-	"testeui5/controller/PedidoDetalheGlobal.controller"
+	"testeui5/controller/PedidoDetalhePrazoMedio.controller"
 
 ], function(BaseController, JSONModel, MessageBox, formatter) {
 	"use strict";
-	//variavel para salvar o obj ATUAL do item do pedido E obj pra salvar TODOS os items do pedido
 
 	return BaseController.extend("testeui5.controller.PedidoDetalhe", {
 
@@ -29,7 +28,8 @@ sap.ui.define([
 
 			this.pedidoDetalheBrindes = new testeui5.controller.PedidoDetalheBrindes(that);
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
-			this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
+			this.pedidoDetalhePrazoMedio = new testeui5.controller.PedidoDetalhePrazoMedio(that);
+			// this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
 
 			that.oItemTemplate = [];
 			that.oVetorMateriais = [];
@@ -2112,7 +2112,7 @@ sap.ui.define([
 			var valorEntradaPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido");
 			var percEntradaPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
 			
-			var quantidadeParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"));
+			var quantidadeParcelas = parseInt(this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/QuantParcelas"), 10);
 			quantidadeParcelas = (quantidadeParcelas == 0 ? 1 : quantidadeParcelas);
 			
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
@@ -2207,6 +2207,10 @@ sap.ui.define([
 			var valTotalCampanhaBrinde = 0 ;
 			/* Campanha brinde fim - Diego Djeri - 20190312*/
 			
+			/* Campanha Global inicio - Ricardo Junior - 20190315*/
+			var valTotalCampanhaGlobal = 0;
+			/* Campanha brinde fim - Ricardo Junior - 20190315*/
+			
 			// parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBrinde"));
 			// that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBrinde", valTotalExcedenteBrinde.toFixed(2));
 
@@ -2263,6 +2267,9 @@ sap.ui.define([
 
 			var dValUtilizadoCampEnxoval = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", (dValUtilizadoCampEnxoval ? dValUtilizadoCampEnxoval : 0));
+			
+			var dValUtilizadoCampGlobal = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampGlobal");
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", (dValUtilizadoCampGlobal ? dValUtilizadoCampGlobal : 0));
 
 			var valTotalExcedenteBonif = 0;
 			// valTotalExcedenteBonif = parseFloat(that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
@@ -2285,35 +2292,45 @@ sap.ui.define([
 				// >>>>>>>>>>>> PADRÃO PARA AMBOS OS TIPOS DE ITEM (NORMAL / DILUÍDO) >>>>>>>>>>>>
 				if (that.objItensPedidoTemplate[i].mtpos == "YBRI") {
 					
-					/* Alteração para campanha de brindes - 20190312 - Diego Djeri */
-					/* Inicio */
-					var zzQtdeExcedente = 0;
-					var zzQtdeCpBrinde = that.objItensPedidoTemplate[i].zzQntCpBrinde;
-					
-					zzQtdeExcedente = that.objItensPedidoTemplate[i].zzQnt;
-					
-					/* Verifico se existe quantidade de campanha pra brindes */
-					if (zzQtdeCpBrinde) {
-						zzQtdeExcedente = zzQtdeExcedente - zzQtdeCpBrinde;
-					} else{
-						zzQtdeCpBrinde = 0;
+					if(that.objItensPedidoTemplate[i].zzUtilCampGlobal == "Sim"){
+						
+						//SOMA OS ITENS PARA QUANTIFICAR O QUANTO GEROU DE EXCEDENTE DE BRINDE. TIRANDO OS ITENS DE CAMPANHA GLOBAL. zzUtilCampGlobal == "Não"
+						valTotalCampanhaGlobal += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
+						
+					} else {
+						// Alteração para campanha de brindes - 20190315 - Ricardo Junior
+						/* Alteração para campanha de brindes - 20190312 - Diego Djeri */
+						/* Inicio */
+						var zzQtdeExcedente = 0;
+						var zzQtdeCpBrinde = that.objItensPedidoTemplate[i].zzQntCpBrinde;
+						
+						zzQtdeExcedente = that.objItensPedidoTemplate[i].zzQnt;
+						
+						/* Verifico se existe quantidade de campanha pra brindes */
+						if (zzQtdeCpBrinde) {
+							zzQtdeExcedente = zzQtdeExcedente - zzQtdeCpBrinde;
+						} else{
+							zzQtdeCpBrinde = 0;
+						}
+	
+						valTotalExcedenteBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * zzQtdeExcedente;
+						valTotalCampanhaBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * zzQtdeCpBrinde;
+						//valTotalExcedenteBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
+						/* Fim - 20190312 - Diego Djeri */
+						/* Fim - 20190315 - Ricardo Junior */
 					}
-
-					valTotalExcedenteBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * zzQtdeExcedente;
-					valTotalCampanhaBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * zzQtdeCpBrinde;
-					//valTotalExcedenteBrinde += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
-					/* Fim */
 					
 				} else if (that.objItensPedidoTemplate[i].mtpos == "YAMO" && that.objItensPedidoTemplate[i].zzQntAmostra > 0) {
 
 					valTotalExcedenteAmostra += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQntAmostra;
 
 				} else if (that.objItensPedidoTemplate[i].mtpos == "NORM") {
-
+					
 					if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
-
+						
+						//SOMA OS ITENS PARA QUANTIFICAR O QUANTO GEROU DE EXCEDENTE DE BRINDE. TIRANDO OS ITENS DE CAMPANHA GLOBAL. zzUtilCampGlobal == "Não"
 						valTotalExcedenteBonif += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
-
+					
 					} else {
 						if (that.objItensPedidoTemplate[i].tipoItem == "Normal") {
 
@@ -2384,8 +2401,6 @@ sap.ui.define([
 								}
 
 							}
-						} else if (that.objItensPedidoTemplate[i].tipoItem == "Diluicao") {
-
 						}
 					}
 
@@ -2475,21 +2490,22 @@ sap.ui.define([
 			//this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampBrinde", teste);
 			/* Campanha brinde fim - Diego Djeri - 20190312*/
 			
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", teste);
+			/* Campanha brinde inicio - Ricardo Junior - 20190315*/
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampGlobal", valTotalCampanhaGlobal);
+			/* Campanha brinde fim - Ricardo Junior - 20190315*/
+			
 			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", teste);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", teste);
-
+			
+			
 			console.log("CALCULO PARCELAMENTO");
-			var valorEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValorEntradaPedido");
-			var percEntradaPedido = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PercEntradaPedido");
-
 			if (existeParcelas == false) {
-
+				
 				valorParcelas = TotalPedidoDesc / quantidadeParcelas;
 				valorParcelas = parseFloat(Math.round(valorParcelas * 100) / 100).toFixed(2);
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValParcelasPedido", valorParcelas);
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/QuantidadeParcelasPedido", quantidadeParcelas + " x");
-
+				
 				// Se não houve entrada, zero a informação
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/EntradaPedido", "");
 
@@ -3180,49 +3196,52 @@ sap.ui.define([
 							that.byId("idLiberarItens").focus();
 						}
 					});
-				} else {
-
-					if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
-						if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco") == "") {
-							MessageBox.show("Escolha uma tabela de preço!", {
-								icon: MessageBox.Icon.ERROR,
-								title: "Preecher campo(s)",
-								actions: [MessageBox.Action.OK],
-								onClose: function() {
-									that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
-									that.byId("idTabelaPreco").focus();
-								}
-							});
-						} else {
-
-							var promise = new Promise(function(resolve, reject) {
-								that.onInicioBalancoVerbas(resolve, reject);
-							});
-
-							promise.then(function() {
-								that.calculaTotalPedido();
-							});
-							
-							that.setaCompleto(db, "Não");
-							
-							//Atualiza todos os itens do pedido com as propriedades do vetor total de itens.
-							that.onAtualizaTodosItensPedido(db);
-							
+				} else if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco") == "" && item.selectedKey == "tab1" && item.selectedKey == "tab2") {
+					MessageBox.show("Escolha uma tabela de preço!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Preecher campo(s)",
+						actions: [MessageBox.Action.OK],
+						onClose: function() {
+							that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
+							that.byId("idTabelaPreco").focus();
 						}
-					}
-					if (item.selectedKey == "tab3") {
-						if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TabPreco") == "") {
-							MessageBox.show("Escolha uma tabela de preço!", {
-								icon: MessageBox.Icon.ERROR,
-								title: "Preecher campo(s)",
-								actions: [MessageBox.Action.OK],
-								onClose: function() {
-									that.byId("idTopLevelIconTabBar").setSelectedKey("tab2");
-									that.byId("idTabelaPreco").focus();
-								}
-							});
-						}
-					}
+					});
+				} else if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
+
+					var promise = new Promise(function(resolve, reject) {
+						that.onInicioBalancoVerbas(resolve, reject);
+					});
+
+					promise.then(function() {
+						that.calculaTotalPedido();
+					});
+					
+					that.setaCompleto(db, "Não");
+					
+					//Atualiza todos os itens do pedido com as propriedades do vetor total de itens.
+					that.onAtualizaTodosItensPedido(db);
+					
+					var promise2 = new Promise(function(resolve, reject) {
+						//Checa os itens da Campanha Global	se atendem a quantidade esperada
+						that.onAgrupaItensGlobal(db, that.onVerificarItensCampGlobal, resolve, reject, that);
+					});
+					
+					promise2.then(function(msg){
+						//TUDO OK
+						
+					});
+					
+					promise2.catch(function(msg){
+						
+						MessageBox.show(msg, {
+							icon: MessageBox.Icon.ERROR,
+							title: "Campanha Global!",
+							actions: [MessageBox.Action.OK],
+							onClose: function(){
+								that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
+							}
+						});
+					});
 				}
 			};
 		},
@@ -3505,6 +3524,7 @@ sap.ui.define([
 			var valorPedMin = vetorParametros[4]; //valorPedMin;
 			var percJuros = vetorParametros[5]; //percJuros;
 			var percJurosDia = vetorParametros[6]; //percJurosDia;
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioPercJurosDia", percJurosDia);
 
 			if (existeEntrada === false || existeEntrada == "") {
 				//Calculo prazo medio normal
@@ -4010,6 +4030,7 @@ sap.ui.define([
 								
 								//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
 								that.oItemPedido.zzUtilCampGlobal = "Sim";
+								that.oItemPedido.zzAtingiuCmpGlobal = 0;
 								
 								that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
 								
@@ -4017,6 +4038,7 @@ sap.ui.define([
 								
 								that.oItemPedido.zzGrupoGlobal = 0;
 								that.oItemPedido.zzQntRegraGb = 0;
+								that.oItemPedido.zzAtingiuCmpGlobal = 0;
 								
 								//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
 								that.oItemPedido.zzUtilCampGlobal = "Não";
@@ -4139,7 +4161,8 @@ sap.ui.define([
 							//Promise para agrupar os itens e identificar se possui grupo de familia e o range de quantidade.
 							new Promise(function(res, rej){
 								
-								that.onAgrupaItensGlobal(db, that.oItemPedido, res, rej);
+								//Parâmetro: o nome do metodo que a função vai chamar 
+								that.onAgrupaItensGlobal(db, that.onCheckQuantidadeGlobal, res, rej, that);
 								
 							}).then(function(){
 								
@@ -4269,7 +4292,7 @@ sap.ui.define([
 						
 						//Não atingiu a quantidade de itens necessarios.
 						if(qntRangeProdutos == 0){
-							mensagemCmpGlobal = "Range não atingido para utilizar os brindes da Campanha Global";
+							mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + totalItensPermitidos;
 							rej(mensagemCmpGlobal);
 						}
 						
@@ -4280,7 +4303,7 @@ sap.ui.define([
 						
 						if(totalItensPermitidos < qntTotalItensJaInseridos){
 							//Ultrapassou a quantidade permitida de itens
-							mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + totalItensPermitidos;
+							mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + totalItensPermitidos + ". Quantidade de itens já inseridos: " + qntTotalItensJaInseridos;
 							rej(mensagemCmpGlobal);
 							
 						} else{
@@ -5311,7 +5334,7 @@ sap.ui.define([
 			// this.byId("idVerbaEnxoval").setEnabled(habilitado);
 
 			this.byId("idValCampProdAcabado").setEnabled(habilitado);
-			this.byId("idValCampGlobal").setEnabled(habilitado);
+			// this.byId("idValCampGlobal").setEnabled(habilitado);
 		},
 
 		onBloqueiaPrePedido: function() {
@@ -5861,27 +5884,12 @@ sap.ui.define([
 		
 		//Agrupa os itens da campanha pelo grupo e verifica se atingiu a regra para ver a quantidade de bonificação
 		// que o kra pode inserir com o Brinde.
-		onAgrupaItensGlobal: function(db, oItemPedido, res, rej) {
-			var that = this;
+		onAgrupaItensGlobal: function(db, metodo, res, rej, that) {
 			var proximoItemDiferente = false;
 			var vetorItemAux = [];
 			var vetorGrpFamilia = [];
 			var contemMaterial = false;
 			var vetorAuxItensPedido = [];
-			// vetorAuxItensPedido = that.objItensPedidoTemplate;
-			
-			// for (var j=0; j<vetorAuxItensPedido.length; j++) {
-			// 	if(vetorAuxItensPedido[j].matnr == oItemPedido.matnr){
-			// 		contemMaterial = true;
-			// 	}
-			// }
-			
-			// if(!contemMaterial){
-			// 	vetorAuxItensPedido.push(oItemPedido);
-			// } else{
-			// 	//Se já tiver no vetor .. atualiza a quantidade apenas.
-			// 	vetorAuxItensPedido.zzQnt = oItemPedido.zzQnt;
-			// }
 			
 			for (var i = 0; i<that.objItensPedidoTemplate.length; i++) {
 				var aux = [];
@@ -5911,7 +5919,8 @@ sap.ui.define([
 					//se já atingiu a quantidade para utilizar os brindes.
 					
 					vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-					this.onCheckQuantidadeGlobal(db, vetorGrpFamilia, res, rej);
+					//that.onCheckQuantidadeGlobal e that.onVerificarItensCampGlobal
+					metodo(db, vetorGrpFamilia, res, rej, that);
 					
 				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
 					
@@ -5925,7 +5934,7 @@ sap.ui.define([
 						// e verificar se o desconto aplicado é maior que o permitido.
 						//fazendo ( preço cheio - preço de venda )
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						this.onCheckQuantidadeGlobal(db, vetorGrpFamilia, res, rej);
+						metodo(db, vetorGrpFamilia, res, rej, that);
 						proximoItemDiferente = true;
 						
 						//REMOVER O ITEM CORRENTE DO VETOR.
@@ -5938,20 +5947,20 @@ sap.ui.define([
 					if (vetorGrpFamilia.length > 0) {
 						
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						this.onCheckQuantidadeGlobal(db, vetorGrpFamilia, res, rej);
+						metodo(db, vetorGrpFamilia, res, rej, that);
 						
 					} else {
 						//ultimo item e é diferente do antepenultimo
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						this.onCheckQuantidadeGlobal(db, vetorGrpFamilia, res, rej);
+						metodo(db, vetorGrpFamilia, res, rej, that);
 					}
 				}
 			}
 		},
 		
-		//Verifica quantas 
-		onCheckQuantidadeGlobal: function(db, vetorGrpFamilia, res, rej){
-			var that = this;
+		//Verifica quantas vezes vai poder utilizar o range dos brindes.
+		onCheckQuantidadeGlobal: function(db, vetorGrpFamilia, res, rej, that){
+			// var that = this;
 			var qntItens = 0;
 			var valorRange = 0;
 			var zzGrupoGlobal = "";
@@ -5987,6 +5996,61 @@ sap.ui.define([
 				
 			console.log("O grupo " + zzGrupoGlobal + " teve " + qntItens + " itens e pode utilizar " + qntParaUtilizar + "x os brindes.");
 			res();
+		},
+		
+		//Vetor por grupo de campanha global
+		onVerificarItensCampGlobal: function(db, vetorGrpFamilia, res, rej, that){
+			// var that = this;
+			var vetorCmpGlobal = [];
+			var vetorBrindesGlobais = [];
+			var totalItens = 0;
+			var totalBrindes = 0;
+			var totalItensBrinde = 0;
+			var resultQuant = 0;
+			var resultQuantBrinde = 0;
+			var valorRangeProd = 0;
+			var valorRangeBrinde = 0;
+			var mensagemCmpGlobal = "";
+			
+			
+			//Percorre todos os itens verificando se atende o range dos produtos.
+			for(var j=0; j<that.objItensPedidoTemplate.length; j++){
+				if(vetorGrpFamilia[0].zzGrupoGlobal == that.objItensPedidoTemplate[j].zzGrupoGlobal && that.objItensPedidoTemplate[j].mtpos == "YBRI"){
+					vetorBrindesGlobais.push(that.objItensPedidoTemplate[j]);
+				}
+			}
+			
+			for(j=0; j<vetorGrpFamilia.length; j++){
+				totalItens += vetorGrpFamilia[j].zzQnt;
+				valorRangeProd = vetorGrpFamilia[j].zzQntRegraGb;
+			}
+			
+			if(totalItens >= valorRangeProd && valorRangeProd > 0){
+				//Variavel que mostra quantos brindes foram atingidos.
+				resultQuant = parseInt(totalItens / valorRangeProd, 10);
+				
+			} else {
+				
+				resultQuant = 0;
+			}
+				
+			for(var i=0; i<vetorBrindesGlobais.length; i++){
+				
+				totalItensBrinde += vetorBrindesGlobais[i].zzQnt;
+				valorRangeBrinde = vetorBrindesGlobais[i].zzQntRegraGb;
+			}
+			
+			var totalPermitidoBrinde = valorRangeBrinde * resultQuant;
+			
+			if(totalItensBrinde > totalPermitidoBrinde){
+				console.log("Ultrapassou limite de brindes permitidos da Campanha Global");
+				
+				mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + totalPermitidoBrinde + ". Quantidade de itens já inseridos: " + totalItensBrinde;
+				rej(mensagemCmpGlobal);
+			} else{
+				console.log("Tudo OK com Campanha Global. Itens Inseridos corretamente");
+				res();
+			}
 		}
 	});
 });
