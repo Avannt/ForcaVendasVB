@@ -94,9 +94,9 @@ sap.ui.define([
 			if (vetorItemCampPrzMed) {
 				//Pagamento Ávista
 				if (tipoNeg == 1) {
-
+					
 					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxav;
-
+					
 					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 100) / 100;
 					console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
@@ -106,19 +106,19 @@ sap.ui.define([
 					
 				} //Pagamento a Prazo
 				else if (tipoNeg == 2) {
-
+					
 					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxap;
-
+					
 					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 100) / 100;
 					console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
-							
+					
 					this.onAtualizaExcedentePrazoMed();
 					this.onValidaDestinacaoPrazoMedio();
 				}
 			}
 		},
-
+		
 		onAtualizaExcedentePrazoMed: function() {
 			
 			var tipoPedido = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/TipoPedido");
@@ -179,7 +179,7 @@ sap.ui.define([
 				this.PDControllerCmpPrazoMedio.byId("idVerbaUtilizadaPrazo").setValueStateText("");
 			}
 		},
-
+		
 		onVerificarEvento: function(sIdControle, oMetodoEvento, sTipoEvento) {
 			var oEventRegistry;
 			var oElemento;
