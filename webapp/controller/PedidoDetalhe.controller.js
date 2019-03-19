@@ -6018,7 +6018,7 @@ sap.ui.define([
 			
 			//Percorre todos os itens verificando se atende o range dos produtos.
 			for(var j=0; j<that.objItensPedidoTemplate.length; j++){
-				if(vetorGrpFamilia[0].zzGrupoGlobal == that.objItensPedidoTemplate[j].zzGrupoGlobal && that.objItensPedidoTemplate[j].mtpos == "YBRI"){
+				if(vetorGrpFamilia[0].zzGrupoGlobal == that.objItensPedidoTemplate[j].zzGrupoGlobal && that.objItensPedidoTemplate[j].mtpos == "YBRI" && that.objItensPedidoTemplate[j].zzGrupoGlobal != 0){
 					vetorBrindesGlobais.push(that.objItensPedidoTemplate[j]);
 				}
 			}
