@@ -191,6 +191,8 @@ sap.ui.define([
 		/* ProcessarSaldoCampanhaEnxoval */
 
 		DisponibilizarValoresCampanhaEnxoval: function() {
+			var this2 = this;
+			
 			/* Só populo os valores se a campanha estiver ativa para o representante / cliente */
 			if (that.bCampanhaEnxovalAtiva) {
 				var dValorLiberar = 0;
@@ -198,32 +200,143 @@ sap.ui.define([
 				var dValorLimite;
 				var dValorTotal;
 				var dValorBonificacao;
-
-				dValorLimite = parseFloat(that.oCmpEnxoval[0].ValorLimite);
-				dValorTotal = parseFloat(that.oCmpEnxoval[0].ValorTotal);
-				dValorBonificacao = parseFloat(that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
-
-				/* Verifico se o valor total a liberar é menor que o limite disponível por pedido */
-				if (dValorTotal < dValorLimite) {
-					dValorLiberar = dValorTotal;
-				} else {
-					dValorLiberar = dValorLimite;
-				}
-
-				/* Verifico se o valor a liberar é menor que o da bonificação */
-				if (dValorLiberar > dValorBonificacao) {
-					dValorLiberar = dValorBonificacao;
-				}
-
-				// that.PDControllerCpEnxoval.getView().byId("idValorTotalEnxoval").setValue(parseFloat(dValorLiberar).toFixed(2));
-				that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
-				that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
-
-				/* Regra: 20190308 - Em conversa entre o Fernando e o Figueiredo, foi confirmado que a campanha será de uso obrigatória
-				sendo assim todo o valor destinado a ela deverá ser o total disponível*/
+				var dTotalSistema;
+				
+				/* Faço o levantamento de quanto possuo no sistema já digitado. */
+				new Promise(function(res4, rej4){
+					var oEnxovais = [];
+					var oModelPed = that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").getData();
+					
+					this2.getTotalSistema(oEnxovais, res4, oModelPed);
+				}).then(function(oEnxovais){
+					dValorLimite = parseFloat(that.oCmpEnxoval[0].ValorLimite);
+					dValorTotal = parseFloat(that.oCmpEnxoval[0].ValorTotal);
+					dValorBonificacao = parseFloat(that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"));
+					dTotalSistema = parseFloat(oEnxovais.qtde);
+					
+					/* dValorTotal (Saldo) = Total cadastrado para o representante menos o que ele já digitou no sistema (em aberto ou 
+					enviado depois da útlima atualização) */
+					dValorTotal = dValorTotal - dTotalSistema;
+	
+					/* Verifico se o valor total a liberar é menor que o limite disponível por pedido */
+					if (dValorTotal < dValorLimite) {
+						dValorLiberar = dValorTotal;
+					} else {
+						dValorLiberar = dValorLimite;
+					}
+	
+					/* Verifico se o valor a liberar é menor que o da bonificação */
+					if (dValorLiberar > dValorBonificacao) {
+						dValorLiberar = dValorBonificacao;
+					}
+	
+					// that.PDControllerCpEnxoval.getView().byId("idValorTotalEnxoval").setValue(parseFloat(dValorLiberar).toFixed(2));
+					that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
+					that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
+	
+					/* Regra: 20190308 - Em conversa entre o Fernando e o Figueiredo, foi confirmado que a campanha será de uso obrigatória
+					sendo assim todo o valor destinado a ela deverá ser o total disponível*/
+				});
 			}
 		},
 		/* DisponibilizarValoresCampanhaEnxoval */
+
+		getTotalSistema: function(oEnxovais, res4, docAtual) {
+			var open = indexedDB.open("VB_DataBase");
+			var db = "";
+
+			new Promise(function(res, rej) {
+
+				open.onsuccess = function() {
+					db = open.result;
+
+					var sPedidos = db.transaction("PrePedidos", "readwrite");
+					var objPedidos = sPedidos.objectStore("PrePedidos");
+					var iStatus = objPedidos.index("idStatusPedido");
+
+					/*
+					Regra dos status dos pedidos
+					1 - Pedidos em digitação: Considerar todos.
+					2 - Pedidos pendentes de envio: Considerar todos.
+					3 - Pedidos enviados: Considerar todos os pedidos 
+					enviados DEPOIS DA ÚLTIMA ATUALIZAÇÃO.(Os pedidos
+					enviados antes da última atualização já estarão
+					sendo considerados no saldo retornado da atualização
+					de tabelas).
+					*/
+
+					/* Recupero todos os pedidos com status 1, 2, 3 */
+					var krStatus = IDBKeyRange.bound(1, 3);
+					var tPedido = iStatus.openCursor(krStatus);
+					var oDocsPendentes = [];
+					var cursor;
+					var oDoc;
+
+					tPedido.onsuccess = function(e) {
+						cursor = e.target.result;
+
+						if (cursor) {
+							oDoc = cursor.value;
+
+							// Verifico se o pedido já foi enviado (Status = 3) /
+							if (oDoc.idStatusPedido == 3) {
+
+								// Recupero a data da última atualização de tabelas /
+								/**/
+								var sUltimaAtualizacao = that.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
+								sUltimaAtualizacao = sUltimaAtualizacao.replace("/", "-").replace("/", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
+								var p = sUltimaAtualizacao.split("-");
+								var dUltimaAtualizacao = new Date("20" + p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
+
+								var sDataImpl = oDoc.dataImpl.replace("/", "-").replace("/", "-").replace(":", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
+								p = sDataImpl.split("-");
+								var dDataImpl = new Date(p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
+								/**/
+
+								// Verifico se a data do pedido é superior a data da última atualização /
+								if (dDataImpl > dUltimaAtualizacao) {
+									
+									/* Verifico se o pedido em questão tem valor de enxoval */
+									if ((oDoc.valUtilizadoCampEnxoval || 0) > 0){
+										/* Verifico se não é o pedido em questão, ele não deve ser considerado para levantamneto de saldo */
+										if (docAtual.nrPedCli !=  oDoc.nrPedCli){
+											oDocsPendentes.push(oDoc);
+										}
+									}
+								}
+								cursor.continue();
+							} else {
+								
+								/* Verifico se o pedido em questão tem valor de enxoval */
+								if ((oDoc.valUtilizadoCampEnxoval || 0) > 0){
+									/* Verifico se não é o pedido em questão, ele não deve ser considerado para levantamneto de saldo */
+									if (docAtual.nrPedCli !=  oDoc.nrPedCli){
+										oDocsPendentes.push(oDoc);
+									}
+								}
+							}
+						} else {
+							res(oDocsPendentes);
+						}
+					};
+				};
+
+			}).then(function(oDocsPendentes) {
+				var iQtdeUtilizada = 0;
+				
+				for (var i = 0; i < oDocsPendentes.length; i++) {
+					iQtdeUtilizada = iQtdeUtilizada + oDocsPendentes[i].valUtilizadoCampEnxoval;
+				}
+				
+				oEnxovais.docs = oDocsPendentes;
+				oEnxovais.qtde = iQtdeUtilizada;
+				
+				res4(oEnxovais);
+			}).catch(function() {
+
+			});
+		},
+		/* getTotalSistema */
 
 		ajustarValoresBonificacao: function() {
 			var oModelPed = that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido");

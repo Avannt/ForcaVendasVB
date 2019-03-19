@@ -166,7 +166,10 @@ sap.ui.define([
 		},
 
 		onQuantidadeChangeCpBrinde: function() {
-			this.setValoresCpBrindes(this);
+			/* Só chamo a função de setar valores se encontrou um item de campanha */
+			if (this.oItemCpBrindeAtual) {
+				this.setValoresCpBrindes(this);
+			}
 		},
 		/* onQuantidadeChangeCpBrinde */
 
@@ -264,36 +267,196 @@ sap.ui.define([
 		/* VerificarCampanhasValidas */
 
 		setValoresCpBrindes: function(that) {
+			var that2 = that;
+			var this2 = this;
+			
 			var iQtdeMaxPed = parseFloat(this.oItemCpBrindeAtual.quantidadeMaxima);
 			var iQtdeTotal = parseFloat(this.oItemCpBrindeAtual.quantidadeTotal);
 			var iQtdeDigitada = parseFloat(sap.ui.getCore().byId("idQuantidade").getValue());
+			var iQtdeBrinde = 0;
 
 			/* Busco todos os itens que foram utilizados em campanhas */
 			var iTotalSistema = 0;
+			new Promise(function(res4, rej4){
+				var oBrindes = [];
+				
+				this2.getTotalSistema(oBrindes, res4, that2.PDControllerCpBrinde.oItemPedido);
+			}).then(function(oBrindes){
+				iTotalSistema = oBrindes.qtde;
+				
+				/* Calculo o saldo que consta no sistema */
+				var iSaldo = iQtdeTotal - iTotalSistema;
+				
+				var iQtdeLiberadaBrinde = 0;
+				
+				/* Se o saldo for menor que a quantidade disponível, considero o saldo como liberada pra uso*/
+				if(iSaldo < iQtdeMaxPed){
+					iQtdeLiberadaBrinde = iSaldo;
+				} else { /* Caso contrário, considero a qtde máxima por pedido como liberada */
+					iQtdeLiberadaBrinde = iQtdeMaxPed;
+				}
+				
+				/* Agora preciso comparar a quantidade liberada pra uso com a quantidade digitada pelo usuário. */
+				if(iQtdeLiberadaBrinde < iQtdeDigitada){
+					iQtdeBrinde = iQtdeLiberadaBrinde;
+				} else { /* Caso contrário, considero a qtde máxima por pedido como liberada */
+					iQtdeBrinde = iQtdeDigitada;
+				}
+				
+				sap.ui.getCore().byId("idQuantidadeBrinde").setValue(iQtdeBrinde);
+				
+			}).catch(function(){
+				sap.ui.getCore().byId("idQuantidadeBrinde").setValue(iQtdeBrinde);
+			});
+			/* Fim */
 			
-			/* Calculo o saldo que consta no sistema */
-			var iSaldo = iQtdeTotal - iTotalSistema;
-			
-			var iQtdeLiberadaBrinde = 0;
-			var iQtdeBrinde = 0;
-			
-			/* Se o saldo for menor que a quantidade disponível, considero o saldo como liberada pra uso*/
-			if(iSaldo < iQtdeMaxPed){
-				iQtdeLiberadaBrinde = iSaldo;
-			} else { /* Caso contrário, considero a qtde máxima por pedido como liberada */
-				iQtdeLiberadaBrinde = iQtdeMaxPed;
-			}
-			
-			/* Agora preciso comparar a quantidade liberada pra uso com a quantidade digitada pelo usuário. */
-			if(iQtdeLiberadaBrinde < iQtdeDigitada){
-				iQtdeBrinde = iQtdeLiberadaBrinde;
-			} else { /* Caso contrário, considero a qtde máxima por pedido como liberada */
-				iQtdeBrinde = iQtdeDigitada;
-			}
-			
-			sap.ui.getCore().byId("idQuantidadeBrinde").setValue(iQtdeBrinde);
 		},
 		/* setValoresCpBrindes */
+		
+		getTotalSistema: function(oBrindes, res4, itemPedido){
+			var open = indexedDB.open("VB_DataBase");
+			var db = "";
+			
+			new Promise(function(res, rej){
+				
+				open.onsuccess = function() {
+					db = open.result;
+		
+					var sPedidos = db.transaction("PrePedidos", "readwrite");
+					var objPedidos = sPedidos.objectStore("PrePedidos");
+					var iStatus = objPedidos.index("idStatusPedido");
+					
+					/*
+					Regra dos status dos pedidos
+					1 - Pedidos em digitação: Considerar todos.
+					2 - Pedidos pendentes de envio: Considerar todos.
+					3 - Pedidos enviados: Considerar todos os pedidos 
+					enviados DEPOIS DA ÚLTIMA ATUALIZAÇÃO.(Os pedidos
+					enviados antes da última atualização já estarão
+					sendo considerados no saldo retornado da atualização
+					de tabelas).
+					*/
+					
+					/* Recupero todos os pedidos com status 1, 2, 3 */
+					var krStatus = IDBKeyRange.bound(1, 3);
+					var tPedido = iStatus.openCursor(krStatus);
+					var oDocsPendentes = [];
+					var cursor;
+					var oDoc;
+						
+					tPedido.onsuccess = function(e) {
+						cursor = e.target.result;
+	
+						if (cursor) {
+							oDoc = cursor.value;
+	
+							// Verifico se o pedido já foi enviado (Status = 3) /
+							if (oDoc.idStatusPedido == 3) {
+	
+								// Recupero a data da última atualização de tabelas /
+								/**/
+								var sUltimaAtualizacao = that.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
+								sUltimaAtualizacao = sUltimaAtualizacao.replace("/", "-").replace("/", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
+								var p = sUltimaAtualizacao.split("-");
+								var dUltimaAtualizacao = new Date("20" + p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
+	
+								var sDataImpl = oDoc.dataImpl.replace("/", "-").replace("/", "-").replace(":", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
+								p = sDataImpl.split("-");
+								var dDataImpl = new Date(p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
+								/**/
+	
+								// Verifico se a data do pedido é superior a data da última atualização /
+								if (dDataImpl > dUltimaAtualizacao) {
+									oDocsPendentes.push(oDoc);
+								}
+	
+								cursor.continue();
+	
+							} else {
+								cursor.continue();
+	
+								oDocsPendentes.push(oDoc);
+							}
+						} else {
+							res(oDocsPendentes);
+						}
+					};
+				};
+				
+			}).then(function(oDocsPendentes){
+				var vItensBrindes = [];
+	
+				var p2 = new Promise(function(res2) {
+					var iIteracao = 0;
+	
+					// Percorro todos os pedidos buscando os itens do tipo brindes em aberto /
+					for (var i = 0; i < oDocsPendentes.length; i++) {
+	
+						var sItens = db.transaction("ItensPedido", "readwrite");
+						var objItens = sItens.objectStore("ItensPedido");
+						var inrPedCli = objItens.index("nrPedCli");
+	
+						var p3 = new Promise(function(res3, rej3) {
+							var tItens = inrPedCli.openCursor(oDocsPendentes[i].nrPedCli);
+							var tempItensBri = [];
+	
+							tItens.onsuccess = function(e) {
+								var cursor = e.target.result;
+	
+								if (cursor) {
+	
+									/* Verifico se o item em questão é de BRINDE (YBRI)*/
+									if (cursor.value.mtpos === "YBRI") {
+										tempItensBri.push(cursor.value);
+									}
+	
+									cursor.continue();
+								} else {
+	
+									res3(tempItensBri);
+								}
+							};
+						}).then(function(tempItensBri) { /*res3*/
+							iIteracao = iIteracao + 1;
+	
+							for (var j = 0; j < tempItensBri.length; j++) {
+								// Verifico se não é o pedido e o material em questão, não posso considerar para cálculo de saldo /
+								if (tempItensBri[j].idItemPedido == itemPedido.idItemPedido && tempItensBri[j].index == itemPedido.index) {
+									continue;
+								}
+								
+								/* Só preciso de brindes do material que estou inserindo / atualizando no momento */
+								if (tempItensBri[j].matnr == itemPedido.matnr) {
+									vItensBrindes.push(tempItensBri[j]);
+								}
+	
+							}
+	
+							// Verifico se é a últma iteração do loop pra dar continuidade ao processo /
+							if (iIteracao == oDocsPendentes.length) {
+								res2(vItensBrindes);
+							}
+						});
+	
+					} /* for */
+	
+				}).then(function(vItensBrindes) {
+					var iQtdeUtilizada = 0;
+					for (var i = 0; i < vItensBrindes.length; i++) {
+						iQtdeUtilizada = iQtdeUtilizada + vItensBrindes[i].zzQnt;
+					}
+	
+					oBrindes.itens = vItensBrindes;
+					oBrindes.qtde = iQtdeUtilizada;
+	
+					res4(oBrindes);
+				});
+				
+			}).catch(function(){
+				
+			});
+		},
+		/* getTotalSistema */
 		
 		verificarExibicaoCampoQtdeBrinde: function(sItem){
 			/* O evento é disparado duas vezes, controlo pelo valor sugerido, se tiver diferente de branco é proque 

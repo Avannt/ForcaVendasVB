@@ -3890,7 +3890,6 @@ sap.ui.define([
 
 						if (that.indexItem < parseInt(aux[1])) {
 							that.indexItem = parseInt(aux[1]);
-
 						}
 					}
 				}
