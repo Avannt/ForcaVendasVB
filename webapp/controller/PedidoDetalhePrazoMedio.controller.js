@@ -48,7 +48,7 @@ sap.ui.define([
 					
 					osCmpPrzMed.getAll().onsuccess = function(event) {
 						that.oVetorCmpPrzMed = event.target.result;
-						alert();
+						// alert();
 					};
 				}
 			};
