@@ -2228,14 +2228,17 @@ sap.ui.define([
 																																																																																		for (i = 0; i < retornoCmpPrzMed.results.length; i++) {
 																																
 																																																																																			var objBancoCmpPrzMed = {
-																																																																																				valorDe: parseFloat(retornoCmpPrzMed.results[i].ValorDe),
-																																																																																				valorAte: parseFloat(retornoCmpPrzMed.results[i].ValorAte),
+																																																																																				przmaxap: parseFloat(retornoCmpPrzMed.results[i].Przmaxap),
+																																																																																				przmaxav: parseFloat(retornoCmpPrzMed.results[i].Przmaxav),
+																																																																																				przminav: parseFloat(retornoCmpPrzMed.results[i].Przminav),
+																																																																																				przminap: parseFloat(retornoCmpPrzMed.results[i].Przminap),
+																																																																																				valorMin: parseFloat(retornoCmpPrzMed.results[i].ValorMin),
 																																																																																				representante: retornoCmpPrzMed.results[i].Representante,
 																																																																																				descricaoRepresentante: retornoCmpPrzMed.results[i].DescricaoRepresentante,
 																																																																																				dataInicio: retornoCmpPrzMed.results[i].DataInicio,
 																																																																																				dataFim: retornoCmpPrzMed.results[i].DataFim
 																																																																																			};
-																																
+																																																																																			
 																																																																																			var requestCmpPrzMed = objCmpPrzMed.add(objBancoCmpPrzMed);
 																																
 																																																																																			requestCmpPrzMed.onsuccess = function(event) {
