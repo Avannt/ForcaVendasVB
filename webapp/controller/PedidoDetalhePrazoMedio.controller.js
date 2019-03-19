@@ -48,7 +48,7 @@ sap.ui.define([
 					
 					osCmpPrzMed.getAll().onsuccess = function(event) {
 						that.oVetorCmpPrzMed = event.target.result;
-						// alert();
+						// alert(); 
 					};
 				}
 			};
@@ -68,7 +68,7 @@ sap.ui.define([
 			
 			for(var i=0; i<that.oVetorCmpPrzMed.length; i++){
 				if(totalPedido > that.oVetorCmpPrzMed[i].valorDe && totalPedido < that.oVetorCmpPrzMed[i].valorAte){
-					var rangePermitido = that.oVetorCmpPrzMed[i].range
+					// var rangePermitido = that.oVetorCmpPrzMed[i].range
 				}
 				
 			}
