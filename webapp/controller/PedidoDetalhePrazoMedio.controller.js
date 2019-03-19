@@ -24,8 +24,9 @@ sap.ui.define([
 
 		InicializarEventosCampPrazoMedio: function() {
 			this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCmpPrazoMedio, "select"); /* select */
-		}, /* InicializarEventosCampPrazoMedio */
-		
+		},
+		/* InicializarEventosCampPrazoMedio */
+
 		onSelectIconTabBarCmpPrazoMedio: function(evt) {
 			var item = evt.getParameters();
 
@@ -34,47 +35,119 @@ sap.ui.define([
 				that.onGetCmpPrzMed();
 			}
 		},
-		
-		onGetCmpPrzMed: function(){
+		//Consulta se tem registro cadastrado para a campanha de Prazo
+		onGetCmpPrzMed: function() {
 			var open = indexedDB.open("VB_DataBase");
 
 			open.onsuccess = function() {
 				var db = open.result;
-				
+
 				var tCmpPrzMed = db.transaction("CmpPrzMed", "readonly");
 				var osCmpPrzMed = tCmpPrzMed.objectStore("CmpPrzMed");
-				
+
 				if ("getAll" in osCmpPrzMed) {
-					
+
 					osCmpPrzMed.getAll().onsuccess = function(event) {
 						that.oVetorCmpPrzMed = event.target.result;
-						// alert(); 
+						//Ordena o vetor e deixa o valor menor em cima. 
+						that.oVetorCmpPrzMed.sort(function(a, b) {
+							return a.valorMin - b.valorMin;
+						});
+
+						console.log("Vetor Prazo Médio");
+						console.log(that.oVetorCmpPrzMed);
 					};
 				}
 			};
 		},
-		
+
 		//Método precisa esperar a execução do calculTotalPedido para pegar o total do Atualizado para depois acionar o range da cmp de Prz Méd
-		onChecarRangeCmpPrzMed: function(){
-			
-			var totalPedido = that.PDControllerCmpPrazoMedio.oView.getModel("modelDadosPedido").getProperty("/ValTotPed");
+		onChecarRangeCmpPrzMed: function() {
+
+			var vetorItemCampPrzMed = "";
+			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed"
+			var percExcedentePrazoMed = 0;
+			var tipoNeg = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/TipoNegociacao");
+			var prazoMedioParcelas = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/PrazoMedioParcelas");
+			var prazoMedioPercJurosDia = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/PercJurosDiaPrazoMedio");
+			var totalPedido = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/ValTotPed");
+			var diasExcedente = 0;
 			console.error("Inicio Camp Prz Médio");
-			
-			if(that.oVetorCmpPrzMed.length == 0){
+
+			if (that.oVetorCmpPrzMed.length == 0) {
 				console.log("Não existe Range de Prazo Cadastrado para a Cmp Prazo Médio.");
 				console.error("Fim Camp Prz Médio");
 				return;
 			}
-			
-			for(var i=0; i<that.oVetorCmpPrzMed.length; i++){
-				if(totalPedido > that.oVetorCmpPrzMed[i].valorDe && totalPedido < that.oVetorCmpPrzMed[i].valorAte){
+
+			for (var i = 0; i < that.oVetorCmpPrzMed.length; i++) {
+
+				if (totalPedido > that.oVetorCmpPrzMed[i].valorMin) {
 					// var rangePermitido = that.oVetorCmpPrzMed[i].range
+					vetorItemCampPrzMed = that.oVetorCmpPrzMed[i];
+
+				} else {
+					break;
 				}
-				
+			}
+
+			if (vetorItemCampPrzMed) {
+				//Pagamento Ávista
+				if (tipoNeg == 1) {
+
+					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxav;
+
+					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 100) / 100;
+					console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
+					
+					this.onAtualizaExcedentePrazoMed();
+					
+				} //Pagamento a Prazo
+				else if (tipoNeg == 2) {
+
+					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxap;
+
+					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 100) / 100;
+					console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
+							
+					this.onAtualizaExcedentePrazoMed();
+				}
 			}
 			
+			
 		},
-		
+
+		onAtualizaExcedentePrazoMed: function() {
+			
+			var tipoPedido = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/TipoPedido");
+			var percAcresPrazoMed = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/PercExcedentePrazoMed");
+			var valorTotalAcresPrazoMed = 0;
+			var vetorItensPedido = this.PDControllerCmpPrazoMedio.objItensPedidoTemplate;
+			
+			for (var i = 0; i < vetorItensPedido.length; i++) {
+				if (vetorItensPedido[i].mtpos == "NORM") {
+					if (tipoPedido != "YBON" && tipoPedido != "YTRO") {
+						if (vetorItensPedido[i].tipoItem == "Normal") {
+							if (vetorItensPedido[i].tipoItem2 == "Normal") {
+								//Calculo do acréscimo de prazo médio .
+								
+								valorTotalAcresPrazoMed += parseFloat(vetorItensPedido[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
+									(vetorItensPedido[i].zzQnt - vetorItensPedido[i].zzQntDiluicao));
+									
+							}
+						} else if (vetorItensPedido[i].tipoItem == "Diluido") {
+							valorTotalAcresPrazoMed += parseFloat(vetorItensPedido[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
+									(vetorItensPedido[i].zzQnt - vetorItensPedido[i].zzQntDiluicao));
+						}
+					}
+				}
+			}
+			
+			this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/ValTotalExcedentePrazoMed", parseFloat(valorTotalAcresPrazoMed).toFixed(2));
+		},
+
 		onVerificarEvento: function(sIdControle, oMetodoEvento, sTipoEvento) {
 			var oEventRegistry;
 			var oElemento;

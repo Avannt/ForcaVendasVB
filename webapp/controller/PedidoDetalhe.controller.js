@@ -2298,7 +2298,7 @@ sap.ui.define([
 						valTotalCampanhaGlobal += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
 						
 					} else {
-						// Alteração para campanha de brindes - 20190315 - Ricardo Junior
+						// Alteração para campanha de Global - 20190315 - Ricardo Junior
 						/* Alteração para campanha de brindes - 20190312 - Diego Djeri */
 						/* Inicio */
 						var zzQtdeExcedente = 0;
@@ -2675,6 +2675,12 @@ sap.ui.define([
 			if (this.pedidoDetalheEnxoval) {
 				this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
 			}
+			/* Campanha Prazo Médio */
+			if (this.pedidoDetalheEnxoval) {
+				this.pedidoDetalhePrazoMedio.onChecarRangeCmpPrzMed();
+			}
+			
+			
 		},
 		/* calculaTotalPedido */
 
@@ -3518,7 +3524,7 @@ sap.ui.define([
 			var valorPedMin = vetorParametros[4]; //valorPedMin;
 			var percJuros = vetorParametros[5]; //percJuros;
 			var percJurosDia = vetorParametros[6]; //percJurosDia;
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioPercJurosDia", percJurosDia);
+			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercJurosDiaPrazoMedio", percJurosDia);
 
 			if (existeEntrada === false || existeEntrada == "") {
 				//Calculo prazo medio normal
