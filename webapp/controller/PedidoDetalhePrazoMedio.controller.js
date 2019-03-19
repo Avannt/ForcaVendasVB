@@ -102,6 +102,7 @@ sap.ui.define([
 					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 					
 					this.onAtualizaExcedentePrazoMed();
+					this.onValidaDestinacaoPrazoMedio();
 					
 				} //Pagamento a Prazo
 				else if (tipoNeg == 2) {
@@ -113,9 +114,9 @@ sap.ui.define([
 					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 							
 					this.onAtualizaExcedentePrazoMed();
+					this.onValidaDestinacaoPrazoMedio();
 				}
 			}
-			
 		},
 
 		onAtualizaExcedentePrazoMed: function() {
@@ -145,6 +146,38 @@ sap.ui.define([
 			}
 			
 			this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/ValTotalExcedentePrazoMed", parseFloat(valorTotalAcresPrazoMed).toFixed(2));
+		},
+		
+		onValidaDestinacaoPrazoMedio: function(){
+			
+			var valorTotalAcresPrazoMed = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/ValTotalExcedentePrazoMed");
+			var valUtilizadoVerbaPrazoMed = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaPrazoMed");
+			var comissaoUtilizadaPrazoMed = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
+			
+			valorTotalAcresPrazoMed = Math.round(valorTotalAcresPrazoMed * 100) / 100;
+			valUtilizadoVerbaPrazoMed = Math.round(valUtilizadoVerbaPrazoMed * 100) / 100;
+			comissaoUtilizadaPrazoMed = Math.round(comissaoUtilizadaPrazoMed * 100) / 100;
+
+			//PRAZO MÉDIO
+			if ((comissaoUtilizadaPrazoMed + valUtilizadoVerbaPrazoMed).toFixed(2) > valorTotalAcresPrazoMed) {
+
+				this.PDControllerCmpPrazoMedio.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
+
+				this.PDControllerCmpPrazoMedio.byId("idComissaoUtilizadaPrazo").setValueState("Error");
+				this.PDControllerCmpPrazoMedio.byId("idComissaoUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" + valorTotalAcresPrazoMed + ")");
+				this.PDControllerCmpPrazoMedio.byId("idVerbaUtilizadaPrazo").focus();
+
+				this.PDControllerCmpPrazoMedio.byId("idVerbaUtilizadaPrazo").setValueState("Error");
+				this.PDControllerCmpPrazoMedio.byId("idVerbaUtilizadaPrazo").setValueStateText("Valor destinado para abater da comissão ultrapassou o valor total necessário. Excedente Prazo Médio (" + valorTotalAcresPrazoMed + ")");
+
+			} else {
+				
+				this.PDControllerCmpPrazoMedio.byId("idComissaoUtilizadaPrazo").setValueState("None");
+				this.PDControllerCmpPrazoMedio.byId("idComissaoUtilizadaPrazo").setValueStateText("");
+
+				this.PDControllerCmpPrazoMedio.byId("idVerbaUtilizadaPrazo").setValueState("None");
+				this.PDControllerCmpPrazoMedio.byId("idVerbaUtilizadaPrazo").setValueStateText("");
+			}
 		},
 
 		onVerificarEvento: function(sIdControle, oMetodoEvento, sTipoEvento) {
