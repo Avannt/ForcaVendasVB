@@ -4238,7 +4238,7 @@ sap.ui.define([
 					
 					//Pode inserir normalmente o item de brinde, gerando excedente de brinde.
 					mensagemCmpGlobal = "Pode inserir normalmente";
-					res();
+					rej(mensagemCmpGlobal);
 					
 				} else{
 					
@@ -5889,6 +5889,10 @@ sap.ui.define([
 			var vetorGrpFamilia = [];
 			var contemMaterial = false;
 			var vetorAuxItensPedido = [];
+			
+			if(that.objItensPedidoTemplate.length == 1 && that.objItensPedidoTemplate[0].mtpos == "YBRI"){
+				res();
+			}
 			
 			for (var i = 0; i<that.objItensPedidoTemplate.length; i++) {
 				var aux = [];
