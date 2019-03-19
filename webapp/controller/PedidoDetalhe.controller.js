@@ -3221,17 +3221,11 @@ sap.ui.define([
 					//Atualiza todos os itens do pedido com as propriedades do vetor total de itens.
 					that.onAtualizaTodosItensPedido(db);
 					
-					var promise2 = new Promise(function(resolve, reject) {
+					new Promise(function(resolve, reject) {
 						//Checa os itens da Campanha Global	se atendem a quantidade esperada
-						that.onAgrupaItensGlobal(db, that.onVerificarItensCampGlobal, resolve, reject, that);
-					});
-					
-					promise2.then(function(msg){
-						//TUDO OK
+						that.onAgrupaValidaItensCampGlobal(resolve, reject, that);
 						
-					});
-					
-					promise2.catch(function(msg){
+					}).catch(function(msg){
 						
 						MessageBox.show(msg, {
 							icon: MessageBox.Icon.ERROR,
@@ -4160,8 +4154,7 @@ sap.ui.define([
 							//Promise para agrupar os itens e identificar se possui grupo de familia e o range de quantidade.
 							new Promise(function(res, rej){
 								
-								//Parâmetro: o nome do metodo que a função vai chamar 
-								that.onAgrupaItensGlobal(db, that.onCheckQuantidadeGlobal, res, rej, that);
+								that.onAgrupaItensGlobal(res, rej, that);
 								
 							}).then(function(){
 								
@@ -5883,12 +5876,11 @@ sap.ui.define([
 		
 		//Agrupa os itens da campanha pelo grupo e verifica se atingiu a regra para ver a quantidade de bonificação
 		// que o kra pode inserir com o Brinde.
-		onAgrupaItensGlobal: function(db, metodo, res, rej, that) {
+		onAgrupaItensGlobal: function(res, rej, that) {
 			var proximoItemDiferente = false;
-			var vetorItemAux = [];
 			var vetorGrpFamilia = [];
-			var contemMaterial = false;
 			var vetorAuxItensPedido = [];
+			var retorno = "";
 			
 			if(that.objItensPedidoTemplate.length == 1 && that.objItensPedidoTemplate[0].mtpos == "YBRI"){
 				res();
@@ -5922,8 +5914,7 @@ sap.ui.define([
 					//se já atingiu a quantidade para utilizar os brindes.
 					
 					vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-					//that.onCheckQuantidadeGlobal e that.onVerificarItensCampGlobal
-					metodo(db, vetorGrpFamilia, res, rej, that);
+					retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
 					
 				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
 					
@@ -5933,15 +5924,10 @@ sap.ui.define([
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
 						
 					} else {
-						//Nesse momento tenho os itens daquela familia.. tendo os itens da familia .. somar as quantidades
-						// e verificar se o desconto aplicado é maior que o permitido.
-						//fazendo ( preço cheio - preço de venda )
+						//Nesse momento tenho os itens da mesma familia.. tendo os itens da familia .. somar as quantidades
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						metodo(db, vetorGrpFamilia, res, rej, that);
+						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
 						proximoItemDiferente = true;
-						
-						//REMOVER O ITEM CORRENTE DO VETOR.
-						
 					}
 					
 				} else if ((i + 1) == vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
@@ -5950,19 +5936,25 @@ sap.ui.define([
 					if (vetorGrpFamilia.length > 0) {
 						
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						metodo(db, vetorGrpFamilia, res, rej, that);
+						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
 						
 					} else {
 						//ultimo item e é diferente do antepenultimo
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						metodo(db, vetorGrpFamilia, res, rej, that);
+						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
 					}
 				}
 			}
+			
+			if(retorno == "OK"){
+				res();
+			}else {
+				rej();
+			}
 		},
 		
-		//Verifica quantas vezes vai poder utilizar o range dos brindes.
-		onCheckQuantidadeGlobal: function(db, vetorGrpFamilia, res, rej, that){
+		//Verifica quantas vezes vai poder utilizar o range dos brindes, Rotina executada antes da inserção do item no total dos itens.
+		onCheckQuantidadeGlobal: function(vetorGrpFamilia, that){
 			// var that = this;
 			var qntItens = 0;
 			var valorRange = 0;
@@ -5996,36 +5988,29 @@ sap.ui.define([
 					}
 				}
 			}
-				
+			
 			console.log("O grupo " + zzGrupoGlobal + " teve " + qntItens + " itens e pode utilizar " + qntParaUtilizar + "x os brindes.");
-			res();
+			return "OK";
 		},
 		
 		//Vetor por grupo de campanha global
-		onVerificarItensCampGlobal: function(db, vetorGrpFamilia, res, rej, that){
+		onValidaItensCampGlobal: function(vetorGrpFamilia, that){
 			// var that = this;
-			var vetorCmpGlobal = [];
 			var vetorBrindesGlobais = [];
 			var totalItens = 0;
-			var totalBrindes = 0;
 			var totalItensBrinde = 0;
 			var resultQuant = 0;
-			var resultQuantBrinde = 0;
 			var valorRangeProd = 0;
 			var valorRangeBrinde = 0;
 			var mensagemCmpGlobal = "";
 			
-			
-			//Percorre todos os itens verificando se atende o range dos produtos.
-			for(var j=0; j<that.objItensPedidoTemplate.length; j++){
-				if(vetorGrpFamilia[0].zzGrupoGlobal == that.objItensPedidoTemplate[j].zzGrupoGlobal && that.objItensPedidoTemplate[j].mtpos == "YBRI" && that.objItensPedidoTemplate[j].zzGrupoGlobal != 0){
-					vetorBrindesGlobais.push(that.objItensPedidoTemplate[j]);
+			for(var j=0; j<vetorGrpFamilia.length; j++){
+				if(vetorGrpFamilia[j].mtpos == "YBRI" && vetorGrpFamilia[j].zzGrupoGlobal != 0){
+					vetorBrindesGlobais.push(vetorGrpFamilia[j]);
+				} else if(vetorGrpFamilia[j].mtpos != "YBRI"  && vetorGrpFamilia[j].mtpos != "YAMO" && vetorGrpFamilia[j].zzGrupoGlobal != 0){
+					totalItens += vetorGrpFamilia[j].zzQnt;
+					valorRangeProd = vetorGrpFamilia[j].zzQntRegraGb;
 				}
-			}
-			
-			for(j=0; j<vetorGrpFamilia.length; j++){
-				totalItens += vetorGrpFamilia[j].zzQnt;
-				valorRangeProd = vetorGrpFamilia[j].zzQntRegraGb;
 			}
 			
 			if(totalItens >= valorRangeProd && valorRangeProd > 0){
@@ -6049,11 +6034,86 @@ sap.ui.define([
 				console.log("Ultrapassou limite de brindes permitidos da Campanha Global");
 				
 				mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + totalPermitidoBrinde + ". Quantidade de itens já inseridos: " + totalItensBrinde;
-				rej(mensagemCmpGlobal);
+				return mensagemCmpGlobal;
+				
 			} else{
-				console.log("Tudo OK com Campanha Global. Itens Inseridos corretamente");
+				
+				return "OK";
+			}
+		},
+		
+		onAgrupaValidaItensCampGlobal: function(res, rej, that) {
+			var proximoItemDiferente = false;
+			var vetorGrpFamilia = [];
+			var vetorAuxItensPedido = [];
+			var retorno = "";
+			
+			if(that.objItensPedidoTemplate.length == 1 && that.objItensPedidoTemplate[0].mtpos == "YBRI"){
 				res();
 			}
-		}
+			
+			for (var i = 0; i<that.objItensPedidoTemplate.length; i++) {
+					var aux = [];
+					aux = that.objItensPedidoTemplate[i];
+					vetorAuxItensPedido.push(aux);
+			}
+			
+			//Ordenando para desconto Familia normal. Utiliza vetor global de itens (objItensPedidoTemplate).
+			vetorAuxItensPedido.sort(function(a, b) {
+				return a.zzGrupoGlobal - b.zzGrupoGlobal;
+			});
+			
+			/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
+			for (var i = 0; i<vetorAuxItensPedido.length; i++) {
+				
+				if (proximoItemDiferente == true) {
+					proximoItemDiferente = false;
+					vetorGrpFamilia = [];
+				}
+				
+				if (vetorGrpFamilia.length == 0 && vetorAuxItensPedido.length == 1 && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+					
+					//o vetor de itens tem um unico item. nesse caso já tenho que verificar 
+					//se já atingiu a quantidade para utilizar os brindes.
+					
+					vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+					retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
+					
+				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+					
+					if (vetorAuxItensPedido[i].zzGrupoGlobal == vetorAuxItensPedido[i + 1].zzGrupoGlobal) {
+						
+						proximoItemDiferente = false;
+						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						
+					} else {
+						//Nesse momento tenho os itens da mesma familia.. tendo os itens da familia .. somar as quantidades
+						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
+						proximoItemDiferente = true;
+					}
+					
+				} else if ((i + 1) == vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+					
+					//sinal proximoItemDiferente = true e limpou
+					if (vetorGrpFamilia.length > 0) {
+						
+						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
+						
+					} else {
+						//ultimo item e é diferente do antepenultimo
+						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
+					}
+				}
+			}
+			
+			if(retorno == "OK"){
+				res();
+			}else {
+				rej();
+			}
+		},
 	});
 });
