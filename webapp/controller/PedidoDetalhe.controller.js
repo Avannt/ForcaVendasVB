@@ -4011,6 +4011,7 @@ sap.ui.define([
 							}).catch(function(){
 								
 								//Matnr: X não possui Grupo Cmp Global.
+								
 								that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
 								
 							});
@@ -5804,6 +5805,7 @@ sap.ui.define([
 				/* Não achou grupo do material para campanha Global */
 				ItemPedido.zzQntRegraGb = 0;
 				ItemPedido.zzGrupoGlobal = 0;
+				ItemPedido.zzAtingiuCmpGlobal = 0;
 				
 				//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
 				ItemPedido.zzUtilCampGlobal = "Não";
