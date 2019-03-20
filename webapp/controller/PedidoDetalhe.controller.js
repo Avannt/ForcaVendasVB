@@ -5889,8 +5889,17 @@ sap.ui.define([
 			var vetorGrpFamilia = [];
 			var vetorAuxItensPedido = [];
 			var retorno = "";
+			//Pra tratar quando o kra insere apenas itens de amostra e brindes.
+			//Faz com que insere o item sem cair na verificação de id de grupo global.
+			var existeBRI = true;
 			
-			if(that.objItensPedidoTemplate.length == 1 && that.objItensPedidoTemplate[0].mtpos == "YBRI"){
+			for (var i = 0; i<that.objItensPedidoTemplate.length; i++) {
+				if(that.objItensPedidoTemplate[i].mtpos != "YBRI" && that.objItensPedidoTemplate[i].mtpos != "YAMO"){
+					existeBRI = false;
+				}
+			}
+			
+			if(existeBRI){
 				res();
 			}
 			
