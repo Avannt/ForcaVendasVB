@@ -23,7 +23,7 @@ sap.ui.define([
 		} /* constructor */ ,
 
 		InicializarEventosCampPrazoMedio: function() {
-			this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCmpPrazoMedio, "select"); /* select */
+			// this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCmpPrazoMedio, "select"); /* select */
 		},
 		/* InicializarEventosCampPrazoMedio */
 

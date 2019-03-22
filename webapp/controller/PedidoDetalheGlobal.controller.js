@@ -25,7 +25,7 @@ sap.ui.define([
 		}, /* constructor */ 
 		
 		InicializarEventosCampGlobal: function() {
-			 this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCmpGlobal, "select"); /* select */
+			 //this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCmpGlobal, "select"); /* select */
 		} /* InicializarEventosCampGlobal */ ,
 		
 		onSelectIconTabBarCmpGlobal: function(evt) {
@@ -347,7 +347,7 @@ sap.ui.define([
 					//se já atingiu a quantidade para utilizar os brindes.
 					
 					vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-					retorno = that.PDControllerCmpGlobal.onValidaItensCampGlobal(vetorGrpFamilia, that);
+					retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
 					
 				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
 					
@@ -359,7 +359,7 @@ sap.ui.define([
 					} else {
 						//Nesse momento tenho os itens da mesma familia.. tendo os itens da familia .. somar as quantidades
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						retorno = that.PDControllerCmpGlobal.onValidaItensCampGlobal(vetorGrpFamilia, that);
+						retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
 						proximoItemDiferente = true;
 					}
 					
@@ -374,7 +374,7 @@ sap.ui.define([
 					} else {
 						//ultimo item e é diferente do antepenultimo
 						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						retorno = that.PDControllerCmpGlobal.onValidaItensCampGlobal(vetorGrpFamilia, that);
+						retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
 					}
 				}
 			}

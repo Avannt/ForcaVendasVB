@@ -3245,21 +3245,21 @@ sap.ui.define([
 					//Atualiza todos os itens do pedido com as propriedades do vetor total de itens.
 					that.onAtualizaTodosItensPedido(db);
 					
-					new Promise(function(resolve, reject) {
-						//Checa os itens da Campanha Global	se atendem a quantidade esperada
-						that.onAgrupaValidaItensCampGlobal(resolve, reject, that);
+					// new Promise(function(resolve, reject) {
+					// 	//Checa os itens da Campanha Global	se atendem a quantidade esperada
+					// 	that.onAgrupaValidaItensCampGlobal(resolve, reject, that);
 						
-					}).catch(function(msg){
+					// }).catch(function(msg){
 						
-						MessageBox.show(msg, {
-							icon: MessageBox.Icon.ERROR,
-							title: "Campanha Global!",
-							actions: [MessageBox.Action.OK],
-							onClose: function(){
-								that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
-							}
-						});
-					});
+					// 	MessageBox.show(msg, {
+					// 		icon: MessageBox.Icon.ERROR,
+					// 		title: "Campanha Global!",
+					// 		actions: [MessageBox.Action.OK],
+					// 		onClose: function(){
+					// 			that.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
+					// 		}
+					// 	});
+					// });
 				}
 			};
 		},
