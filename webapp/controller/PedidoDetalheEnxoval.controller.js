@@ -22,6 +22,10 @@ sap.ui.define([
 
 			that.PDControllerCpEnxoval = sView;
 
+			that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", 0);
+			that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", 0);
+			that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
+
 			this.InicializarEventosCampEnxoval();
 		} /* constructor */ ,
 
