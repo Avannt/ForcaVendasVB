@@ -35,7 +35,8 @@ sap.ui.define([
 				//Versão App
 				if (this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")) {
 					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.37");
-					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/";
+					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/"; // PRD
+					//sUrl = "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/"; // QAS
 
 					var oModel = new sap.ui.model.odata.v2.ODataModel(sUrl, {
 						json: true,
@@ -47,7 +48,7 @@ sap.ui.define([
 					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", oModel);
 				} else { // QAS
 					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", this.getView().getModel());
-					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.19");
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.38");
 				}
 
 				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");

@@ -85,7 +85,7 @@ sap.ui.define([
 				return;
 			}
 
-			console.log("Passo 1 de 4: Campanha enxoval: Cliente é empresa (CPNJ), OK");
+			console.log("Passo 1 de 5: Campanha enxoval: Cliente é empresa (CPNJ), OK");
 
 			/* Verifico se o tipo de pedido é YBON */
 			var sIdTipoPed = that.PDControllerCpEnxoval.byId("idTipoPedido").getSelectedKey();
@@ -97,7 +97,7 @@ sap.ui.define([
 				console.log("Não usa campanha Enxoval: Não é ped bonificação!");
 				return;
 			}
-			console.log("Passo 2 de 4: Campanha enxoval: YBON, OK");
+			console.log("Passo 2 de 5: Campanha enxoval: YBON, OK");
 
 			/* Verifico se não existe duas campanhas ativas para o mesmo representante */
 			var iQtdeCampanhasValidas = 0;
@@ -125,17 +125,49 @@ sap.ui.define([
 			/* Verifico se existe somente 1 campanha ativa */
 			if (iQtdeCampanhasValidas == 1) {
 
-				console.log("Passo 3 de 4: Representante possui campanha ativa!");
+				console.log("Passo 3 de 5: Representante possui campanha ativa!");
 
 				/* Verifico se o cliente efetuou compra, para a campanha ser válida, será somente se o cliente NÃO efetuou compra (bClienteEfetuouCompra = false) */
 				if (that.bClienteEfetuouCompra == false) {
-					console.log("Passo 4 de 4: Cliente não efetuou compra no período pré-estabelido! OK");
-					console.log("Campanha Enxoval Ativada! Todos os pré-requisitos foram atendidos!");
+					console.log("Passo 4 de 5: Cliente não efetuou compra no período pré-estabelido! OK");
 					that.bCampanhaEnxovalAtiva = true;
 				} else {
-					console.log("Não usa campanha Enxoval: Cliente fora do período de compras! O USO TÁ LIBERADO TEMPORARIAMENTE, LEMBRAR DE RESTRINGIR APÓS OS TESTES");
-					that.bCampanhaEnxovalAtiva = true; //false;
+					console.log("<<<< Não usa campanha Enxoval: Cliente fora do período de compras! >>>>> ");
+					that.bCampanhaEnxovalAtiva = false;
 				}
+				
+				/* Verifico se o cliente em questão não possui pedidos com a campanha de enxoval ativa sem enviar.*/
+				var open = indexedDB.open("VB_DataBase");
+				open.that = that;
+				open.onsuccess = function(e) {
+					var db = open.result;
+					var sCodCliente = open.that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelAux").getData().Kunnr;
+					
+					var osPedidos = db.transaction("PrePedidos", "readonly").objectStore("PrePedidos");
+					var iKunnr = osPedidos.index("kunnr");
+					
+					iKunnr.getAll(sCodCliente).onsuccess = function(event) {
+						var tmpPedidos = event.target.result;
+						
+						/* Verifico se existe pelo menos 1 pedido diferente do status :EM DIGITACAO, se existir nao ativo a campanha */
+						var iQtdePedidosInseridosFV = 0;
+						
+						for (var j = 0; j < tmpPedidos.length; j++){
+							/* Desconsidero os que estao em digitacao */
+							if(tmpPedidos[j].idStatusPedido != 1){
+								iQtdePedidosInseridosFV = iQtdePedidosInseridosFV + 1;
+							}
+						}
+						
+						if (iQtdePedidosInseridosFV > 0){
+							open.that.bCampanhaEnxovalAtiva = false;
+							console.log("Passo 5 de 5: Cliente possui pedido digitado no forca de vendas! NÃO SERÁ UTILIZADO A CAMPANHA");
+						}else{
+							console.log("Passo 5 de 5: Cliente não possui pedido digitado no forca de vendas!! OK CAMPANHA ATIVADA");
+						}
+					};
+				};
+				
 			} else {
 				console.log("Não usa campanha Enxoval: Representante não tem campanha!");
 				that.bCampanhaEnxovalAtiva = false;
@@ -229,8 +261,12 @@ sap.ui.define([
 					if (dValorLiberar > dValorBonificacao) {
 						dValorLiberar = dValorBonificacao;
 					}
+					
+					/* Ajuste 20190320 - O valor da campanha já deve reduzir o valor do excedente de bonificação */
+					dValorBonificacao = dValorBonificacao - dValorLiberar;
 	
 					// that.PDControllerCpEnxoval.getView().byId("idValorTotalEnxoval").setValue(parseFloat(dValorLiberar).toFixed(2));
+					that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteBonif", parseFloat(dValorBonificacao).toFixed(2));
 					that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
 					that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", parseFloat(dValorLiberar).toFixed(2));
 	
@@ -283,7 +319,7 @@ sap.ui.define([
 
 								// Recupero a data da última atualização de tabelas /
 								/**/
-								var sUltimaAtualizacao = that.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
+								var sUltimaAtualizacao = that.PDControllerCpEnxoval.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
 								sUltimaAtualizacao = sUltimaAtualizacao.replace("/", "-").replace("/", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
 								var p = sUltimaAtualizacao.split("-");
 								var dUltimaAtualizacao = new Date("20" + p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
@@ -314,6 +350,8 @@ sap.ui.define([
 										oDocsPendentes.push(oDoc);
 									}
 								}
+								
+								cursor.continue();
 							}
 						} else {
 							res(oDocsPendentes);

@@ -355,7 +355,7 @@ sap.ui.define([
 	
 								// Recupero a data da última atualização de tabelas /
 								/**/
-								var sUltimaAtualizacao = that.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
+								var sUltimaAtualizacao = that.PDControllerCpBrinde.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
 								sUltimaAtualizacao = sUltimaAtualizacao.replace("/", "-").replace("/", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
 								var p = sUltimaAtualizacao.split("-");
 								var dUltimaAtualizacao = new Date("20" + p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);

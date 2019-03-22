@@ -270,34 +270,34 @@ sap.ui.define([
 
 							promise.then(function() {
 								/* Reabro o pedido */
-								new Promise(function(resAP, rejAP){
+								new Promise(function(resAP, rejAP) {
 									var store1 = db.transaction("PrePedidos", "readwrite");
 									var objPedido = store1.objectStore("PrePedidos");
 									var req = objPedido.get(nrPedCli);
-									
+
 									req.onsuccess = function(ret) {
 										var result = ret.target.result;
 										var oPed = result;
 										oPed.idStatusPedido = 1; // Em digitação
 										oPed.situacaoPedido = "EM DIGITAÇÃO";
-						
+
 										store1 = db.transaction("PrePedidos", "readwrite");
 										objPedido = store1.objectStore("PrePedidos");
 										req = objPedido.put(oPed);
-						
+
 										req.onsuccess = function() {
 											/* Pedido reaberto */
 											resAP();
 											console.log("O pedido foi reaberto.");
 										};
-										
+
 										req.onerror = function() {
 											/* Erro ao reabir pedido */
 											rejAP("Erro ao reabrir pedido!");
 											console.log("Erro ao abrir o Pedido > " + nrPedCli);
 										};
 									};
-								}).then(function(){
+								}).then(function() {
 									sap.ui.core.UIComponent.getRouterFor(that).navTo("pedidoDetalhe");
 								});
 							});
@@ -409,9 +409,9 @@ sap.ui.define([
 							if (oAction == "Enviar") {
 
 								new Promise(function(p1res, p1rej) {
-									
+
 									that.onVerificarAprovadorUsuario(p1res, p1rej);
-									
+
 								}).then(function() {
 									var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel");
 
@@ -631,6 +631,15 @@ sap.ui.define([
 																		oPedidoGrid.splice(o, 1);
 																	}
 																}
+
+																/* Se teve uso da campanha enxoval, atualizo o campo 'efetuoucompra' no cliente para 'true'*/
+																/* 20190321 - Diego Djeri - Campanha Enxoval */
+																var dValorUtilizadoCpEnxoval = parseFloat(data.Valcampenxoval || 0);
+																if (dValorUtilizadoCpEnxoval > 0) {
+																	that.setaEfetuouCompraCliente(db, data.Kunnr);
+																}
+																/* FIM*/
+
 																// oModel = new sap.ui.model.json.JSONModel();
 																// that.getView().setModel(oModel, "PedidosEnviar");
 
@@ -650,7 +659,7 @@ sap.ui.define([
 									}
 
 									oModel.submitChanges();
-									
+
 								}).catch(function(sErro) {
 
 									MessageBox.error(sErro, {
@@ -668,6 +677,33 @@ sap.ui.define([
 			}
 		},
 		/*FIM onEnviarPedido*/
+
+		setaEfetuouCompraCliente: function(db, sCodCliente) {
+			var that = this;
+			var objCliente = [];
+
+			var tx = db.transaction("Clientes", "readwrite");
+			var objPrePedido = tx.objectStore("Clientes");
+
+			var request = objPrePedido.get(sCodCliente);
+
+			request.onsuccess = function(e) {
+				var result = e.target.result;
+				objCliente = result;
+				objCliente.efetuoucompra = "true";
+
+				var store1 = db.transaction("Clientes", "readwrite");
+				var objPedido = store1.objectStore("Clientes");
+				var request1 = objPedido.put(objCliente);
+
+				request1.onsuccess = function() {
+					console.log("O campo 'ultimacompra' do cliente foi atualizado para > 'true'");
+				};
+				request1.onerror = function() {
+					console.log("Erro ao abrir o cliente > " + sCodCliente);
+				};
+			};
+		},
 
 		onAtulizaSaldoAmostra: function(db, oItem) {
 			var txControleAmostras = db.transaction("ControleAmostra", "readwrite");
@@ -987,7 +1023,7 @@ sap.ui.define([
 									return;
 								}
 							});
-							
+
 						});
 
 					}
