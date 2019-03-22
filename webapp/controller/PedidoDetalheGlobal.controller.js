@@ -81,6 +81,8 @@ sap.ui.define([
 
 					console.log("Matnr: " + result.material + ", Grupo: " + result.grupo);
 					ItemPedido.zzGrupoGlobal = result.grupo;
+					//trocar a referência do sub grupo;
+					ItemPedido.zzSubGrupoGlobal = result.grupo;
 					resolve(ItemPedido);
 					
 				} else {
@@ -133,37 +135,45 @@ sap.ui.define([
 			var proximoItemDiferente = false;
 			var vetorGrpFamilia = [];
 			var vetorAuxItensPedido = [];
+			var vetorAuxItensPedidoTotal = [];
+			var aux = [];
 			//Pra tratar quando o kra insere apenas itens de amostra e brindes.
 			//Faz com que insere o item sem cair na verificação de id de grupo global.
 			var existeBRI = true;
 			var contemItemAtual = false;
 			
+			//Garante que tem todos os itens inseridos no vetor vetorAuxItensPedidoTotal. Incluindo o oItemPedido. 
 			for (var i = 0; i<that.PDControllerCmpGlobal.objItensPedidoTemplate.length; i++) {
+				if(that.PDControllerCmpGlobal.oItemPedido.matnr == that.PDControllerCmpGlobal.objItensPedidoTemplate[i].matnr){
+					contemItemAtual = true;
+				}	
 				
-				if(that.PDControllerCmpGlobal.objItensPedidoTemplate[i].mtpos != "YBRI" && that.PDControllerCmpGlobal.objItensPedidoTemplate[i].mtpos != "YAMO"){
+				aux = that.PDControllerCmpGlobal.objItensPedidoTemplate[i];
+				vetorAuxItensPedidoTotal.push(aux);
+				
+			}
+			if(!contemItemAtual){
+				vetorAuxItensPedidoTotal.push(that.PDControllerCmpGlobal.oItemPedido);
+			}
+			
+			for (i = 0; i<vetorAuxItensPedidoTotal.length; i++) {
+				
+				if(vetorAuxItensPedidoTotal[i].mtpos != "YBRI" && vetorAuxItensPedidoTotal[i].mtpos != "YAMO"){
 					existeBRI = false;
 				}
 			}
 			
 			if(existeBRI){
-				return retorno;
+				return "OK";
 			}
 			
-			for (i = 0; i<that.PDControllerCmpGlobal.objItensPedidoTemplate.length; i++) {
-				if(that.PDControllerCmpGlobal.oItemPedido.matnr == that.PDControllerCmpGlobal.objItensPedidoTemplate[i].matnr){
-					contemItemAtual = true;
-				}
-				var aux = [];
+			for (i = 0; i<vetorAuxItensPedidoTotal.length; i++) {
 				
-				if(that.PDControllerCmpGlobal.objItensPedidoTemplate[i].mtpos != "YBRI" && that.PDControllerCmpGlobal.objItensPedidoTemplate[i].mtpos != "YAMO"){
-					aux = that.PDControllerCmpGlobal.objItensPedidoTemplate[i];
-					vetorAuxItensPedido.push(aux);
+				if(vetorAuxItensPedidoTotal[i].mtpos != "YBRI" && vetorAuxItensPedidoTotal[i].mtpos != "YAMO"){
+					vetorAuxItensPedido.push(vetorAuxItensPedidoTotal[i]);
 				}
 			}
 			
-			if(!contemItemAtual){
-				vetorAuxItensPedido.push(that.PDControllerCmpGlobal.oItemPedido);
-			}
 			
 			//Ordenando para desconto Familia normal. Utiliza vetor global de itens (objItensPedidoTemplate).
 			vetorAuxItensPedido.sort(function(a, b) {

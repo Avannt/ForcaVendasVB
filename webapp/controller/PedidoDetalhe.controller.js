@@ -1890,6 +1890,7 @@ sap.ui.define([
 			oitem.zzGrpmat = 0;
 			oitem.zzGrpmatExtra = 0;
 			oitem.zzGrupoGlobal = 0;
+			oitem.zzSubGrupoGlobal = 0;
 			oitem.zzPercDescDiluicao = 0;
 			oitem.zzPercDescTotal = 0;
 			oitem.zzPercom = 0;
