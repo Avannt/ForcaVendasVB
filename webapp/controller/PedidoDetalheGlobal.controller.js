@@ -264,12 +264,12 @@ sap.ui.define([
 			for(i=0; i<vetorGrpFamilia.length; i++){
 				for(var j=0; j<that.PDControllerCmpGlobal.objItensPedidoTemplate.length; j++){
 					if(vetorGrpFamilia[i].matnr == that.PDControllerCmpGlobal.objItensPedidoTemplate[j].matnr){
-						that.PDControllerCmpGlobal.objItensPedidoTemplate[j].zzAtingiuCmpGlobal = qntParaUtilizar;
+						that.PDControllerCmpGlobal.objItensPedidoTemplate[j].zzAtingiuCmpGlobal = "Sim";
 					}
 				}
 			}
 			
-			console.log("O grupo " + zzGrupoGlobal + " teve " + qntItens + " itens e pode utilizar " + qntParaUtilizar + "x os brindes.");
+			console.log("O grupo " + zzGrupoGlobal + " teve " + qntItens + " itens e pode utilizar os brindes");
 			return "OK";
 		},
 		

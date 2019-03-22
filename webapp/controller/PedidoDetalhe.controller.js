@@ -2698,8 +2698,6 @@ sap.ui.define([
 			if (this.pedidoDetalheEnxoval) {
 				this.pedidoDetalhePrazoMedio.onChecarRangeCmpPrzMed();
 			}
-			
-			
 		},
 		/* calculaTotalPedido */
 
