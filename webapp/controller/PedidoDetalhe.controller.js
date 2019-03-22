@@ -6,7 +6,8 @@ sap.ui.define([
 	"testeui5/model/formatter",
 	"testeui5/controller/PedidoDetalheEnxoval.controller",
 	"testeui5/controller/PedidoDetalheBrindes.controller",
-	"testeui5/controller/PedidoDetalhePrazoMedio.controller"
+	"testeui5/controller/PedidoDetalhePrazoMedio.controller",
+	"testeui5/controller/PedidoDetalheGlobal.controller"
 
 ], function(BaseController, JSONModel, MessageBox, formatter) {
 	"use strict";
@@ -29,7 +30,7 @@ sap.ui.define([
 			this.pedidoDetalheBrindes = new testeui5.controller.PedidoDetalheBrindes(that);
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
 			this.pedidoDetalhePrazoMedio = new testeui5.controller.PedidoDetalhePrazoMedio(that);
-			// this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
+			this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
 
 			that.oItemTemplate = [];
 			that.oVetorMateriais = [];
@@ -1055,39 +1056,18 @@ sap.ui.define([
 							});
 
 						} else {
-
-							that.oItemPedido.zzQnt = 1;
+							//inicialização do Obg oItemPedido. Irá colocar todas as propriedades com o valor inicial delas
+							that.onInicializaItem(that.oItemPedido);
+							
 							that.oItemPedido.matnr = oMaterial.matnr;
 							that.oItemPedido.pathImg = "./img/materiais/" + oMaterial.matnr + ".jpg";
 							that.oItemPedido.maktx = oMaterial.maktx;
 							that.oItemPedido.ntgew = parseFloat(oMaterial.ntgew);
 							that.oItemPedido.aumng = parseInt(oMaterial.aumng, 10);
+							that.oItemPedido.mtpos = oMaterial.mtpos;
 							//TRITIS - Produto que não aceita desconto de 5%
 							that.oItemPedido.extwg = oMaterial.extwg;
-							that.oItemPedido.zzValExcedidoItem = 0;
-							that.oItemPedido.kbetr = 0;
-							that.oItemPedido.maxdescpermitido = 0;
-							that.oItemPedido.maxdescpermitidoExtra = 0;
-							that.oItemPedido.mtpos = oMaterial.mtpos;
-							that.oItemPedido.knumh = 0;
-							that.oItemPedido.zzRegra = 0;
-							that.oItemPedido.zzGrpmat = 0;
-							that.oItemPedido.knumhExtra = 0;
-							that.oItemPedido.zzRegraExtra = 0;
-							that.oItemPedido.zzGrpmatExtra = 0;
-							that.oItemPedido.tipoItem = "Normal";
-							that.oItemPedido.tipoItem2 = "Normal";
-							that.oItemPedido.zzQntDiluicao = 0;
-							that.oItemPedido.zzValorDiluido = 0;
-							that.oItemPedido.zzPercDescDiluicao = 0;
-							that.oItemPedido.zzVprodABB = 0;
-
-							//Controle de amostra para não gerar excedente.
-							that.oItemPedido.zzQntAmostra = 0;
-
-							//VALOR DO ITEM QUE VAI SER DILUIDO , PARA JOGAR O VALOR DIRETAMENTE NO ITEM.
-							that.oItemPedido.zzValorDiluido = 0;
-
+							
 							if (tipoPedido == "YBON" || tipoPedido == "YTRO" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBRI") {
 								sap.ui.getCore().byId("idDesconto").setEnabled(false);
 							} else {
@@ -1188,16 +1168,7 @@ sap.ui.define([
 											that.oItemPedido.zzVprod = oA960.zzVprod;
 										}
 									}
-
-									that.oItemPedido.knumh = 0; //Desconto familia
-									that.oItemPedido.zzDesext = 0;
-									that.oItemPedido.zzDesitem = 0;
-									that.oItemPedido.zzVprodMinPermitido = 0;
-									//De inicio atribuir zzVprodDesc COM O VALOR CHEIO. DAI DIRECIONAR PARA O DESCONTO DE DILUIÇÃO
-									that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
-									//De inicio atribuir zzVprodDesc2 COM O VALOR CHEIO. DAI DIRECIONAR PARA O DESCONTO DE NORMAL
-									that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
-
+									
 									var vetorAuxFamilias = [];
 									var vetorAuxFamiliasExtra = [];
 									//Buscando informações da FAMILIA de desconto normal
@@ -1893,6 +1864,53 @@ sap.ui.define([
 					}
 				};
 			};
+		},
+		
+		onInicializaItem: function(oitem){
+			oitem.aumng = 0;
+			oitem.extwg = "";
+			oitem.idItemPedido = "";
+			oitem.index = 1;
+			oitem.kbetr = 0;
+			oitem.knumh = 0;
+			oitem.knumhExtra = 0;
+			oitem.maktx = "";
+			oitem.matnr = "";
+			oitem.maxdescpermitido = 0;
+			oitem.maxdescpermitidoExtra = 0;
+			oitem.mtpos = "";
+			oitem.nrPedCli = "203453.20190318.110634";
+			oitem.ntgew = 0;
+			oitem.pathImg = "";
+			oitem.tipoItem = "Normal";
+			oitem.tipoItem2 = "Normal";
+			oitem.zzAtingiuCmpGlobal = 0;
+			oitem.zzDesext = 0;
+			oitem.zzDesitem = 0;
+			oitem.zzGrpmat = 0;
+			oitem.zzGrpmatExtra = 0;
+			oitem.zzGrupoGlobal = 0;
+			oitem.zzPercDescDiluicao = 0;
+			oitem.zzPercDescTotal = 0;
+			oitem.zzPercom = 0;
+			oitem.zzPervm = 0;
+			oitem.zzQnt = 1;
+			oitem.zzQntAmostra = 0;
+			oitem.zzQntCpBrinde = 0;
+			oitem.zzQntDiluicao = 0;
+			oitem.zzQntRegraGb = 0;
+			oitem.zzRegra = 0;
+			oitem.zzRegraExtra = 0;
+			oitem.zzUtilCampGlobal = "Não";
+			oitem.zzValExcedidoItem = 0;
+			oitem.zzValorDiluido = 0;
+			oitem.zzVprod = 12;
+			oitem.zzVprodABB = 0;
+			oitem.zzVprodDesc = 0;
+			oitem.zzVprodDesc2 = 0;
+			oitem.zzVprodDescTotal = 0;
+			oitem.zzVprodMinPermitido = 0;
+			
 		},
 
 		onFocusQnt: function() {
@@ -3879,6 +3897,7 @@ sap.ui.define([
 			var aux = [];
 			var indexEdit = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem");
 			var tipoPedido = this.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoPedido");
+			that.retornoCmpGlobal = ""; 
 
 			for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
 				if (that.oItemPedido.matnr == that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem == "Normal" && (indexEdit == undefined || indexEdit == 0 || indexEdit == "")) {
@@ -3992,79 +4011,123 @@ sap.ui.define([
 					open.onsuccess = function() {
 						var db = open.result;
 						
-						console.error("Campanha Global");
-						//Campanha Global 
-						//o If exclui se o item que vai ser inserido não é brinde.
-						if(that.oItemPedido.mtpos != "YBRI"){
-							
-							//-> Verifica qual é o grupo e a quantidade permitida que se estiver cadastrado na campanha Global.
-							//Senão estiver cadastrado a quantidade e o id e quantidade será 0.
-							//Promise criada para carregar primeiro os dados para validar a regra da campanha depois.
-							new Promise(function(resolveTopo, rejectTopo){
-								
-								that.onValidarItensCampanhaGlobal(db, that.oItemPedido, resolveTopo, rejectTopo);
-								
-							}).then(function(){
-								
-								that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
-								
-							}).catch(function(){
-								
-								//Matnr: X não possui Grupo Cmp Global.
-								
-								that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
-								
-							});
-						} else{
-							//Verifica se o item de brinde faz parte da Campanha Global. Se fizer parte o kra não pode add ele sem atender a campanha.
-							//1º - Verificar se o item de brinde pertence a campanha. 
-							//2º - Se Sim. - Verificar se a quantidade atende pra inserir este item, agrupando pelo ID da Camp Global.
-								//- Se atender inserir e validar a quantidade digitada somando todos os brindes do mesmo id de Cmp Global 
-								//- Se ultrapassar validar quantidade permitida. 
-							//3º - Senão deixa inserir normalmente.
-							new Promise(function(res, rej){
-								
-								that.onCheckBrindeCampanhaGlobal(db, that.oItemPedido, res, rej);
-								
-							}).then(function(){
-								
-								//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
-								that.oItemPedido.zzUtilCampGlobal = "Sim";
-								that.oItemPedido.zzAtingiuCmpGlobal = 0;
-								
-								that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
-								
-							}).catch(function(mensagemCmpGlobal){
-								
-								that.oItemPedido.zzGrupoGlobal = 0;
-								that.oItemPedido.zzQntRegraGb = 0;
-								that.oItemPedido.zzAtingiuCmpGlobal = 0;
-								
-								//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
-								that.oItemPedido.zzUtilCampGlobal = "Não";
-								
-								if(mensagemCmpGlobal == "Pode inserir normalmente"){
-									
-									that.onAddItemVetor(db, oPanel, indexEdit, nrPedCli, oButtonSalvar);
-									
-								} else{
-									
-									MessageBox.show(mensagemCmpGlobal, {
-										icon: MessageBox.Icon.ERROR,
-										title: "Brinde inválido.",
-										actions: [MessageBox.Action.YES],
-										onClose: function() {
-											// that.onResetaCamposDialog();
-											// sap.ui.getCore().byId("idItemPedido").setValue();
-											sap.ui.getCore().byId("idQuantidade").focus();
-											oPanel.setBusy(false);
-											oButtonSalvar.setEnabled(true);
-											
+						var store = db.transaction("Materiais", "readwrite");
+						var objMaterial = store.objectStore("Materiais");
+
+						var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
+
+						requestMaterial.onsuccess = function(e) {
+							var oMaterial = e.target.result;
+
+							if (oMaterial == undefined) {
+								oPanel.setBusy(false);
+
+								MessageBox.show("Não existe o produto: " + sap.ui.getCore().byId("idItemPedido").getValue(), {
+									icon: MessageBox.Icon.ERROR,
+									title: "Produto não encontrado.",
+									actions: [MessageBox.Action.YES],
+									onClose: function() {
+										that.onResetaCamposDialog();
+										sap.ui.getCore().byId("idItemPedido").focus();
+										oButtonSalvar.setEnabled(true);
+									}
+								});
+
+							} else {
+
+								var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
+								var objItensPedido = storeItensPedido.objectStore("ItensPedido");
+
+								// indexEdit inicia com 0, só é populado quando clica para editar 1 item. Senão sempre vai adicionar novo item
+								var request = objItensPedido.get(indexEdit);
+
+								request.onsuccess = function(e3) {
+
+									var result2 = e3.target.result;
+									//preparar o obj a ser adicionado ou editado
+									if (result2 == undefined) {
+
+										that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoindexItem", nrPedCli + "/" + (that.indexItem));
+										that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoindexItem");
+										that.oItemPedido.index = that.indexItem;
+										that.oItemPedido.nrPedCli = nrPedCli;
+
+									} else {
+										//OBJ ENCONTRADO NO BANCO... ATUALIZA ELE.
+										that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem");
+									}
+
+									var pAtualizarItem = new Promise(function(resII, rejII) {
+										if (that.oItemPedido.mtpos == "YAMO") {
+											that.onConsumirSaldoAmostra(db, that.oItemPedido, resII, rejII, that.oItemPedido.zzQnt);
+										} else {
+											resII();
 										}
 									});
-								}
-							});
-						}
+
+									pAtualizarItem.then(function() {
+										
+										console.error("Inicio Cmp Global");
+										if(that.oItemPedido.mtpos != "YBRI"){
+											
+											new Promise(function(resolveTopo, rejectTopo){
+								
+												that.pedidoDetalheGlobal.onValidarItensCampanhaGlobal(db, that.oItemPedido, resolveTopo, rejectTopo);
+										
+											}).then(function(){
+												
+												 that.retornoCmpGlobal = that.pedidoDetalheGlobal.onAgrupaItensGlobal(that.retornoCmpGlobal);
+												 
+												 if(that.retornoCmpGlobal == "OK"){
+													that.onAddItemVetor(db, indexEdit, oButtonSalvar);
+												 } else{
+												 	oButtonSalvar.setEnabled(true);
+													return;
+												 }
+												
+											});
+											
+										} else{
+											
+											new Promise(function(res, rej){
+												
+												that.pedidoDetalheGlobal.onCheckBrindeCampanhaGlobal(db, that.oItemPedido, res, rej);
+												
+											}).then(function(retornoCmpGlobal){
+												
+												if(retornoCmpGlobal == "OK"){
+													that.onAddItemVetor(db, indexEdit, oButtonSalvar);
+												} else{
+												 	oButtonSalvar.setEnabled(true);
+													return;
+												}
+												
+											}).catch(function(mensagemCmpGlobal){
+												
+												MessageBox.show(mensagemCmpGlobal, {
+													icon: MessageBox.Icon.ERROR,
+													title: "Brinde inválido.",
+													actions: [MessageBox.Action.YES],
+													onClose: function() {
+														// that.onResetaCamposDialog();
+														// sap.ui.getCore().byId("idItemPedido").setValue();
+														sap.ui.getCore().byId("idQuantidade").focus();
+														oPanel.setBusy(false);
+														oButtonSalvar.setEnabled(true);
+														
+													}
+												});
+											});
+										}
+										
+									}).catch(function() {
+										oButtonSalvar.setEnabled(true);
+
+										return;
+									});
+								};
+							}
+						};
 						
 						console.error("Fim Campanha Global");
 						
@@ -4085,235 +4148,179 @@ sap.ui.define([
 			}
 		},
 		
-		onAddItemVetor: function(db, oPanel, indexEdit, nrPedCli, oButtonSalvar){
+		// onAddItemVetor: function(db, oPanel, indexEdit, nrPedCli, oButtonSalvar){
+		// 	var that = this;
+		// 	var store = db.transaction("Materiais", "readwrite");
+		// 	var objMaterial = store.objectStore("Materiais");
+	
+		// 	var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
+	
+		// 	requestMaterial.onsuccess = function(e) {
+		// 		var oMaterial = e.target.result;
+	
+		// 		if (oMaterial == undefined) {
+		// 			oPanel.setBusy(false);
+	
+		// 			MessageBox.show("Não existe o produto: " + sap.ui.getCore().byId("idItemPedido").getValue(), {
+		// 				icon: MessageBox.Icon.ERROR,
+		// 				title: "Produto não encontrado.",
+		// 				actions: [MessageBox.Action.YES],
+		// 				onClose: function() {
+		// 					that.onResetaCamposDialog();
+		// 					sap.ui.getCore().byId("idItemPedido").focus();
+		// 					oButtonSalvar.setEnabled(true);
+		// 				}
+		// 			});
+	
+		// 		} else {
+	
+		// 			var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
+		// 			var objItensPedido = storeItensPedido.objectStore("ItensPedido");
+	
+		// 			// indexEdit inicia com 0, só é populado quando clica para editar 1 item. Senão sempre vai adicionar novo item
+		// 			var request = objItensPedido.get(indexEdit);
+	
+		// 			request.onsuccess = function(e3) {
+	
+		// 				var result2 = e3.target.result;
+						
+		// 				//preparar o obj a ser adicionado ou editado
+		// 				if (result2 == undefined) {
+	
+		// 					that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoindexItem", nrPedCli + "/" + (that.indexItem));
+		// 					that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoindexItem");
+		// 					that.oItemPedido.index = that.indexItem;
+		// 					that.oItemPedido.nrPedCli = nrPedCli;
+	
+		// 				} else {
+		// 					//OBJ ENCONTRADO NO BANCO... ATUALIZA ELE.
+		// 					that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem");
+		// 				}
+	
+		// 				var pAtualizarItem = new Promise(function(resII, rejII) {
+		// 					if (that.oItemPedido.mtpos == "YAMO") {
+		// 						that.onConsumirSaldoAmostra(db, that.oItemPedido, resII, rejII, that.oItemPedido.zzQnt);
+		// 					} else {
+		// 						resII();
+		// 					}
+		// 				});
+	
+		// 				pAtualizarItem.then(function() {
+		// 					/* Se for inserção */
+		// 					if (result2 == undefined) {
+		// 						that.objItensPedidoTemplate.push(that.oItemPedido);
+		// 						console.log("Item: " + that.oItemPedido.index + " adicionado com sucesso");
+
+		// 					} else {
+		// 						for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
+		// 							if (that.objItensPedidoTemplate[j].idItemPedido === that.oItemPedido.idItemPedido) {
+		// 								that.objItensPedidoTemplate[j] = that.oItemPedido;
+		// 							}
+		// 						}
+		// 						console.log("Item: " + that.oItemPedido.index + " foi Atualizado");
+		// 					}
+							
+		// 					//2º Campanha Global após todas as inserções realizadas
+		// 					//Promise para agrupar os itens e identificar se possui grupo de familia e o range de quantidade.
+		// 					new Promise(function(res, rej){
+								
+		// 						that.onAgrupaItensGlobal(res, rej, that);
+								
+		// 					}).then(function(){
+								
+		// 						storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
+		// 						objItensPedido = storeItensPedido.objectStore("ItensPedido");
+								
+		// 						var requestPutItens = objItensPedido.put(that.oItemPedido);
+								
+		// 						requestPutItens.onsuccess = function() {
+									
+		// 							that.setaCompleto(db, "Não");
+		// 							that.calculaTotalPedido();
+		// 							that.onAtualizaTodosItensPedido(db);
+		// 							that.oItemTemplate = [];
+		
+		// 							if (that._ItemDialog) {
+		// 								that._ItemDialog.destroy(true);
+		// 							}
+									
+		// 							oButtonSalvar.setEnabled(true);
+		// 							that.getOwnerComponent().getModel("modelAux").setProperty("/EditarindexItem", 0);
+		
+		// 							var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
+		// 							that.getView().setModel(oModel, "ItensPedidoGrid");
+		// 							that.onBloqueiaPrePedido();
+		// 						};
+								
+		// 						requestPutItens.onerror = function(event) {
+		// 							console.log(" Dados itensPedido não foram inseridos");
+		
+		// 							oButtonSalvar.setEnabled(true);
+		
+		// 							if (that._ItemDialog) {
+		// 								that._ItemDialog.destroy(true);
+		// 							}
+		// 					};
+							
+		// 					}).catch(function() {
+								
+		// 						oButtonSalvar.setEnabled(true);
+		// 						return;
+		// 					});
+		// 				});
+		// 			};
+		// 		}
+		// 	};
+		// },
+		
+		onAddItemVetor: function(db, indexEdit, oButtonSalvar){
 			var that = this;
-			var store = db.transaction("Materiais", "readwrite");
-			var objMaterial = store.objectStore("Materiais");
-	
-			var requestMaterial = objMaterial.get(sap.ui.getCore().byId("idItemPedido").getValue());
-	
-			requestMaterial.onsuccess = function(e) {
-				var oMaterial = e.target.result;
-	
-				if (oMaterial == undefined) {
-					oPanel.setBusy(false);
-	
-					MessageBox.show("Não existe o produto: " + sap.ui.getCore().byId("idItemPedido").getValue(), {
-						icon: MessageBox.Icon.ERROR,
-						title: "Produto não encontrado.",
-						actions: [MessageBox.Action.YES],
-						onClose: function() {
-							that.onResetaCamposDialog();
-							sap.ui.getCore().byId("idItemPedido").focus();
-							oButtonSalvar.setEnabled(true);
-						}
-					});
+			
+			var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
+			var objItensPedido = storeItensPedido.objectStore("ItensPedido");
+
+			// indexEdit inicia com 0, só é populado quando clica para editar 1 item. Senão sempre vai adicionar novo item
+			var request = objItensPedido.get(indexEdit);
+
+			request.onsuccess = function(e3) {
+
+				var result2 = e3.target.result;
+				
+				/* Se for inserção */
+				if (result2 == undefined) {
+					that.objItensPedidoTemplate.push(that.oItemPedido);
+					console.log("Item: " + that.oItemPedido.index + " adicionado com sucesso");
 	
 				} else {
-	
-					var storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
-					var objItensPedido = storeItensPedido.objectStore("ItensPedido");
-	
-					// indexEdit inicia com 0, só é populado quando clica para editar 1 item. Senão sempre vai adicionar novo item
-					var request = objItensPedido.get(indexEdit);
-	
-					request.onsuccess = function(e3) {
-	
-						var result2 = e3.target.result;
-						
-						//preparar o obj a ser adicionado ou editado
-						if (result2 == undefined) {
-	
-							that.getOwnerComponent().getModel("modelAux").setProperty("/UltimoindexItem", nrPedCli + "/" + (that.indexItem));
-							that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/UltimoindexItem");
-							that.oItemPedido.index = that.indexItem;
-							that.oItemPedido.nrPedCli = nrPedCli;
-	
-						} else {
-							//OBJ ENCONTRADO NO BANCO... ATUALIZA ELE.
-							that.oItemPedido.idItemPedido = that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem");
+					for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
+						if (that.objItensPedidoTemplate[j].idItemPedido === that.oItemPedido.idItemPedido) {
+							that.objItensPedidoTemplate[j] = that.oItemPedido;
 						}
-	
-						var pAtualizarItem = new Promise(function(resII, rejII) {
-							if (that.oItemPedido.mtpos == "YAMO") {
-								that.onConsumirSaldoAmostra(db, that.oItemPedido, resII, rejII, that.oItemPedido.zzQnt);
-							} else {
-								resII();
-							}
-						});
-	
-						pAtualizarItem.then(function() {
-							/* Se for inserção */
-							if (result2 == undefined) {
-								that.objItensPedidoTemplate.push(that.oItemPedido);
-								console.log("Item: " + that.oItemPedido.index + " adicionado com sucesso");
-
-							} else {
-								for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
-									if (that.objItensPedidoTemplate[j].idItemPedido === that.oItemPedido.idItemPedido) {
-										that.objItensPedidoTemplate[j] = that.oItemPedido;
-									}
-								}
-								console.log("Item: " + that.oItemPedido.index + " foi Atualizado");
-							}
-							
-							//2º Campanha Global após todas as inserções realizadas
-							//Promise para agrupar os itens e identificar se possui grupo de familia e o range de quantidade.
-							new Promise(function(res, rej){
-								
-								that.onAgrupaItensGlobal(res, rej, that);
-								
-							}).then(function(){
-								
-								storeItensPedido = db.transaction(["ItensPedido"], "readwrite");
-								objItensPedido = storeItensPedido.objectStore("ItensPedido");
-								
-								var requestPutItens = objItensPedido.put(that.oItemPedido);
-								
-								requestPutItens.onsuccess = function() {
-									
-									that.setaCompleto(db, "Não");
-									that.calculaTotalPedido();
-									that.onAtualizaTodosItensPedido(db);
-									that.oItemTemplate = [];
-		
-									if (that._ItemDialog) {
-										that._ItemDialog.destroy(true);
-									}
-									
-									oButtonSalvar.setEnabled(true);
-									that.getOwnerComponent().getModel("modelAux").setProperty("/EditarindexItem", 0);
-		
-									var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
-									that.getView().setModel(oModel, "ItensPedidoGrid");
-									that.onBloqueiaPrePedido();
-								};
-								
-								requestPutItens.onerror = function(event) {
-									console.log(" Dados itensPedido não foram inseridos");
-		
-									oButtonSalvar.setEnabled(true);
-		
-									if (that._ItemDialog) {
-										that._ItemDialog.destroy(true);
-									}
-							};
-							
-							}).catch(function() {
-								
-								oButtonSalvar.setEnabled(true);
-								return;
-							});
-						});
-					};
+					}
+					console.log("Item: " + that.oItemPedido.index + " foi Atualizado");
 				}
+				
+				var requestPutItens = objItensPedido.put(that.oItemPedido);
+				requestPutItens.onsuccess = function() {
+					
+					that.setaCompleto(db, "Não");
+					that.calculaTotalPedido();
+					that.oItemTemplate = [];
+
+					if (that._ItemDialog) {
+						that._ItemDialog.destroy(true);
+					}
+
+					oButtonSalvar.setEnabled(true);
+					that.getOwnerComponent().getModel("modelAux").setProperty("/EditarindexItem", 0);
+
+					var oModel = new sap.ui.model.json.JSONModel(that.objItensPedidoTemplate);
+					that.getView().setModel(oModel, "ItensPedidoGrid");
+					that.onBloqueiaPrePedido();
+				};
 			};
 		},
 		
-		onCheckBrindeCampanhaGlobal: function(db, oItemPedido, res, rej){
-			var that = this;
-			var oPanel = sap.ui.getCore().byId("idDialog");
-			//Armazena quantas vezes os brindes podem ser usados
-			var qntRangeProdutos = 0;
-			var totalItensPermitidos = 0;
-			var mensagemCmpGlobal = "";
-			var qntTotalItensJaInseridos = 0;
-			
-			var objStore = db.transaction("CmpGbItensBrindes", "readwrite");
-			var objCmpGbItensBrindes = objStore.objectStore("CmpGbItensBrindes");
-			var indexItensBrindes = objCmpGbItensBrindes.index("material");
-			
-			var requestIndexItensBrindes = indexItensBrindes.get(oItemPedido.matnr);
-			
-			requestIndexItensBrindes.onsuccess = function(e) {
-				var oBrinde = e.target.result;
-				
-				//Esse if verifica se o brinde inserido está contido em campanha.
-				//Produto encontrado na lista dos brinde. Pode inserir apenas se atender a quantidade de itens para ativar a promoção. Senão 
-				//1º Agrupar os brindes de acordo com o id da campanha.
-				//2º Verificar se atingiu a quantidade de acordo com o grupo da campanha.
-				//3º Verificar se a quantidade digitada ultrapassa o limite permitido de brinde.
-				
-				if (oBrinde == undefined) {
-					
-					//Pode inserir normalmente o item de brinde, gerando excedente de brinde.
-					mensagemCmpGlobal = "Pode inserir normalmente";
-					rej(mensagemCmpGlobal);
-					
-				} else{
-					
-					//Encontrou o brinde na campanha Global. Agora tem que verificar se o item atinge a quantidade para utilizar os brindes.
-					//Depois verificar se a quantidade digitada ultrapassa o limite permitido do item.
-					oPanel.setBusy(false);
-					
-					//Parâmetro para verificar qual o grupo que o brinde pertence.
-					oItemPedido.zzGrupoGlobal = oBrinde.grupo;
-					
-					var objStoreBrindeCmpGlobal = db.transaction("CmpGbQtdItens", "readwrite");
-					var objCmpGbQtdItens = objStoreBrindeCmpGlobal.objectStore("CmpGbQtdItens");
-					var indexCmpGbQtdItens = objCmpGbQtdItens.index("grupo");
-					
-					var requestCmpGbQtdItens = indexCmpGbQtdItens.get(oItemPedido.zzGrupoGlobal);
-					
-					requestCmpGbQtdItens.onsuccess = function(e) {
-						var oBrindeRange = e.target.result;
-						
-						if(!oBrindeRange){
-							mensagemCmpGlobal = "Cadastro do range de brindes não cadastrado para a Campanha Global.";
-							rej(mensagemCmpGlobal);
-						}
-						
-						//Quantidade de range permitido para o brinde. 
-						oItemPedido.zzQntRegraGb = oBrindeRange.quantidade;
-						
-						//Insere o item corrente para contabilizar a somatoria dos itens de brindes digitada por ID campanha global. se for == 0 sinal que é item novo,
-						// e item novo não está contido no vetor objItensPedidoTemplate
-						if(that.getOwnerComponent().getModel("modelAux").getProperty("/EditarindexItem") == 0){
-							qntTotalItensJaInseridos = oItemPedido.zzQnt;
-						}
-						
-						//Verifica a quantidade de brindes que pode utilizar de acordo com a quantidade normais de itens inseridos.
-						//Somar todas as quantidades de brindes já inseridos daquele id de campanha global. Mais a quantidade do item corrente (que está sendo inserido).
-						for(var i=0; i<that.objItensPedidoTemplate.length; i++){
-							if(that.objItensPedidoTemplate[i].zzGrupoGlobal == oItemPedido.zzGrupoGlobal){
-								//Consultar quantas vezes esse id atingiu a quantidade para utilizar a campanha.
-								//EX: zzAtingiuCmpGlobal = 2. Significa que atingiu 2 x 20 unidades. Então ele pode inserir 2x o combo de brindes.
-								if(that.objItensPedidoTemplate[i].zzAtingiuCmpGlobal){
-									
-									qntRangeProdutos = that.objItensPedidoTemplate[i].zzAtingiuCmpGlobal;
-								}
-								//Contabiliza a quantidade de itens de brinde já inseridos com o id da campanha corrente do item que está sendo editado/novo.
-								if(that.objItensPedidoTemplate[i].mtpos == "YBRI"){
-									qntTotalItensJaInseridos += that.objItensPedidoTemplate[i].zzQnt;
-								}
-							}
-						}
-						
-						//Não atingiu a quantidade de itens necessarios.
-						if(qntRangeProdutos == 0){
-							mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + totalItensPermitidos;
-							rej(mensagemCmpGlobal);
-						}
-						
-						// Valor total permitido inserir de itens de brindes.
-						totalItensPermitidos = oItemPedido.zzQntRegraGb * qntRangeProdutos;
-						
-						//O kra digitou uma quantidade maior que o permitido. Barrar e gerar uma mensagem pra ele.
-						
-						if(totalItensPermitidos < qntTotalItensJaInseridos){
-							//Ultrapassou a quantidade permitida de itens
-							mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + totalItensPermitidos + ". Quantidade de itens já inseridos: " + qntTotalItensJaInseridos;
-							rej(mensagemCmpGlobal);
-							
-						} else{
-							//Atendeu todas as expectativas e consegue usar a quantidade.
-							res();
-						}
-					};
-				}
-			};
-		},
-
 		onDialogDiluicaoSubmitButton: function() {
 
 			var that = this;
@@ -5779,358 +5786,7 @@ sap.ui.define([
 					res4(oAmostras);
 				});
 			});
-		},
+		}
 		/* onGetSaldoAmostra */
-
-		/* Campanha Global Primeiro método */
-		//Esse metodo carrega todas as informações da campanha global e inseri no item para ser usado depois.
-		onValidarItensCampanhaGlobal: function(db, ItemPedido, resolveTopo, rejectTopo) {
-			var that = this;
-			var proximoItemDiferente = false;
-			var vetorItemAux = [];
-
-			new Promise(function(resolve, reject) {
-				/* Busca o grupo da camp global do item selecionado */
-				that.onBuscaGrupoCmpGlobal(db, ItemPedido, resolve, reject);
-				
-			}).then(function() {
-				
-				//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
-				ItemPedido.zzUtilCampGlobal = "Não";
-				
-				//Verifica a quantidade de itens que tem que ser vendidos para entrar na campanha
-				that.onVerifQuantCmpGlobal(db, ItemPedido, resolveTopo, rejectTopo);
-
-			}).catch(function(Matnr) {
-				/* Não achou grupo do material para campanha Global */
-				ItemPedido.zzQntRegraGb = 0;
-				ItemPedido.zzGrupoGlobal = 0;
-				ItemPedido.zzAtingiuCmpGlobal = 0;
-				
-				//Variavel pra identificar se o item participa da campanha Global. (Não e Sim)
-				ItemPedido.zzUtilCampGlobal = "Não";
-				
-				console.log("Matnr: " + Matnr + " não possui Grupo Cmp Global.");
-				rejectTopo();
-			});
-		},
-		/* Fim Campanha Global Primeiro método */
-		
-		//Busca em qual grupo da campanha Global o item pertence.
-		onBuscaGrupoCmpGlobal: function(db, ItemPedido, resolve, reject) {
-
-			//Verifica se o item item grupo de Campanha Global para ser Agrupado. Senão tiver zzGrupoGlobal = 0;
-			var transaction = db.transaction("CmpGbGrpProdsAcabs", "readonly");
-			var objectStoreMaterial = transaction.objectStore("CmpGbGrpProdsAcabs");
-
-			var indexMatnr = objectStoreMaterial.index("material");
-
-			var request = indexMatnr.get(ItemPedido.matnr);
-
-			request.onsuccess = function(event) {
-
-				var result = event.target.result;
-
-				if (result != undefined && result != null) {
-
-					console.log("Matnr: " + result.material + ", Grupo: " + result.grupo);
-					ItemPedido.zzGrupoGlobal = result.grupo;
-					resolve(ItemPedido);
-					
-				} else {
-					//Se não achar o item cadastrado na camp global, setar o id do grupo e a quantidade de range como 0.
-					//no catch da promise
-					reject(ItemPedido.matnr);
-
-				}
-			};
-		},
-
-		//Quantidade que este grupo deve vender na Camp Global.
-		onVerifQuantCmpGlobal: function(db, ItemPedido, resolveTopo, rejectTopo) {
-			
-			var transaction = db.transaction("CmpGbProdsAcabs", "readonly");
-			var objectStore = transaction.objectStore("CmpGbProdsAcabs");
-			var indexGrupo = objectStore.index("grupo");
-
-			var request = indexGrupo.get(ItemPedido.zzGrupoGlobal);
-
-			request.onsuccess = function(event) {
-
-				var result = event.target.result;
-
-				if (result != undefined && result != null) {
-
-					//zzQntRegraGb vai ser a variavel para identificar a quantidade que o kra tem que comprar 
-					//pra ativar a bonificação
-					console.log("Material: " + ItemPedido.matnr + ", Qtd: " + parseFloat(result.quantidade));
-					ItemPedido.zzQntRegraGb = parseFloat(result.quantidade);
-					resolveTopo();
-
-				} else {
-
-					// Quando não tem range para ativar campanha. (Quantidade necessaria para ativar Campanha Global)
-					MessageBox.show("Falta o cadastro na tabela de ranges para o material " + ItemPedido.matnr + " para utilizar na campanha Global.", {
-						icon: MessageBox.Icon.ERROR,
-						title: "Entre em contato com a TI da VB!",
-						actions: [MessageBox.Action.OK]
-					});
-					//Se o valor estiver zerado ou pq não tem cadastro realizado pra este produto ou não faz parte da regra de campanha.
-					ItemPedido.zzQntRegraGb = 0;
-					rejectTopo();
-				}
-			};
-		},
-		
-		//Agrupa os itens da campanha pelo grupo e verifica se atingiu a regra para ver a quantidade de bonificação
-		// que o kra pode inserir com o Brinde.
-		onAgrupaItensGlobal: function(res, rej, that) {
-			var proximoItemDiferente = false;
-			var vetorGrpFamilia = [];
-			var vetorAuxItensPedido = [];
-			var retorno = "";
-			//Pra tratar quando o kra insere apenas itens de amostra e brindes.
-			//Faz com que insere o item sem cair na verificação de id de grupo global.
-			var existeBRI = true;
-			
-			for (var i = 0; i<that.objItensPedidoTemplate.length; i++) {
-				if(that.objItensPedidoTemplate[i].mtpos != "YBRI" && that.objItensPedidoTemplate[i].mtpos != "YAMO"){
-					existeBRI = false;
-				}
-			}
-			
-			if(existeBRI){
-				res();
-			}
-			
-			for (var i = 0; i<that.objItensPedidoTemplate.length; i++) {
-				var aux = [];
-				
-				if(that.objItensPedidoTemplate[i].mtpos != "YBRI" && that.objItensPedidoTemplate[i].mtpos != "YAMO"){
-					aux = that.objItensPedidoTemplate[i];
-					vetorAuxItensPedido.push(aux);
-				}
-			}
-			
-			//Ordenando para desconto Familia normal. Utiliza vetor global de itens (objItensPedidoTemplate).
-			vetorAuxItensPedido.sort(function(a, b) {
-				return a.zzGrupoGlobal - b.zzGrupoGlobal;
-			});
-			
-			/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
-			for (var i = 0; i<vetorAuxItensPedido.length; i++) {
-				
-				if (proximoItemDiferente == true) {
-					proximoItemDiferente = false;
-					vetorGrpFamilia = [];
-				}
-				
-				if (vetorGrpFamilia.length == 0 && vetorAuxItensPedido.length == 1 && vetorAuxItensPedido[i].tipoItem != "Diluido") {
-					
-					//o vetor de itens tem um unico item. nesse caso já tenho que verificar 
-					//se já atingiu a quantidade para utilizar os brindes.
-					
-					vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-					retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
-					
-				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
-					
-					if (vetorAuxItensPedido[i].zzGrupoGlobal == vetorAuxItensPedido[i + 1].zzGrupoGlobal) {
-						
-						proximoItemDiferente = false;
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						
-					} else {
-						//Nesse momento tenho os itens da mesma familia.. tendo os itens da familia .. somar as quantidades
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
-						proximoItemDiferente = true;
-					}
-					
-				} else if ((i + 1) == vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
-					
-					//sinal proximoItemDiferente = true e limpou
-					if (vetorGrpFamilia.length > 0) {
-						
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
-						
-					} else {
-						//ultimo item e é diferente do antepenultimo
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
-					}
-				}
-			}
-			
-			if(retorno == "OK"){
-				res();
-			}else {
-				rej();
-			}
-		},
-		
-		//Verifica quantas vezes vai poder utilizar o range dos brindes, Rotina executada antes da inserção do item no total dos itens.
-		onCheckQuantidadeGlobal: function(vetorGrpFamilia, that){
-			// var that = this;
-			var qntItens = 0;
-			var valorRange = 0;
-			var zzGrupoGlobal = "";
-			//variável que grava quantas vezes o kra pode usar o range de brindes.
-			//Ex: se o range a ser atingido for 20 itens para usar os brindes e a quantidade digita do produto for 40.
-			// essa variavel irá armazenar 2. (Quantidade atingida a ser utilizada).
-			var qntParaUtilizar = 0;
-			
-			for(var i=0; i<vetorGrpFamilia.length; i++){
-				
-				qntItens += vetorGrpFamilia[i].zzQnt;
-				valorRange = vetorGrpFamilia[i].zzQntRegraGb;
-				zzGrupoGlobal = vetorGrpFamilia[i].zzGrupoGlobal;
-				
-			}
-			
-			if(qntItens >= valorRange && valorRange > 0){
-				
-				qntParaUtilizar = parseInt(qntItens/valorRange, 10);
-				
-			} else {
-				
-				qntParaUtilizar = 0;
-			}
-				
-			for(i=0; i<vetorGrpFamilia.length; i++){
-				for(var j=0; j<that.objItensPedidoTemplate.length; j++){
-					if(vetorGrpFamilia[i].matnr == that.objItensPedidoTemplate[j].matnr){
-						that.objItensPedidoTemplate[j].zzAtingiuCmpGlobal = qntParaUtilizar;
-					}
-				}
-			}
-			
-			console.log("O grupo " + zzGrupoGlobal + " teve " + qntItens + " itens e pode utilizar " + qntParaUtilizar + "x os brindes.");
-			return "OK";
-		},
-		
-		//Vetor por grupo de campanha global
-		onValidaItensCampGlobal: function(vetorGrpFamilia, that){
-			// var that = this;
-			var vetorBrindesGlobais = [];
-			var totalItens = 0;
-			var totalItensBrinde = 0;
-			var resultQuant = 0;
-			var valorRangeProd = 0;
-			var valorRangeBrinde = 0;
-			var mensagemCmpGlobal = "";
-			
-			for(var j=0; j<vetorGrpFamilia.length; j++){
-				if(vetorGrpFamilia[j].mtpos == "YBRI" && vetorGrpFamilia[j].zzGrupoGlobal != 0){
-					vetorBrindesGlobais.push(vetorGrpFamilia[j]);
-				} else if(vetorGrpFamilia[j].mtpos != "YBRI"  && vetorGrpFamilia[j].mtpos != "YAMO" && vetorGrpFamilia[j].zzGrupoGlobal != 0){
-					totalItens += vetorGrpFamilia[j].zzQnt;
-					valorRangeProd = vetorGrpFamilia[j].zzQntRegraGb;
-				}
-			}
-			
-			if(totalItens >= valorRangeProd && valorRangeProd > 0){
-				//Variavel que mostra quantos brindes foram atingidos.
-				resultQuant = parseInt(totalItens / valorRangeProd, 10);
-				
-			} else {
-				
-				resultQuant = 0;
-			}
-				
-			for(var i=0; i<vetorBrindesGlobais.length; i++){
-				
-				totalItensBrinde += vetorBrindesGlobais[i].zzQnt;
-				valorRangeBrinde = vetorBrindesGlobais[i].zzQntRegraGb;
-			}
-			
-			var totalPermitidoBrinde = valorRangeBrinde * resultQuant;
-			
-			if(totalItensBrinde > totalPermitidoBrinde){
-				console.log("Ultrapassou limite de brindes permitidos da Campanha Global");
-				
-				mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + totalPermitidoBrinde + ". Quantidade de itens já inseridos: " + totalItensBrinde;
-				return mensagemCmpGlobal;
-				
-			} else{
-				
-				return "OK";
-			}
-		},
-		
-		onAgrupaValidaItensCampGlobal: function(res, rej, that) {
-			var proximoItemDiferente = false;
-			var vetorGrpFamilia = [];
-			var vetorAuxItensPedido = [];
-			var retorno = "";
-			
-			if(that.objItensPedidoTemplate.length == 1 && that.objItensPedidoTemplate[0].mtpos == "YBRI"){
-				res();
-			}
-			
-			for (var i = 0; i<that.objItensPedidoTemplate.length; i++) {
-					var aux = [];
-					aux = that.objItensPedidoTemplate[i];
-					vetorAuxItensPedido.push(aux);
-			}
-			
-			//Ordenando para desconto Familia normal. Utiliza vetor global de itens (objItensPedidoTemplate).
-			vetorAuxItensPedido.sort(function(a, b) {
-				return a.zzGrupoGlobal - b.zzGrupoGlobal;
-			});
-			
-			/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
-			for (var i = 0; i<vetorAuxItensPedido.length; i++) {
-				
-				if (proximoItemDiferente == true) {
-					proximoItemDiferente = false;
-					vetorGrpFamilia = [];
-				}
-				
-				if (vetorGrpFamilia.length == 0 && vetorAuxItensPedido.length == 1 && vetorAuxItensPedido[i].tipoItem != "Diluido") {
-					
-					//o vetor de itens tem um unico item. nesse caso já tenho que verificar 
-					//se já atingiu a quantidade para utilizar os brindes.
-					
-					vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-					retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
-					
-				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
-					
-					if (vetorAuxItensPedido[i].zzGrupoGlobal == vetorAuxItensPedido[i + 1].zzGrupoGlobal) {
-						
-						proximoItemDiferente = false;
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						
-					} else {
-						//Nesse momento tenho os itens da mesma familia.. tendo os itens da familia .. somar as quantidades
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
-						proximoItemDiferente = true;
-					}
-					
-				} else if ((i + 1) == vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
-					
-					//sinal proximoItemDiferente = true e limpou
-					if (vetorGrpFamilia.length > 0) {
-						
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
-						
-					} else {
-						//ultimo item e é diferente do antepenultimo
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
-						retorno = that.onValidaItensCampGlobal(vetorGrpFamilia, that);
-					}
-				}
-			}
-			
-			if(retorno == "OK"){
-				res();
-			}else {
-				rej();
-			}
-		},
 	});
 });
