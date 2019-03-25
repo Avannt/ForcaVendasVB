@@ -30,7 +30,7 @@ sap.ui.define([
 			this.pedidoDetalheBrindes = new testeui5.controller.PedidoDetalheBrindes(that);
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
 			this.pedidoDetalhePrazoMedio = new testeui5.controller.PedidoDetalhePrazoMedio(that);
-			this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
+			// this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
 
 			that.oItemTemplate = [];
 			that.oVetorMateriais = [];
@@ -1884,7 +1884,7 @@ sap.ui.define([
 			oitem.pathImg = "";
 			oitem.tipoItem = "Normal";
 			oitem.tipoItem2 = "Normal";
-			oitem.zzAtingiuCmpGlobal = 0;
+			oitem.zzAtingiuCmpGlobal = "Não";
 			oitem.zzDesext = 0;
 			oitem.zzDesitem = 0;
 			oitem.zzGrpmat = 0;

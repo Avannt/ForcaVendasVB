@@ -1544,7 +1544,8 @@ sap.ui.define([
 																																																						idCmpGbGrpProdsAcabs: i,
 																																																						material: retornoCmpGbGrpProdsAcabs.results[i].Material,
 																																																						descricaoMaterial: retornoCmpGbGrpProdsAcabs.results[i].DescricaoMaterial,
-																																																						grupo: retornoCmpGbGrpProdsAcabs.results[i].Grupo,
+																																																						grupo: retornoCmpGbGrpProdsAcabs.results[i].Idcamp,
+																																																						subGrupo: retornoCmpGbGrpProdsAcabs.results[i].Grupo,
 																																																						descricaoGrupo: retornoCmpGbGrpProdsAcabs.results[i].DescricaoGrupo,
 																																																						representante: retornoCmpGbGrpProdsAcabs.results[i].Representante,
 																																																						descricaoRepresentante: retornoCmpGbGrpProdsAcabs.results[i].DescricaoRepresentante,
@@ -2239,6 +2240,7 @@ sap.ui.define([
 																																																																																		for (i = 0; i < retornoCmpPrzMed.results.length; i++) {
 																																
 																																																																																			var objBancoCmpPrzMed = {
+																																																																																				idCmpPrzMed: i,
 																																																																																				przmaxap: parseFloat(retornoCmpPrzMed.results[i].Przmaxap),
 																																																																																				przmaxav: parseFloat(retornoCmpPrzMed.results[i].Przmaxav),
 																																																																																				przminav: parseFloat(retornoCmpPrzMed.results[i].Przminav),
