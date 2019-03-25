@@ -34,7 +34,7 @@ sap.ui.define([
 				var sUrl;
 				//Versão App
 				if (this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")) {
-					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.37");
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.38");
 					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/"; // PRD
 					//sUrl = "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/"; // QAS
 
@@ -1513,7 +1513,12 @@ sap.ui.define([
 																																																				DataInicio: retornoCmpEnxoval.results[i].DataInicio,
 																																																				DataFim: retornoCmpEnxoval.results[i].DataFim
 																																																			};
-
+																																																			
+																																																			/* Se o saldo for menor que zero, então gravo como zero */
+																																																			if (parseFloat(objBancoCmpEnxoval.ValorTotal) < 0){
+																																																				objBancoCmpEnxoval.ValorTotal = 0;
+																																																			}
+																																																			
 																																																			var requestCmpEnxoval = objCmpEnxoval.add(objBancoCmpEnxoval);
 
 																																																			requestCmpEnxoval.onsuccess = function(event) {
@@ -1674,7 +1679,12 @@ sap.ui.define([
 																																																														representante: retornoCmpSldBrindes.results[i].Representante,
 																																																														descricaoRepresentante: retornoCmpSldBrindes.results[i].DescricaoRepresentante
 																																																													};
-
+																																																													
+																																																													/* Se o saldo do brinde em questão for menor que zero, atribuo zero. */
+																																																													if (parseFloat(objBancoCmpSldBrindes.quantidadeTotal) < 0){
+																																																														objBancoCmpSldBrindes.quantidadeTotal = 0;
+																																																													}
+																																																													
 																																																													var requestCmpSldBrindes = objCmpSldBrindes.add(objBancoCmpSldBrindes);
 
 																																																													requestCmpSldBrindes.onsuccess = function(event) {
