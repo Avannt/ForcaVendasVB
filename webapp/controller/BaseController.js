@@ -197,6 +197,16 @@ sap.ui.define([
 
 			this.getOwnerComponent().setModel(oModel, "modelRelatorioTabela");
 		},
+		/* types: 
+			E = ERROR
+			I = INFORMATION
+			S = SUCCESS
+			W = WARNING
+		
+		*/
+		setMessageBox: function(sTitulo, Message, Type){
+			
+		},
 
 		getModel: function(sName) {
 			return this.getView().getModel(sName);
