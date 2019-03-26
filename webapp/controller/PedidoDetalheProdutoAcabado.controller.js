@@ -1,3 +1,4 @@
+
 /*eslint-disable no-console, no-alert */
 /*eslint-disable sap-no-ui5base-prop*/
 sap.ui.define([
@@ -10,7 +11,7 @@ sap.ui.define([
 	return BaseController.extend("testeui5.controller.PedidoDetalheProdutoAcabado", {
 
 		constructor: function(sView) {
-			console.log("Inicio da verificação de campanha de produto acabado.");
+			this.setLog("Inicio da verificação de campanha de produto acabado.");
 			that = this;
 
 			/* CAMPOS - INICIO */
@@ -18,14 +19,24 @@ sap.ui.define([
 			that.oCmpPA = undefined;
 			that.oItemCpPA = undefined;
 			/* CAMPOS - FIM */
+			
 			that.bCampanhaPAAtiva = false;
-
 			that.PDControllerCpPA = sView;
-
-			this.InicializarEventosCampPA();
-		} /* constructor */ ,
+			
+			this.setLog("Iniciando campanha PA.");
+ 			this.InicializarEventosCampPA();
+		},
+		/* constructor */
+		
+		setLog: function(sLog){
+			// var sMensagem =  + sLog;
+			console.log("[CPA]", sLog);
+		},
+		/*setLog*/
 
 		onChangeIdTipoPedidoCpPA: function() {
+			this.setLog("Mudança de tipo de pedido");
+
 			that.VerificarCampanhaPA();
 		} /* onChangeIdTipoPedidoCpPA */ ,
 
@@ -34,20 +45,20 @@ sap.ui.define([
 
 			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
 				that.VerificarCampanhaPA();
-
-				that.disponibilizarValoresCpPA();
 			}
 		},
 		/* onSelectIconTabBarCpPA */
 
 		InicializarEventosCampPA: function() {
+			this.setLog("Atribuindo eventos.");
+
 			this.onVerificarEvento("idTipoPedido", this.onChangeIdTipoPedidoCpPA, "change"); /* change */
 			this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCpPA, "select"); /* select */
-			this.onVerificarEvento("idInserirItem", this.onInserirItemPressCpPA, "press"); /* press */
-			this.onVerificarEvento("idItemPedido", this.onSuggestItemCpPA, "suggest"); /* Evento ao incluir um novo item. */
-			this.onVerificarEvento("idQuantidade", this.onQuantidadeChangeCpPA, "change"); /* Evento ao editar uma quantidade no fragmento de escolha de itens. */
-			this.onVerificarEvento("idButtonSalvarDialog", this.onSalvarItemDialogCpPA, "press"); /* press 'salvar' ao incluir um item */
-			this.onVerificarEvento("table_pedidos", this.onItemPressCpPA, "itemPress"); /* itemPress 'salvar' ao incluir um item */
+			// this.onVerificarEvento("idInserirItem", this.onInserirItemPressCpPA, "press"); /* press */
+			// this.onVerificarEvento("idItemPedido", this.onSuggestItemCpPA, "suggest"); /* Evento ao incluir um novo item. */
+			// this.onVerificarEvento("idQuantidade", this.onQuantidadeChangeCpPA, "change"); /* Evento ao editar uma quantidade no fragmento de escolha de itens. */
+			// this.onVerificarEvento("idButtonSalvarDialog", this.onSalvarItemDialogCpPA, "press"); /* press 'salvar' ao incluir um item */
+			// this.onVerificarEvento("table_pedidos", this.onItemPressCpPA, "itemPress"); /* itemPress 'salvar' ao incluir um item */
 
 			this.GetCampanha();
 		},
@@ -175,21 +186,20 @@ sap.ui.define([
 		onInserirItemPressCpPA: function() {
 			that.InicializarEventosCampPA();
 
-			// that.PDControllerCpPA.byId("idTipoPedido").setVisible(false);
-			console.log("onInserirItemPressCpPA da campanha de produto acabado!");
+			this.setLog("onInserirItemPressCpPA da campanha de produto acabado!");
 		},
 		/* onInserirItemPressCpPA */
 
 		onSearchItemPedido: function() {
-			console.log("onSearchItemPedido da campanha de produto acabado!");
+			this.setLog("onSearchItemPedido da campanha de produto acabado!");
 		},
 		/* onSearchItemPedido */
 
 		VerificarCampanhaPA: function() {
 			/*Restrições (
-				TABELA DA CAMPANHA S4		=> zsdt025
-				TABELA DA CAMPANNHA LOCAL	=> CmpSldPA
-				Tipo de pedido: TODOS																=> sIdTipoPed
+				TABELA DA CAMPANHA S4		=> VERIFICAR
+				TABELA DA CAMPANNHA LOCAL	=> CmpProdsAcabs
+				Tipo de pedido: YBON																=> sIdTipoPed
 				Vigência da campanha																=> that.oCmpPA[i].bCampanhaVigente, 
 				
 				Resultado																			=> that.bCampanhaPAAtiva = true
@@ -199,16 +209,27 @@ sap.ui.define([
 			for (var i = 0; i < that.oCmpPA.length; i++) {
 
 				if (that.oCmpPA[i].bCampanhaVigente) {
-
 					/* Se existir mais de uma campanha ativa para o mesmo item, bloqueio o processo */
 					var iTempQtdeCampanhasAtivasMesmoItem = 0;
 
-					/* Para cada campanha ativa, eu preciso percorrer todas novamente para verificar se não existe uma em duplicidade */
-					for (var j = 0; j < that.oCmpPA.length; j++) {
-
-						/* Se forem de materiais iguais, incremento a variável */
-						if (that.oCmpPA[i].material === that.oCmpPA[j].material) {
-							iTempQtdeCampanhasAtivasMesmoItem += 1;
+					/* Percorro todos os materiais */
+					for (var j = 0; j < that.oCmpPA[i].length; j++) {
+						
+						/* Para cada item de campanha, percorro todos os itens para identificar
+						se existe algum em duplicidade. */
+						for (var i2 = 0; i2 < that.oCmpPA.length; i2++) {
+							for (var j2 = 0; j2 < that.oCmpPA[i2].length; j2++) {
+								
+								/* Preciso desconsiderar o item da campanha atual */
+								if (i === i2 && j === j2){
+									continue;
+								}
+								
+								/* Verifico se não é o mesmo material */
+								if (that.oCmpPA[i].grupo[j].matnr === that.oCmpPA[i2].grupo[j2].matnr){
+									iTempQtdeCampanhasAtivasMesmoItem += 1;
+								}
+							}
 						}
 					}
 
@@ -220,35 +241,98 @@ sap.ui.define([
 								that.bCampanhaPAAtiva = false;
 							}
 						});
-
-						console.log("Não usa campanha PA: Mais de uma campanha ativa para o mesmo representante / material!");
+						
+						this.setLog("Não usa campanha PA: Mais de uma campanha ativa para o mesmo representante / material!");
 						return;
 					}
+					
+					this.setLog("Verificação de duplicidades de campanhas concluídas.");
 				}
 			}
 		} /* VerificarCampanhaPA */ ,
 
 		GetCampanha: function() {
-			var open = indexedDB.open("VB_DataBase");
+			// var open = indexedDB.open("VB_DataBase");
 
-			open.onsuccess = function() {
-				var db = open.result;
+			// open.onsuccess = function() {
+			// 	var db = open.result;
 
-				var tCmpPA = db.transaction("CmpProdsAcabs", "readonly");
-				var osCmpPA = tCmpPA.objectStore("CmpProdsAcabs");
+			// 	var tCmpPA = db.transaction("CmpProdsAcabs", "readonly");
+			// 	var osCmpPA = tCmpPA.objectStore("CmpProdsAcabs");
 
-				if ("getAll" in osCmpPA) {
-					osCmpPA.getAll().onsuccess = function(event) {
-						var tmpCampanha = event.target.result;
-						// var oModel = new sap.ui.model.json.JSONModel(tmpCampanha);
+			// 	if ("getAll" in osCmpPA) {
+			// 		osCmpPA.getAll().onsuccess = function(event) {
+			// 			var tmpCampanha = event.target.result;
+			// 			// var oModel = new sap.ui.model.json.JSONModel(tmpCampanha);
 
-						that.oCmpPA = tmpCampanha;
-						that.VerificarCampanhasValidas();
+			// 			that.oCmpPA = tmpCampanha;
+			// 			that.VerificarCampanhasValidas();
 
-						// that.getView().setModel(oModel, "tiposPedidos");
-					};
-				}
-			};
+			// 			// that.getView().setModel(oModel, "tiposPedidos");
+			// 		};
+			// 	}
+			// };
+			
+			/*CAMPANHA 1*/
+			that.oCmpPA = [];
+
+			var oCp = new Object();
+			var oSg = new Object();
+			
+			oCp.idcampanha = "CAMP001";
+			oCp.representante = "";
+			oCp.descricaoRepresentante = "";
+			oCp.dataInicio = "";
+			oCp.dataFim = "";
+			oCp.quantidadeMaxima = 25;
+			oCp.bCampanhaVigente = true;
+			oCp.grupo = [];
+			
+			oSg.grupoSku = "01"; 
+			oSg.matnr = "100045";
+			oCp.grupo.push(oSg);
+			
+			oSg = new Object();
+			oSg.grupoSku = "02"; 
+			oSg.matnr = "100046";
+			oCp.grupo.push(oSg);
+			
+			oSg = new Object();
+			oSg.grupoSku = "03"; 
+			oSg.matnr = "100047";
+			oCp.grupo.push(oSg);
+			
+			that.oCmpPA.push(oCp);
+			oCp = new Object();
+			
+			/*CAMPANHA 2*/
+			oCp.idcampanha = "CAMP002";
+			oCp.representante = "";
+			oCp.descricaoRepresentante = "";
+			oCp.dataInicio = "";
+			oCp.dataFim = "";
+			oCp.quantidadeMaxima = 15;
+			oCp.bCampanhaVigente = true;
+			oCp.grupo = [];
+			
+			oSg = new Object();
+			oSg.grupoSku = "01"; 
+			oSg.matnr = "100048";
+			oCp.grupo.push(oSg);
+			
+			oSg = new Object();
+			oSg.grupoSku = "02"; 
+			oSg.matnr = "100049";
+			oCp.grupo.push(oSg);
+			
+			oSg = new Object();
+			oSg.grupoSku = "03"; 
+			oSg.matnr = "100050";
+			oCp.grupo.push(oSg);
+			
+			that.oCmpPA.push(oCp);
+			
+			this.setLog(that.oCmpPA);
 		} /* GetCampanha */ ,
 
 		VerificarCampanhasValidas: function() {
@@ -257,8 +341,10 @@ sap.ui.define([
 			for (var i = 0; i < that.oCmpPA.length; i++) {
 
 				if ((dDataAtual >= that.oCmpPA[i].dataInicio) && (dDataAtual <= that.oCmpPA[i].dataFim)) {
+					this.setLog("Campanha " + that.oCmpPA[i].idcampanha + " com vigência VÁLIDA!");
 					that.oCmpPA[i].bCampanhaVigente = true;
 				} else {
+					this.setLog("Campanha " + that.oCmpPA[i].idcampanha + " com vigência INVÁLIDA!");
 					that.oCmpPA[i].bCampanhaVigente = false;
 				}
 			}
@@ -488,10 +574,8 @@ sap.ui.define([
 		},
 		
 		disponibilizarValoresCpPAs: function(){
-			
 			/* Percorro todos os itens para distribuir os excedentes */
-			console.log("MUDAR TAB CAMPANHA PA.");
-			
+			this.setLog("MUDAR TAB CAMPANHA PA.");
 		}
 	});
 });
