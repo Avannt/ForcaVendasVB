@@ -533,6 +533,9 @@ sap.ui.define([
 					
 				} else{
 					
+					//Se encontrar o brinde na tabela cadastrada. Setar ele como oItemPedido.zzUtilCampGlobal = Sim, pois não irá cobrar brinde deste item. 
+					oItemPedido.zzUtilCampGlobal = "Sim";
+					
 					//Encontrou o brinde na campanha Global. Agora tem que verificar se o item atinge a quantidade para utilizar os brindes.
 					//Depois verificar se a quantidade digitada ultrapassa o limite permitido do item.
 					oPanel.setBusy(false);

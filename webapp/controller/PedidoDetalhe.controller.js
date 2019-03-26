@@ -4304,10 +4304,12 @@ sap.ui.define([
 				}
 				
 				var requestPutItens = objItensPedido.put(that.oItemPedido);
+				
 				requestPutItens.onsuccess = function() {
 					
 					that.setaCompleto(db, "Não");
 					that.calculaTotalPedido();
+					that.onAtualizaTodosItensPedido(db);
 					that.oItemTemplate = [];
 
 					if (that._ItemDialog) {
