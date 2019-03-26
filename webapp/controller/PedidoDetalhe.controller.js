@@ -6,6 +6,7 @@ sap.ui.define([
 	"testeui5/model/formatter",
 	"testeui5/controller/PedidoDetalheEnxoval.controller",
 	"testeui5/controller/PedidoDetalheBrindes.controller",
+	"testeui5/controller/PedidoDetalheProdutoAcabado.controller",
 	"testeui5/controller/PedidoDetalhePrazoMedio.controller",
 	"testeui5/controller/PedidoDetalheGlobal.controller"
 
@@ -30,6 +31,7 @@ sap.ui.define([
 			this.pedidoDetalheBrindes = new testeui5.controller.PedidoDetalheBrindes(that);
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
 			this.pedidoDetalhePrazoMedio = new testeui5.controller.PedidoDetalhePrazoMedio(that);
+			this.pedidoDetalheProdutoAcabado = new testeui5.controller.PedidoDetalheProdutoAcabado(that);
 			// this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
 
 			that.oItemTemplate = [];
