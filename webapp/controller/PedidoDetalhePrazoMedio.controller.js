@@ -100,6 +100,11 @@ sap.ui.define([
 					
 					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 100) / 100;
 					console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+					
+					if(percExcedentePrazoMed < 0){
+						percExcedentePrazoMed = 0;
+					}
+					
 					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 					
 					this.onAtualizaExcedentePrazoMed();
@@ -117,6 +122,7 @@ sap.ui.define([
 					if(percExcedentePrazoMed < 0){
 						percExcedentePrazoMed = 0;
 					}
+					
 					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 					
 					this.onAtualizaExcedentePrazoMed();
