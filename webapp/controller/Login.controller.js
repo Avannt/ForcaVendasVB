@@ -64,7 +64,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 49);
+					var open = indexedDB.open("VB_DataBase", 50);
 
 					// Create the Tables
 					open.onupgradeneeded = function(e) {
@@ -463,6 +463,14 @@ sap.ui.define([
 							objCmpGbGrpProdsAcabs.createIndex("material", "material", {
 								unique: false
 							});
+							
+							objCmpGbGrpProdsAcabs.createIndex("grupo", "grupo", {
+								unique: false
+							});
+							
+							objCmpGbGrpProdsAcabs.createIndex("subGrupo", "subGrupo", {
+								unique: false
+							});
 						}
 
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbItensBrindes (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -477,6 +485,11 @@ sap.ui.define([
 							objCmpGbItensBrindes.createIndex("material", "material", {
 								unique: false
 							});
+							
+							objCmpGbItensBrindes.createIndex("grupo", "grupo", {
+								unique: false
+							});
+							
 						}
 
 						//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.. TABELA DE CmpGbProdsAcabs (ZSDMF_CAMPANHA_GRP_PROD_ACAB) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -502,7 +515,7 @@ sap.ui.define([
 								autoIncrement: true
 							});
 							
-							objCmpGbQtdItens.createIndex("grupo", "grupo", {
+							objCmpGbQtdItens.createIndex("subGrupo", "subGrupo", {
 								unique: false
 							});
 						}
@@ -1539,8 +1552,8 @@ sap.ui.define([
 																																																						idCmpGbGrpProdsAcabs: i,
 																																																						material: retornoCmpGbGrpProdsAcabs.results[i].Material,
 																																																						descricaoMaterial: retornoCmpGbGrpProdsAcabs.results[i].DescricaoMaterial,
-																																																						grupo: retornoCmpGbGrpProdsAcabs.results[i].Idcamp,
-																																																						subGrupo: retornoCmpGbGrpProdsAcabs.results[i].Grupo,
+																																																						grupo: retornoCmpGbGrpProdsAcabs.results[i].Grupo,
+																																																						subGrupo: retornoCmpGbGrpProdsAcabs.results[i].Subgrp,
 																																																						descricaoGrupo: retornoCmpGbGrpProdsAcabs.results[i].DescricaoGrupo,
 																																																						representante: retornoCmpGbGrpProdsAcabs.results[i].Representante,
 																																																						descricaoRepresentante: retornoCmpGbGrpProdsAcabs.results[i].DescricaoRepresentante,
@@ -1575,9 +1588,9 @@ sap.ui.define([
 																																																								descricaoRepresentante: retornoCmpGbProdsAcabs.results[i].DescricaoRepresentante,
 																																																								dataInicio: retornoCmpGbProdsAcabs.results[i].DataInicio,
 																																																								dataFim: retornoCmpGbProdsAcabs.results[i].DataFim,
-																																																								grupo: retornoCmpGbProdsAcabs.results[i].Grupo,
+																																																								grupo:  retornoCmpGbProdsAcabs.results[i].Grupo,
 																																																								descricaoGrupo: retornoCmpGbProdsAcabs.results[i].DescricaoGrupo,
-																																																								quantidade: retornoCmpGbProdsAcabs.results[i].Quantidade,
+																																																								quantidade:  parseInt(retornoCmpGbProdsAcabs.results[i].Quantidade, 10),
 																																																							};
 
 																																																							var requestCmpGbProdsAcabs = objCmpGbProdsAcabs.add(objBancoCmpGbProdsAcabs);
@@ -1607,8 +1620,8 @@ sap.ui.define([
 																																																										descricaoRepresentante: retornoCmpGbQtdItens.results[i].DescricaoRepresentante,
 																																																										dataInicio: retornoCmpGbQtdItens.results[i].DataInicio,
 																																																										dataFim: retornoCmpGbQtdItens.results[i].DataFim,
-																																																										grupo: retornoCmpGbQtdItens.results[i].Grupo,
-																																																										quantidade: retornoCmpGbQtdItens.results[i].Quantidade,
+																																																										subGrupo:  retornoCmpGbQtdItens.results[i].Subgrp,
+																																																										quantidade:  parseInt(retornoCmpGbQtdItens.results[i].Quantidade, 10),
 																																																										descricaoGrupo: retornoCmpGbQtdItens.results[i].DescricaoGrupo
 																																																									};
 
@@ -1705,7 +1718,7 @@ sap.ui.define([
 																																																																dataFim: retornoCmpGbItensBrindes.results[i].DataFim,
 																																																																material: retornoCmpGbItensBrindes.results[i].Material,
 																																																																descricaoMaterial: retornoCmpGbItensBrindes.results[i].DescricaoMaterial,
-																																																																grupo: retornoCmpGbItensBrindes.results[i].Grupo,
+																																																																grupo: retornoCmpGbItensBrindes.results[i].Subgrp,
 																																																																descricaoGrupo: retornoCmpGbItensBrindes.results[i].DescricaoGrupo
 																																																															};
 

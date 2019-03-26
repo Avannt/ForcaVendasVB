@@ -30,7 +30,7 @@ sap.ui.define([
 			this.pedidoDetalheBrindes = new testeui5.controller.PedidoDetalheBrindes(that);
 			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
 			this.pedidoDetalhePrazoMedio = new testeui5.controller.PedidoDetalhePrazoMedio(that);
-			// this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
+			this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
 
 			that.oItemTemplate = [];
 			that.oVetorMateriais = [];
@@ -4084,6 +4084,10 @@ sap.ui.define([
 													return;
 												 }
 												
+											}).catch(function(){
+												
+												oButtonSalvar.setEnabled(true);
+												return;
 											});
 											
 										} else{
