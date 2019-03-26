@@ -191,8 +191,9 @@ sap.ui.define([
 					osCmpEnxoval.getAll().onsuccess = function(event) {
 						var tmpCampanha = event.target.result;
 						// var oModel = new sap.ui.model.json.JSONModel(tmpCampanha);
-
+						
 						that.oCmpEnxoval = tmpCampanha;
+
 						that.VerificarCampanhasValidas();
 
 						// that.getView().setModel(oModel, "tiposPedidos");
