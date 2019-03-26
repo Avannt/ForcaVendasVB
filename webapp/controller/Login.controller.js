@@ -2262,7 +2262,8 @@ sap.ui.define([
 																																																																																				representante: retornoCmpPrzMed.results[i].Representante,
 																																																																																				descricaoRepresentante: retornoCmpPrzMed.results[i].DescricaoRepresentante,
 																																																																																				dataInicio: retornoCmpPrzMed.results[i].DataInicio,
-																																																																																				dataFim: retornoCmpPrzMed.results[i].DataFim
+																																																																																				dataFim: retornoCmpPrzMed.results[i].DataFim,
+																																																																																				taxa: parseFloat(retornoCmpPrzMed.results[i].Taxa)
 																																																																																			};
 																																																																																			
 																																																																																			var requestCmpPrzMed = objCmpPrzMed.add(objBancoCmpPrzMed);

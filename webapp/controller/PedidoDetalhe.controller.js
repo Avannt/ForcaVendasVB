@@ -3541,7 +3541,7 @@ sap.ui.define([
 			var valorPedMin = vetorParametros[4]; //valorPedMin;
 			var percJuros = vetorParametros[5]; //percJuros;
 			var percJurosDia = vetorParametros[6]; //percJurosDia;
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercJurosDiaPrazoMedio", percJurosDia);
+			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PercJurosDiaPrazoMedio", percJurosDia);
 
 			if (existeEntrada === false || existeEntrada == "") {
 				//Calculo prazo medio normal
