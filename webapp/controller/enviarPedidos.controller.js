@@ -491,7 +491,10 @@ sap.ui.define([
 											Zzgrupoglobal: String(oItensPedidoGridEnviar[j].zzGrupoGlobal),
 											Zzqntregragb: String(oItensPedidoGridEnviar[j].zzQntRegraGb),
 											Zzutilcampglobal: String(oItensPedidoGridEnviar[j].zzUtilCampGlobal),
-											Zzatingiucmpglobal: String(oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal)
+											Zzatingiucmpglobal: String(oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal),
+											Zzqntcppa: String(oItensPedidoGridEnviar[j].zzQntCpPA || ""),
+											Zzgrupocppa: String(oItensPedidoGridEnviar[j].zzGrupoCpPA || ""),
+											Zzidcppa: String(oItensPedidoGridEnviar[j].zzIDCpPA || "")
 										};
 
 										oModel.create("/InserirLinhaOV", objItensPedido, {

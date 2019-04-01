@@ -248,6 +248,13 @@ sap.ui.define([
 				title: sTitulo,
 				actions: ["Sim", "Cancelar"]
 			});
-		}
+		},
+		
+		setLog: function(sLog, sClasse) {
+			// var sMensagem =  + sLog;
+			
+			console.log("[" + sClasse + "]", sLog);
+		},
+
 	});
 });

@@ -61,6 +61,16 @@
 							<layout:GridData span="L4 M2"/>
 						</layoutData>
 					</Input>
+					<Label text="Quantidade Campanha Produto Novo">
+						<layoutData>
+							<layout:GridData span="L2 M2"/>
+						</layoutData>
+					</Label>
+					<Input id="idQuantidadePA" class="editableForm" editable="false" change="onQuantidadePAChange" type="Number">
+						<layoutData>
+							<layout:GridData span="L4 M2"/>
+						</layoutData>
+					</Input>
 					<Label text="Preço S/ Desc" visible="false">
 						<layoutData>
 							<layout:GridData span="L2 M2"/>

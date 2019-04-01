@@ -1659,7 +1659,9 @@ sap.ui.define([
 																																																												dataFim: retornoCmpProdsAcabs.results[i].DataFim,
 																																																												material: retornoCmpProdsAcabs.results[i].Material,
 																																																												quantidadeTotal: retornoCmpProdsAcabs.results[i].QuantidadeTotal,
-																																																												quantidadeMaxima: retornoCmpProdsAcabs.results[i].QuantidadeMaxima
+																																																												quantidadeMaxima: retornoCmpProdsAcabs.results[i].QuantidadeMaxima,
+																																																												Idcamp: retornoCmpProdsAcabs.results[i].Idcamp,
+																																																												Grupo: retornoCmpProdsAcabs.results[i].Grupo
 																																																											};
 
 																																																											var requestCmpProdsAcabs = objCmpProdsAcabs.add(objBancoCmpProdsAcabs);
@@ -2136,6 +2138,9 @@ sap.ui.define([
 																																																																												Mtpos: retornoAcompPedidosD.results[i].Mtpos,
 																																																																												Kbetr: retornoAcompPedidosD.results[i].Kbetr,
 																																																																												Zzqntamostra: String(parseInt(retornoAcompPedidosD.results[i].Zzqntamostra, 10)),
+																																																																												Zzqntcppa: String(parseInt(retornoAcompPedidosD.results[i].Zzqntcppa || 0, 10)),
+																																																																												Zzgrupocppa: String(retornoAcompPedidosD.results[i].Zzgrupocppa || ""),
+																																																																												Zzidcppa: String(retornoAcompPedidosD.results[i].Zzidcppa || ""),
 																																																																												zzGrupoGlobal: String(parseInt(retornoAcompPedidosD.results[i].ZzGrupoGlobal, 10)),
 																																																																												zzQntRegraGb: String(parseInt(retornoAcompPedidosD.results[i].zzQntRegraGb, 10)),
 																																																																												zzUtilCampGlobal: String(retornoAcompPedidosD.resultsZzUtilCampGlobalobal),
@@ -2424,6 +2429,9 @@ sap.ui.define([
 																																																																																									kbetr: retornoPVPrepostoItem.results[i].Kbetr,
 																																																																																									zzQntAmostra: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntamostra, 10)),
 																																																																																									zzQntCpBrinde: String(parseInt(retornoPVPrepostoItem.results[i].ZzQntCpBrinde, 10)),
+																																																																																									Zzqntcppa: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntcppa || 0, 10)),
+																																																																																									Zzgrupocppa: String(retornoPVPrepostoItem.results[i].Zzgrupocppa || ""),
+																																																																																									Zzidcppa: String(retornoPVPrepostoItem.results[i].Zzidcppa || ""),
 																																																																																									zzGrupoGlobal: String(parseInt(retornoPVPrepostoItem.results[i].ZzGrupoGlobal, 10)),
 																																																																																									zzQntRegraGb: String(parseInt(retornoPVPrepostoItem.results[i].ZzQntRegraGb, 10)),
 																																																																																									zzUtilCampGlobal: String(retornoPVPrepostoItem.resultsZzUtilCampGlobalobal),

@@ -2221,6 +2221,21 @@ sap.ui.define([
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", valUtilizadoCampanhaEnxoval);
 			}
 			/* --FIM-- */
+			
+			/*Alteração: 20190328: Inclusão dos valores de campanha de produto acabado (produto novo) */
+			/* Valores inclusos para o cálculo do excedente da destinação */
+			var valUtilizadoCampanhaProdutoAcabado = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado");
+			if (valUtilizadoCampanhaProdutoAcabado === "") {
+
+				valUtilizadoCampanhaProdutoAcabado = 0;
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", 0);
+
+			} else {
+
+				valUtilizadoCampanhaProdutoAcabado = parseFloat(valUtilizadoCampanhaProdutoAcabado);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", valUtilizadoCampanhaProdutoAcabado);
+			}
+			/* --FIM-- */
 
 			var valTotalExcedenteBrinde = 0;
 			
@@ -2615,15 +2630,16 @@ sap.ui.define([
 			valUtilizadoVerbaBonif = Math.round(valUtilizadoVerbaBonif * 100) / 100;
 			valTotalExcedenteBonif = Math.round(valTotalExcedenteBonif * 100) / 100;
 			valUtilizadoCampanhaEnxoval = Math.round(valUtilizadoCampanhaEnxoval * 100) / 100;
+			valUtilizadoCampanhaProdutoAcabado = Math.round(valUtilizadoCampanhaProdutoAcabado * 100) / 100;
 			
-			/* Alterçaão: 20190308 - Diego Djeri */
+			/* Alterçaão: 20190308 (Enxoval) 20190328 (PA)- Diego Djeri */
 			/* Inicio
 				Inclusão do valor da campanha enxoval no cálculo que controla a destinação da verba em excesso.
 				valUtilizadoCampanhaEnxoval
 			*/
 
 			//BONIFICAÇÃO
-			if (valTotalExcedenteBonif < (valUtilizadoVerbaBonif + valUtilizadoComissaoBonif + valUtilizadoCampanhaEnxoval).toFixed(2)) {
+			if (valTotalExcedenteBonif < (valUtilizadoVerbaBonif + valUtilizadoComissaoBonif + valUtilizadoCampanhaEnxoval + valUtilizadoCampanhaProdutoAcabado).toFixed(2)) {
 				that.byId("idTopLevelIconTabBar").setSelectedKey("tab5");
 
 				that.byId("idVerbaUtilizadaBonif").setValueState("Error");
@@ -2695,6 +2711,10 @@ sap.ui.define([
 			/* Campanha Enxoval */
 			if (this.pedidoDetalheEnxoval) {
 				this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
+			}
+			/* Campanha de Produto Acabado*/
+			if (this.pedidoDetalheProdutoAcabado) {
+				this.pedidoDetalheProdutoAcabado.calcularTotalPedidoCpPA();
 			}
 			/* Campanha Prazo Médio */
 			if (this.pedidoDetalheEnxoval) {
