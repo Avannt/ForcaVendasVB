@@ -23,7 +23,7 @@ sap.ui.define([
 		} /* constructor */ ,
 
 		InicializarEventosCampPrazoMedio: function() {
-			// this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCmpPrazoMedio, "select"); /* select */
+			this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCmpPrazoMedio, "select"); /* select */
 		},
 		/* InicializarEventosCampPrazoMedio */
 
@@ -54,8 +54,7 @@ sap.ui.define([
 							return a.valorMin - b.valorMin;
 						});
 
-						console.log("Vetor Prazo Médio");
-						console.log(that.oVetorCmpPrzMed);
+						console.log("Vetor Prazo Médio", that.oVetorCmpPrzMed);
 					};
 				}
 			};
@@ -69,7 +68,8 @@ sap.ui.define([
 			var percExcedentePrazoMed = 0;
 			var tipoNeg = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/TipoNegociacao");
 			var prazoMedioParcelas = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/PrazoMedioParcelas");
-			var prazoMedioPercJurosDia = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/PercJurosDiaPrazoMedio");
+			// var prazoMedioPercJurosDia = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/PercJurosDiaPrazoMedio");
+			var prazoMedioPercJurosDia = 0;
 			var totalPedido = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/ValTotPed");
 			var diasExcedente = 0;
 			console.error("Inicio Camp Prz Médio");
@@ -96,9 +96,15 @@ sap.ui.define([
 				if (tipoNeg == 1) {
 					
 					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxav;
+					prazoMedioPercJurosDia = vetorItemCampPrzMed.taxa / 30;
 					
 					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 100) / 100;
 					console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+					
+					if(percExcedentePrazoMed < 0){
+						percExcedentePrazoMed = 0;
+					}
+					
 					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 					
 					this.onAtualizaExcedentePrazoMed();
@@ -108,9 +114,15 @@ sap.ui.define([
 				else if (tipoNeg == 2) {
 					
 					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxap;
+					prazoMedioPercJurosDia = vetorItemCampPrzMed.taxa / 30;
 					
 					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 100) / 100;
 					console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
+					
+					if(percExcedentePrazoMed < 0){
+						percExcedentePrazoMed = 0;
+					}
+					
 					this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PercExcedentePrazoMed", percExcedentePrazoMed);
 					
 					this.onAtualizaExcedentePrazoMed();
@@ -135,11 +147,13 @@ sap.ui.define([
 								
 								valorTotalAcresPrazoMed += parseFloat(vetorItensPedido[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
 									(vetorItensPedido[i].zzQnt - vetorItensPedido[i].zzQntDiluicao));
-									
+								
 							}
 						} else if (vetorItensPedido[i].tipoItem == "Diluido") {
+							
 							valorTotalAcresPrazoMed += parseFloat(vetorItensPedido[i].zzVprodDesc2 * (percAcresPrazoMed / 100) *
 									(vetorItensPedido[i].zzQnt - vetorItensPedido[i].zzQntDiluicao));
+									
 						}
 					}
 				}
