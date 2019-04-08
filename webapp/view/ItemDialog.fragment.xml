@@ -51,6 +51,16 @@
 							<layout:GridData span="L4 M2"/>
 						</layoutData>
 					</Input>
+					<Label text="Média">
+						<layoutData>
+							<layout:GridData span="L2 M2"/>
+						</layoutData>
+					</Label>
+					<Input id="idMedia" class="editableForm" editable="false" type="Number">
+						<layoutData>
+							<layout:GridData span="L4 M2"/>
+						</layoutData>
+					</Input>
 					<Label text="Quantidade Campanha Brinde">
 						<layoutData>
 							<layout:GridData span="L2 M2"/>

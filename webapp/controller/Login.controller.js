@@ -64,7 +64,7 @@ sap.ui.define([
 
 				if (idbSupported) {
 
-					var open = indexedDB.open("VB_DataBase", 50);
+					var open = indexedDB.open("VB_DataBase", 52);
 
 					// Create the Tables
 					open.onupgradeneeded = function(e) {
@@ -255,16 +255,23 @@ sap.ui.define([
 							objAcompPedidosDet.createIndex("nrPedCli", "nrPedCli", {
 								unique: false
 							});
-							objAcompPedidosDet.createIndex("matnr", "matnr", {
-								unique: false
-							});
 							objAcompPedidosDet.createIndex("mtpos", "mtpos", {
 								unique: false
 							});
 							objAcompPedidosDet.createIndex("werks", "werks", {
 								unique: false
 							});
+							objAcompPedidosDet.createIndex("Matnr", "Matnr", {
+								unique: false
+							});
+						}else{
+							var objAcompPedidosDet = e.currentTarget.transaction.objectStore("AcompPedidoDetalhe");
+							
+							objAcompPedidosDet.createIndex("Matnr", "Matnr", {
+								unique: false
+							});
 						}
+						
 						// >>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABELA DE SALDO VERBA >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
 						if (!db.objectStoreNames.contains("SaldoVerba")) {
 							var objSaldoVerba = db.createObjectStore("SaldoVerba", {
