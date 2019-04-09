@@ -769,7 +769,6 @@ sap.ui.define([
 
 					} else {
 						window.plugins.sim.getSimInfo(successCallback3, errorCallback3);
-
 					}
 
 				} else if (device.platform == 'iOS') {
