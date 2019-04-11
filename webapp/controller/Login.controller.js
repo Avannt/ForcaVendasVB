@@ -1567,9 +1567,7 @@ sap.ui.define([
 																																																						subGrupo: retornoCmpGbGrpProdsAcabs.results[i].Subgrp,
 																																																						descricaoGrupo: retornoCmpGbGrpProdsAcabs.results[i].DescricaoGrupo,
 																																																						representante: retornoCmpGbGrpProdsAcabs.results[i].Representante,
-																																																						descricaoRepresentante: retornoCmpGbGrpProdsAcabs.results[i].DescricaoRepresentante,
-																																																						dataInicio: retornoCmpGbGrpProdsAcabs.results[i].DataInicio,
-																																																						dataFim: retornoCmpGbGrpProdsAcabs.results[i].DataFim
+																																																						descricaoRepresentante: retornoCmpGbGrpProdsAcabs.results[i].DescricaoRepresentante
 																																																					};
 
 																																																					var requestCmpGbGrpProdsAcabs = objCmpGbGrpProdsAcabs.add(objBancoCmpGbGrpProdsAcabs);
@@ -1597,8 +1595,6 @@ sap.ui.define([
 																																																								idCmpGbProdsAcabs: i,
 																																																								representante: retornoCmpGbProdsAcabs.results[i].Representante,
 																																																								descricaoRepresentante: retornoCmpGbProdsAcabs.results[i].DescricaoRepresentante,
-																																																								dataInicio: retornoCmpGbProdsAcabs.results[i].DataInicio,
-																																																								dataFim: retornoCmpGbProdsAcabs.results[i].DataFim,
 																																																								grupo:  retornoCmpGbProdsAcabs.results[i].Grupo,
 																																																								descricaoGrupo: retornoCmpGbProdsAcabs.results[i].DescricaoGrupo,
 																																																								quantidade:  parseInt(retornoCmpGbProdsAcabs.results[i].Quantidade, 10),
@@ -1629,8 +1625,6 @@ sap.ui.define([
 																																																										idCmpGbQtdItens: i,
 																																																										representante: retornoCmpGbQtdItens.results[i].Representante,
 																																																										descricaoRepresentante: retornoCmpGbQtdItens.results[i].DescricaoRepresentante,
-																																																										dataInicio: retornoCmpGbQtdItens.results[i].DataInicio,
-																																																										dataFim: retornoCmpGbQtdItens.results[i].DataFim,
 																																																										subGrupo:  retornoCmpGbQtdItens.results[i].Subgrp,
 																																																										quantidade:  parseInt(retornoCmpGbQtdItens.results[i].Quantidade, 10),
 																																																										descricaoGrupo: retornoCmpGbQtdItens.results[i].DescricaoGrupo
