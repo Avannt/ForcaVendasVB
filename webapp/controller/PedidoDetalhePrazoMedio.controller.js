@@ -169,7 +169,7 @@ sap.ui.define([
 			var comissaoUtilizadaPrazoMed = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoPrazoMed");
 			
 			var valorNaoDirecionadoPrazoMed = Math.round((valorTotalAcresPrazoMed - (valUtilizadoVerbaPrazoMed + comissaoUtilizadaPrazoMed)) * 100) / 100;
-			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", parseFloat(valorNaoDirecionadoPrazoMed).toFixed(2));
+			this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/ValTotalExcedenteNaoDirecionadoPrazoMed", parseFloat(valorNaoDirecionadoPrazoMed).toFixed(2));
 			
 			valorTotalAcresPrazoMed = Math.round(valorTotalAcresPrazoMed * 100) / 100;
 			valUtilizadoVerbaPrazoMed = Math.round(valUtilizadoVerbaPrazoMed * 100) / 100;
