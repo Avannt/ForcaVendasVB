@@ -1845,16 +1845,26 @@ sap.ui.define([
 																																																																				var objStatusPedidoEF;
 
 																																																																				for (i = 0; i < retornoStatusPedidoEF.results.length; i++) {
+																																																																					var dData = retornoStatusPedidoEF.results[i].Erdat;
+																																																																					
+																																																																					var dd = "0" + dData.getDate().toString();
+																																																																					dd = dd[dd.length - 2] + dd[dd.length - 1];
+																																																																					
+																																																																					var mm = "0" + (dData.getMonth()+1).toString();
+																																																																					mm = mm[mm.length - 2] + mm[mm.length - 1];
+																																																																					
+																																																																					var yy = dData.getFullYear().toString();
+																																																																					var dataEntrega = dd + "/" + mm + "/" + yy;
+																																																																					
 																																																																					txStatusPedidoEF = db.transaction("EntregaFutura3", "readwrite");
 																																																																					objStatusPedidoEF = txStatusPedidoEF.objectStore("EntregaFutura3");
-
+																																																																					
 																																																																					var objBancoStatusPedidoEF = {
 																																																																						Arktx: retornoStatusPedidoEF.results[i].Arktx,
 																																																																						Aubel: retornoStatusPedidoEF.results[i].Aubel,
 																																																																						Aupos: retornoStatusPedidoEF.results[i].Aupos,
 																																																																						Bstkd: retornoStatusPedidoEF.results[i].Bstkd,
 																																																																						Fkimg: retornoStatusPedidoEF.results[i].Fkimg,
-																																																																						// Fkimg2: retornoStatusPedidoEF.results[i].Fkimg2,
 																																																																						IReprs: retornoStatusPedidoEF.results[i].IReprs,
 																																																																						Kunrg: retornoStatusPedidoEF.results[i].Kunrg,
 																																																																						Lifnr: retornoStatusPedidoEF.results[i].Lifnr,
@@ -1863,8 +1873,8 @@ sap.ui.define([
 																																																																						NameOrg2: retornoStatusPedidoEF.results[i].NameOrg2,
 																																																																						Posnr: retornoStatusPedidoEF.results[i].Posnr,
 																																																																						Status: retornoStatusPedidoEF.results[i].Status,
-																																																																						// Sldfut: retornoStatusPedidoEF.results[i].Sldfut,
 																																																																						Vbeln: retornoStatusPedidoEF.results[i].Vbeln,
+																																																																						Erdat: dataEntrega,
 																																																																						idEntregaFutura: retornoStatusPedidoEF.results[i].Vbeln + retornoStatusPedidoEF.results[i].Posnr
 																																																																					};
 

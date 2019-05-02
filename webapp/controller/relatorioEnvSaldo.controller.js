@@ -25,7 +25,10 @@ sap.ui.define([
 			open.onsuccess = function() {
 				var db = open.result;
 				var objectStore = db.transaction("EntregaFutura3", "readonly").objectStore("EntregaFutura3");
+				var iVbeln = objectStore.index("Vbeln");
 
+				var reqEF = iVbeln.openCursor(undefined, "nextunique");
+				
 				if ("getAll" in objectStore) {
 					objectStore.getAll().onsuccess = function(event) {
 						var vetorEF = [];
@@ -36,12 +39,13 @@ sap.ui.define([
 						that.getView().setModel(oModel, "Envio");
 					};
 				}
+
 			};
 		},
 
 		onLimparLog: function() {
 			var that = this;
-			
+
 			sap.m.MessageBox.show("Deseja excluir o log?", {
 				icon: sap.m.MessageBox.Icon.WARNING,
 				title: "Limpar Log",
@@ -52,9 +56,9 @@ sap.ui.define([
 						open.onsuccess = function() {
 							var db = open.result;
 							var objectStore = db.transaction("EntregaFutura3", "readwrite").objectStore("EntregaFutura3");
-							
+
 							objectStore.clear();
-							
+
 							objectStore = db.transaction("EntregaFutura3", "readonly").objectStore("EntregaFutura3");
 
 							if ("getAll" in objectStore) {

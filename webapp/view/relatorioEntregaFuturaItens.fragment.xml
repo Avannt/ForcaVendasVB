@@ -1,0 +1,59 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<TableSelectDialog noDataText="Nenhum item nesse pedido" title="Itens" confirm="handleClose" cancel="handleClose" search="hProcurar"
+		items="{ path:'ItensEF>/' }">
+		<ColumnListItem>
+			<cells>
+				<Text text="{path : 'ItensEF>Arktx'}"/>
+				<Text text="{path : 'ItensEF>Matnr'}"/>
+				<Text text="{path : 'ItensEF>Posnr'}"/>
+				<Text text="{path : 'ItensEF>Bstkd'}"/>
+				<Text text="{path : 'ItensEF>Fkimg'}"/>
+				<Text text="{path : 'ItensEF>IRepresentante'}"/>
+				<Text text="{path : 'ItensEF>Kunrg'}"/>
+				<Text text="{path : 'ItensEF>Aupos'}"/>
+				<Text text="{path : 'ItensEF>NameOrg1'}"/>
+				<Text text="{path : 'ItensEF>NameOrg2'}"/>
+				<Text text="{path : 'ItensEF>Aubel'}"/>
+				<Text text="{path : 'ItensEF>idEntregaFutura'}"/>
+			</cells>
+		</ColumnListItem>
+		<columns>
+			<Column minScreenWidth="2000px" demandPopin="true" hAlign="Left" popinDisplay="Inline" width="150px">
+				<Text text="Desc Item"/>
+			</Column>
+			<Column minScreenWidth="200px" hAlign="Left" width="auto" popinDisplay="Inline">
+				<Text text="Item"/>
+			</Column>
+			<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
+				<Text text="Linha"/>
+			</Column>
+			<Column minScreenWidth="2000px" demandPopin="true" popinDisplay="Inline">
+				<Text text="Ref.cliente"/>
+			</Column>
+			<Column minScreenWidth="200px" hAlign="Center" width="70px" popinDisplay="Inline">
+				<Text text="Qtde Fat"/>
+			</Column>
+			<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+				<Text text="Cliente"/>
+			</Column>
+			<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
+				<Text text="Representante"/>
+			</Column>
+			<Column minScreenWidth="550px" hAlign="Center" width="70px" popinDisplay="Inline">
+				<Text text="Material"/>
+			</Column>
+			<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+				<Text text="Nome Cliente"/>
+			</Column>
+			<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+				<Text text="Nome"/>
+			</Column>
+			<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+				<Text text="Nro Documento"/>
+			</Column>
+			<Column minScreenWidth="2000px" hAlign="Center" width="70px" popinDisplay="Inline">
+				<Text text="idEntregaFutura"/>
+			</Column>
+		</columns>
+	</TableSelectDialog>
+</core:FragmentDefinition>

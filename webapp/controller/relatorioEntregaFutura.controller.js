@@ -67,22 +67,65 @@ sap.ui.define([
 			var sValue = oEvent.getSource().getValue();
 			var aFilters = [];
 			var oFilter = [
-				new sap.ui.model.Filter("Kunnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Namecli", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Lifnr", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Namerep", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("Nrpedcli", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("NameOrg1", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("AprovNome", sap.ui.model.FilterOperator.Contains, sValue),
-				new sap.ui.model.Filter("AprovadoDesc", sap.ui.model.FilterOperator.Contains, sValue),
+				new sap.ui.model.Filter("Erdat", sap.ui.model.FilterOperator.Contains, sValue),
 				new sap.ui.model.Filter("Vbeln", sap.ui.model.FilterOperator.Contains, sValue)
 			];
 
 			var allFilters = new sap.ui.model.Filter(oFilter, false);
 			aFilters.push(allFilters);
-			this.byId("table_relatorio_pedidos").getBinding("items").filter(aFilters, sap.ui.model.FilterType.Application);
+			this.byId("tEntregas").getBinding("items").filter(aFilters, sap.ui.model.FilterType.Application);
 
-		},		
+		},
+		
+		onDetalharItens: function (oEvent) {
+			var that = this;
+			var iVbeln = oEvent.getParameter("listItem").getBindingContext("PedidosEF").getProperty("Vbeln");
+			var open = indexedDB.open("VB_DataBase");
+			
+			open.onerror = function() {
+				MessageBox.show("Não foi possivel fazer leitura do Banco Interno.", {
+					icon: MessageBox.Icon.ERROR,
+					title: "Banco não encontrado!",
+					actions: [MessageBox.Action.OK]
+				});
+			};
+
+			open.onsuccess = function() {
+				var db = open.result;
+	
+				var transactionPedEF = db.transaction("EntregaFutura3", "readonly");
+				var objectStorePedEF = transactionPedEF.objectStore("EntregaFutura3");
+				var ixVbeln = objectStorePedEF.index("Vbeln");
+				
+				var reqEF = ixVbeln.getAll(iVbeln);
+				
+				reqEF.onsuccess = function(event) {
+					var oModel = new sap.ui.model.json.JSONModel(event.target.result);
+					that.getView().setModel(oModel, "ItensEF");
+					 
+					if (!this._oDItens) {
+						this._oDItens = sap.ui.xmlfragment("testeui5.view.relatorioEntregaFuturaItens", that);
+					}
+					
+					this._oDItens.setMultiSelect(false);
+					this._oDItens.setRememberSelections(false);
+					that.getView().addDependent(this._oDItens);
+		
+					// toggle compact style
+					jQuery.sap.syncStyleClass("sapUiSizeCompact", that.getView(), this._oDItens);
+					this._oDItens.open();
+				};
+			};
+		},
+		/*onDetalharItens*/
+		
+		hProcurar: function(oEvent) {
+			var sValue = oEvent.getParameter("value");
+			var oFilter = new Filter("Arktx", sap.ui.model.FilterOperator.Contains, sValue);
+			var oBinding = oEvent.getSource().getBinding("items");
+			oBinding.filter([oFilter]);
+		},
+		/* hProcurar */
 
 		onExit: function() {
 			if (this._oDialog) {
