@@ -1847,14 +1847,18 @@ sap.ui.define([
 																																																																				for (i = 0; i < retornoStatusPedidoEF.results.length; i++) {
 																																																																					var dData = retornoStatusPedidoEF.results[i].Erdat;
 																																																																					
-																																																																					var dd = "0" + dData.getDate().toString();
-																																																																					dd = dd[dd.length - 2] + dd[dd.length - 1];
-																																																																					
-																																																																					var mm = "0" + (dData.getMonth()+1).toString();
-																																																																					mm = mm[mm.length - 2] + mm[mm.length - 1];
-																																																																					
-																																																																					var yy = dData.getFullYear().toString();
-																																																																					var dataEntrega = dd + "/" + mm + "/" + yy;
+																																																																					if(dData == undefined){
+																																																																						dData = "";
+																																																																					}else{
+																																																																						var dd = "0" + dData.getDate().toString();
+																																																																						dd = dd[dd.length - 2] + dd[dd.length - 1];
+																																																																						
+																																																																						var mm = "0" + (dData.getMonth()+1).toString();
+																																																																						mm = mm[mm.length - 2] + mm[mm.length - 1];
+																																																																						
+																																																																						var yy = dData.getFullYear().toString();
+																																																																						var dataEntrega = dd + "/" + mm + "/" + yy;
+																																																																					}
 																																																																					
 																																																																					txStatusPedidoEF = db.transaction("EntregaFutura3", "readwrite");
 																																																																					objStatusPedidoEF = txStatusPedidoEF.objectStore("EntregaFutura3");
@@ -2287,7 +2291,7 @@ sap.ui.define([
 																																																																																				console.log("Dados CmpPrzMed inseridos. " + event);
 																																																																																			};
 																																
-																																																																																			requestCmpEnxoval.onerror = function(event) {
+																																																																																			requestCmpPrzMed.onerror = function(event) {
 																																																																																				console.log("Dados CmpEnxoval não foram inseridos :" + event);
 																																																																																			};
 																																																																																		}

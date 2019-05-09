@@ -22,6 +22,9 @@
 							<Column minScreenWidth="200px" hAlign="Left" width="auto" popinDisplay="Inline">
 								<Text text="Doc Vendas"/>
 							</Column>
+							<Column minScreenWidth="200px" hAlign="Left" width="auto" popinDisplay="Inline">
+								<Text text="Status"/>
+							</Column>
 							<Column minScreenWidth="200px" hAlign="Center" width="auto" popinDisplay="Inline">
 								<Text text="Data"/>
 							</Column>
@@ -30,6 +33,7 @@
 							<ColumnListItem type="Active">
 								<cells>
 									<Text text="{path : 'PedidosEF>Vbeln'}"/>
+									<Text text="{path : 'PedidosEF>Status'}"/>
 									<Text text="{path : 'PedidosEF>Erdat'}"/>
 								</cells>
 							</ColumnListItem>

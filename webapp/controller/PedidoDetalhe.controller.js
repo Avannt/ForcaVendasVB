@@ -3911,7 +3911,9 @@ sap.ui.define([
 			sap.ui.getCore().byId("idComissao").setValue(that.oItemPedido.zzPercom);
 			sap.ui.getCore().byId("idPrecoCheio").setValue(that.oItemPedido.zzVprod);
 			sap.ui.getCore().byId("idDesconto").setValue(that.oItemPedido.zzDesitem);
-			sap.ui.getCore().byId("idMedia").setValue(that.oItemPedido.zzMedia || 0);
+			if(sap.ui.getCore().byId("idMedia")){
+				sap.ui.getCore().byId("idMedia").setValue(that.oItemPedido.zzMedia || 0);
+			}
 			sap.ui.getCore().byId("idImgProduto").setSrc(that.oItemPedido.pathImg);
 			// sap.ui.getCore().byId("idPrecoDesconto").setValue(that.oItemPedido.zzVprodDescTotal);
 			// this.getView().setModel(this.getOwnerComponent().setModel("modelItemPedido").setProperty("/valorTotal", that.oItemPedido.zzVprodDescTotal);

@@ -492,9 +492,9 @@ sap.ui.define([
 											Zzqntregragb: String(oItensPedidoGridEnviar[j].zzQntRegraGb),
 											Zzutilcampglobal: String(oItensPedidoGridEnviar[j].zzUtilCampGlobal),
 											Zzatingiucmpglobal: String(oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal),
-											Zzqntcppa: String(oItensPedidoGridEnviar[j].zzQntCpPA || ""),
-											Zzgrupocppa: String(oItensPedidoGridEnviar[j].zzGrupoCpPA || ""),
-											Zzidcppa: String(oItensPedidoGridEnviar[j].zzIDCpPA || "")
+											Zzqntcppa: String(oItensPedidoGridEnviar[j].zzQntCpPA || "0"),
+											Zzgrupocppa: String(oItensPedidoGridEnviar[j].zzGrupoCpPA || "0"),
+											Zzidcppa: String(oItensPedidoGridEnviar[j].zzIDCpPA || "0")
 										};
 
 										oModel.create("/InserirLinhaOV", objItensPedido, {
@@ -581,7 +581,7 @@ sap.ui.define([
 											VlrbonVm: String(oPedidosEnviar[i].valUtilizadoVerbaBonif),
 											VlrbonDd: String(0),
 											VlrbonVvb: String(0),
-											Valtotabcamppa: String(oPedidosEnviar[i].valUtilizadoCampProdutoAcabado),
+											Valtotabcamppa: String(oPedidosEnviar[i].valTotalCampProdutoAcabado),
 											Valtotabcampbrinde: String(oPedidosEnviar[i].valTotalCampBrinde || 0),
 											Valtotexcndirdesc: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoDesconto),
 											Valtotexcndirprazo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoPrazoMed),
