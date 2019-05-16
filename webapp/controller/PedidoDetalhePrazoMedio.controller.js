@@ -116,7 +116,7 @@ sap.ui.define([
 					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxap;
 					prazoMedioPercJurosDia = vetorItemCampPrzMed.taxa / 30;
 					
-					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 10000) / 10000;
+					percExcedentePrazoMed = Math.round((diasExcedente * prazoMedioPercJurosDia) * 1000000) / 1000000;
 					console.log("Perc Excedente: " + percExcedentePrazoMed + ", Dias Excedidos: " + diasExcedente);
 					
 					if(percExcedentePrazoMed < 0){
