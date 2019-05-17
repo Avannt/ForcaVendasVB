@@ -16,12 +16,14 @@ sap.ui.define([
 			/* CAMPOS - INICIO */
 			that.PDControllerCpPA = undefined;
 			that.oCmpPA = undefined;
+			that.kunnr = undefined;
 			that.oItemCpPA = undefined;
 			that.oItemGrCpPA = undefined;
 			/* CAMPOS - FIM */
 
 			that.bCampanhaPAAtiva = false;
 			that.PDControllerCpPA = sView;
+			that.kunnr = that.PDControllerCpPA.getView().getModel("modelAux").getProperty("/Kunnr");
 
 			this.setLog("Iniciando campanha PA.");
 			this.InicializarEventosCampPA();
@@ -286,23 +288,22 @@ sap.ui.define([
 					/* Verifico se é o primeiro registro */
 					if (index === 0) {
 						bRetorno = true;
-					}
-					else {
+					} else {
 						/* Comparo sempre com o registro anterior */
 						if (self[index].Idcamp === self[index - 1].Idcamp) {
 							bRetorno = false;
 						} else {
 							bRetorno = true;
 						}
-					} 
+					}
 
 					return bRetorno;
 				});
-				
+
 				/* Percorro todas as campanhas únicas */
 				for (var i = 0; i < cpUnicas.length; i++) {
 					oCp = new Object();
-					
+
 					oCp.idcampanha = cpUnicas[i].Idcamp || "";
 					oCp.representante = cpUnicas[i].representante || "";
 					oCp.descricaoRepresentante = cpUnicas[i].descricaoRepresentante || "";
@@ -312,9 +313,9 @@ sap.ui.define([
 					oCp.bCampanhaVigente = true;
 
 					/* Filtro somente os grupos da campanha atual */
-					var gruposCP = tmpCampanha.filter(function(value, index, self){
+					var gruposCP = tmpCampanha.filter(function(value, index, self) {
 						var bRetorno;
-						
+
 						bRetorno = cpUnicas[i].Idcamp === self[index].Idcamp;
 						// if(index === 0){
 						// 	bRetorno = cpUnicas[i].Idcamp === self[index].Idcamp;
@@ -323,26 +324,28 @@ sap.ui.define([
 						// 	/* Retorno grupos das mesmas campanha */
 						// 	bRetorno = cpUnicas[i].Idcamp === self[index - 1].Idcamp;
 						// }
-						
+
 						return bRetorno;
 					});
-					
+
 					oCp.grupo = [];
 					/* Percorro todos os grupos da campanha em questão para criar os objetos */
 					for (var j = 0; j < gruposCP.length; j++) {
 						oSg = new Object();
-						
+
 						oSg.idcampanha = gruposCP[j].Idcamp || "";
 						oSg.grupoSku = gruposCP[j].Grupo || "";
 						oSg.matnr = gruposCP[j].material || "";
-						
+
 						oCp.grupo.push(oSg);
 					}
-					
+
 					that.oCmpPA.push(oCp);
 				}
-				
+
 				that.setLog(that.oCmpPA, "CPA");
+
+				that.VerificarCampanhasValidas();
 			});
 
 		} /* GetCampanha */ ,
@@ -350,6 +353,7 @@ sap.ui.define([
 		VerificarCampanhasValidas: function() {
 			var dDataAtual = new Date();
 
+			this.setLog("Verificação de vigência das campanhas.", "CPA");
 			for (var i = 0; i < that.oCmpPA.length; i++) {
 
 				if ((dDataAtual >= that.oCmpPA[i].dataInicio) && (dDataAtual <= that.oCmpPA[i].dataFim)) {
@@ -363,13 +367,97 @@ sap.ui.define([
 		},
 		/* VerificarCampanhasValidas */
 
+		VerificarCampanhaValidaItem: function(resolv) {
+			var open = indexedDB.open("VB_DataBase");
+			var that2 = this;
+
+			open.onsuccess = function() {
+				var db = open.result;
+				var store = db.transaction("AcompPedidoTopo", "readwrite");
+				var objPedidos = store.objectStore("AcompPedidoTopo");
+				var iKunnr = objPedidos.index("Kunnr");
+
+				/* Recupero todos os pedidos do histórico do cliente em questão. */
+				var reqPedidos = iKunnr.getAll(that.kunnr);
+
+				new Promise(function(res, rej) {
+					reqPedidos.onsuccess = function(e) {
+						res(e.target.result);
+					};
+				}).then(function(oPedidosTopo) {
+					store = db.transaction("AcompPedidoDetalhe", "readwrite");
+					var objPedidosDet = store.objectStore("AcompPedidoDetalhe");
+					var iMatnr = objPedidosDet.index("Matnr");
+
+					var reqItens = iMatnr.getAll(that.oItemCpPA.matnr);
+
+					new Promise(function(res2, rej2) {
+						reqItens.onsuccess = function(e) {
+							var oPedidos = new Object();
+							oPedidos.cliente = that.kunnr;
+							oPedidos.topo = oPedidosTopo;
+							oPedidos.det = e.target.result;
+
+							res2(oPedidos);
+						};
+					}).then(function(oPed) {
+						var bRetorno;
+
+						/* Filtro pra trazer soemnte os itens do cliente em questão  */
+						oPed.det.filter(function(obj, i, array) {
+							bRetorno = false;
+
+							/* Preciso percorrer todos os pedidos pra verificar se o item em questão deve ser mantido */
+							for (var j = 0; j < oPed.topo.length; j++) {
+
+								/* Se encontrar o número do pedido, retorno o registro pro vetor*/
+								if (obj.Nrpedcli === oPed.topo[j].Nrpedcli) {
+									bRetorno = true;
+								}
+							}
+							return bRetorno;
+						});
+
+						that2.setLog("Verificar se para cada campanha, já existe vestígio de vendas.", "CPA");
+						var sTempMatnr = "";
+						var bEncontrouItem = false;
+
+						/* Verifico se tem algum item em questão, inutilizo ele na campanha. */
+						for (var j = 0; j < that.oItemCpPA.grupo.length; j++) {
+							sTempMatnr = that.oItemCpPA.grupo[j].matnr;
+
+							/* Percorro todas as vendas */
+							for (var k = 0; k < oPed.det.length; k++) {
+
+								/* Se eu encontrar registro de vendas para o item, inutilizo a campanha */
+								if (oPed.det[k].Matnr === sTempMatnr) {
+									that2.setLog("Item encontrado: " + sTempMatnr + " já foi vendido. A campanha será inutilizada.", "CPA");
+									that.oItemCpPA.bCampanhaVigente = false;
+									bEncontrouItem = true;
+
+									/* Se encontrou pelo menos um material, sai do loop*/
+									break;
+								}
+							}
+
+							if (bEncontrouItem) {
+								break;
+							}
+						}
+						
+						resolv();
+					});
+				});
+			};
+		},
+
 		setValoresCpPA: function(that) {
 			var iQtdeMaxPedGrupo = 0;
 			var iQtdeDigitada = parseFloat(sap.ui.getCore().byId("idQuantidade").getValue());
 			var iQtdeDigitadaGrupo = 0;
 			var iSaldoCpPA;
 			var iQtdePA = 0;
-			
+
 			var sCodCampanha = this.oItemGrCpPA.idcampanha || "";
 			var sCodGrupo = this.oItemGrCpPA.grupoSku || "";
 
@@ -389,11 +477,10 @@ sap.ui.define([
 
 						/* zzGrupoCpPA -> Gravo essa informação no momento que o usuário pressiona o botão 'salvar' */
 						if (((this.PDControllerCpPA.objItensPedidoTemplate[i].zzGrupoCpPA || "") === sCodGrupo) &&
-						((this.PDControllerCpPA.objItensPedidoTemplate[i].zzIDCpPA || "" ) === sCodCampanha)) {
+							((this.PDControllerCpPA.objItensPedidoTemplate[i].zzIDCpPA || "") === sCodCampanha)) {
 							iQtdeDigitadaGrupo = iQtdeDigitadaGrupo + this.PDControllerCpPA.objItensPedidoTemplate[i].zzQntCpPA;
 							break;
 						}
-
 					}
 				}
 			}
@@ -414,12 +501,13 @@ sap.ui.define([
 
 		verificarExibicaoCampoQtdePA: function(sItem) {
 			this.setLog("Verifico se é pra exibir ou ocultar o campo de quantidade.", "CPA");
+			var this2 = this;
+
+			var bEncontrouCp = false;
 
 			/* O evento é disparado duas vezes, controlo pelo valor sugerido, se tiver diferente de branco é proque 
 			foi executado. */
 			if (sItem != "") {
-				var bItemCampanha = false;
-
 				/* Verifico se existe campanha ativa para o item escolhido. */
 				for (var i = 0; i < this.oCmpPA.length; i++) {
 					/* A campanha tem que estar vigente*/
@@ -429,26 +517,40 @@ sap.ui.define([
 
 							/* Verifico se é para o material escolhido */
 							if (this.oCmpPA[i].grupo[j].matnr == sItem) {
-								this.setLog("Campanha encontrada para o item: " + sItem, "CPA");
-								bItemCampanha = true;
-								this.oItemCpPA = this.oCmpPA[i];
-								this.oItemGrCpPA = this.oCmpPA[i].grupo[j];
+								bEncontrouCp = true;
+
+								new Promise(function(resolv) {
+									this2.setLog("Campanha encontrada para o item: " + sItem, "CPA");
+									this2.oItemCpPA = this2.oCmpPA[i];
+									this2.oItemGrCpPA = this2.oCmpPA[i].grupo[j];
+
+									this2.setLog("Verificando se o item " + sItem + " já foi vendido.", "CPA");
+									this2.VerificarCampanhaValidaItem(resolv);
+								}).then(function() {
+									
+									/* Só chamo a função de setar valores se encontrou um item de campanha */
+									if (this2.oItemCpPA) {
+										/* Se for item de campanha, preencho o valor da campanha automaticamnete e exibo o campo quantidade de produto acabado*/
+										sap.ui.getCore().byId("idQuantidadePA").setVisible(this2.oItemCpPA.bCampanhaVigente);
+										sap.ui.getCore().byId("idQuantidade").focus();
+										
+										/* Chamo a primeira vez a distribuição de valores pois o item inserido é incluso com valor 1. */
+										this2.setValoresCpPA(this2);
+									} else {
+										this2.setLog("Nenhuma campanha encontrada para o item: " + sItem, "CPA");
+									}
+								});
+
+								break;
 							}
 						}
 					}
+
+					if (bEncontrouCp) {
+						break;
+					}
 				}
 
-				/* Se for item de campanha, preencho o valor da campanha automaticamnete e exibo o campo quantidade de produto acabado*/
-				sap.ui.getCore().byId("idQuantidadePA").setVisible(bItemCampanha);
-				sap.ui.getCore().byId("idQuantidade").focus();
-
-				/* Só chamo a função de setar valores se encontrou um item de campanha */
-				if (this.oItemCpPA) {
-					/* Chamo a primeira vez a distribuição de valores pois o item inserido é incluso com valor 1. */
-					this.setValoresCpPA(this);
-				} else {
-					this.setLog("Nenhuma campanha encontrada para o item: " + sItem, "CPA");
-				}
 			}
 		},
 
