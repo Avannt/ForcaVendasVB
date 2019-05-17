@@ -31,7 +31,7 @@ sap.ui.define([
 		onSelectIconTabBarCmpGlobal: function(evt) {
 			var item = evt.getParameters();
 
-			if (item.selectedKey == "tab6" || item.selectedKey == "tab5") {
+			if (item.selectedKey === "tab6" || item.selectedKey === "tab5") {
 				that.onAgrupaValidaItensCampGlobal();
 			}
 
