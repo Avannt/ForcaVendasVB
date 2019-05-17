@@ -504,6 +504,9 @@ sap.ui.define([
 			var this2 = this;
 
 			var bEncontrouCp = false;
+			
+			/* O campo começa invisível */
+			sap.ui.getCore().byId("idQuantidadePA").setVisible(false);
 
 			/* O evento é disparado duas vezes, controlo pelo valor sugerido, se tiver diferente de branco é proque 
 			foi executado. */

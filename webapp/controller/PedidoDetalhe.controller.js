@@ -4019,13 +4019,13 @@ sap.ui.define([
 				for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 					if (i == 0) {
 						aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
-						that.indexItem = parseInt(aux[1]);
+						that.indexItem = parseInt(aux[1], 10);
 
 					} else if (i > 0) {
 						aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
 
-						if (that.indexItem < parseInt(aux[1])) {
-							that.indexItem = parseInt(aux[1]);
+						if (that.indexItem < parseInt(aux[1], 10)) {
+							that.indexItem = parseInt(aux[1], 10);
 						}
 					}
 				}

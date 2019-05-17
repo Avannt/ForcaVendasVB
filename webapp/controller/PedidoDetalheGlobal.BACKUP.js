@@ -248,7 +248,7 @@ sap.ui.define([
 			// essa variavel irá armazenar 2. (Quantidade atingida a ser utilizada).
 			var qntParaUtilizar = 0;
 			
-			for(var i=0; i<vetorGrpFamilia.length; i++){
+			for(var i = 0; i<vetorGrpFamilia.length; i++){
 				
 				qntItens += vetorGrpFamilia[i].zzQnt;
 				valorRange = vetorGrpFamilia[i].zzQntRegraGb;
