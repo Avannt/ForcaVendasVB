@@ -1966,7 +1966,7 @@ sap.ui.define([
 			oitem.zzGrpmat = 0;
 			oitem.zzGrpmatExtra = 0;
 			oitem.zzGrupoGlobal = 0;
-			oitem.zzSubGrupoGlobal = 0;
+			oitem.zzSubGrupoGlobal = "0";
 			oitem.zzPercDescDiluicao = 0;
 			oitem.zzPercDescTotal = 0;
 			oitem.zzPercom = 0;
@@ -1987,7 +1987,7 @@ sap.ui.define([
 			oitem.zzVprodDesc2 = 0;
 			oitem.zzVprodDescTotal = 0;
 			oitem.zzVprodMinPermitido = 0;
-
+			oitem.zzMultSubGrupo = false;
 		},
 
 		onFocusQnt: function() {
@@ -4019,13 +4019,13 @@ sap.ui.define([
 				for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 					if (i == 0) {
 						aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
-						that.indexItem = parseInt(aux[1], 10);
+						that.indexItem = parseInt(aux[1]);
 
 					} else if (i > 0) {
 						aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
 
-						if (that.indexItem < parseInt(aux[1], 10)) {
-							that.indexItem = parseInt(aux[1], 10);
+						if (that.indexItem < parseInt(aux[1])) {
+							that.indexItem = parseInt(aux[1]);
 						}
 					}
 				}
