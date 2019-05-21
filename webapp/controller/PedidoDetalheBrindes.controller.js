@@ -46,7 +46,7 @@ sap.ui.define([
 			this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCpBrindes, "select"); /* select */
 			this.onVerificarEvento("idInserirItem", this.onInserirItemPressCpBrindes, "press"); /* press */
 			this.onVerificarEvento("idItemPedido", this.onSuggestItemCpBrindes, "suggest"); /* Evento ao incluir um novo item. */
-			this.onVerificarEvento("idQuantidade", this.onQuantidadeChangeCpBrinde, "change"); /* Evento ao editar uma quantidade no fragmento de escolha de itens. */
+			this.onVerificarEvento("idQuantidade", this.onQuantidadeChangeCpBrinde, "liveChange"); /* Evento ao editar uma quantidade no fragmento de escolha de itens. */
 			this.onVerificarEvento("idButtonSalvarDialog", this.onSalvarItemDialogCpBrinde, "press"); /* press 'salvar' ao incluir um item */
 			this.onVerificarEvento("table_pedidos", this.onItemPressCpBrinde, "itemPress"); /* itemPress 'salvar' ao incluir um item */
 
@@ -94,6 +94,21 @@ sap.ui.define([
 					if (!bExisteEvento) {
 						/* Atribuição de eventos exclusivos da campanha */
 						oElemento.attachChange(oMetodoEvento, this);
+					}
+				}
+				
+				if (sTipoEvento == "liveChange") {
+					if (oEventRegistry.liveChange){
+						for (var i = 0; i < oEventRegistry.liveChange.length; i++) {
+							if (oEventRegistry.change[i].fFunction.name == oMetodoEvento.name) {
+								bExisteEvento = true;
+							}
+						}
+					}
+					
+					if (!bExisteEvento) {
+						/* Atribuição de eventos exclusivos da campanha */
+						oElemento.attachLiveChange(oMetodoEvento, this);
 					}
 				}
 
