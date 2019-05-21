@@ -3997,15 +3997,15 @@ sap.ui.define([
 			that.retornoCmpGlobal = "";
 
 			for (var j = 0; j < that.objItensPedidoTemplate.length; j++) {
-				if (that.oItemPedido.matnr == that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem == "Normal" && (indexEdit == undefined || indexEdit == 0 || indexEdit == "")) {
+				if (that.oItemPedido.matnr === that.objItensPedidoTemplate[j].matnr && that.objItensPedidoTemplate[j].tipoItem === "Normal" && (indexEdit === undefined || indexEdit === 0 || indexEdit === "")) {
 					itemExistente = true;
 					break;
 				}
 			}
 
-			if (itemExistente == false) {
+			if (itemExistente === false) {
 
-				if (indexEdit == undefined) {
+				if (indexEdit === undefined) {
 					that.getOwnerComponent().getModel("modelAux").setProperty("/EditarindexItem", 0);
 					indexEdit = 0;
 				}
@@ -4017,15 +4017,15 @@ sap.ui.define([
 
 				//Define o index do produto a ser inserido
 				for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
-					if (i == 0) {
+					if (i === 0) {
 						aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
-						that.indexItem = parseInt(aux[1]);
+						that.indexItem = parseInt(aux[1], 10);
 
 					} else if (i > 0) {
 						aux = that.objItensPedidoTemplate[i].idItemPedido.split("/");
 
-						if (that.indexItem < parseInt(aux[1])) {
-							that.indexItem = parseInt(aux[1]);
+						if (that.indexItem < parseInt(aux[1], 10)) {
+							that.indexItem = parseInt(aux[1], 10);
 						}
 					}
 				}
@@ -4170,7 +4170,7 @@ sap.ui.define([
 
 											new Promise(function(resolveTopo, rejectTopo) {
 
-												that.pedidoDetalheGlobal.onValidarItensCampanhaGlobal(db, that.oItemPedido, resolveTopo, rejectTopo);
+												that.pedidoDetalheGlobal.onValidarItensCampanhaGlobal(that.oItemPedido, resolveTopo, rejectTopo);
 
 											}).then(function() {
 
@@ -4193,7 +4193,7 @@ sap.ui.define([
 
 											new Promise(function(res, rej) {
 
-												that.pedidoDetalheGlobal.onCheckBrindeCampanhaGlobal(db, that.oItemPedido, res, rej);
+												that.pedidoDetalheGlobal.onCheckBrindeCampanhaGlobal(that.oItemPedido, res, rej, false);
 
 											}).then(function(retornoCmpGlobal) {
 
@@ -4206,25 +4206,41 @@ sap.ui.define([
 
 											}).catch(function(mensagemCmpGlobal) {
 
-												MessageBox.show(mensagemCmpGlobal, {
+												var itensEnvolvidos = "";
+												var brindesEnvolvidos = "";
+												if(mensagemCmpGlobal[1] !== undefined){
+													for(var a = 0; a < mensagemCmpGlobal[1].length; a++){
+														itensEnvolvidos += "<li> Material:" + mensagemCmpGlobal[1][a].matnr + ", Qnt: " + mensagemCmpGlobal[1][a].zzQnt + ", SubGrupo: " + mensagemCmpGlobal[1][a].zzSubGrupoGlobal + "</li>";
+													}
+												}
+												if(mensagemCmpGlobal[2] !== undefined){
+													for(a = 0; a < mensagemCmpGlobal[2].length; a++){
+														brindesEnvolvidos += "<li> Material:" + mensagemCmpGlobal[2][a].matnr + ", Qnt: " + mensagemCmpGlobal[2][a].zzQnt + ", SubGrupo: " + mensagemCmpGlobal[2][a].zzSubGrupoGlobal + "</li>";
+													}
+												}
+												
+												MessageBox.show(mensagemCmpGlobal[0], {
 													icon: MessageBox.Icon.ERROR,
 													title: "Brinde inválido.",
-													actions: [MessageBox.Action.YES],
+													actions: [MessageBox.Action.OK],
+													details: "<p><strong>Itens: </strong></p>\n" + 
+															 "<ul>" +
+															 itensEnvolvidos + 
+															 "</ul>" +
+															 "<p><strong>Brindes: </strong></p>\n" + 
+															 "<ul>" +
+															 brindesEnvolvidos +
+															 "\n</ul>",
 													onClose: function() {
-														// that.onResetaCamposDialog();
-														// sap.ui.getCore().byId("idItemPedido").setValue();
 														sap.ui.getCore().byId("idQuantidade").focus();
 														oPanel.setBusy(false);
 														oButtonSalvar.setEnabled(true);
-
 													}
 												});
 											});
 										}
-
 									}).catch(function() {
 										oButtonSalvar.setEnabled(true);
-
 										return;
 									});
 								};

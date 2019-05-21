@@ -34,7 +34,6 @@ sap.ui.define([
 			if (item.selectedKey === "tab6" || item.selectedKey === "tab5") {
 				that.onAgrupaValidaItensCampGlobal();
 			}
-
 		},
 		/* onSelectIconTabBar */
 		
