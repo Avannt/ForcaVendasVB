@@ -2794,6 +2794,7 @@ sap.ui.define([
 
 			onStartWorking: function() {
 				var that = this;
+				
 				var open = indexedDB.open("VB_DataBase");
 
 				open.onerror = function(hxr) {
