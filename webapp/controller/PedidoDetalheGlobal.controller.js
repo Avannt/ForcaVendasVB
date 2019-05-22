@@ -637,7 +637,7 @@ sap.ui.define([
 					vetorItens.push(aux2);
 				}
 				//Adiciona os itens que fazem parte do mesmo id da campanha que está sendo inserido.
-				else if (todosItens[i].mtpos === "YBRI") {
+				else if (todosItens[i].mtpos === "YBRI" && todosItens[i].zzSubGrupoGlobal !== "") {
 					var aux3 = todosItens[i];
 					vetorBrindes.push(aux3);
 				}
