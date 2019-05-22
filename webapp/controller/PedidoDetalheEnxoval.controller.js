@@ -418,7 +418,16 @@ sap.ui.define([
 
 					that.ajustarValoresBonificacao();
 				}
+
+				that.PDControllerCpEnxoval.byId("idValorTotalEnxoval").setVisible(true);
+				that.PDControllerCpEnxoval.byId("idCampanhaEnxoval").setVisible(true);
+
 			} /*if bCampanhaEnxovalAtiva */
+			else{
+				that.PDControllerCpEnxoval.byId("idValorTotalEnxoval").setVisible(false);
+				that.PDControllerCpEnxoval.byId("idCampanhaEnxoval").setVisible(false);
+				
+			}
 		}
 
 	});

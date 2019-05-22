@@ -1205,13 +1205,15 @@ sap.ui.define([
 																													};
 																												}
 
-																												oModel.read("/A961 ", {
+																												oModel.read("/A961", {
 																													success: function(retornoA961) {
 
 																														var txClienteTabPreco = db.transaction("A961", "readwrite");
 																														var objClienteTabPreco = txClienteTabPreco.objectStore("A961");
 
 																														for (i = 0; i < retornoA961.results.length; i++) {
+																															txClienteTabPreco = db.transaction("A961", "readwrite");
+																															objClienteTabPreco = txClienteTabPreco.objectStore("A961");
 
 																															var objBancoA961 = {
 																																idA961: retornoA961.results[i].Werks + "." +

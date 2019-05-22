@@ -28,8 +28,8 @@ sap.ui.define([
 		_onLoadFields: function() {
 			var that = this;
 
-			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
 			this.pedidoDetalheBrindes = new testeui5.controller.PedidoDetalheBrindes(that);
+			this.pedidoDetalheEnxoval = new testeui5.controller.PedidoDetalheEnxoval(that);
 			this.pedidoDetalhePrazoMedio = new testeui5.controller.PedidoDetalhePrazoMedio(that);
 			this.pedidoDetalheProdutoAcabado = new testeui5.controller.PedidoDetalheProdutoAcabado(that);
 			this.pedidoDetalheGlobal = new testeui5.controller.PedidoDetalheGlobal(that);
@@ -2280,7 +2280,37 @@ sap.ui.define([
 				valUtilizadoComissaoBrinde = parseFloat(valUtilizadoComissaoBrinde);
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", valUtilizadoComissaoBrinde);
 			}
-			
+
+			/*Alteração: 20190308: Inclusão dos valores de campanha enxoval */
+			/* Valores inclusos para o cálculo do excedente da destinação */
+			var valUtilizadoCampanhaEnxoval = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
+			if (valUtilizadoCampanhaEnxoval === "") {
+
+				valUtilizadoCampanhaEnxoval = 0;
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
+
+			} else {
+
+				valUtilizadoCampanhaEnxoval = parseFloat(valUtilizadoCampanhaEnxoval);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", valUtilizadoCampanhaEnxoval);
+			}
+			/* --FIM-- */
+
+			/*Alteração: 20190328: Inclusão dos valores de campanha de produto acabado (produto novo) */
+			/* Valores inclusos para o cálculo do excedente da destinação */
+			var valUtilizadoCampanhaProdutoAcabado = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado");
+			if (valUtilizadoCampanhaProdutoAcabado === "") {
+
+				valUtilizadoCampanhaProdutoAcabado = 0;
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", 0);
+
+			} else {
+
+				valUtilizadoCampanhaProdutoAcabado = parseFloat(valUtilizadoCampanhaProdutoAcabado);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", valUtilizadoCampanhaProdutoAcabado);
+			}
+			/* --FIM-- */
+
 			var valTotalExcedenteBrinde = 0;
 
 			/* Campanha brinde inicio - Diego Djeri - 20190312*/
@@ -2576,20 +2606,7 @@ sap.ui.define([
 
 			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", teste);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", teste);
-			
-			/* Campanha Enxoval */
-			if (this.pedidoDetalheEnxoval) {
-				this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
-			}
-			/* Campanha de Produto Acabado*/
-			if (this.pedidoDetalheProdutoAcabado) {
-				this.pedidoDetalheProdutoAcabado.calcularTotalPedidoCpPA();
-			}
-			/* Campanha Prazo Médio */
-			if (this.pedidoDetalheEnxoval) {
-				this.pedidoDetalhePrazoMedio.onChecarRangeCmpPrzMed();
-			}
-			
+
 			console.log("CALCULO PARCELAMENTO");
 			if (existeParcelas == false) {
 
@@ -2682,51 +2699,17 @@ sap.ui.define([
 				that.byId("idVerbaUtilizadaPrazo").setValueStateText("");
 			}
 
-			/*Alteração: 20190308: Inclusão dos valores de campanha enxoval */
-			/* Valores inclusos para o cálculo do excedente da destinação */
-			var valUtilizadoCampanhaEnxoval = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoCampEnxoval");
-			if (valUtilizadoCampanhaEnxoval === "") {
-
-				valUtilizadoCampanhaEnxoval = 0;
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", 0);
-
-			} else {
-
-				valUtilizadoCampanhaEnxoval = parseFloat(valUtilizadoCampanhaEnxoval);
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", valUtilizadoCampanhaEnxoval);
-			}
-			/* --FIM-- */
-			
-			/*Alteração: 20190328: Inclusão dos valores de campanha de produto acabado (produto novo) */
-			/* Valores inclusos para o cálculo do excedente da destinação */
-			var valUtilizadoCampanhaProdutoAcabado = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado");
-			if (valUtilizadoCampanhaProdutoAcabado === "") {
-
-				valUtilizadoCampanhaProdutoAcabado = 0;
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", 0);
-
-			} else {
-
-				valUtilizadoCampanhaProdutoAcabado = parseFloat(valUtilizadoCampanhaProdutoAcabado);
-				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValTotalCampProdutoAcabado", valUtilizadoCampanhaProdutoAcabado);
-			}
-			/* --FIM-- */
-
 			valUtilizadoComissaoBonif = Math.round(valUtilizadoComissaoBonif * 100) / 100;
 			valUtilizadoVerbaBonif = Math.round(valUtilizadoVerbaBonif * 100) / 100;
 			valTotalExcedenteBonif = Math.round(valTotalExcedenteBonif * 100) / 100;
 			valUtilizadoCampanhaEnxoval = Math.round(valUtilizadoCampanhaEnxoval * 100) / 100;
 			valUtilizadoCampanhaProdutoAcabado = Math.round(valUtilizadoCampanhaProdutoAcabado * 100) / 100;
-			
-			that.getOwnerComponent().getModel("modelAux").setProperty("/ValTotalCampProdutoAcabado", valUtilizadoCampanhaProdutoAcabado > 0);
-			
+
 			/* Alterçaão: 20190308 (Enxoval) 20190328 (PA)- Diego Djeri */
 			/* Inicio
 				Inclusão do valor da campanha enxoval no cálculo que controla a destinação da verba em excesso.
 				valUtilizadoCampanhaEnxoval
 			*/
-			
-			//valTotalExcedenteBonif = valTotalExcedenteBonif - (valUtilizadoCampanhaEnxoval + valUtilizadoCampanhaProdutoAcabado);
 
 			//BONIFICAÇÃO
 			if (valTotalExcedenteBonif < (valUtilizadoVerbaBonif + valUtilizadoComissaoBonif + valUtilizadoCampanhaEnxoval + valUtilizadoCampanhaProdutoAcabado).toFixed(2)) {
@@ -2797,12 +2780,19 @@ sap.ui.define([
 				that.byId("idComissaoUtilizadaBrinde").setValueState("None");
 				that.byId("idComissaoUtilizadaBrinde").setValueStateText("");
 			}
-			
-			//* EXIBO OU OCULTO OS CAMPOS DA CAMPANHA */
-			
-			that.byId("idValorTotalBrinde").setVisible(valTotalCampanhaBrinde > 0);
-			
-			that.byId("idValTotCampProdutoAcabado").setVisible(valUtilizadoCampanhaProdutoAcabado > 0);
+
+			/* Campanha Enxoval */
+			if (this.pedidoDetalheEnxoval) {
+				this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
+			}
+			/* Campanha de Produto Acabado*/
+			if (this.pedidoDetalheProdutoAcabado) {
+				this.pedidoDetalheProdutoAcabado.calcularTotalPedidoCpPA();
+			}
+			/* Campanha Prazo Médio */
+			if (this.pedidoDetalheEnxoval) {
+				this.pedidoDetalhePrazoMedio.onChecarRangeCmpPrzMed();
+			}
 		},
 		/* calculaTotalPedido */
 
