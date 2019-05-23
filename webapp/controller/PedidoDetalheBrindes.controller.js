@@ -45,7 +45,9 @@ sap.ui.define([
 			this.onVerificarEvento("idTipoPedido", this.onChangeIdTipoPedidoCpBrindes, "change"); /* change */
 			this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCpBrindes, "select"); /* select */
 			this.onVerificarEvento("idInserirItem", this.onInserirItemPressCpBrindes, "press"); /* press */
-			this.onVerificarEvento("idItemPedido", this.onSuggestItemCpBrindes, "suggest"); /* Evento ao incluir um novo item. */
+
+			this.onVerificarEvento("idItemPedido", this.onSuggestItemCpBrindes, "search"); /* Evento ao incluir um novo item. */
+
 			this.onVerificarEvento("idQuantidade", this.onQuantidadeChangeCpBrinde, "liveChange"); /* Evento ao editar uma quantidade no fragmento de escolha de itens. */
 			this.onVerificarEvento("idButtonSalvarDialog", this.onSalvarItemDialogCpBrinde, "press"); /* press 'salvar' ao incluir um item */
 			this.onVerificarEvento("table_pedidos", this.onItemPressCpBrinde, "itemPress"); /* itemPress 'salvar' ao incluir um item */
@@ -86,9 +88,11 @@ sap.ui.define([
 				}
 
 				if (sTipoEvento == "change") {
-					for (var i = 0; i < oEventRegistry.change.length; i++) {
-						if (oEventRegistry.change[i].fFunction.name == oMetodoEvento.name) {
-							bExisteEvento = true;
+					if (oEventRegistry.change) {
+						for (var i = 0; i < oEventRegistry.change.length; i++) {
+							if (oEventRegistry.change[i].fFunction.name == oMetodoEvento.name) {
+								bExisteEvento = true;
+							}
 						}
 					}
 					if (!bExisteEvento) {
@@ -96,16 +100,30 @@ sap.ui.define([
 						oElemento.attachChange(oMetodoEvento, this);
 					}
 				}
-				
+
+				if (sTipoEvento == "search") {
+					if (oEventRegistry.search) {
+						for (var i = 0; i < oEventRegistry.search.length; i++) {
+							if (oEventRegistry.search[i].fFunction.name == oMetodoEvento.name) {
+								bExisteEvento = true;
+							}
+						}
+					}
+					if (!bExisteEvento) {
+						/* Atribuição de eventos exclusivos da campanha */
+						oElemento.attachSearch(oMetodoEvento, this);
+					}
+				}
+
 				if (sTipoEvento == "liveChange") {
-					if (oEventRegistry.liveChange){
+					if (oEventRegistry.liveChange) {
 						for (var i = 0; i < oEventRegistry.liveChange.length; i++) {
 							if (oEventRegistry.change[i].fFunction.name == oMetodoEvento.name) {
 								bExisteEvento = true;
 							}
 						}
 					}
-					
+
 					if (!bExisteEvento) {
 						/* Atribuição de eventos exclusivos da campanha */
 						oElemento.attachLiveChange(oMetodoEvento, this);
@@ -149,33 +167,34 @@ sap.ui.define([
 				}
 			}
 		},
-		
-		onItemPressCpBrinde: function(evt){
+
+		onItemPressCpBrinde: function(evt) {
 			var sItem = this.PDControllerCpBrinde.oItemPedido.matnr;
-			
+
 			this.verificarExibicaoCampoQtdeBrinde(sItem);
-			
+
 			/* Preciso verificar os eventos novamente pois como abriu o fragment, o evento pode não estar atribuído ao controle*/
 			this.InicializarEventosCampBrinde();
 		},
 		/* onItemPressCpBrinde */
 
 		onSuggestItemCpBrindes: function(evt) {
-			var sItem = evt.getParameter("suggestValue");
+			var sItem = sap.ui.getCore().byId("idItemPedido").getValue();
+
 			this.oItemCpBrindeAtual = undefined;
-			
+
 			this.verificarExibicaoCampoQtdeBrinde(sItem);
 		},
 		/* onSuggestItemCpBrindes */
-		
-		onSalvarItemDialogCpBrinde: function(evt){
+
+		onSalvarItemDialogCpBrinde: function(evt) {
 			/* Ao pressionar o botão salvar, o sistema irá identificar o que é excedente de brinde e o que é equivalente a campanha */
-			
+
 			var iQtdeCpBrinde = parseFloat(sap.ui.getCore().byId("idQuantidadeBrinde").getValue());
-			
-			if (isNaN(iQtdeCpBrinde) == false ){
+
+			if (isNaN(iQtdeCpBrinde) == false) {
 				this.PDControllerCpBrinde.oItemPedido.zzQntCpBrinde = iQtdeCpBrinde;
-			}else{
+			} else {
 				this.PDControllerCpBrinde.oItemPedido.zzQntCpBrinde = 0;
 			}
 		},
@@ -284,7 +303,7 @@ sap.ui.define([
 		setValoresCpBrindes: function(that) {
 			var that2 = that;
 			var this2 = this;
-			
+
 			var iQtdeMaxPed = parseFloat(this.oItemCpBrindeAtual.quantidadeMaxima);
 			var iQtdeTotal = parseFloat(this.oItemCpBrindeAtual.quantidadeTotal);
 			var iQtdeDigitada = parseFloat(sap.ui.getCore().byId("idQuantidade").getValue());
@@ -292,55 +311,62 @@ sap.ui.define([
 
 			/* Busco todos os itens que foram utilizados em campanhas */
 			var iTotalSistema = 0;
-			new Promise(function(res4, rej4){
+			new Promise(function(res4, rej4) {
 				var oBrindes = [];
-				
+
 				this2.getTotalSistema(oBrindes, res4, that2.PDControllerCpBrinde.oItemPedido);
-			}).then(function(oBrindes){
+			}).then(function(oBrindes) {
 				iTotalSistema = oBrindes.qtde;
-				
+
 				/* Calculo o saldo que consta no sistema */
 				var iSaldo = iQtdeTotal - iTotalSistema;
-				
+
 				var iQtdeLiberadaBrinde = 0;
-				
+
 				/* Se o saldo for menor que a quantidade disponível, considero o saldo como liberada pra uso*/
-				if(iSaldo < iQtdeMaxPed){
+				if (iSaldo < iQtdeMaxPed) {
 					iQtdeLiberadaBrinde = iSaldo;
 				} else { /* Caso contrário, considero a qtde máxima por pedido como liberada */
 					iQtdeLiberadaBrinde = iQtdeMaxPed;
 				}
-				
+
 				/* Agora preciso comparar a quantidade liberada pra uso com a quantidade digitada pelo usuário. */
-				if(iQtdeLiberadaBrinde < iQtdeDigitada){
+				if (iQtdeLiberadaBrinde < iQtdeDigitada) {
 					iQtdeBrinde = iQtdeLiberadaBrinde;
 				} else { /* Caso contrário, considero a qtde máxima por pedido como liberada */
 					iQtdeBrinde = iQtdeDigitada;
 				}
-				
+
 				sap.ui.getCore().byId("idQuantidadeBrinde").setValue(iQtdeBrinde);
-				
-			}).catch(function(){
+				if (isNaN(iQtdeBrinde) == false) {
+					sap.m.MessageToast.show("Campanha de brindes ativada, quantidade: " + iQtdeBrinde.toString(), {
+						duration: 3000
+					});
+				} else {
+					sap.ui.getCore().byId("idQuantidadePA").setValue(0);
+				}
+
+			}).catch(function() {
 				sap.ui.getCore().byId("idQuantidadeBrinde").setValue(iQtdeBrinde);
 			});
 			/* Fim */
-			
+
 		},
 		/* setValoresCpBrindes */
-		
-		getTotalSistema: function(oBrindes, res4, itemPedido){
+
+		getTotalSistema: function(oBrindes, res4, itemPedido) {
 			var open = indexedDB.open("VB_DataBase");
 			var db = "";
-			
-			new Promise(function(res, rej){
-				
+
+			new Promise(function(res, rej) {
+
 				open.onsuccess = function() {
 					db = open.result;
-		
+
 					var sPedidos = db.transaction("PrePedidos", "readwrite");
 					var objPedidos = sPedidos.objectStore("PrePedidos");
 					var iStatus = objPedidos.index("idStatusPedido");
-					
+
 					/*
 					Regra dos status dos pedidos
 					1 - Pedidos em digitação: Considerar todos.
@@ -351,45 +377,45 @@ sap.ui.define([
 					sendo considerados no saldo retornado da atualização
 					de tabelas).
 					*/
-					
+
 					/* Recupero todos os pedidos com status 1, 2, 3 */
 					var krStatus = IDBKeyRange.bound(1, 3);
 					var tPedido = iStatus.openCursor(krStatus);
 					var oDocsPendentes = [];
 					var cursor;
 					var oDoc;
-						
+
 					tPedido.onsuccess = function(e) {
 						cursor = e.target.result;
-	
+
 						if (cursor) {
 							oDoc = cursor.value;
-	
+
 							// Verifico se o pedido já foi enviado (Status = 3) /
 							if (oDoc.idStatusPedido == 3) {
-	
+
 								// Recupero a data da última atualização de tabelas /
 								/**/
 								var sUltimaAtualizacao = that.PDControllerCpBrinde.getOwnerComponent().getModel("modelAux").getProperty("/DataAtualizacao");
 								sUltimaAtualizacao = sUltimaAtualizacao.replace("/", "-").replace("/", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
 								var p = sUltimaAtualizacao.split("-");
 								var dUltimaAtualizacao = new Date("20" + p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
-	
+
 								var sDataImpl = oDoc.dataImpl.replace("/", "-").replace("/", "-").replace(":", "-").replace(":", "-").replace(" ", "").replace(" ", "") + "-00";
 								p = sDataImpl.split("-");
 								var dDataImpl = new Date(p[2], parseInt(p[1]) - 1, p[0], p[3], p[4], p[5]);
 								/**/
-	
+
 								// Verifico se a data do pedido é superior a data da última atualização /
 								if (dDataImpl > dUltimaAtualizacao) {
 									oDocsPendentes.push(oDoc);
 								}
-	
+
 								cursor.continue();
-	
+
 							} else {
 								cursor.continue();
-	
+
 								oDocsPendentes.push(oDoc);
 							}
 						} else {
@@ -397,83 +423,83 @@ sap.ui.define([
 						}
 					};
 				};
-				
-			}).then(function(oDocsPendentes){
+
+			}).then(function(oDocsPendentes) {
 				var vItensBrindes = [];
-	
+
 				var p2 = new Promise(function(res2) {
 					var iIteracao = 0;
-	
+
 					// Percorro todos os pedidos buscando os itens do tipo brindes em aberto /
 					for (var i = 0; i < oDocsPendentes.length; i++) {
-	
+
 						var sItens = db.transaction("ItensPedido", "readwrite");
 						var objItens = sItens.objectStore("ItensPedido");
 						var inrPedCli = objItens.index("nrPedCli");
-	
+
 						var p3 = new Promise(function(res3, rej3) {
 							var tItens = inrPedCli.openCursor(oDocsPendentes[i].nrPedCli);
 							var tempItensBri = [];
-	
+
 							tItens.onsuccess = function(e) {
 								var cursor = e.target.result;
-	
+
 								if (cursor) {
-	
+
 									/* Verifico se o item em questão é de BRINDE (YBRI)*/
 									if (cursor.value.mtpos === "YBRI") {
 										tempItensBri.push(cursor.value);
 									}
-	
+
 									cursor.continue();
 								} else {
-	
+
 									res3(tempItensBri);
 								}
 							};
 						}).then(function(tempItensBri) { /*res3*/
 							iIteracao = iIteracao + 1;
-	
+
 							for (var j = 0; j < tempItensBri.length; j++) {
 								// Verifico se não é o pedido e o material em questão, não posso considerar para cálculo de saldo /
 								if (tempItensBri[j].idItemPedido == itemPedido.idItemPedido && tempItensBri[j].index == itemPedido.index) {
 									continue;
 								}
-								
+
 								/* Só preciso de brindes do material que estou inserindo / atualizando no momento */
 								if (tempItensBri[j].matnr == itemPedido.matnr) {
 									vItensBrindes.push(tempItensBri[j]);
 								}
-	
+
 							}
-	
+
 							// Verifico se é a últma iteração do loop pra dar continuidade ao processo /
 							if (iIteracao == oDocsPendentes.length) {
 								res2(vItensBrindes);
 							}
 						});
-	
+
 					} /* for */
-	
+
 				}).then(function(vItensBrindes) {
 					var iQtdeUtilizada = 0;
 					for (var i = 0; i < vItensBrindes.length; i++) {
 						iQtdeUtilizada = iQtdeUtilizada + vItensBrindes[i].zzQnt;
 					}
-	
+
 					oBrindes.itens = vItensBrindes;
 					oBrindes.qtde = iQtdeUtilizada;
-	
+
 					res4(oBrindes);
 				});
-				
-			}).catch(function(){
-				
+
+			}).catch(function() {
+
 			});
 		},
 		/* getTotalSistema */
-		
-		verificarExibicaoCampoQtdeBrinde: function(sItem){
+
+		verificarExibicaoCampoQtdeBrinde: function(sItem) {
 			/* O evento é disparado duas vezes, controlo pelo valor sugerido, se tiver diferente de branco é proque 
 			foi executado. */
 			if (sItem != "") {
@@ -492,22 +518,24 @@ sap.ui.define([
 				}
 
 				/* Se for item de campanha, preencho o valor da campanha automaticamnete e exibo o campo quantidade de brindes*/
-				sap.ui.getCore().byId("idQuantidadeBrinde").setVisible(bItemCampanha);
-				sap.ui.getCore().byId("idQuantidade").focus();
+				console.log("Digitação de itens da campanha de Brindes.");
+
+				/*	FOI TIRADO O CAMPO VISUAL TEMPORARIAMENTE */
+				//sap.ui.getCore().byId("idQuantidadeBrinde").setVisible(bItemCampanha);
 
 				/* Só chamo a função de setar valores se encontrou um item de campanha */
 				if (this.oItemCpBrindeAtual) {
 					/* Chamo a primeira vez a distribuição de valores pois o item inserido é incluso com valor 1. */
 					this.setValoresCpBrindes(this);
 				}
-			}			
+			}
 		},
-		
-		disponibilizarValoresCpBrindes: function(){
-			
+
+		disponibilizarValoresCpBrindes: function() {
+
 			/* Percorro todos os itens para distribuir os excedentes */
 			console.log("MUDAR TAB CAMPANHA BRINDE.");
-			
+
 		}
 	});
 });

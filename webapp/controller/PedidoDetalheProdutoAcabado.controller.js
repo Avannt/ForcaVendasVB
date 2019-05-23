@@ -51,7 +51,9 @@ sap.ui.define([
 			this.onVerificarEvento("idTipoPedido", this.onChangeIdTipoPedidoCpPA, "change"); /* change */
 			this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCpPA, "select"); /* select */
 			this.onVerificarEvento("idInserirItem", this.onInserirItemPressCpPA, "press"); /* press */
-			this.onVerificarEvento("idItemPedido", this.onSuggestItemCpPA, "suggest"); /* Evento ao incluir um novo item. */
+			
+			this.onVerificarEvento("idItemPedido", this.onSuggestItemCpPA, "search"); /* Evento ao incluir um novo item. */
+			
 			this.onVerificarEvento("idButtonSalvarDialog", this.onSalvarItemDialogCpPA, "press"); /* press 'salvar' ao incluir um item */
 			this.onVerificarEvento("idQuantidade", this.onQuantidadeChangeCpPA, "liveChange"); /* Evento ao editar uma quantidade no fragmento de escolha de itens. */
 			this.onVerificarEvento("table_pedidos", this.onItemPressCpPA, "itemPress"); /* itemPress ao editar um item na tabela de itens */
@@ -141,7 +143,21 @@ sap.ui.define([
 						oElemento.attachPress(oMetodoEvento, this);
 					}
 				}
-
+				
+				if (sTipoEvento == "search") {
+					if (oEventRegistry.search){
+						for (var i = 0; i < oEventRegistry.search.length; i++) {
+							if (oEventRegistry.search[i].fFunction.name == oMetodoEvento.name) {
+								bExisteEvento = true;
+							}
+						}
+					}
+					if (!bExisteEvento) {
+						/* Atribuição de eventos exclusivos da campanha */
+						oElemento.attachSearch(oMetodoEvento, this);
+					}
+				}
+				
 				if (sTipoEvento == "suggest") {
 					for (var i = 0; i < oEventRegistry.search.length; i++) {
 						if (oEventRegistry.suggest[i].fFunction.name == oMetodoEvento.name) {
@@ -166,7 +182,8 @@ sap.ui.define([
 		/* onItemPressCpPA */
 
 		onSuggestItemCpPA: function(evt) {
-			var sItem = evt.getParameter("suggestValue");
+			var sItem = sap.ui.getCore().byId("idItemPedido").getValue();
+			
 			this.oItemCpPA = undefined;
 			this.oItemGrCpPA = undefined;
 
@@ -384,11 +401,9 @@ sap.ui.define([
 					/* CAMPANHA DE ENXOVAL TEM PRIORIDADE SOBRE A CAMPANHA DE BRINDES				*/
 					/* OU SEJA, SE TIVER CAMPANHA ENXOVAL ATIVA, INUTILIZO A CAMPANHA DE BRINDES	*/
 					if (this.PDControllerCpPA.pedidoDetalheEnxoval) {
-						if (this.PDControllerCpPA.pedidoDetalheEnxoval.oCmpEnxoval[0]) {
-							if (this.PDControllerCpPA.pedidoDetalheEnxoval.oCmpEnxoval[0].bCampanhaVigente) {
-								this.setLog("Campanha " + that.oCmpPA[i].idcampanha + " não será utilizada pois existe uma de ENXOVAL ativa!", "CPA");
-								that.oCmpPA[i].bCampanhaVigente = false;
-							}
+						if (this.PDControllerCpPA.pedidoDetalheEnxoval.bCampanhaEnxovalAtiva) {
+							this.setLog("Campanha " + that.oCmpPA[i].idcampanha + " não será utilizada pois existe uma de ENXOVAL ativa!", "CPA");
+							that.oCmpPA[i].bCampanhaVigente = false;
 						}
 					}
 				} else {
@@ -620,6 +635,11 @@ sap.ui.define([
 
 			/*parseFloat(this.oItemCpPA.quantidadeMaxima)*/
 			sap.ui.getCore().byId("idQuantidadePA").setValue(iQtdePA);
+			if(isNaN(iQtdePA) == false){
+				sap.m.MessageToast.show("Campanha produto novo ativada, quantidade: " + iQtdePA.toString(), {duration: 3000});
+			}else{
+				sap.ui.getCore().byId("idQuantidadePA").setValue(0);
+			}
 			/* Fim */
 		},
 		/* setValoresCpPA */
@@ -631,7 +651,7 @@ sap.ui.define([
 			var bEncontrouCp = false;
 
 			/* O campo começa invisível */
-			sap.ui.getCore().byId("idQuantidadePA").setVisible(false);
+			//sap.ui.getCore().byId("idQuantidadePA").setVisible(false);
 
 			/* O evento é disparado duas vezes, controlo pelo valor sugerido, se tiver diferente de branco é proque 
 			foi executado. */
@@ -659,8 +679,8 @@ sap.ui.define([
 									/* Só chamo a função de setar valores se encontrou um item de campanha */
 									if (this2.oItemCpPA) {
 										/* Se for item de campanha, preencho o valor da campanha automaticamnete e exibo o campo quantidade de produto acabado*/
-										sap.ui.getCore().byId("idQuantidadePA").setVisible(this2.oItemCpPA.bCampanhaVigente);
-										sap.ui.getCore().byId("idQuantidade").focus();
+										//sap.ui.getCore().byId("idQuantidadePA").setVisible(this2.oItemCpPA.bCampanhaVigente);
+										// sap.ui.getCore().byId("idQuantidade").focus();
 
 										/* Chamo a primeira vez a distribuição de valores pois o item inserido é incluso com valor 1. */
 										this2.setValoresCpPA(this2);
