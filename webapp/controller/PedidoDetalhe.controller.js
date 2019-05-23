@@ -1544,7 +1544,12 @@ sap.ui.define([
 							that.oItemPedido.zzQntAmostra = 0;
 							that.oItemPedido.maxdescpermitido = 0;
 							that.oItemPedido.maxdescpermitidoExtra = 0;
-
+							that.oItemPedido.zzAtingiuCmpGlobal = "Não";
+							that.oItemPedido.zzGrupoGlobal = 0;
+							that.oItemPedido.ZzQntCpBrinde = 0;
+							that.oItemPedido.ZzQntRegragb = 0;
+							that.oItemPedido.zzUtilCampGlobal = "Não";
+							
 							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Normal") {
 
@@ -2380,7 +2385,7 @@ sap.ui.define([
 						//SOMA OS ITENS PARA QUANTIFICAR O QUANTO GEROU DE EXCEDENTE DE BRINDE. TIRANDO OS ITENS DE CAMPANHA GLOBAL. zzUtilCampGlobal == "Não"
 						valTotalCampanhaGlobal += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
 
-					} else {
+					} else if(that.objItensPedidoTemplate[i].zzSubGrupoGlobal != "") {
 						// Alteração para campanha de Global - 20190315 - Ricardo Junior
 						/* Alteração para campanha de brindes - 20190312 - Diego Djeri */
 						/* Inicio */
