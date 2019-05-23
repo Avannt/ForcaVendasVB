@@ -1411,9 +1411,10 @@ sap.ui.define([
 						};
 					}).then(function(oPed) {
 						var bRetorno;
-
+						var vTemp;
 						/* Percorro todas as linhas dos itens para filtrar  */
-						oPed.det.filter(function(obj, i, array) {
+						
+						vTemp = oPed.det.filter(function(obj, i, array) {
 							bRetorno = false;
 
 							/* Preciso percorrer todos os pedidos pra verificar se o item em questão deve ser mantido */
@@ -1427,6 +1428,8 @@ sap.ui.define([
 
 							return bRetorno;
 						});
+						
+						oPed.det = vTemp;
 						
 						var iQtdeTotVendida = 0;
 						oPed.det.map(function(oItem) {
