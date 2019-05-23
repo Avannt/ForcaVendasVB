@@ -1549,6 +1549,7 @@ sap.ui.define([
 							that.oItemPedido.ZzQntCpBrinde = 0;
 							that.oItemPedido.ZzQntRegragb = 0;
 							that.oItemPedido.zzUtilCampGlobal = "Não";
+							that.oItemPedido.zzSubGrupoGlobal = "";
 							
 							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Normal") {
