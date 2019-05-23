@@ -1595,8 +1595,8 @@ sap.ui.define([
 
 																																																							var objBancoCmpGbProdsAcabs = {
 																																																								idCmpGbProdsAcabs: i,
-																																																								representante: retornoCmpGbProdsAcabs.results[i].Representante,
-																																																								descricaoRepresentante: retornoCmpGbProdsAcabs.results[i].DescricaoRepresentante,
+																																																								representante: retornoCmpGbProdsAcabs.results[i].IRepresentante,
+																																																								descricaoRepresentante: retornoCmpGbProdsAcabs.results[i].DescricaoRepresentante || "",
 																																																								grupo:  retornoCmpGbProdsAcabs.results[i].Grupo,
 																																																								descricaoGrupo: retornoCmpGbProdsAcabs.results[i].DescricaoGrupo,
 																																																								quantidade:  parseInt(retornoCmpGbProdsAcabs.results[i].Quantidade, 10),

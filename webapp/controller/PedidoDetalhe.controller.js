@@ -1060,7 +1060,7 @@ sap.ui.define([
 						} else {
 							//inicialização do Obg oItemPedido. Irá colocar todas as propriedades com o valor inicial delas
 							that.onInicializaItem(that.oItemPedido);
-							
+
 							/* CLIENTE - MATERIAL */
 							var sCliente = that.getOwnerComponent().getModel("modelAux").getData("Kunnr").Kunnr;
 							that.onCalcularMediaItem(sCliente, oMaterial.matnr);
@@ -1413,7 +1413,7 @@ sap.ui.define([
 						var bRetorno;
 						var vTemp;
 						/* Percorro todas as linhas dos itens para filtrar  */
-						
+
 						vTemp = oPed.det.filter(function(obj, i, array) {
 							bRetorno = false;
 
@@ -1428,9 +1428,9 @@ sap.ui.define([
 
 							return bRetorno;
 						});
-						
+
 						oPed.det = vTemp;
-						
+
 						var iQtdeTotVendida = 0;
 						oPed.det.map(function(oItem) {
 							iQtdeTotVendida += oItem.Zzqnt || 0;
@@ -1442,7 +1442,7 @@ sap.ui.define([
 						} else {
 							dMedia = oPed.topo.length / iQtdeTotVendida;
 						}
-						
+
 						that.oItemPedido.zzMedia = dMedia.toFixed(2);
 					});
 				});
@@ -1549,7 +1549,7 @@ sap.ui.define([
 							that.oItemPedido.ZzQntCpBrinde = 0;
 							that.oItemPedido.ZzQntRegragb = 0;
 							that.oItemPedido.zzUtilCampGlobal = "Não";
-							
+
 							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Normal") {
 
@@ -2288,7 +2288,7 @@ sap.ui.define([
 				valUtilizadoComissaoBrinde = parseFloat(valUtilizadoComissaoBrinde);
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoComissaoBrinde", valUtilizadoComissaoBrinde);
 			}
-			
+
 			var valTotalExcedenteBrinde = 0;
 
 			/* Campanha brinde inicio - Diego Djeri - 20190312*/
@@ -2385,7 +2385,7 @@ sap.ui.define([
 						//SOMA OS ITENS PARA QUANTIFICAR O QUANTO GEROU DE EXCEDENTE DE BRINDE. TIRANDO OS ITENS DE CAMPANHA GLOBAL. zzUtilCampGlobal == "Não"
 						valTotalCampanhaGlobal += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
 
-					} else if(that.objItensPedidoTemplate[i].zzSubGrupoGlobal != "") {
+					} else if (that.objItensPedidoTemplate[i].zzSubGrupoGlobal != "") {
 						// Alteração para campanha de Global - 20190315 - Ricardo Junior
 						/* Alteração para campanha de brindes - 20190312 - Diego Djeri */
 						/* Inicio */
@@ -2584,7 +2584,7 @@ sap.ui.define([
 
 			// this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", teste);
 			this.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampProdutoAcabado", teste);
-			
+
 			/* Campanha Enxoval */
 			if (this.pedidoDetalheEnxoval) {
 				this.pedidoDetalheEnxoval.calculaTotalPedidoEnxoval();
@@ -2597,7 +2597,7 @@ sap.ui.define([
 			if (this.pedidoDetalheEnxoval) {
 				this.pedidoDetalhePrazoMedio.onChecarRangeCmpPrzMed();
 			}
-			
+
 			console.log("CALCULO PARCELAMENTO");
 			if (existeParcelas == false) {
 
@@ -2704,7 +2704,7 @@ sap.ui.define([
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/ValUtilizadoCampEnxoval", valUtilizadoCampanhaEnxoval);
 			}
 			/* --FIM-- */
-			
+
 			/*Alteração: 20190328: Inclusão dos valores de campanha de produto acabado (produto novo) */
 			/* Valores inclusos para o cálculo do excedente da destinação */
 			var valUtilizadoCampanhaProdutoAcabado = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalCampProdutoAcabado");
@@ -2725,15 +2725,15 @@ sap.ui.define([
 			valTotalExcedenteBonif = Math.round(valTotalExcedenteBonif * 100) / 100;
 			valUtilizadoCampanhaEnxoval = Math.round(valUtilizadoCampanhaEnxoval * 100) / 100;
 			valUtilizadoCampanhaProdutoAcabado = Math.round(valUtilizadoCampanhaProdutoAcabado * 100) / 100;
-			
+
 			that.getOwnerComponent().getModel("modelAux").setProperty("/ValTotalCampProdutoAcabado", valUtilizadoCampanhaProdutoAcabado > 0);
-			
+
 			/* Alterçaão: 20190308 (Enxoval) 20190328 (PA)- Diego Djeri */
 			/* Inicio
 				Inclusão do valor da campanha enxoval no cálculo que controla a destinação da verba em excesso.
 				valUtilizadoCampanhaEnxoval
 			*/
-			
+
 			//valTotalExcedenteBonif = valTotalExcedenteBonif - (valUtilizadoCampanhaEnxoval + valUtilizadoCampanhaProdutoAcabado);
 
 			//BONIFICAÇÃO
@@ -2805,11 +2805,11 @@ sap.ui.define([
 				that.byId("idComissaoUtilizadaBrinde").setValueState("None");
 				that.byId("idComissaoUtilizadaBrinde").setValueStateText("");
 			}
-			
+
 			//* EXIBO OU OCULTO OS CAMPOS DA CAMPANHA */
-			
+
 			that.byId("idValorTotalBrinde").setVisible(valTotalCampanhaBrinde > 0);
-			
+
 			that.byId("idValTotCampProdutoAcabado").setVisible(valUtilizadoCampanhaProdutoAcabado > 0);
 		},
 		/* calculaTotalPedido */
@@ -3929,7 +3929,7 @@ sap.ui.define([
 			sap.ui.getCore().byId("idComissao").setValue(that.oItemPedido.zzPercom);
 			sap.ui.getCore().byId("idPrecoCheio").setValue(that.oItemPedido.zzVprod);
 			sap.ui.getCore().byId("idDesconto").setValue(that.oItemPedido.zzDesitem);
-			if(sap.ui.getCore().byId("idMedia")){
+			if (sap.ui.getCore().byId("idMedia")) {
 				sap.ui.getCore().byId("idMedia").setValue(that.oItemPedido.zzMedia || 0);
 			}
 			sap.ui.getCore().byId("idImgProduto").setSrc(that.oItemPedido.pathImg);
@@ -4053,10 +4053,12 @@ sap.ui.define([
 				} else {
 					that.indexItem += 1;
 				}
+				var quantidade = sap.ui.getCore().byId("idQuantidade").getValue();
 
-				// if(indexEdit !== "" && indexEdit !== undefined){
-				// 	that.indexItem = indexEdit;
-				// }
+				if (sap.ui.getCore().byId("idQuantidade").getValue() > 0) {
+					that.oItemPedido.zzQnt = parseInt(quantidade);
+					that.calculaPrecoItem();
+				}
 
 				if (sap.ui.getCore().byId("idItemPedido").getValue() === "") {
 					MessageBox.show("Selecione um produto.", {
@@ -4226,29 +4228,29 @@ sap.ui.define([
 
 												var itensEnvolvidos = "";
 												var brindesEnvolvidos = "";
-												if(mensagemCmpGlobal[1] !== undefined){
-													for(var a = 0; a < mensagemCmpGlobal[1].length; a++){
+												if (mensagemCmpGlobal[1] !== undefined) {
+													for (var a = 0; a < mensagemCmpGlobal[1].length; a++) {
 														itensEnvolvidos += "<li> Material:" + mensagemCmpGlobal[1][a].matnr + ", Qnt: " + mensagemCmpGlobal[1][a].zzQnt + ", SubGrupo: " + mensagemCmpGlobal[1][a].zzSubGrupoGlobal + "</li>";
 													}
 												}
-												if(mensagemCmpGlobal[2] !== undefined){
-													for(a = 0; a < mensagemCmpGlobal[2].length; a++){
+												if (mensagemCmpGlobal[2] !== undefined) {
+													for (a = 0; a < mensagemCmpGlobal[2].length; a++) {
 														brindesEnvolvidos += "<li> Material:" + mensagemCmpGlobal[2][a].matnr + ", Qnt: " + mensagemCmpGlobal[2][a].zzQnt + ", SubGrupo: " + mensagemCmpGlobal[2][a].zzSubGrupoGlobal + "</li>";
 													}
 												}
-												
+
 												MessageBox.show(mensagemCmpGlobal[0], {
 													icon: MessageBox.Icon.ERROR,
 													title: "Brinde inválido.",
 													actions: [MessageBox.Action.OK],
-													details: "<p><strong>Itens: </strong></p>\n" + 
-															 "<ul>" +
-															 itensEnvolvidos + 
-															 "</ul>" +
-															 "<p><strong>Brindes: </strong></p>\n" + 
-															 "<ul>" +
-															 brindesEnvolvidos +
-															 "\n</ul>",
+													details: "<p><strong>Itens: </strong></p>\n" +
+														"<ul>" +
+														itensEnvolvidos +
+														"</ul>" +
+														"<p><strong>Brindes: </strong></p>\n" +
+														"<ul>" +
+														brindesEnvolvidos +
+														"\n</ul>",
 													onClose: function() {
 														sap.ui.getCore().byId("idQuantidade").focus();
 														oPanel.setBusy(false);
