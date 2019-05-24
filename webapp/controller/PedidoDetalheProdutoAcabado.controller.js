@@ -51,9 +51,9 @@ sap.ui.define([
 			this.onVerificarEvento("idTipoPedido", this.onChangeIdTipoPedidoCpPA, "change"); /* change */
 			this.onVerificarEvento("idTopLevelIconTabBar", this.onSelectIconTabBarCpPA, "select"); /* select */
 			this.onVerificarEvento("idInserirItem", this.onInserirItemPressCpPA, "press"); /* press */
-			
+
 			this.onVerificarEvento("idItemPedido", this.onSuggestItemCpPA, "search"); /* Evento ao incluir um novo item. */
-			
+
 			this.onVerificarEvento("idButtonSalvarDialog", this.onSalvarItemDialogCpPA, "press"); /* press 'salvar' ao incluir um item */
 			this.onVerificarEvento("idQuantidade", this.onQuantidadeChangeCpPA, "liveChange"); /* Evento ao editar uma quantidade no fragmento de escolha de itens. */
 			this.onVerificarEvento("table_pedidos", this.onItemPressCpPA, "itemPress"); /* itemPress ao editar um item na tabela de itens */
@@ -143,9 +143,9 @@ sap.ui.define([
 						oElemento.attachPress(oMetodoEvento, this);
 					}
 				}
-				
+
 				if (sTipoEvento == "search") {
-					if (oEventRegistry.search){
+					if (oEventRegistry.search) {
 						for (var i = 0; i < oEventRegistry.search.length; i++) {
 							if (oEventRegistry.search[i].fFunction.name == oMetodoEvento.name) {
 								bExisteEvento = true;
@@ -157,7 +157,7 @@ sap.ui.define([
 						oElemento.attachSearch(oMetodoEvento, this);
 					}
 				}
-				
+
 				if (sTipoEvento == "suggest") {
 					for (var i = 0; i < oEventRegistry.search.length; i++) {
 						if (oEventRegistry.suggest[i].fFunction.name == oMetodoEvento.name) {
@@ -183,7 +183,7 @@ sap.ui.define([
 
 		onSuggestItemCpPA: function(evt) {
 			var sItem = sap.ui.getCore().byId("idItemPedido").getValue();
-			
+
 			this.oItemCpPA = undefined;
 			this.oItemGrCpPA = undefined;
 
@@ -394,6 +394,7 @@ sap.ui.define([
 					var sIdTipoPed = that.PDControllerCpPA.byId("idTipoPedido").getSelectedKey();
 					/* Se não for pedido de bonificação, não é válido para campanha */
 					if (sIdTipoPed != "YBON") {
+						this.setLog("Campanha não ativada! Pedido não é de bonificação!", "CPA");
 						that.oCmpPA[i].bCampanhaVigente = false;
 					}
 
@@ -429,9 +430,9 @@ sap.ui.define([
 
 				/* Recupero todos os pedidos do histórico do cliente em questão. */
 				var reqPedidos = iKunnr.getAll(that.kunnr);
-				
+
 				/* VERIFICO HISTÓRICO - INICIO */
-				new Promise(function(resH, rejH){
+				new Promise(function(resH, rejH) {
 					new Promise(function(res, rej) {
 						reqPedidos.onsuccess = function(e) {
 							res(e.target.result);
@@ -440,28 +441,28 @@ sap.ui.define([
 						store = db.transaction("AcompPedidoDetalhe", "readwrite");
 						var objPedidosDet = store.objectStore("AcompPedidoDetalhe");
 						var iMatnr = objPedidosDet.index("Matnr");
-	
+
 						var reqItens = iMatnr.getAll(that.oItemCpPA.matnr);
-	
+
 						new Promise(function(res2, rej2) {
 							reqItens.onsuccess = function(e) {
 								var oPedidos = new Object();
 								oPedidos.cliente = that.kunnr;
 								oPedidos.topo = oPedidosTopo;
 								oPedidos.det = e.target.result;
-	
+
 								res2(oPedidos);
 							};
 						}).then(function(oPed) {
 							var bRetorno;
-	
+
 							/* Filtro pra trazer soemnte os itens do cliente em questão  */
-							oPed.det.filter(function(obj, i, array) {
+							var vTempPed = oPed.det.filter(function(obj, i, array) {
 								bRetorno = false;
-	
+
 								/* Preciso percorrer todos os pedidos pra verificar se o item em questão deve ser mantido */
 								for (var j = 0; j < oPed.topo.length; j++) {
-	
+
 									/* Se encontrar o número do pedido, retorno o registro pro vetor*/
 									if (obj.Nrpedcli === oPed.topo[j].Nrpedcli) {
 										bRetorno = true;
@@ -469,48 +470,50 @@ sap.ui.define([
 								}
 								return bRetorno;
 							});
-	
+
+							oPed.det = vTempPed;
+
 							that2.setLog("Verificar se para cada campanha, já existe vestígio de vendas HISTÓRICO.", "CPA");
 							var sTempMatnr = "";
 							var bEncontrouItem = false;
-	
+
 							/* Verifico se tem algum item em questão, inutilizo ele na campanha. */
 							for (var j = 0; j < that.oItemCpPA.grupo.length; j++) {
 								sTempMatnr = that.oItemCpPA.grupo[j].matnr;
-	
+
 								/* Percorro todas as vendas */
 								for (var k = 0; k < oPed.det.length; k++) {
-	
+
 									/* Se eu encontrar registro de vendas para o item, inutilizo a campanha */
 									if (oPed.det[k].Matnr === sTempMatnr) {
-										that2.setLog("Item encontrado: " + sTempMatnr + " já foi vendido. A campanha será inutilizada.", "CPA");
+										that2.setLog("Item encontrado HIST: " + sTempMatnr + " já foi vendido. A campanha será inutilizada.", "CPA");
 										that.oItemCpPA.bCampanhaVigente = false;
 										bEncontrouItem = true;
-	
+
 										/* Se encontrou pelo menos um material, sai do loop*/
 										break;
 									}
 								}
-	
+
 								if (bEncontrouItem) {
 									break;
 								}
 							}
-	
+
 							resH();
 						});
 					});
 					/* VERIFICO HISTÓRICO - FIM */
-					
-				}).then(function(oPedidoHist){
+
+				}).then(function(oPedidoHist) {
 					/* VERIFICO TABELAS LOCAIS - INICIO */
 					store = db.transaction("PrePedidos", "readwrite");
 					objPedidos = store.objectStore("PrePedidos");
 					iKunnr = objPedidos.index("kunnr");
-	
+
 					/* Recupero todos os pedidos do histórico do cliente em questão. */
 					reqPedidos = iKunnr.getAll(that.kunnr);
-	
+
 					new Promise(function(res, rej) {
 						reqPedidos.onsuccess = function(e) {
 							res(e.target.result);
@@ -519,63 +522,70 @@ sap.ui.define([
 						store = db.transaction("ItensPedido", "readwrite");
 						var objPedidosDet = store.objectStore("ItensPedido");
 						var iMatnr = objPedidosDet.index("matnr");
-	
+
 						var reqItens = iMatnr.getAll(that.oItemCpPA.matnr);
-	
+
 						new Promise(function(res2, rej2) {
 							reqItens.onsuccess = function(e) {
 								var oPedidos2 = new Object();
 								oPedidos2.cliente = that.kunnr;
 								oPedidos2.topo = oPedidosTopo;
 								oPedidos2.det = e.target.result;
-	
+
 								res2(oPedidos2);
 							};
 						}).then(function(oPed2) {
 							var bRetorno;
-	
+
 							/* Filtro pra trazer soemnte os itens do cliente em questão  */
-							oPed2.det.filter(function(obj, i, array) {
+							var vTempPed2 = oPed2.det.filter(function(obj, i, array) {
 								bRetorno = false;
-	
+
 								/* Preciso percorrer todos os pedidos pra verificar se o item em questão deve ser mantido */
 								for (var j = 0; j < oPed2.topo.length; j++) {
-	
+
 									/* Se encontrar o número do pedido, retorno o registro pro vetor*/
-									if (obj.Nrpedcli === oPed2.topo[j].Nrpedcli) {
-										bRetorno = true;
+									if (obj.nrPedCli === oPed2.topo[j].nrPedCli) {
+										var sPedAtual = that.PDControllerCpPA.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
+
+										// Não pode ser o pedido em questão
+										if (obj.nrPedCli != sPedAtual) {
+											bRetorno = true;
+										}
 									}
 								}
 								return bRetorno;
 							});
-	
+
+							oPed2.det = vTempPed2;
+
 							that2.setLog("Verificar se para cada campanha, já existe vestígio de vendas LOCAL.", "CPA");
 							var sTempMatnr = "";
 							var bEncontrouItem = false;
-	
+
 							/* Verifico se tem algum item em questão, inutilizo ele na campanha. */
 							for (var j = 0; j < that.oItemCpPA.grupo.length; j++) {
 								sTempMatnr = that.oItemCpPA.grupo[j].matnr;
-	
+
 								/* Percorro todas as vendas */
 								for (var k = 0; k < oPed2.det.length; k++) {
-	
+
 									/* Se eu encontrar registro de vendas para o item, inutilizo a campanha */
 									if (oPed2.det[k].matnr === sTempMatnr) {
-										that2.setLog("Item encontrado: " + sTempMatnr + " já foi vendido. A campanha será inutilizada.", "CPA");
+										that2.setLog("Item encontrado LOCAL: " + sTempMatnr + " já foi vendido. A campanha será inutilizada.", "CPA");
 										that.oItemCpPA.bCampanhaVigente = false;
 										bEncontrouItem = true;
-	
+
 										/* Se encontrou pelo menos um material, sai do loop*/
 										break;
 									}
 								}
-	
+
 								if (bEncontrouItem) {
 									break;
 								}
 							}
-	
+
 							resolv();
 						});
 					});
@@ -635,9 +645,11 @@ sap.ui.define([
 
 			/*parseFloat(this.oItemCpPA.quantidadeMaxima)*/
 			sap.ui.getCore().byId("idQuantidadePA").setValue(iQtdePA);
-			if(isNaN(iQtdePA) == false){
-				sap.m.MessageToast.show("Campanha produto novo ativada, quantidade: " + iQtdePA.toString(), {duration: 3000});
-			}else{
+			if (isNaN(iQtdePA) == false) {
+				sap.m.MessageToast.show("Campanha produto novo ativada, quantidade: " + iQtdePA.toString(), {
+					duration: 3000
+				});
+			} else {
 				sap.ui.getCore().byId("idQuantidadePA").setValue(0);
 			}
 			/* Fim */
@@ -724,6 +736,11 @@ sap.ui.define([
 					dValorExcProduto = this.PDControllerCpPA.objItensPedidoTemplate[i].zzQntCpPA * parseFloat(this.PDControllerCpPA.objItensPedidoTemplate[i].zzVprodDesc2);
 					dValorExcedenteTotal = dValorExcedenteTotal + dValorExcProduto;
 				}
+			}
+
+			if (this.PDControllerCpPA.objItensPedidoTemplate.length == 0) {
+				dValorExcProduto = 0;
+				dValorExcedenteTotal = 0;
 			}
 
 			dValorBExcedenteBonific = parseFloat(oModelPed.getProperty("/ValTotalExcedenteBonif") || 0);

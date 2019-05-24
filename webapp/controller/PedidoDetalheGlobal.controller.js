@@ -774,8 +774,8 @@ sap.ui.define([
 				} else {
 
 					for (b = 0; b < vetorQntItens.length; b++) {
-						if (subGrupo[a].indexOf(vetorQntItens[b].zzSubGrupoGlobal) > -1) {
-							qntTotalItens = vetorQntItens[a].zzQnt;
+						if (subGrupo[0].indexOf(vetorQntItens[b].zzSubGrupoGlobal) > -1) {
+							qntTotalItens = vetorQntItens[b].zzQnt;
 
 						}
 					}
@@ -796,7 +796,7 @@ sap.ui.define([
 
 							for (e = 0; e < vetorBrindes.length; e++) {
 
-								if (vetorBrindes[e].zzSubGrupoGlobal === subGrupo[c]) {
+								if (vetorBrindes[e].zzSubGrupoGlobal.indexOf(subGrupo[c]) > -1) {
 
 									jaInserido = false;
 

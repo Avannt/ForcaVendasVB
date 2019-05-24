@@ -1546,11 +1546,11 @@ sap.ui.define([
 							that.oItemPedido.maxdescpermitidoExtra = 0;
 							that.oItemPedido.zzAtingiuCmpGlobal = "Não";
 							that.oItemPedido.zzGrupoGlobal = 0;
-							that.oItemPedido.ZzQntCpBrinde = 0;
-							that.oItemPedido.ZzQntRegragb = 0;
+							that.oItemPedido.zzQntCpBrinde = 0;
+							that.oItemPedido.zzQntRegraGb = 0;
 							that.oItemPedido.zzUtilCampGlobal = "Não";
 							that.oItemPedido.zzSubGrupoGlobal = "";
-							
+
 							for (var i = 0; i < that.objItensPedidoTemplate.length; i++) {
 								if (that.objItensPedidoTemplate[i].matnr === codItem && that.objItensPedidoTemplate[i].tipoItem === "Normal") {
 
@@ -1588,6 +1588,12 @@ sap.ui.define([
 									that.oItemPedido.maxdescpermitidoExtra = that.objItensPedidoTemplate[i].maxdescpermitidoExtra;
 									that.oItemPedido.zzQntAmostra = 0;
 									that.oItemPedido.kbetr = that.objItensPedidoTemplate[i].zzPercDescTotal;
+									that.oItemPedido.zzAtingiuCmpGlobal = that.objItensPedidoTemplate[i].zzAtingiuCmpGlobal;
+									that.oItemPedido.zzGrupoGlobal = that.objItensPedidoTemplate[i].zzGrupoGlobal;
+									that.oItemPedido.zzQntCpBrinde = that.objItensPedidoTemplate[i].zzQntCpBrinde;
+									that.oItemPedido.zzQntRegraGb = that.objItensPedidoTemplate[i].zzQntRegraGb;
+									that.oItemPedido.zzUtilCampGlobal = that.objItensPedidoTemplate[i].zzUtilCampGlobal;
+									that.oItemPedido.zzSubGrupoGlobal = that.objItensPedidoTemplate[i].zzSubGrupoGlobal;
 
 									itemEncontradoDiluicao = true;
 									that.oItemPedido.itemEncontradoDiluicao = itemEncontradoDiluicao;
@@ -1665,6 +1671,15 @@ sap.ui.define([
 										that.oItemPedido.tipoItem2 = "Diluicao";
 										that.oItemPedido.zzQntDiluicao = 0;
 										that.oItemPedido.zzValorDiluido = 0;
+
+										/*abacaxi*/
+
+										that.oItemPedido.zzAtingiuCmpGlobal = "Não";
+										that.oItemPedido.zzGrupoGlobal = 0;
+										that.oItemPedido.zzQntCpBrinde = 0;
+										that.oItemPedido.zzQntRegraGb = 0;
+										that.oItemPedido.zzUtilCampGlobal = "Não";
+										that.oItemPedido.zzSubGrupoGlobal = "";
 
 										var vetorAuxFamilias = [];
 										var vetorAuxFamiliasExtra = [];
@@ -2381,12 +2396,10 @@ sap.ui.define([
 				// >>>>>>>>>>>> PADRÃO PARA AMBOS OS TIPOS DE ITEM (NORMAL / DILUÍDO) >>>>>>>>>>>>
 				if (that.objItensPedidoTemplate[i].mtpos == "YBRI") {
 
-					if (that.objItensPedidoTemplate[i].zzUtilCampGlobal == "Sim") {
-
+					if ((that.objItensPedidoTemplate[i].zzUtilCampGlobal || "") == "Sim") {
 						//SOMA OS ITENS PARA QUANTIFICAR O QUANTO GEROU DE EXCEDENTE DE BRINDE. TIRANDO OS ITENS DE CAMPANHA GLOBAL. zzUtilCampGlobal == "Não"
 						valTotalCampanhaGlobal += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
-
-					} else if (that.objItensPedidoTemplate[i].zzSubGrupoGlobal != "") {
+					} else {
 						// Alteração para campanha de Global - 20190315 - Ricardo Junior
 						/* Alteração para campanha de brindes - 20190312 - Diego Djeri */
 						/* Inicio */
@@ -2808,10 +2821,10 @@ sap.ui.define([
 			}
 
 			//* EXIBO OU OCULTO OS CAMPOS DA CAMPANHA */
-
+			
 			that.byId("idValorTotalBrinde").setVisible(valTotalCampanhaBrinde > 0);
-
 			that.byId("idValTotCampProdutoAcabado").setVisible(valUtilizadoCampanhaProdutoAcabado > 0);
+			that.byId("idValTotCampGlobal").setVisible(valTotalCampanhaGlobal > 0);
 		},
 		/* calculaTotalPedido */
 
@@ -2962,8 +2975,23 @@ sap.ui.define([
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
 											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
 											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
+											zzAtingiuCmpGlobal: that.objItensPedidoTemplate[i].zzAtingiuCmpGlobal,
+											zzGrupoGlobal: that.objItensPedidoTemplate[i].zzGrupoGlobal,
+											zzQntCpBrinde: that.objItensPedidoTemplate[i].zzQntCpBrinde,
+											zzQntRegraGb: that.objItensPedidoTemplate[i].zzQntRegraGb,
+											zzSubGrupoGlobal: that.objItensPedidoTemplate[i].zzSubGrupoGlobal,
+											zzUtilCampGlobal: that.objItensPedidoTemplate[i].zzUtilCampGlobal,
 											zzQntAmostra: that.objItensPedidoTemplate[i].zzQntAmostra
 										};
+
+										// var objAuxItem = that.objItensPedidoTemplate[i];
+										// objAuxItem.tipoItem = "Diluido";
+										// objAuxItem.zzQnt = 0;
+										// objAuxItem.zzPercDescDiluicao = PercDescDiluicao;
+										//	objAuxItem.zzVprodMinPermitido = 0;
+										//	objAuxItem.zzVprodDescTotal = that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
+										//	objAuxItem.zzVprodDesc2 = that.objItensPedidoTemplate[i].zzVprodDesc;
+										//	objAuxItem.zzValorDiluido = 0;
 
 										vetorAux.push(objAuxItem);
 									}
@@ -3024,8 +3052,23 @@ sap.ui.define([
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
 											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
 											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
+											zzAtingiuCmpGlobal: that.objItensPedidoTemplate[i].zzAtingiuCmpGlobal,
+											zzGrupoGlobal: that.objItensPedidoTemplate[i].zzGrupoGlobal,
+											zzQntCpBrinde: that.objItensPedidoTemplate[i].zzQntCpBrinde,
+											zzQntRegraGb: that.objItensPedidoTemplate[i].zzQntRegraGb,
+											zzSubGrupoGlobal: that.objItensPedidoTemplate[i].zzSubGrupoGlobal,
+											zzUtilCampGlobal: that.objItensPedidoTemplate[i].zzUtilCampGlobal,
 											zzQntAmostra: that.objItensPedidoTemplate[i].zzQntAmostra
 										};
+
+										// var objAuxItem1 = that.objItensPedidoTemplate[i];
+										// objAuxItem1.tipoItem = "Diluido";
+										// objAuxItem1.zzQnt = 0;
+										// objAuxItem1.zzPercDescDiluicao = PercDescDiluicao;
+										//	objAuxItem1.zzVprodMinPermitido = 0;
+										//	objAuxItem1.zzVprodDescTotal = that.objItensPedidoTemplate[i].zzVprodDesc * that.objItensPedidoTemplate[i].zzQnt;
+										//	objAuxItem1.zzVprodDesc2 = that.objItensPedidoTemplate[i].zzVprodDesc;
+										//	objAuxItem1.zzValorDiluido = 0;
 
 										vetorAux.push(objAuxItem1);
 									}
@@ -3086,6 +3129,12 @@ sap.ui.define([
 											tipoItem2: that.objItensPedidoTemplate[i].tipoItem2,
 											zzValorDiluido: 0,
 											zzVprodABB: that.objItensPedidoTemplate[i].zzVprodABB,
+											zzAtingiuCmpGlobal: that.objItensPedidoTemplate[i].zzAtingiuCmpGlobal,
+											zzGrupoGlobal: that.objItensPedidoTemplate[i].zzGrupoGlobal,
+											zzQntCpBrinde: that.objItensPedidoTemplate[i].zzQntCpBrinde,
+											zzQntRegraGb: that.objItensPedidoTemplate[i].zzQntRegraGb,
+											zzSubGrupoGlobal: that.objItensPedidoTemplate[i].zzSubGrupoGlobal,
+											zzUtilCampGlobal: that.objItensPedidoTemplate[i].zzUtilCampGlobal,
 											maxdescpermitido: that.objItensPedidoTemplate[i].maxdescpermitido,
 											maxdescpermitidoExtra: that.objItensPedidoTemplate[i].maxdescpermitidoExtra,
 											zzQntAmostra: that.objItensPedidoTemplate[i].zzQntAmostra
