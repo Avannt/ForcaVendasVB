@@ -224,6 +224,167 @@ sap.ui.define([
 			};
 		},
 
+		//Agrupa os itens da campanha pelo grupo e verifica se atingiu a regra para ver a quantidade de bonificação
+		// que o kra pode inserir com o Brinde.
+		onAgrupaItensGlobal: function(retorno) {
+			var proximoItemDiferente = false;
+			var vetorGrpFamilia = [];
+			var vetorAuxItensPedido = [];
+			var vetorAuxItensPedidoTotal = [];
+			var aux = [];
+			//Pra tratar quando o kra insere apenas itens de amostra e brindes.
+			//Faz com que insere o item sem cair na verificação de id de grupo global.
+			var existeBRI = true;
+			var contemItemAtual = false;
+
+			//Garante que tem todos os itens inseridos no vetor vetorAuxItensPedidoTotal. Incluindo o oItemPedido. 
+			for (var i = 0; i < that.PDControllerCmpGlobal.objItensPedidoTemplate.length; i++) {
+				if (that.PDControllerCmpGlobal.oItemPedido.matnr == that.PDControllerCmpGlobal.objItensPedidoTemplate[i].matnr) {
+					contemItemAtual = true;
+				}
+
+				aux = that.PDControllerCmpGlobal.objItensPedidoTemplate[i];
+				vetorAuxItensPedidoTotal.push(aux);
+
+			}
+			if (!contemItemAtual) {
+				vetorAuxItensPedidoTotal.push(that.PDControllerCmpGlobal.oItemPedido);
+			}
+
+			//Verifica se o vetor tem apenas Brindes. Se tiver retornar.
+			for (i = 0; i < vetorAuxItensPedidoTotal.length; i++) {
+
+				if (vetorAuxItensPedidoTotal[i].mtpos != "YBRI" && vetorAuxItensPedidoTotal[i].mtpos != "YAMO") {
+					existeBRI = false;
+				}
+			}
+
+			if (existeBRI) {
+				return "OK";
+			}
+
+			for (i = 0; i < vetorAuxItensPedidoTotal.length; i++) {
+
+				if (vetorAuxItensPedidoTotal[i].mtpos != "YBRI" && vetorAuxItensPedidoTotal[i].mtpos != "YAMO") {
+					vetorAuxItensPedido.push(vetorAuxItensPedidoTotal[i]);
+				}
+			}
+
+			//Ordenando para desconto Familia normal. Utiliza vetor global de itens (objItensPedidoTemplate).
+			vetorAuxItensPedido.sort(function(a, b) {
+				return a.zzGrupoGlobal - b.zzGrupoGlobal;
+			});
+
+			/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
+			for (i = 0; i < vetorAuxItensPedido.length; i++) {
+
+				if (proximoItemDiferente == true) {
+					proximoItemDiferente = false;
+					vetorGrpFamilia = [];
+				}
+
+				if (vetorGrpFamilia.length == 0 && vetorAuxItensPedido.length == 1 && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+
+					//o vetor de itens tem um unico item. nesse caso já tenho que verificar 
+					//se já atingiu a quantidade para utilizar os brindes.
+
+					vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+					retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
+
+				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+
+					if (vetorAuxItensPedido[i].zzGrupoGlobal == vetorAuxItensPedido[i + 1].zzGrupoGlobal) {
+
+						proximoItemDiferente = false;
+						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+
+					} else {
+						//Nesse momento tenho os itens da mesma familia.. tendo os itens da familia .. somar as quantidades
+						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
+						proximoItemDiferente = true;
+					}
+
+				} else if ((i + 1) == vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+
+					//sinal proximoItemDiferente = true e limpou
+					if (vetorGrpFamilia.length > 0) {
+
+						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
+
+					} else {
+						//ultimo item e é diferente do antepenultimo
+						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
+					}
+				}
+			}
+
+			if (retorno == "OK") {
+				return retorno;
+			} else {
+				return retorno;
+			}
+		},
+
+		//Verifica quantas vezes vai poder utilizar o range dos brindes, Rotina executada antes da inserção do item no total dos itens.
+		onCheckQuantidadeGlobal: function(vetorGrpFamilia) {
+			// var that = this;
+			var qntItens = 0;
+			var valorRange = 0;
+			var zzGrupoGlobal = "";
+			//variável que grava quantas vezes o kra pode usar o range de brindes.
+			//Ex: se o range a ser atingido for 20 itens para usar os brindes e a quantidade digita do produto for 40.
+			// essa variavel irá armazenar 2. (Quantidade atingida a ser utilizada).
+			var qntParaUtilizar = 0;
+
+			for (var i = 0; i < vetorGrpFamilia.length; i++) {
+
+				qntItens += vetorGrpFamilia[i].zzQnt;
+				valorRange = vetorGrpFamilia[i].zzQntRegraGb;
+				zzGrupoGlobal = vetorGrpFamilia[i].zzGrupoGlobal;
+
+			}
+
+			if (qntItens >= valorRange && valorRange > 0) {
+
+				qntParaUtilizar = parseInt(qntItens / valorRange, 10);
+
+			} else {
+
+				qntParaUtilizar = 0;
+			}
+
+			for (i = 0; i < vetorGrpFamilia.length; i++) {
+				//atualiza o item atual.
+				if (vetorGrpFamilia[i].matnr == that.PDControllerCmpGlobal.oItemPedido.matnr) {
+					if (qntParaUtilizar > 0) {
+						that.PDControllerCmpGlobal.oItemPedido.zzAtingiuCmpGlobal = "Sim";
+					} else {
+						that.PDControllerCmpGlobal.oItemPedido.zzAtingiuCmpGlobal = "Não";
+					}
+				}
+				for (var j = 0; j < that.PDControllerCmpGlobal.objItensPedidoTemplate.length; j++) {
+					//Atualiza o vetor de itens já inseridos
+					if (vetorGrpFamilia[i].matnr == that.PDControllerCmpGlobal.objItensPedidoTemplate[j].matnr) {
+						if (qntParaUtilizar > 0) {
+							that.PDControllerCmpGlobal.objItensPedidoTemplate[j].zzAtingiuCmpGlobal = "Sim";
+						} else {
+							that.PDControllerCmpGlobal.objItensPedidoTemplate[j].zzAtingiuCmpGlobal = "Não";
+						}
+					}
+				}
+			}
+
+			if (qntItens >= valorRange) {
+				console.log("O grupo " + zzGrupoGlobal + " teve " + qntItens + " itens e pode utilizar os brindes.");
+			} else {
+				console.log("O grupo " + zzGrupoGlobal + " teve " + qntItens + " e não atingiu o rangedos itens.");
+			}
+			return "OK";
+		},
+
 		onVerificarEvento: function(sIdControle, oMetodoEvento, sTipoEvento) {
 			var oEventRegistry;
 			var oElemento;
@@ -347,6 +508,7 @@ sap.ui.define([
 
 				if (auxVetor) {
 					ItemPedido.zzQntRegraGb = this.oCmpGB[i].quantidade;
+					auxVetor = false;
 				}
 			}
 
@@ -507,8 +669,6 @@ sap.ui.define([
 
 			vetorQntBrindes = this.onAgruparQuantidades(vetorBrindes);
 			console.error(vetorQntBrindes, "Vetor de Qnt Brindes");
-			
-			this.onCheckQuantidadeGlobal();
 
 			vetorQntBrindes.sort(function(a, b) {
 				if (a.zzSubGrupoGlobal.length < b.zzSubGrupoGlobal.length) {
@@ -536,10 +696,10 @@ sap.ui.define([
 					for (var e = 0; e < vetorAux.length; e++) {
 
 						if (vetorAux[e].zzSubGrupoGlobal.indexOf(vetorQntBrindes[t].zzSubGrupoGlobal) !== -1) {
-
+							var sSubGrupo =  vetorQntBrindes[t].zzSubGrupoGlobal;
+							
 							vetorAux[e].zzQnt += vetorQntBrindes[t].zzQnt;
 							encontrouSubGrupo = true;
-
 						}
 					}
 
@@ -551,7 +711,10 @@ sap.ui.define([
 
 			console.log(vetorAux, "Vetor agrupado Brindes");
 			console.log(vetorQntItens, "Vetor agrupado Itens");
-
+			
+			var qntRegraGb;
+			
+			/* Percorre todos os brindes */
 			for (var z = 0; z < vetorAux.length; z++) {
 
 				qntTotalBrindes = vetorAux[z].zzQnt;
@@ -559,16 +722,24 @@ sap.ui.define([
 
 				var subGrupo = vetorAux[z].zzSubGrupoGlobal.split("|");
 				subGrupo.splice(subGrupo.length - 1, 1);
-
+				
+				/* Trativa para quando o item possui mais de um subrgupo */
 				if (subGrupo.length > 1) {
-
+					
+					/* Percorro todos os subgrupos pra identificar qual grupo é e somar as quantidades */
 					for (var a = 0; a < subGrupo.length; a++) {
 						for (var b = 0; b < vetorQntItens.length; b++) {
 							if (subGrupo[a].indexOf(vetorQntItens[b].zzSubGrupoGlobal) > -1) {
 								qntTotalItens += vetorQntItens[b].zzQnt;
-
+								qntRegraGb = vetorQntItens[b].zzQntRegraGb;
 							}
 						}
+					}
+					
+					if (qntTotalItens < qntRegraGb) {
+						mensagemCmpGlobal = "Quantidade mínima não atiginda para utilização de brinde da campanha. Quantidade digitada: " + qntTotalItens + ". Quantidade necessária: " + qntRegraGb;
+						
+						return [mensagemCmpGlobal, mensagemItensEnvolvidos, mensagemBrindesEnvolvidos];
 					}
 
 					if (qntTotalItens < qntTotalBrindes) {
@@ -617,9 +788,16 @@ sap.ui.define([
 					for (b = 0; b < vetorQntItens.length; b++) {
 						if (subGrupo[0].indexOf(vetorQntItens[b].zzSubGrupoGlobal) > -1) {
 							qntTotalItens = vetorQntItens[b].zzQnt;
+							qntRegraGb = vetorQntItens[b].zzQntRegraGb;
 
 						}
 					}
+					
+					if (qntTotalItens < qntRegraGb) {
+						mensagemCmpGlobal = "Quantidade mínima não atiginda para utilização de brinde da campanha. Quantidade digitada: " + qntTotalItens + ". Quantidade necessária: " + qntRegraGb;
+						
+						return [mensagemCmpGlobal, mensagemItensEnvolvidos, mensagemBrindesEnvolvidos];
+					}					
 
 					if (qntTotalItens < qntTotalBrindes) {
 
@@ -669,7 +847,8 @@ sap.ui.define([
 			var proximoItemIgual = false;
 			var inserirNovoItem = false;
 			var vetorQntItens = [];
-
+			
+			/* Percorre todos os itens do pedido */
 			for (var i = 0; i < vetorItens.length; i++) {
 
 				var objVetorQntItens = {
@@ -696,6 +875,7 @@ sap.ui.define([
 					// objVetorQntItens.matnr = vetorItens[i].matnr;
 					objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
 					objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
+					objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
 
 					vetorQntItens.push(objVetorQntItens);
 				}
@@ -704,6 +884,7 @@ sap.ui.define([
 
 					objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
 					objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
+					objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
 
 					vetorQntItens.push(objVetorQntItens);
 
