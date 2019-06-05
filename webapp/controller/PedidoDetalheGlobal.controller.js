@@ -47,7 +47,7 @@ sap.ui.define([
 			var that = this;
 
 			if (item.selectedKey === "tab6" || item.selectedKey === "tab5") {
-				
+
 				new Promise(function(res, rej) {
 					var itemBranco = [];
 					var aba = true;
@@ -229,32 +229,32 @@ sap.ui.define([
 		onAgrupaItensGlobal: function(retorno) {
 			var proximoItemDiferente = false;
 			var vetorGrpFamilia = [];
-			var vetorAuxItensPedido = [];
-			var vetorAuxItensPedidoTotal = [];
+			var vBrindesAgrupadosItensPedido = [];
+			var vBrindesAgrupadosItensPedidoTotal = [];
 			var aux = [];
 			//Pra tratar quando o kra insere apenas itens de amostra e brindes.
 			//Faz com que insere o item sem cair na verificação de id de grupo global.
 			var existeBRI = true;
 			var contemItemAtual = false;
 
-			//Garante que tem todos os itens inseridos no vetor vetorAuxItensPedidoTotal. Incluindo o oItemPedido. 
+			//Garante que tem todos os itens inseridos no vetor vBrindesAgrupadosItensPedidoTotal. Incluindo o oItemPedido. 
 			for (var i = 0; i < that.PDControllerCmpGlobal.objItensPedidoTemplate.length; i++) {
 				if (that.PDControllerCmpGlobal.oItemPedido.matnr == that.PDControllerCmpGlobal.objItensPedidoTemplate[i].matnr) {
 					contemItemAtual = true;
 				}
 
 				aux = that.PDControllerCmpGlobal.objItensPedidoTemplate[i];
-				vetorAuxItensPedidoTotal.push(aux);
+				vBrindesAgrupadosItensPedidoTotal.push(aux);
 
 			}
 			if (!contemItemAtual) {
-				vetorAuxItensPedidoTotal.push(that.PDControllerCmpGlobal.oItemPedido);
+				vBrindesAgrupadosItensPedidoTotal.push(that.PDControllerCmpGlobal.oItemPedido);
 			}
 
 			//Verifica se o vetor tem apenas Brindes. Se tiver retornar.
-			for (i = 0; i < vetorAuxItensPedidoTotal.length; i++) {
+			for (i = 0; i < vBrindesAgrupadosItensPedidoTotal.length; i++) {
 
-				if (vetorAuxItensPedidoTotal[i].mtpos != "YBRI" && vetorAuxItensPedidoTotal[i].mtpos != "YAMO") {
+				if (vBrindesAgrupadosItensPedidoTotal[i].mtpos != "YBRI" && vBrindesAgrupadosItensPedidoTotal[i].mtpos != "YAMO") {
 					existeBRI = false;
 				}
 			}
@@ -263,59 +263,59 @@ sap.ui.define([
 				return "OK";
 			}
 
-			for (i = 0; i < vetorAuxItensPedidoTotal.length; i++) {
+			for (i = 0; i < vBrindesAgrupadosItensPedidoTotal.length; i++) {
 
-				if (vetorAuxItensPedidoTotal[i].mtpos != "YBRI" && vetorAuxItensPedidoTotal[i].mtpos != "YAMO") {
-					vetorAuxItensPedido.push(vetorAuxItensPedidoTotal[i]);
+				if (vBrindesAgrupadosItensPedidoTotal[i].mtpos != "YBRI" && vBrindesAgrupadosItensPedidoTotal[i].mtpos != "YAMO") {
+					vBrindesAgrupadosItensPedido.push(vBrindesAgrupadosItensPedidoTotal[i]);
 				}
 			}
 
 			//Ordenando para desconto Familia normal. Utiliza vetor global de itens (objItensPedidoTemplate).
-			vetorAuxItensPedido.sort(function(a, b) {
+			vBrindesAgrupadosItensPedido.sort(function(a, b) {
 				return a.zzGrupoGlobal - b.zzGrupoGlobal;
 			});
 
 			/*Percorre os itens já inseridos e identica se atingiu a quantidade do grupo da Camp global */
-			for (i = 0; i < vetorAuxItensPedido.length; i++) {
+			for (i = 0; i < vBrindesAgrupadosItensPedido.length; i++) {
 
 				if (proximoItemDiferente == true) {
 					proximoItemDiferente = false;
 					vetorGrpFamilia = [];
 				}
 
-				if (vetorGrpFamilia.length == 0 && vetorAuxItensPedido.length == 1 && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+				if (vetorGrpFamilia.length == 0 && vBrindesAgrupadosItensPedido.length == 1 && vBrindesAgrupadosItensPedido[i].tipoItem != "Diluido") {
 
 					//o vetor de itens tem um unico item. nesse caso já tenho que verificar 
 					//se já atingiu a quantidade para utilizar os brindes.
 
-					vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+					vetorGrpFamilia.push(vBrindesAgrupadosItensPedido[i]);
 					retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
 
-				} else if (vetorAuxItensPedido.length > 1 && (i + 1) < vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+				} else if (vBrindesAgrupadosItensPedido.length > 1 && (i + 1) < vBrindesAgrupadosItensPedido.length && vBrindesAgrupadosItensPedido[i].tipoItem != "Diluido") {
 
-					if (vetorAuxItensPedido[i].zzGrupoGlobal == vetorAuxItensPedido[i + 1].zzGrupoGlobal) {
+					if (vBrindesAgrupadosItensPedido[i].zzGrupoGlobal == vBrindesAgrupadosItensPedido[i + 1].zzGrupoGlobal) {
 
 						proximoItemDiferente = false;
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						vetorGrpFamilia.push(vBrindesAgrupadosItensPedido[i]);
 
 					} else {
 						//Nesse momento tenho os itens da mesma familia.. tendo os itens da familia .. somar as quantidades
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						vetorGrpFamilia.push(vBrindesAgrupadosItensPedido[i]);
 						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
 						proximoItemDiferente = true;
 					}
 
-				} else if ((i + 1) == vetorAuxItensPedido.length && vetorAuxItensPedido[i].tipoItem != "Diluido") {
+				} else if ((i + 1) == vBrindesAgrupadosItensPedido.length && vBrindesAgrupadosItensPedido[i].tipoItem != "Diluido") {
 
 					//sinal proximoItemDiferente = true e limpou
 					if (vetorGrpFamilia.length > 0) {
 
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						vetorGrpFamilia.push(vBrindesAgrupadosItensPedido[i]);
 						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
 
 					} else {
 						//ultimo item e é diferente do antepenultimo
-						vetorGrpFamilia.push(vetorAuxItensPedido[i]);
+						vetorGrpFamilia.push(vBrindesAgrupadosItensPedido[i]);
 						retorno = that.onCheckQuantidadeGlobal(vetorGrpFamilia, that);
 					}
 				}
@@ -629,7 +629,7 @@ sap.ui.define([
 			// var mensagemCmpGlobal = "";
 			var vetorBrindes = [];
 			var vetorItens = [];
-			// var vetorAuxItensPedido = [];
+			// var vBrindesAgrupadosItensPedido = [];
 
 			//Carregar o vetor de brindes.
 			for (var i = 0; i < todosItens.length; i++) {
@@ -646,7 +646,7 @@ sap.ui.define([
 
 			return [vetorItens, vetorBrindes];
 
-			// mensagemCmpGlobal = that.onChecaQuantidadeBrindes(vetorAuxItensPedido, vetorBrindes, that);
+			// mensagemCmpGlobal = that.onChecaQuantidadeBrindes(vBrindesAgrupadosItensPedido, vetorBrindes, that);
 			// return mensagemCmpGlobal;
 
 		},
@@ -660,194 +660,204 @@ sap.ui.define([
 			var mensagemItensEnvolvidos = [];
 			var mensagemBrindesEnvolvidos = [];
 			var qntTotalBrindes = 0;
-			var qntTotalItens = 0;
 
 			//Verifca os itens, somando a quantidade permitida.
 
-			vetorQntItens = this.onAgruparQuantidades(vetorItens);
-			console.error(vetorQntItens, "Vetor de Qnt Itens");
+			vetorQntItens = this.onAgruparQuantidadesPA(vetorItens); 
 
 			vetorQntBrindes = this.onAgruparQuantidades(vetorBrindes);
-			console.error(vetorQntBrindes, "Vetor de Qnt Brindes");
+			
+			/* Percorro todos os itens grupados por grupo de PA */
+			for (var i = 0; i < vetorQntItens.length; i++) {
+				
+				/* Verifico se pra essa posição dos itens, a campanha é válida para o grupo inteiro */
+				vetorQntItens[i].bCampanhaAtivaGrupo = false;
+				/* Ou seja, se a quantidade mínima (zzQntRegraGb) foi atingida para o grupo de PA em questão (zzQntTotalGrupo)*/
+				if (vetorQntItens[i].zzQntTotalGrupo >= vetorQntItens[i].zzQntRegraGb){
+					vetorQntItens[i].bCampanhaAtivaGrupo = true;	
+				}
+				
+				vetorQntItens[i].zzQntTotalSubGrupoLimitePA = 0;
+				/* Para cada subgrupo de brindes, procuro se ele existe no no vetor vetorQntItens e somo as quantidades */
+				for (var j = 0; j < vetorQntItens.length; j++) {
+					
+					/* Se o subgrupo do item conter em algum subugrupo do brinde em questão, somo as quantidades*/
+					if(vetorQntItens[j].zzSubGrupoGlobal.indexOf(vetorQntItens[i].zzSubGrupoGlobal) != -1){
+						vetorQntItens[i].zzQntTotalSubGrupoLimitePA += vetorQntItens[j].zzQnt;
+					}
+				}
 
+				/* Para cada subgrupo de brindes, procuro se ele existe no no vetor vetorQntBrindes e somo as quantidades */
+				vetorQntItens[i].zzQntTotalSubGrupoAcumulada = 0;
+				for (var j = 0; j < vetorQntBrindes.length; j++) {
+					
+					/* Se o subgrupo do item conter em algum subugrupo do brinde em questão, somo as quantidades*/
+					if(vetorQntBrindes[j].zzSubGrupoGlobal.indexOf(vetorQntItens[i].zzSubGrupoGlobal) != -1){
+						vetorQntItens[i].zzQntTotalSubGrupoAcumulada += vetorQntBrindes[j].zzQnt;
+					}
+				}
+			}
+			
+			/* Ordeno o vetor de brindes do mais específico para o mais genérico */
 			vetorQntBrindes.sort(function(a, b) {
-				if (a.zzSubGrupoGlobal.length < b.zzSubGrupoGlobal.length) {
+				if (a.zzSubGrupoGlobal.length > b.zzSubGrupoGlobal.length) {
 					return 1;
 				}
-				if (a.zzSubGrupoGlobal.length > b.zzSubGrupoGlobal.length) {
+				if (a.zzSubGrupoGlobal.length < b.zzSubGrupoGlobal.length) {
 					return -1;
 				}
 			});
-
-			var encontrouSubGrupo = false;
-			var vetorAux = [];
-
-			//agrupa todos os brindes pelo subgrupo, somando as quantidades respectivas
-			for (var t = 0; t < vetorQntBrindes.length; t++) {
-
-				if (t === 0) {
-
-					vetorAux.push(vetorQntBrindes[t]);
-
-				} else {
-
-					encontrouSubGrupo = false;
-
-					for (var e = 0; e < vetorAux.length; e++) {
-
-						if (vetorAux[e].zzSubGrupoGlobal.indexOf(vetorQntBrindes[t].zzSubGrupoGlobal) !== -1) {
-							var sSubGrupo =  vetorQntBrindes[t].zzSubGrupoGlobal;
-							
-							vetorAux[e].zzQnt += vetorQntBrindes[t].zzQnt;
-							encontrouSubGrupo = true;
-						}
-					}
-
-					if (!encontrouSubGrupo) {
-						vetorAux.push(vetorQntBrindes[t]);
-					}
+			
+			this.setLog(vetorItens, "CPG-vetorItens");
+			this.setLog(vetorQntBrindes, "CPG-vetorQntBrindes");
+			
+			/* Percorro o vetor dos itens*/
+			/* Preencho com a quantidade da campanha somente para os grupos ativos */
+			for (i = 0; i < vetorQntItens.length; i++){
+				if (vetorQntItens[i].bCampanhaAtivaGrupo){
+					vetorQntItens[i].zzQntCP = vetorQntItens[i].zzQnt;
 				}
 			}
 
-			console.log(vetorAux, "Vetor agrupado Brindes");
-			console.log(vetorQntItens, "Vetor agrupado Itens");
-			
-			var qntRegraGb;
-			
-			/* Percorre todos os brindes */
-			for (var z = 0; z < vetorAux.length; z++) {
+			/* Percorro todos os brindes para ver se existe quantidade disponíveis para eles na campanha */
+			for (i = 0; i < vetorQntBrindes.length; i++) {
 
-				qntTotalBrindes = vetorAux[z].zzQnt;
-				qntTotalItens = 0;
-
-				var subGrupo = vetorAux[z].zzSubGrupoGlobal.split("|");
-				subGrupo.splice(subGrupo.length - 1, 1);
+				/* Trato quando o brinde é compartilhado com vários subgrupos */
+				var vSubGrupos = vetorQntBrindes[i].zzSubGrupoGlobal.split("|");
 				
-				/* Trativa para quando o item possui mais de um subrgupo */
-				if (subGrupo.length > 1) {
+				/* Elimino as posições em branco*/
+				vSubGrupos = vSubGrupos.filter(function(a, b, c){
+					return a != "";
+				});
+				
+				var iQtdeBrindesNecessaria = vetorQntBrindes[i].zzQnt;
+				
+				/* Para o brinde em questão, preciso ordenar de menções que existem da posição atual pra baixo.*/
+				var vGrupos = [];
+				var oGrupo;
+				for (j = 0; j < vSubGrupos.length; j++){
+					oGrupo = new Object();
+					oGrupo.subgrupo = vSubGrupos[j];
+					/* Essa variável (qntSG) controla quantas vezes esse subgrupo é mencionado da posição atual pra baixo, pra 
+					posteriormente eu ordenar do mais específico (menos vezes mencionado) pro mais genérico (mais vezes mencionado)*/
+					oGrupo.qntSG = 0;
 					
-					/* Percorro todos os subgrupos pra identificar qual grupo é e somar as quantidades */
-					for (var a = 0; a < subGrupo.length; a++) {
-						for (var b = 0; b < vetorQntItens.length; b++) {
-							if (subGrupo[a].indexOf(vetorQntItens[b].zzSubGrupoGlobal) > -1) {
-								qntTotalItens += vetorQntItens[b].zzQnt;
-								qntRegraGb = vetorQntItens[b].zzQntRegraGb;
-							}
-						}
-					}
-					
-					if (qntTotalItens < qntRegraGb) {
-						mensagemCmpGlobal = "Quantidade mínima não atiginda para utilização de brinde da campanha. Quantidade digitada: " + qntTotalItens + ". Quantidade necessária: " + qntRegraGb;
+					/* Percorro o vetor de brindes da posição atual pra baixo pra ver quais grupos são mais específicos*/
+					for (var k = i; k < vetorQntBrindes.length; k++) {
+						/* Trato quando o brinde é compartilhado com vários subgrupos */
+						var vSubGrupos2 = vetorQntBrindes[k].zzSubGrupoGlobal.split("|");
 						
-						return [mensagemCmpGlobal, mensagemItensEnvolvidos, mensagemBrindesEnvolvidos];
-					}
-
-					if (qntTotalItens < qntTotalBrindes) {
-
-						mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + qntTotalItens + ". Quantidade de itens que está tentando inserir: " + qntTotalBrindes;
-
-						for (var c = 0; c < subGrupo.length; c++) {
-
-							for (var d = 0; d < vetorItens.length; d++) {
-
-								if (vetorItens[d].zzSubGrupoGlobal === subGrupo[c]) {
-
-									mensagemItensEnvolvidos.push(vetorItens[d]);
-								}
+						/* Elimino as posições em branco*/
+						vSubGrupos2 = vSubGrupos2.filter(function(a, b, c){
+							return a != "";
+						});
+						
+						for (var l = 0; l < vSubGrupos2.length; l++) {
+							if (oGrupo.subgrupo === vSubGrupos2[l]){
+								oGrupo.qntSG += 1;
 							}
-
-							for (e = 0; e < vetorBrindes.length; e++) {
-
-								if (vetorBrindes[e].zzSubGrupoGlobal.indexOf(subGrupo[c]) > -1) {
-
-									var jaInserido = false;
-
-									for (var g = 0; g < mensagemBrindesEnvolvidos.length; g++) {
-										if (vetorBrindes[e].matnr == mensagemBrindesEnvolvidos[g].matnr) {
-											jaInserido = true;
-										}
-									}
-
-									if (!jaInserido) {
-										mensagemBrindesEnvolvidos.push(vetorBrindes[e]);
-									}
-								}
-							}
-						}
-
-						return [mensagemCmpGlobal, mensagemItensEnvolvidos, mensagemBrindesEnvolvidos];
-
-					} else {
-
-						return "OK";
-
-					}
-
-				} else {
-
-					for (b = 0; b < vetorQntItens.length; b++) {
-						if (subGrupo[0].indexOf(vetorQntItens[b].zzSubGrupoGlobal) > -1) {
-							qntTotalItens = vetorQntItens[b].zzQnt;
-							qntRegraGb = vetorQntItens[b].zzQntRegraGb;
-
 						}
 					}
 					
-					if (qntTotalItens < qntRegraGb) {
-						mensagemCmpGlobal = "Quantidade mínima não atiginda para utilização de brinde da campanha. Quantidade digitada: " + qntTotalItens + ". Quantidade necessária: " + qntRegraGb;
+					oGrupo.zzQntCP = 0;
+					/* Acumulo o saldo dos grupos em questão, pois caso tenha itens igualmente mencionados, ordeno por quantidade de itens disponíveis. */
+					for (k = 0; k < vetorQntItens.length; k++) {
 						
-						return [mensagemCmpGlobal, mensagemItensEnvolvidos, mensagemBrindesEnvolvidos];
-					}					
-
-					if (qntTotalItens < qntTotalBrindes) {
-
-						mensagemCmpGlobal = "Quantidade de itens permitidos para inserir de acordo com o range atingido: " + qntTotalItens + ". Quantidade de itens que está tentando inserir: " + qntTotalBrindes;
-
-						for (c = 0; c < subGrupo.length; c++) {
-
-							for (d = 0; d < vetorItens.length; d++) {
-
-								if (vetorItens[d].zzSubGrupoGlobal === subGrupo[c]) {
-
-									mensagemItensEnvolvidos.push(vetorItens[d]);
+						if (vSubGrupos[j] === vetorQntItens[k].zzSubGrupoGlobal){
+							oGrupo.zzQntCP += vetorQntItens[k].zzQntCP;
+						}
+					}
+					
+					vGrupos.push(oGrupo);
+				}
+				
+				/* Ordeno pelos grupos menos mencionados primeiro*/
+				vGrupos.sort(function(proximo, anterior){
+					/* Se a quantidade do primeiro item for menor , movo pra baixo*/
+					if (proximo.qntSG < anterior.qntSG) return -1;
+					/* Se for maior, movo pra baixo */
+					if (proximo.qntSG > anterior.qntSG) return 1;
+				});
+				
+				vGrupos.sort(function(proximo, anterior){
+					/* Se a quantidade do primeiro item for menor , movo pra baixo*/
+					if (proximo.qntSG < anterior.qntSG) return -1;
+					/* Se for maior, movo pra baixo */
+					if (proximo.qntSG > anterior.qntSG) return 1;
+					
+					/* Se for a mesma, ordeno por quantidade disponível */
+					/* Se a quantidade do primeiro item for maior, movo pra cima */
+					if (proximo.zzQntCP < anterior.zzQntCP) return 1;
+					/* Se não, movo pra baixo */
+					if (proximo.zzQntCP > anterior.zzQntCP) return -1;					
+				});
+				
+				/* A busca de quantidade deve ser por subgrupo */
+				for (j = 0; j < vGrupos.length; j++){
+					
+					/* Busco nas campanhas ativas se existe quantidade disponível para o brinde em questão*/
+					for (var k = 0; k < vetorQntItens.length; k++){
+						
+						/* Se campanha tá ativa para o subgrupo de PA*/
+						if (vetorQntItens[k].bCampanhaAtivaGrupo){
+							
+							/* Verifico se o subgrupo do brinde em questão é igual ao da campanha ativa */
+							if(vGrupos[j].subgrupo === vetorQntItens[k].zzSubGrupoGlobal){
+								
+								/* Se a quantidade disponível for zero, continuo o laço */
+								if (vetorQntItens[k].zzQntCP === 0 ){
+									continue;
 								}
-							}
-
-							for (e = 0; e < vetorBrindes.length; e++) {
-
-								if (vetorBrindes[e].zzSubGrupoGlobal.indexOf(subGrupo[c]) > -1) {
-
-									jaInserido = false;
-
-									for (g = 0; g < mensagemBrindesEnvolvidos.length; g++) {
-										if (vetorBrindes[e].matnr == mensagemBrindesEnvolvidos[g].matnr) {
-											jaInserido = true;
-										}
-									}
-
-									if (!jaInserido) {
-										mensagemBrindesEnvolvidos.push(vetorBrindes[e]);
-									}
+								
+								/* Se o saldo (iQtdeBrindesNecessaria) for maior que a quantidade disponível, 
+								utilizo para o brinde em questão*/
+								if (iQtdeBrindesNecessaria > vetorQntItens[k].zzQntCP){
+									/* Utilizo o que tem */
+									iQtdeBrindesNecessaria -= vetorQntItens[k].zzQntCP;
+									
+									/* Reduzo o saldo */
+									vetorQntItens[k].zzQntCP = 0;
+									continue;
+								}
+								
+								/* Se o que eu preciso é menor do que tem no grupo, retiro somente o necessário */
+								if (iQtdeBrindesNecessaria <= vetorQntItens[k].zzQntCP){
+									vetorQntItens[k].zzQntCP -= iQtdeBrindesNecessaria;
+									
+									iQtdeBrindesNecessaria = 0;
+									continue;
 								}
 							}
 						}
-
-						return [mensagemCmpGlobal, mensagemItensEnvolvidos, mensagemBrindesEnvolvidos];
-
-					} else {
-						return "OK";
 					}
 				}
+				
+				if (iQtdeBrindesNecessaria > 0){
+					/* Removo o último PIPE (|) do subgrupo (somente para exibir melhor na mensagem) */
+					var sMatnr = vetorQntBrindes[i].matnr.substr(0, vetorQntBrindes[i].matnr.length -1);
+					
+					mensagemCmpGlobal = "Não existe saldo para o brinde {matnr}. Quantidade necessária: {qtn}.";
+					
+					mensagemCmpGlobal = mensagemCmpGlobal.replace("{matnr}", sMatnr);
+					mensagemCmpGlobal = mensagemCmpGlobal.replace("{qtn}", iQtdeBrindesNecessaria.toString());
+					return [mensagemCmpGlobal];									
+				}else{
+					mensagemCmpGlobal = "OK";
+				}
+			}
+			
+			/* Se percorreu o loop e deu certo, retorno OK*/
+			if (mensagemCmpGlobal == "OK") {
+				return "OK";
 			}
 		},
 
-		/* 2.1 Agrupar em quantidades, tanto o vetor de itens como o vetor de brindes. */
-		onAgruparQuantidades: function(vetorItens) {
+		onAgruparQuantidadesPA: function(vetorItens) {
 
 			var proximoItemIgual = false;
 			var inserirNovoItem = false;
 			var vetorQntItens = [];
-			
+
 			/* Percorre todos os itens do pedido */
 			for (var i = 0; i < vetorItens.length; i++) {
 
@@ -866,9 +876,6 @@ sap.ui.define([
 						}
 					}
 
-					//Reseta a variável depois que adicionou no vetor 
-					proximoItemIgual = false;
-
 				} else if (!proximoItemIgual && inserirNovoItem && (i + 1) !== vetorItens.length) {
 					//Quando o proximo item do corrente for dif .. Inserir ele no vetor (se for diferente do ultimo)
 
@@ -876,15 +883,21 @@ sap.ui.define([
 					objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
 					objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
 					objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
+					objVetorQntItens.zzGrupoGlobal = vetorItens[i].zzGrupoGlobal;
 
 					vetorQntItens.push(objVetorQntItens);
 				}
+
+				//Reseta a variável depois que adicionou no vetor 
+				proximoItemIgual = false;
+				inserirNovoItem = false;
 
 				if (i === 0) {
 
 					objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
 					objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
 					objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
+					objVetorQntItens.zzGrupoGlobal = vetorItens[i].zzGrupoGlobal;
 
 					vetorQntItens.push(objVetorQntItens);
 
@@ -913,6 +926,8 @@ sap.ui.define([
 						for (o = 0; o < vetorQntItens.length; o++) {
 							if (vetorQntItens[o].zzSubGrupoGlobal === vetorItens[i].zzSubGrupoGlobal) {
 								vetorQntItens[o].zzQnt += vetorItens[i].zzQnt;
+								vetorQntItens[o].zzQntRegraGb = vetorItens[i].zzQntRegraGb;
+								vetorQntItens[o].zzGrupoGlobal = vetorItens[i].zzGrupoGlobal;
 							}
 						}
 
@@ -921,11 +936,194 @@ sap.ui.define([
 						// objVetorQntItens.matnr = vetorQntItens[o];
 						objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
 						objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
+						objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
+						objVetorQntItens.zzGrupoGlobal = vetorItens[i].zzGrupoGlobal;
 
 						vetorQntItens.push(objVetorQntItens);
 					}
 				}
 			}
+
+			var bRetorno;
+			var bEncontrouRegistro;
+			var vGrupos = [];
+
+			/* Recupero um vetor com os grupos de PAs únicos*/
+			for (i = 0; i < vetorQntItens.length; i++) {
+				bEncontrouRegistro = false;
+
+				// Se for primeira linha
+				if (i === 0) {
+					vGrupos.push(vetorQntItens[i]);
+				} else {
+					/* Verifico se o gruop em questão não existe no vetor de grupos */
+					for (var j = 0; j < vGrupos.length; j++) {
+
+						if (vetorQntItens[i].zzGrupoGlobal === vGrupos[j].zzGrupoGlobal) {
+							bEncontrouRegistro = true;
+						}
+					}
+
+					if (bEncontrouRegistro === false) {
+						vGrupos.push(vetorQntItens[i]);
+					}
+				}
+			}
+			
+			var vSubGrupos = [];
+
+			/* Recupero um vetor com os subgrupos de brindes únicos */
+			for (i = 0; i < vetorQntItens.length; i++) {
+				bEncontrouRegistro = false;
+
+				// Se for primeira linha
+				if (i === 0) {
+					vSubGrupos.push(vetorQntItens[i]);
+				} else {
+					/* Verifico se o gruop em questão não existe no vetor de grupos */
+					for (var j = 0; j < vSubGrupos.length; j++) {
+
+						if (vetorQntItens[i].zzSubGrupoGlobal === vSubGrupos[j].zzSubGrupoGlobal) {
+							bEncontrouRegistro = true;
+						}
+					}
+
+					if (bEncontrouRegistro === false) {
+						vSubGrupos.push(vetorQntItens[i]);
+					}
+				}
+			}			
+
+			var iQtde = 0;
+			/* Somo as quantidades por grupos de PA */
+			for (i = 0; i < vGrupos.length; i++) {
+
+				iQtde = 0;
+				/*Somo todas as quantidades*/
+				for (j = 0; j < vetorQntItens.length; j++) {
+					if (vGrupos[i].zzGrupoGlobal == vetorQntItens[j].zzGrupoGlobal) {
+						iQtde += vetorQntItens[j].zzQnt;
+					}
+				}
+
+				/*Atribuo a todos os vetores com o mesmo grupo*/
+				for (j = 0; j < vetorQntItens.length; j++) {
+					if (vGrupos[i].zzGrupoGlobal == vetorQntItens[j].zzGrupoGlobal) {
+						vetorQntItens[j].zzQntTotalGrupo = iQtde;
+					}
+				}
+			}
+
+			return vetorQntItens;
+		},
+
+		/* 2.1 Agrupar em quantidades, tanto o vetor de itens como o vetor de brindes. */
+		onAgruparQuantidades: function(vetorItens) {
+
+			var proximoItemIgual = false;
+			var inserirNovoItem = false;
+			var vetorQntItens = [];
+
+			/* Percorre todos os itens do pedido */
+			for (var i = 0; i < vetorItens.length; i++) {
+
+				var objVetorQntItens = {
+					zzQnt: 0,
+					zzSubGrupoGlobal: "",
+					matnr: ""
+				};
+
+				//Somar a quantidade no vetor que já está adicionado (se for diferente do ultimo)
+				//Quando o proximo item do correntefor é igual .. Atualizar a qnt
+				if (proximoItemIgual && !inserirNovoItem && (i + 1) !== vetorItens.length) {
+
+					for (var o = 0; o < vetorQntItens.length; o++) {
+						if (vetorQntItens[o].zzSubGrupoGlobal === vetorItens[i].zzSubGrupoGlobal) {
+							vetorQntItens[o].zzQnt += vetorItens[i].zzQnt;
+							vetorQntItens[o].matnr += vetorItens[i].matnr + ";";
+						}
+					}
+
+				} else if (!proximoItemIgual && inserirNovoItem && (i + 1) !== vetorItens.length) {
+					//Quando o proximo item do corrente for dif .. Inserir ele no vetor (se for diferente do ultimo)
+
+					// objVetorQntItens.matnr = vetorItens[i].matnr;
+					objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
+					objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
+					objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
+					objVetorQntItens.matnr += vetorItens[i].matnr + ";";
+
+					vetorQntItens.push(objVetorQntItens);
+				}
+
+				//Reseta a variável depois que adicionou no vetor 
+				proximoItemIgual = false;
+				inserirNovoItem = false;
+
+				if (i === 0) {
+
+					objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
+					objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
+					objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
+					objVetorQntItens.matnr += vetorItens[i].matnr + ";";
+
+					vetorQntItens.push(objVetorQntItens);
+
+					if (vetorItens.length > 1 && vetorItens[i].zzSubGrupoGlobal === vetorItens[i + 1].zzSubGrupoGlobal) {
+						proximoItemIgual = true;
+
+					} else if (vetorItens.length > 1 && vetorItens[i].zzSubGrupoGlobal !== vetorItens[i + 1].zzSubGrupoGlobal) {
+						inserirNovoItem = true;
+					}
+
+				} else if (i > 0 && (i + 1) < vetorItens.length) {
+
+					if (vetorItens[i].zzSubGrupoGlobal === vetorItens[i + 1].zzSubGrupoGlobal) {
+						proximoItemIgual = true;
+						//Procurar e atualizar a quantidade
+
+					} else if (vetorItens[i].zzSubGrupoGlobal !== vetorItens[i + 1].zzSubGrupoGlobal) {
+						inserirNovoItem = true;
+					}
+
+				} else if ((i + 1) === vetorItens.length) {
+
+					// Se o atual for o ultimo e igual ao penultimo (Atualizar). Senão Inserir no vetor.
+					if (vetorItens[i].zzSubGrupoGlobal === vetorItens[i - 1].zzSubGrupoGlobal) {
+						//Atualiza
+						for (o = 0; o < vetorQntItens.length; o++) {
+							if (vetorQntItens[o].zzSubGrupoGlobal === vetorItens[i].zzSubGrupoGlobal) {
+								vetorQntItens[o].zzQnt += vetorItens[i].zzQnt;
+								vetorQntItens[o].zzQntRegraGb = vetorItens[i].zzQntRegraGb;
+							}
+						}
+
+					} else if (vetorItens[i].zzSubGrupoGlobal !== vetorItens[i - 1].zzSubGrupoGlobal) {
+						//Insere
+						// objVetorQntItens.matnr = vetorQntItens[o];
+						objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
+						objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
+						objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
+						objVetorQntItens.matnr += vetorItens[i].matnr + ";";
+
+						vetorQntItens.push(objVetorQntItens);
+					}
+				}
+			}
+			
+			vetorQntItens.sort(function(proximo, anterior){
+				/* Se a quantidade do primeiro item for menor , movo pra baixo*/
+				if (proximo.zzSubGrupoGlobal.length < anterior.zzSubGrupoGlobal.length) return -1;
+				/* Se for maior, movo pra baixo */
+				if (proximo.zzSubGrupoGlobal.length > anterior.zzSubGrupoGlobal.length) return 1;
+
+				/* Se for a mesma, ordeno por quantidade disponível */
+				/* Se a quantidade do primeiro item for maior, movo pra cima */
+				if (proximo.zzQnt > anterior.zzQnt) return 1;
+				/* Se não, movo pra baixo */
+				if (proximo.zzQnt < anterior.zzQnt) return -1;					
+			});
+
 			return vetorQntItens;
 		},
 

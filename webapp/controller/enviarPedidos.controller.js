@@ -448,6 +448,8 @@ sap.ui.define([
 										if (oItensPedidoGridEnviar[j].maxdescpermitido == undefined) {
 											oItensPedidoGridEnviar[j].maxdescpermitido = 0;
 										}
+										var bzzAtingiuCmpGlobal = ((oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal || "") == "Sim");
+										var bzzutilcampglobal = ((oItensPedidoGridEnviar[j].zzUtilCampGlobal || "") == "Sim");
 
 										var objItensPedido = {
 											Iditempedido: String(oItensPedidoGridEnviar[j].idItemPedido),
@@ -490,8 +492,8 @@ sap.ui.define([
 											Zzqntcpbrinde: String(oItensPedidoGridEnviar[j].zzQntCpBrinde),
 											Zzgrupoglobal: String(oItensPedidoGridEnviar[j].zzGrupoGlobal),
 											Zzqntregragb: String(oItensPedidoGridEnviar[j].zzQntRegraGb),
-											Zzutilcampglobal: String(oItensPedidoGridEnviar[j].zzUtilCampGlobal),
-											Zzatingiucmpglobal: String(oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal),
+											Zzutilcampglobal: bzzutilcampglobal, //String(oItensPedidoGridEnviar[j].zzUtilCampGlobal),     // TROCAR POR BOLEANO 
+											Zzatingiucmpglobal: bzzAtingiuCmpGlobal, //String(oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal), // TRPCAR POR BOLEANO
 											Zzqntcppa: String(oItensPedidoGridEnviar[j].zzQntCpPA || "0"),
 											Zzgrupocppa: String(oItensPedidoGridEnviar[j].zzGrupoCpPA || "0"),
 											Zzidcppa: String(oItensPedidoGridEnviar[j].zzIDCpPA || "0")
