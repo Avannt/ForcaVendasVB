@@ -57,32 +57,11 @@ sap.ui.define([
 
 					console.log("Itens Campanha Global estão OK", "CPG");
 				}).catch(function(mensagemCmpGlobal) {
-
-					var itensEnvolvidos = "";
-					var brindesEnvolvidos = "";
-					if (mensagemCmpGlobal[1] !== undefined) {
-						for (var a = 0; a < mensagemCmpGlobal[1].length; a++) {
-							itensEnvolvidos += "<li> Material:" + mensagemCmpGlobal[1][a].matnr + ", Qnt: " + mensagemCmpGlobal[1][a].zzQnt + ", SubGrupo: " + mensagemCmpGlobal[1][a].zzSubGrupoGlobal + "</li>";
-						}
-					}
-					if (mensagemCmpGlobal[2] !== undefined) {
-						for (a = 0; a < mensagemCmpGlobal[2].length; a++) {
-							brindesEnvolvidos += "<li> Material:" + mensagemCmpGlobal[2][a].matnr + ", Qnt: " + mensagemCmpGlobal[2][a].zzQnt + ", SubGrupo: " + mensagemCmpGlobal[2][a].zzSubGrupoGlobal + "</li>";
-						}
-					}
-
+					
 					MessageBox.show(mensagemCmpGlobal[0], {
 						icon: MessageBox.Icon.ERROR,
 						title: "Brinde inválido.",
 						actions: [MessageBox.Action.OK],
-						details: "<p><strong>Itens: </strong></p>\n" +
-							"<ul>" +
-							itensEnvolvidos +
-							"</ul>" +
-							"<p><strong>Brindes: </strong></p>\n" +
-							"<ul>" +
-							brindesEnvolvidos +
-							"\n</ul>",
 						onClose: function() {
 							that.PDControllerCmpGlobal.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
 						}
@@ -836,7 +815,7 @@ sap.ui.define([
 					/* Removo o último PIPE (|) do subgrupo (somente para exibir melhor na mensagem) */
 					var sMatnr = vetorQntBrindes[i].matnr.substr(0, vetorQntBrindes[i].matnr.length -1);
 					
-					mensagemCmpGlobal = "Não existe saldo para o brinde {matnr}. Quantidade necessária: {qtn}.";
+					mensagemCmpGlobal = "Saldo insuficiente de campanha para o brinde {matnr}. Quantidade necessária: {qtn}";
 					
 					mensagemCmpGlobal = mensagemCmpGlobal.replace("{matnr}", sMatnr);
 					mensagemCmpGlobal = mensagemCmpGlobal.replace("{qtn}", iQtdeBrindesNecessaria.toString());

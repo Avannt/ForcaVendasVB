@@ -593,7 +593,7 @@ sap.ui.define([
 
 		onBloqueioFormaPagamento: function(valor) {
 
-			if (valor == "YAMO" || valor == "YBRI" || valor == "YTRO" || valor == "YBON") {
+			if (valor == "YAMO" || valor == "YBRI" || valor == "YTRO" || valor == "YBON" || valor == "YBOX") {
 
 				this.byId("idFormParcelamento").setVisible(false);
 				this.byId("idInserirItemDiluicao").setEnabled(false);
@@ -644,7 +644,7 @@ sap.ui.define([
 		onCarregaMateriais: function(db, tipoPedido, resolve, reject) {
 			var that = this;
 
-			if (tipoPedido == "YVEN" || tipoPedido == "YBON" || tipoPedido == "YTRO") {
+			if (tipoPedido == "YVEN" || tipoPedido == "YBON" || tipoPedido == "YTRO" || tipoPedido == "YBOX") {
 
 				var filtro = "";
 
@@ -719,14 +719,14 @@ sap.ui.define([
 						}
 					};
 
-				} else if (vetorMateriais[i].mtpos == "YAMO" || vetorMateriais[i].mtpos == "YBRI" || vetorMateriais[i].mtpos == "YBON") {
+				} else if (vetorMateriais[i].mtpos == "YAMO" || vetorMateriais[i].mtpos == "YBRI" || vetorMateriais[i].mtpos == "YBON" || vetorMateriais[i].mtpos == "YBOX") {
 					var tabPrecoAB = "";
 
 					if (vetorMateriais[i].mtpos == "YBRI") {
 						tabPrecoAB = tabbri;
 					} else if (vetorMateriais[i].mtpos == "YAMO") {
 						tabPrecoAB = tabamo;
-					} else if (vetorMateriais[i].mtpos == "YBON") {
+					} else if (vetorMateriais[i].mtpos == "YBON" || vetorMateriais[i].mtpos == "YBOX") {
 						tabPrecoAB = tabbri;
 					}
 
@@ -1074,7 +1074,7 @@ sap.ui.define([
 							//TRITIS - Produto que não aceita desconto de 5%
 							that.oItemPedido.extwg = oMaterial.extwg;
 
-							if (tipoPedido == "YBON" || tipoPedido == "YTRO" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBRI") {
+							if (tipoPedido == "YBON" || tipoPedido == "YTRO" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBRI" || that.oItemPedido.mtpos == "YBOX" ) {
 								sap.ui.getCore().byId("idDesconto").setEnabled(false);
 							} else {
 								sap.ui.getCore().byId("idDesconto").setEnabled(true);
@@ -1110,7 +1110,7 @@ sap.ui.define([
 
 								} else {
 
-									if (that.oItemPedido.mtpos == "YBRI" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBON") {
+									if (that.oItemPedido.mtpos == "YBRI" || that.oItemPedido.mtpos == "YAMO" || that.oItemPedido.mtpos == "YBON" || that.oItemPedido.mtpos == "YBOX") {
 
 										var tabPrecoAB = "";
 
@@ -1122,7 +1122,7 @@ sap.ui.define([
 
 											tabPrecoAB = tabamo;
 
-										} else if (that.oItemPedido.mtpos == "YBON") {
+										} else if (that.oItemPedido.mtpos == "YBON" || that.oItemPedido.mtpos == "YBOX") {
 
 											tabPrecoAB = tabbon;
 
@@ -1314,7 +1314,7 @@ sap.ui.define([
 
 																							}
 
-																							if (tipoPedido == "YBON") {
+																							if (tipoPedido == "YBON" || tipoPedido == "YBOX") {
 
 																								if (that.oItemPedido.mtpos == "NORM") {
 																									tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
@@ -1820,7 +1820,7 @@ sap.ui.define([
 
 																								}
 
-																								if (tipoPedido == "YBON") {
+																								if (tipoPedido == "YBON" || tipoPedido == "YBOX") {
 
 																									if (that.oItemPedido.mtpos == "NORM") {
 
@@ -2056,7 +2056,7 @@ sap.ui.define([
 				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
 				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 
-			} else if (tipoPedido == "YBON") {
+			} else if (tipoPedido == "YBON" || tipoPedido == "YBOX") {
 
 				that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
 				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc * that.oItemPedido.kbetr / 100);
@@ -2428,7 +2428,7 @@ sap.ui.define([
 
 				} else if (that.objItensPedidoTemplate[i].mtpos == "NORM") {
 
-					if (tipoPedido == "YBON" || tipoPedido == "YTRO") {
+					if (tipoPedido == "YBON" || tipoPedido == "YTRO" || tipoPedido == "YBOX") {
 
 						//SOMA OS ITENS PARA QUANTIFICAR O QUANTO GEROU DE EXCEDENTE DE BRINDE. TIRANDO OS ITENS DE CAMPANHA GLOBAL. zzUtilCampGlobal == "Não"
 						valTotalExcedenteBonif += that.objItensPedidoTemplate[i].zzVprodDesc2 * that.objItensPedidoTemplate[i].zzQnt;
@@ -3727,10 +3727,18 @@ sap.ui.define([
 					valorAux = diasPrimeiraParcela - intervaloParcelas;
 					prazoMedio = prazoMedio + valorAux;
 				}
+				
+				/* Inicializo o prazo CP e o dias execendete da campanha como 0 (Campo do relatório) */
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoCP", 0);
+				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/DiasExcedenteCP", 0);
+				
 				that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoMedioParcelas", prazoMedio);
 				// var prazoMedio = Math.round((parseInt(intervaloParcelas) * parseInt(quantidadeParcelas) + parseInt(diasPrimeiraParcela)) /
 				// 	parseInt(quantidadeParcelas) * 100) / 100;
 				if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "01") {
+					/* Gravo o prazo padrão pra ser utilizado no relatório da campanha */
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoPadrao", prazoMaxAvista);
+					
 					if (valTotPed < valorPedMin && prazoMedio >= prazoMinAvista) {
 
 						diasExcedente = prazoMedio - prazoMinAvista;
@@ -3757,6 +3765,9 @@ sap.ui.define([
 					}
 
 				} else if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/TipoNegociacao") === "02") {
+					/* Gravo o prazo padrão pra ser utilizado no relatório da campanha */
+					that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/PrazoPadrao", prazoMaxAprazo);
+					
 					if (valTotPed < valorPedMin && prazoMedio >= prazoMinAprazo) {
 
 						diasExcedente = prazoMedio - prazoMinAprazo;
@@ -4276,31 +4287,10 @@ sap.ui.define([
 
 											}).catch(function(mensagemCmpGlobal) {
 
-												var itensEnvolvidos = "";
-												var brindesEnvolvidos = "";
-												if (mensagemCmpGlobal[1] !== undefined) {
-													for (var a = 0; a < mensagemCmpGlobal[1].length; a++) {
-														itensEnvolvidos += "<li> Material:" + mensagemCmpGlobal[1][a].matnr + ", Qnt: " + mensagemCmpGlobal[1][a].zzQnt + ", SubGrupo: " + mensagemCmpGlobal[1][a].zzSubGrupoGlobal + "</li>";
-													}
-												}
-												if (mensagemCmpGlobal[2] !== undefined) {
-													for (a = 0; a < mensagemCmpGlobal[2].length; a++) {
-														brindesEnvolvidos += "<li> Material:" + mensagemCmpGlobal[2][a].matnr + ", Qnt: " + mensagemCmpGlobal[2][a].zzQnt + ", SubGrupo: " + mensagemCmpGlobal[2][a].zzSubGrupoGlobal + "</li>";
-													}
-												}
-
 												MessageBox.show(mensagemCmpGlobal[0], {
 													icon: MessageBox.Icon.ERROR,
 													title: "Brinde inválido.",
 													actions: [MessageBox.Action.OK],
-													details: "<p><strong>Itens: </strong></p>\n" +
-														"<ul>" +
-														itensEnvolvidos +
-														"</ul>" +
-														"<p><strong>Brindes: </strong></p>\n" +
-														"<ul>" +
-														brindesEnvolvidos +
-														"\n</ul>",
 													onClose: function() {
 														sap.ui.getCore().byId("idQuantidade").focus();
 														oPanel.setBusy(false);
@@ -4798,7 +4788,7 @@ sap.ui.define([
 				that._ItemDialog.open();
 				that.popularCamposItemPedido();
 
-				if (that.oItemPedido.tipoItem == "Diluicao" | tipoPedido == "YBON" | tipoPedido == "YTRO") {
+				if (that.oItemPedido.tipoItem == "Diluicao" | tipoPedido == "YBON" | tipoPedido == "YBOX" | tipoPedido == "YTRO") {
 					sap.ui.getCore().byId("idDesconto").setEnabled(false);
 				} else {
 					sap.ui.getCore().byId("idDesconto").setEnabled(true);
@@ -5054,6 +5044,9 @@ sap.ui.define([
 								tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
 								verificadoPreposto: true,
 								zlsch: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento"),
+								PrazoPadrao: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PrazoPadrao"),
+								PrazoCP: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PrazoCP"),
+								DiasExcedenteCP: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasExcedenteCP"),
 								zzPrazoMedio: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PrazoMedioParcelas")
 							};
 
@@ -5154,6 +5147,15 @@ sap.ui.define([
 						actions: [MessageBox.Action.OK]
 					});
 				} else if (((this.byId("idTipoPedido").getSelectedKey() == "YBON" && this.byId("idTipoPedido").getSelectedKey() == "YTRO") && this.byId("idFormaPagamento").getSelectedKey() == "") || ((this.byId("idTipoPedido").getSelectedKey() == "YBON" && this.byId("idTipoPedido").getSelectedKey() == "YTRO") && this.byId("idFormaPagamento").getSelectedKey() == undefined)) {
+					MessageBox.show("Preencher o forma de pagamento!", {
+						icon: MessageBox.Icon.ERROR,
+						title: "Corrigir o campo!",
+						actions: [MessageBox.Action.OK],
+						onClose: function() {
+							that.byId("idFormaPagamento").focus();
+						}
+					});
+				} else if (((this.byId("idTipoPedido").getSelectedKey() == "YBOX" && this.byId("idTipoPedido").getSelectedKey() == "YTRO") && this.byId("idFormaPagamento").getSelectedKey() == "") || ((this.byId("idTipoPedido").getSelectedKey() == "YBOX" && this.byId("idTipoPedido").getSelectedKey() == "YTRO") && this.byId("idFormaPagamento").getSelectedKey() == undefined)) {
 					MessageBox.show("Preencher o forma de pagamento!", {
 						icon: MessageBox.Icon.ERROR,
 						title: "Corrigir o campo!",
@@ -5577,7 +5579,7 @@ sap.ui.define([
 
 			if (tipoPed == "YTRO") {
 				this.byId("idInserirItemDiluicao").setEnabled(false);
-			} else if (tipoPed == "YBON") {
+			} else if (tipoPed == "YBON" || tipoPed == "YBOX") {
 				this.byId("idInserirItemDiluicao").setEnabled(false);
 			}
 		},

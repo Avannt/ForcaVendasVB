@@ -319,8 +319,8 @@ sap.ui.define([
 
 			this._oDialog.setModel(oModel, "PedidosEF");
 			this._oDialog.setMultiSelect(false);
-			this._oDialog.setShowClearButton(true);
-			this._oDialog.setGrowing(true);
+			// this._oDialog.setShowClearButton(true);
+			// this._oDialog.setGrowing(true);
 
 			// Limpa o filtro da pesquisa antigo
 			this._oDialog.getBinding("items").filter([]);

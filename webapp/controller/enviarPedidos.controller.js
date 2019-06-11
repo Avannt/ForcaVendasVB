@@ -598,11 +598,14 @@ sap.ui.define([
 											Vltotexcndiramo: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoAmostra),
 											Vltotexcndirbon: String(oPedidosEnviar[i].valTotalExcedenteNaoDirecionadoBonif),
 											Valcampenxoval: String(oPedidosEnviar[i].valUtilizadoCampEnxoval),
-											Valcampglobal: String(oPedidosEnviar[i].valCampGlobal),
+											Valcampglobal: String(oPedidosEnviar[i].valUtilizadoCampGlobal),
 											Vlrutilcampenx: String(oPedidosEnviar[i].valCampEnxoval),
 											Valcampbrinde: String(oPedidosEnviar[i].valUtilizadoCampBrinde || 0),
 											Usuario: String(oPedidosEnviar[i].codUsr),
 											Tipousuario: String(oPedidosEnviar[i].tipoUsuario),
+											Prazopadrao: String(oPedidosEnviar[i].PrazoPadrao || 0),
+											Prazocp: String(oPedidosEnviar[i].PrazoCP || 0),
+											Diasexcedentecp: String(oPedidosEnviar[i].DiasExcedenteCP || 0),
 											Zlsch: String(oPedidosEnviar[i].zlsch),
 											Zzprazomed: String(oPedidosEnviar[i].zzPrazoMedio)
 										};

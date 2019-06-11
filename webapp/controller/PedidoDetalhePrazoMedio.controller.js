@@ -72,6 +72,7 @@ sap.ui.define([
 			var prazoMedioPercJurosDia = 0;
 			var totalPedido = this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").getProperty("/ValTotPed");
 			var diasExcedente = 0;
+			var zPrazoCP = 0;
 			console.error("Inicio Camp Prz Médio");
 
 			if (that.oVetorCmpPrzMed.length == 0) {
@@ -79,6 +80,7 @@ sap.ui.define([
 				console.error("Fim Camp Prz Médio");
 				return;
 			}
+			
 
 			for (var i = 0; i < that.oVetorCmpPrzMed.length; i++) {
 
@@ -94,7 +96,7 @@ sap.ui.define([
 			if (vetorItemCampPrzMed) {
 				//Pagamento Ávista
 				if (tipoNeg == 1) {
-					
+					zPrazoCP = vetorItemCampPrzMed.przmaxav;
 					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxav;
 					prazoMedioPercJurosDia = vetorItemCampPrzMed.taxa / 30;
 					
@@ -113,6 +115,7 @@ sap.ui.define([
 				} //Pagamento a Prazo
 				else if (tipoNeg == 2) {
 					
+					zPrazoCP = vetorItemCampPrzMed.przmaxap;
 					diasExcedente = prazoMedioParcelas - vetorItemCampPrzMed.przmaxap;
 					prazoMedioPercJurosDia = vetorItemCampPrzMed.taxa / 30;
 					
@@ -128,6 +131,11 @@ sap.ui.define([
 					this.onAtualizaExcedentePrazoMed();
 					this.onValidaDestinacaoPrazoMedio();
 				}
+				
+				sap.m.MessageToast.show("Campanha Pré-alta ativada. Prazo permitido: " + zPrazoCP.toString());
+				
+				this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/PrazoCP", zPrazoCP);
+				this.PDControllerCmpPrazoMedio.getModel("modelDadosPedido").setProperty("/DiasExcedenteCP", diasExcedente);
 			}
 		},
 		
