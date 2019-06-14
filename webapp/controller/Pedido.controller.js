@@ -160,9 +160,12 @@ sap.ui.define([
 			this.getOwnerComponent().getModel("modelAux").setProperty("/Kunnr", oItem.getNumber());
 			this.getSplitContObj().toDetail(this.createId("detail"));
 			
-			var iIndexCliente = oEvent.getSource()._aSelectedPaths[0].replace("/", "");
-			var sCnpj = this.getModel("clientesCadastrados").getData()[iIndexCliente].stcd1;
-			this.getOwnerComponent().getModel("modelAux").setProperty("/idFiscalCliente", sCnpj);
+			
+			/* O CNPJ AGORA É FEITO NO PEDIDODETALHE POR CONTA QUE O REPRESENTE PRECISA
+			ABRIR O PEDIDO DO PREPOSTO E NESSE PROCESSO NÃO PASSA POR ESSA TELA */
+			//var iIndexCliente = oEvent.getSource()._aSelectedPaths[0].replace("/", "");
+			//var sCnpj = this.getModel("clientesCadastrados").getData()[iIndexCliente].stcd1;
+			//this.getOwnerComponent().getModel("modelAux").setProperty("/idFiscalCliente", sCnpj);
 			
 			var open = indexedDB.open("VB_DataBase");
 

@@ -53,10 +53,13 @@ sap.ui.define([
 						var cursor1 = event1.target.result;
 
 						if (cursor1 !== null) {
-
-							cursor1.value.pathImg = sap.ui.require.toUrl("testeui5/img/") + cursor1.value.Aprovado + ".png ";
-							oPrePedidoRelatorio.push(cursor1.value);
-
+							
+							/* ExibePedido quando false significa que o pedido é superior a 90 dias, não exibo para o representante */
+							if(cursor1.value.ExibePedido){
+								cursor1.value.pathImg = sap.ui.require.toUrl("testeui5/img/") + cursor1.value.Aprovado + ".png ";
+								oPrePedidoRelatorio.push(cursor1.value);
+							}
+							
 							cursor1.continue();
 
 						} else {

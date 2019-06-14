@@ -208,6 +208,10 @@ sap.ui.define([
 		onOpenFormDetail: function(oItem) {
 			var that = this;
 			oPedEF = [];
+			
+			/* Limpo o pedido para forçar o usuário a informar novamente e assim carregar os dados 
+			da entrega atualizados */
+			that.getView().byId("ifVbeln").setValue("");
 
 			//seta os dados da objectHeader
 			this.getView().byId("objectHeader").setTitle(oItem.getTitle());

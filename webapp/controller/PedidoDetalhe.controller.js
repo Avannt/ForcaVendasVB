@@ -49,6 +49,9 @@ sap.ui.define([
 
 			var oModel = new sap.ui.model.json.JSONModel(aTemp);
 			this.getView().setModel(oModel);
+			
+			var sCnpj = this.getView().getModel("modelCliente").getProperty("/Stcd1");
+			this.getOwnerComponent().getModel("modelAux").setProperty("/idFiscalCliente", sCnpj);
 
 			this.getView().setModel(this.getView().getModel("modelCliente"));
 			this.getView().setModel(this.getView().getModel("modelAux"));
@@ -1440,7 +1443,7 @@ sap.ui.define([
 						if (iQtdeTotVendida == 0) {
 							dMedia = 0;
 						} else {
-							dMedia = oPed.topo.length / iQtdeTotVendida;
+							dMedia = iQtdeTotVendida / oPed.topo.length;
 						}
 
 						that.oItemPedido.zzMedia = dMedia.toFixed(2);

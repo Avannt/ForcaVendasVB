@@ -813,6 +813,10 @@ sap.ui.define([
 				var NumVersao = this.getOwnerComponent().getModel("modelAux").getProperty("/VersaoApp");
 				var TipoUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario");
 				var CodRepres = this.getOwnerComponent().getModel("modelAux").getProperty("/CodRepres");
+				var pad = "0000000000";
+				/* Código do representante com os zeros à esquerda*/
+				var CodRepresABAP = pad.substring(0, pad.length - CodRepres.length) + CodRepres;
+				
 				var CodUsuario = this.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
 
 				//var oModel = that.getOwnerComponent().getModel("modelAux").getProperty("/DBModel")
@@ -1904,10 +1908,46 @@ sap.ui.define([
 																																																																						var objAcompPedidos = txAcompPedidos.objectStore("StatusPedidos");
 
 																																																																						for (i = 0; i < retornoAcompPedidos.results.length; i++) {
-
+																																																																							var bExibePedido = true;
+																																																																							
 																																																																							var dataPedido = retornoAcompPedidos.results[i].Nrpedcli.split(".");
 																																																																							dataPedido = dataPedido[1];
 																																																																							dataPedido = dataPedido.substring(6, 8) + "/" + dataPedido.substring(4, 6) + "/" + dataPedido.substring(0, 4);
+																																																																							
+																																																																							/* Lógica para verificar se o pedido em questão é superior a 90 dias, desta
+																																																																							forma oculto o mesmo da vizualização do representante. */
+																																																																							try{
+																																																																								var dia, mes, ano;
+																																																																								var dDataPedido;
+																																																																								var dDataAtual;
+																																																																								var vData = dataPedido.split("/")
+																																																																								
+																																																																								dia = vData[0];
+																																																																								mes = vData[1];
+																																																																								ano = vData[2];
+																																																																								dDataPedido = new Date(ano, mes, dia);
+																																																																								
+																																																																								dDataAtual = new Date();
+																																																																								dia = dDataAtual.getDate();
+																																																																								mes = dDataAtual.getMonth()+1; //January is 0!
+																																																																								ano = dDataAtual.getFullYear();
+																																																																								
+																																																																								dDataAtual = new Date(ano, mes, dia);
+																																																																								
+																																																																								/* Calculo a diferença de tempo (em ms)*/
+																																																																								var iTempo = Math.abs(dDataAtual.getTime() - dDataPedido.getTime());
+																																																																								
+																																																																								/* Calculo a diferença em dias */
+																																																																								var iDias = Math.ceil(iTempo / (1000 * 60 * 60 * 24));
+																																																																								
+																																																																								/* Se o pedido tiver mais de 90 dias, não vou exibir o pedido para o representante */
+																																																																								if (iDias > 90){
+																																																																									bExibePedido = false;
+																																																																								}
+																																																																							}catch{
+																																																																								bExibePedido = true;
+																																																																							}
+																																																																							
 
 																																																																							var objBancoAcompPedidos = {
 																																																																								idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
@@ -1924,7 +1964,8 @@ sap.ui.define([
 																																																																								Vbeln: retornoAcompPedidos.results[i].Vbeln,
 																																																																								AprovadoDesc: retornoAcompPedidos.results[i].Status,
 																																																																								Auart: retornoAcompPedidos.results[i].Auart,
-																																																																								PedInconsistente: ""
+																																																																								PedInconsistente: "",
+																																																																								ExibePedido: bExibePedido
 																																																																							};
 
 																																																																							if (objBancoAcompPedidos.Auart == "YVEN") {
@@ -2158,7 +2199,7 @@ sap.ui.define([
 																																																																												Zzgrupocppa: String(retornoAcompPedidosD.results[i].Zzgrupocppa || ""),
 																																																																												Zzidcppa: String(retornoAcompPedidosD.results[i].Zzidcppa || ""),
 																																																																												zzGrupoGlobal: String(parseInt(retornoAcompPedidosD.results[i].ZzGrupoGlobal, 10)),
-																																																																												zzQntRegraGb: String(parseInt(retornoAcompPedidosD.results[i].zzQntRegraGb, 10)),
+																																																																												zzQntRegraGb: String(parseInt(retornoAcompPedidosD.results[i].Zzqntregragb, 10)),
 																																																																												zzUtilCampGlobal: String(retornoAcompPedidosD.resultsZzUtilCampGlobalobal),
 																																																																												zzAtingiuCmpGlobal: String(parseInt(retornoAcompPedidosD.results[i].ZzAtingiuCmpGlobal, 10))
 																																																																											};
@@ -2301,9 +2342,9 @@ sap.ui.define([
 																																																																																		/* Carrego os pedidos de vendas e itens somente para usuários do tipo Representante */
 																																																																																		if (TipoUsuario == 1) {
 																																																																																			/* GetPedidoPrepostoTopo */
-																																																																																			oModel.read("/GetPedidoPrepostoTopo", {
+																																																																																			oModel.read("/InserirOV", {
 																																																																																				urlParameters: {
-																																																																																					"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																																																					"$filter": "Lifnr eq '" + CodRepres + "'"
 																																																																																				},
 																																																																																				success: function(retornoPVPrepostoTopo) {
 		
@@ -2367,7 +2408,7 @@ sap.ui.define([
 																																																																																							valTotalExcedenteNaoDirecionadoDesconto: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirdesc),
 																																																																																							valTotalExcedenteNaoDirecionadoPrazoMed: parseFloat(retornoPVPrepostoTopo.results[i].Valtotexcndirprazo),
 																																																																																							valVerbaPedido: parseFloat(retornoPVPrepostoTopo.results[i].Valverbapedido),
-		
+																																																																																							
 																																																																																							valTotalCampEnxoval: parseFloat(0),
 																																																																																							valTotalCampGlobal: parseFloat(0),
 																																																																																							valTotalCampProdutoAcabado: parseFloat(0),
@@ -2398,9 +2439,9 @@ sap.ui.define([
 																																																																																					}
 		
 																																																																																					/* GetPedidoPrepostoItem */
-																																																																																					oModel.read("/GetPedidoPrepostoItem", {
+																																																																																					oModel.read("/InserirLinhaOV", {
 																																																																																						urlParameters: {
-																																																																																							"$filter": "IRepresentante eq '" + CodRepres + "'"
+																																																																																							"$filter": "IRepresentante eq '" + CodRepresABAP + "'"
 																																																																																						},
 																																																																																						success: function(retornoPVPrepostoItem) {
 																																																																																							var txPVPrepostoItem = db.transaction("ItensPedido", "readwrite");
@@ -2445,14 +2486,15 @@ sap.ui.define([
 																																																																																									mtpos: retornoPVPrepostoItem.results[i].Mtpos,
 																																																																																									kbetr: retornoPVPrepostoItem.results[i].Kbetr,
 																																																																																									zzQntAmostra: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntamostra, 10)),
-																																																																																									zzQntCpBrinde: String(parseInt(retornoPVPrepostoItem.results[i].ZzQntCpBrinde, 10)),
+																																																																																									zzQntCpBrinde: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntcpbrinde, 10)),
 																																																																																									Zzqntcppa: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntcppa || 0, 10)),
 																																																																																									Zzgrupocppa: String(retornoPVPrepostoItem.results[i].Zzgrupocppa || ""),
 																																																																																									Zzidcppa: String(retornoPVPrepostoItem.results[i].Zzidcppa || ""),
-																																																																																									zzGrupoGlobal: String(parseInt(retornoPVPrepostoItem.results[i].ZzGrupoGlobal, 10)),
-																																																																																									zzQntRegraGb: String(parseInt(retornoPVPrepostoItem.results[i].ZzQntRegraGb, 10)),
-																																																																																									zzUtilCampGlobal: String(retornoPVPrepostoItem.resultsZzUtilCampGlobalobal),
-																																																																																									zzAtingiuCmpGlobal: String(parseInt(retornoPVPrepostoItem.results[i].ZzAtingiuCmpGlobal, 10))
+																																																																																									zzGrupoGlobal: retornoPVPrepostoItem.results[i].Zzgrupoglobal,
+																																																																																									zzSubGrupoGlobal: retornoPVPrepostoItem.results[i].Zzsubgrupoglobal,
+																																																																																									zzQntRegraGb: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntregragb, 10)),
+																																																																																									zzUtilCampGlobal: retornoPVPrepostoItem.results[i].Zzutilcampglobal,
+																																																																																									zzAtingiuCmpGlobal: retornoPVPrepostoItem.results[i].Zzatingiucmpglobal
 																																																																																								};
 																																																																																								
 																																																																																								var requestPVPrepostoItem = objPVPrepostoItem.put(objBancoPVPrepostoItem);
@@ -3153,7 +3195,7 @@ sap.ui.define([
 											var result = e1.target.result;
 
 											var codRepres = retorno.CodRepres;
-
+											
 											var entryUsuario = {
 												// idEmpresa: werks + "." + codRepres,
 												werks: werks,

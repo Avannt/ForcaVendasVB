@@ -491,6 +491,7 @@ sap.ui.define([
 											Zzqnt: String(oItensPedidoGridEnviar[j].zzQnt),
 											Zzqntcpbrinde: String(oItensPedidoGridEnviar[j].zzQntCpBrinde),
 											Zzgrupoglobal: String(oItensPedidoGridEnviar[j].zzGrupoGlobal),
+											Zzsubgrupoglobal: String(oItensPedidoGridEnviar[j].zzSubGrupoGlobal),
 											Zzqntregragb: String(oItensPedidoGridEnviar[j].zzQntRegraGb),
 											Zzutilcampglobal: bzzutilcampglobal, //String(oItensPedidoGridEnviar[j].zzUtilCampGlobal),     // TROCAR POR BOLEANO 
 											Zzatingiucmpglobal: bzzAtingiuCmpGlobal, //String(oItensPedidoGridEnviar[j].zzAtingiuCmpGlobal), // TRPCAR POR BOLEANO
@@ -758,7 +759,9 @@ sap.ui.define([
 
 				return;
 			}
-
+			that.byId("table_entregas").setBusy(true);
+			that.byId("btnEnviarEntrega").setBusy(true);
+			
 			MessageBox.show("Deseja enviar os itens selecionados?", {
 				icon: MessageBox.Icon.WARNING,
 				title: "Envio de itens",
@@ -766,7 +769,7 @@ sap.ui.define([
 				onClose: function(oAction) {
 
 					if (oAction == sap.m.MessageBox.Action.YES) {
-
+						
 						new Promise(function(p1res, p1rej) {
 							that.onVerificarAprovadorUsuario(p1res, p1rej);
 						}).then(function() {
@@ -897,7 +900,7 @@ sap.ui.define([
 												Obsped: sObs
 											};
 
-											that.byId("table_entregas").setBusy(true);
+											// that.byId("table_entregas").setBusy(true);
 
 											oModel.create("/EntregaFuturaGravar", tmpItem, {
 												method: "POST",
@@ -931,6 +934,7 @@ sap.ui.define([
 
 													requestDelEntrega2.onsuccess = function(e) {
 														that.byId("table_entregas").setBusy(false);
+														that.byId("btnEnviarEntrega").setBusy(false);
 														console.info("item ef excluido");
 
 														/*	Se for o último item E o usuário conectado for representante, envio o encerramento 
@@ -1000,6 +1004,7 @@ sap.ui.define([
 
 													requestDelEntrega2.onerror = function(e) {
 														that.byId("table_entregas").setBusy(false);
+														that.byId("btnEnviarEntrega").setBusy(false);
 														console.info(e);
 														reject();
 													};
@@ -1014,6 +1019,7 @@ sap.ui.define([
 
 									Promise.all(vetorPromise).then(function(values) {
 										that.byId("table_entregas").setBusy(false);
+										that.byId("btnEnviarEntrega").setBusy(false);
 
 										// that.getOwnerComponent().getModel("modelAux").setProperty("/ObsEntregaSaldo", "");
 										localStorage.setItem("ObsEntregaSaldo", "");
@@ -1023,6 +1029,8 @@ sap.ui.define([
 								});
 							};
 						}).catch(function(sErro) {
+							that.byId("table_entregas").setBusy(false);
+							that.byId("btnEnviarEntrega").setBusy(false);
 
 							MessageBox.error(sErro, {
 								title: "Envio de itens",
@@ -1035,6 +1043,11 @@ sap.ui.define([
 						});
 
 					}
+					else{
+						that.byId("table_entregas").setBusy(false);
+						that.byId("btnEnviarEntrega").setBusy(false);
+					}
+					
 				}
 			});
 		},
