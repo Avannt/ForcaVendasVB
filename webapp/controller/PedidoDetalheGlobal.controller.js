@@ -896,19 +896,21 @@ sap.ui.define([
 				inserirNovoItem = false;
 
 				if (i === 0) {
-
 					objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
 					objVetorQntItens.zzSubGrupoGlobal = vetorItens[i].zzSubGrupoGlobal;
 					objVetorQntItens.zzQntRegraGb = vetorItens[i].zzQntRegraGb;
 					objVetorQntItens.zzGrupoGlobal = vetorItens[i].zzGrupoGlobal;
 
 					vetorQntItens.push(objVetorQntItens);
-
-					if (vetorItens.length > 1 && ((vetorItens[i].zzSubGrupoGlobal === vetorItens[i + 1].zzSubGrupoGlobal) && (vetorItens[i].zzGrupoGlobal === vetorItens[i + 1].zzGrupoGlobal))) {
-						proximoItemIgual = true;
-
-					} else if ((vetorItens.length > 1 && vetorItens[i].zzSubGrupoGlobal !== vetorItens[i + 1].zzSubGrupoGlobal) || (vetorItens[i].zzGrupoGlobal !== vetorItens[i + 1].zzGrupoGlobal)) {
-						inserirNovoItem = true;
+					
+					/* Preciso verificar se o primeiro item também não é o último,
+					se for o último então não faço a verificação e sigo de próximo item */
+					if((i + 1) !== vetorItens.length){
+						if (vetorItens.length > 1 && ((vetorItens[i].zzSubGrupoGlobal === vetorItens[i + 1].zzSubGrupoGlobal) && (vetorItens[i].zzGrupoGlobal === vetorItens[i + 1].zzGrupoGlobal))) {
+							proximoItemIgual = true;
+						} else if ((vetorItens.length > 1 && vetorItens[i].zzSubGrupoGlobal !== vetorItens[i + 1].zzSubGrupoGlobal) || (vetorItens[i].zzGrupoGlobal !== vetorItens[i + 1].zzGrupoGlobal)) {
+							inserirNovoItem = true;
+						}
 					}
 
 				} else if (i > 0 && (i + 1) < vetorItens.length) {
@@ -935,7 +937,7 @@ sap.ui.define([
 							}
 						}
 
-					} else if ((vetorItens[i].zzSubGrupoGlobal !== vetorItens[i - 1].zzSubGrupoGlobal) &&  (vetorItens[i].zzGrupoGlobal !== vetorItens[i - 1].zzGrupoGlobal)) {
+					} else if ((vetorItens[i].zzSubGrupoGlobal !== vetorItens[i - 1].zzSubGrupoGlobal) ||  (vetorItens[i].zzGrupoGlobal !== vetorItens[i - 1].zzGrupoGlobal)) {
 						//Insere
 						// objVetorQntItens.matnr = vetorQntItens[o];
 						objVetorQntItens.zzQnt = vetorItens[i].zzQnt;
