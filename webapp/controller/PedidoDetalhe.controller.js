@@ -4970,7 +4970,7 @@ sap.ui.define([
 						var db = open.result;
 
 						if (completoPedido == "Não") {
-
+							
 							if (that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario") == 2) {
 								that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/IdStatusPedido", 9);
 								that.getOwnerComponent().getModel("modelDadosPedido").setProperty("/SituacaoPedido", "Preposto");
@@ -5043,7 +5043,7 @@ sap.ui.define([
 								valTotalExcedenteBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValTotalExcedenteBonif"),
 								valUtilizadoVerbaBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoVerbaBonif"),
 								valUtilizadoComissaoBonif: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/ValUtilizadoComissaoBonif"),
-								codUsr: that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"),
+								//codUsr: that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr"),
 								tipoUsuario: that.getOwnerComponent().getModel("modelAux").getProperty("/Tipousuario"),
 								verificadoPreposto: true,
 								zlsch: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/FormaPagamento"),
@@ -5052,6 +5052,13 @@ sap.ui.define([
 								DiasExcedenteCP: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/DiasExcedenteCP"),
 								zzPrazoMedio: that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/PrazoMedioParcelas")
 							};
+							
+							/* Verifico se o CodUsr já existe preenchido no pedido, se existe o sistema não altera (pode ser pedido do preposto) */
+							if (that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/CodUsr") === undefined){
+								objBancoPrePedido.codUsr = that.getOwnerComponent().getModel("modelAux").getProperty("/CodUsr");
+							}else{ /* Se já houver preenchiemnto, então mantenho */
+								objBancoPrePedido.codUsr = that.getOwnerComponent().getModel("modelDadosPedido").getProperty("/CodUsr");
+							}
 
 							var store1 = db.transaction("PrePedidos", "readwrite");
 							var objPedido = store1.objectStore("PrePedidos");

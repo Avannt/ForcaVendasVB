@@ -953,13 +953,14 @@ sap.ui.define([
 															});
 														} /* fim if */
 
-														/* Se o item em questão for do representante, 
+														/* Se o item em questão for do representante (sTipoUsuario == "1") 
+														ou preposto (sTipoUsuario == "2)", 
 														então acumulo o saldo diário para controle local,
 														esse controle serve até o momento que o usuário atualizar
 														as tabelas, depois ele é zerado pois o saldo do Sap 
 														vem atualizado
 														*/
-														if (sTipoUsuario == "1") {
+														if (sTipoUsuario == "1" || sTipoUsuario == "2") {
 															var txEF = db.transaction("EntregaFutura", "readwrite");
 															var objItensEntrega = txEF.objectStore("EntregaFutura");
 

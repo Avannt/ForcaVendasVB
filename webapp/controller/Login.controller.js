@@ -48,7 +48,7 @@ sap.ui.define([
 					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", oModel);
 				} else { // QAS
 					this.getOwnerComponent().getModel("modelAux").setProperty("/DBModel", this.getView().getModel());
-					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.46");
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.47");
 				}
 
 				this.getOwnerComponent().getModel("modelAux").setProperty("/Werks", "1000");
@@ -1004,7 +1004,7 @@ sap.ui.define([
 
 																				oModel.read("/TitulosAbertos", {
 																					urlParameters: {
-																						"$filter": "IvRepres eq '" + CodRepres + "'"
+																						"$filter": "IvRepres eq '" + CodUsuario + "'"
 																					},
 																					success: function(retornoTitulosAbertos) {
 
@@ -1901,7 +1901,7 @@ sap.ui.define([
 
 																																																																				oModel.read("/AcompPedidos", {
 																																																																					urlParameters: {
-																																																																						"$filter": "IRepres eq '" + CodRepres + "'"
+																																																																						"$filter": "IRepres eq '" + CodUsuario + "'"
 																																																																					},
 																																																																					success: function(retornoAcompPedidos) {
 																																																																						var txAcompPedidos = db.transaction("StatusPedidos", "readwrite");
@@ -2493,7 +2493,7 @@ sap.ui.define([
 																																																																																									zzGrupoGlobal: retornoPVPrepostoItem.results[i].Zzgrupoglobal,
 																																																																																									zzSubGrupoGlobal: retornoPVPrepostoItem.results[i].Zzsubgrupoglobal,
 																																																																																									zzQntRegraGb: String(parseInt(retornoPVPrepostoItem.results[i].Zzqntregragb, 10)),
-																																																																																									zzUtilCampGlobal: retornoPVPrepostoItem.results[i].Zzutilcampglobal,
+																																																																																									zzUtilCampGlobal: (retornoPVPrepostoItem.results[i].Zzutilcampglobal === true ? "Sim" : "Não"),
 																																																																																									zzAtingiuCmpGlobal: retornoPVPrepostoItem.results[i].Zzatingiucmpglobal
 																																																																																								};
 																																																																																								

@@ -1,7 +1,8 @@
-<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
-	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
 	<edmx:DataServices m:DataServiceVersion="2.0">
-		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZFORCA_VENDAS_VB_SRV" xml:lang="pt" sap:schema-version="1">
+		<Schema Namespace="ZFORCA_VENDAS_VB_SRV" xml:lang="pt" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
 			<EntityType Name="CmpGbItemBrinde" sap:content-version="1">
 				<Key><PropertyRef Name="IRepresentante"/></Key><Property Name="IRepresentante" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Representante"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Representante" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Representante"
@@ -646,13 +647,14 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Kbetr" Type="Edm.String" Nullable="false" MaxLength="11" sap:unicode="false" sap:label="Montante" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="InserirOV" sap:content-version="1">
-				<Key><PropertyRef Name="Nrpedcli"/></Key><Property Name="Zzprazomed" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:label="Prazo Médio"
+				<Key><PropertyRef Name="Nrpedcli"/></Key><Property Name="Aprov" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Aprovador" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Percentradapedido" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="6" sap:unicode="false" sap:label="Perc Ent Ped"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Prazopadrao" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:label="Prazo Padrao"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Aprov" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Aprovador" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Prazocp" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:label="Prazo CP Pre Alta"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzprazomed" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:label="Prazo Médio"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Auart" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Tipo doc.vendas"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Diasexcedentecp" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Dias Excedente CP"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Prazocp" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="3" sap:unicode="false" sap:label="Prazo CP Pre Alta"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Brgew" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Peso bruto"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Diasexcedentecp" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Dias Excedente CP"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="BuGruop" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Agrupamento" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Completo" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Completo" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Diasprimeiraparcela" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Dias Primeira Parcel"
@@ -675,8 +677,7 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Obsped" Type="Edm.String" Nullable="false" MaxLength="100" sap:unicode="false" sap:label="Obs Pedido" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Obsvm" Type="Edm.String" Nullable="false" MaxLength="200" sap:unicode="false" sap:label="Observ.VM" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Obsvvb" Type="Edm.String" Nullable="false" MaxLength="200" sap:unicode="false" sap:label="Observ. VVB" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Percentradapedido" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Perc Ent Ped"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Pltyp" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Lista de preços"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Pltyp" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Lista de preços"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Provg" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Grupo comissões"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Quantparcelas" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Quantidade Parcelas"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Situacaopedido" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Sit Pedido"
@@ -742,11 +743,11 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zlsch" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="FrmPgto" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="InserirLinhaOV" sap:content-version="1">
-				<Key><PropertyRef Name="Iditempedido"/><PropertyRef Name="Nrpedcli"/></Key><Property Name="Aumng" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Qtd.mín.ordem"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzatingiucmpglobal" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Flag X" sap:creatable="false"
+				<Key><PropertyRef Name="Iditempedido"/><PropertyRef Name="Nrpedcli"/></Key><Property Name="Zzsubgrupoglobal" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="SubGrupo Global"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Aumng" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:unicode="false" sap:label="Qtd.mín.ordem"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="IRepresentante" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Iditempedido" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="Item Pedido"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzutilcampglobal" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Flag X" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Kbetr" Type="Edm.Decimal" Nullable="false" Precision="12" Scale="3" sap:unicode="false" sap:label="Montante"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Kbetr" Type="Edm.Decimal" Nullable="false" Precision="12" Scale="3" sap:unicode="false" sap:label="Montante"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Knumh" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Nº reg.condição"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Knumhextra" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Nº reg.condição"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Length" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:label="Valor condição"
@@ -760,6 +761,7 @@
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Tindex" Type="Edm.Int32" Nullable="false" sap:unicode="false" sap:label="Contador de loops" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Tipoitem" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Tipo Item" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Tipoitem2" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Tipo Item" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzatingiucmpglobal" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Flag X" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzdesext" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:label="Valor condição"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzdesitem" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:label="Valor condição"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzgrpmat" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="ID Família" sap:creatable="false"
@@ -779,7 +781,8 @@
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzqntregragb" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:label="Valor condição"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzregra" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="ID Regra" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzregraextra" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="ID Regra"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzvalexcedidoitem" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="9" sap:unicode="false"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzutilcampglobal" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Flag X" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzvalexcedidoitem" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="9" sap:unicode="false"
 					sap:label="Vlr.Exced.Item" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzvalordiluido" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Valor Diluído"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzvprod" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="3" sap:unicode="false" sap:label="Valor condição"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Zzvprodabb" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="9" sap:unicode="false" sap:label="Vlr.Prod.ABB"
@@ -1282,6 +1285,10 @@
 				sap:deletable="false" sap:pageable="false" sap:content-version="1"/><EntitySet Name="BuscaItensPedidoAprov" EntityType="ZFORCA_VENDAS_VB_SRV.BuscaItemPedidoAprov" sap:creatable="false" sap:updatable="false"
 				sap:deletable="false" sap:pageable="false" sap:content-version="1"/><EntitySet Name="TitulosAbertos" EntityType="ZFORCA_VENDAS_VB_SRV.TituloAberto" sap:creatable="false" sap:updatable="false"
 				sap:deletable="false" sap:pageable="false" sap:content-version="1"/><EntitySet Name="FluxoAprovacao" EntityType="ZFORCA_VENDAS_VB_SRV.FluxoAprovacao" sap:creatable="false" sap:updatable="false"
-				sap:deletable="false" sap:pageable="false" sap:content-version="1"/></EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZFORCA_VENDAS_VB_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZFORCA_VENDAS_VB_SRV/$metadata"/></Schema>
+				sap:deletable="false" sap:pageable="false" sap:content-version="1"/></EntityContainer><atom:link rel="self"
+				href="https://webidecp-p2000753154trial.dispatcher.hanatrial.ondemand.com/destinations/VB_GWD/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/><atom:link rel="latest-version"
+				href="https://webidecp-p2000753154trial.dispatcher.hanatrial.ondemand.com/destinations/VB_GWD/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/></Schema>
 	</edmx:DataServices>
 </edmx:Edmx>
