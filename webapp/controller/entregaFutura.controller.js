@@ -78,6 +78,9 @@ sap.ui.define([
 
 			this.onPressDetailBack();
 			oSF = this.byId("sfItem");
+			
+			//Multiplo de materiais.
+			this.MultiploMaterial = 0;                                      
 
 			this.getView().byId("objectHeader").setTitle();
 			this.getView().byId("objectHeader").setNumber();
@@ -462,9 +465,9 @@ sap.ui.define([
 				/* Recupero o saldo do Sap do item escolhido. */
 				for (var i = 0; i < oModel.length; i++) {
 					if (oModel[i].Matnr == sMatnr) {
-						iQtdeFaturada = parseInt(oModel[i].Fkimg);
-						iSaldoSap = parseInt(oModel[i].Sldfut);
-						iQtdeDia = parseInt(oModel[i].Slddia);
+						iQtdeFaturada = parseInt(oModel[i].Fkimg, 10);
+						iSaldoSap = parseInt(oModel[i].Sldfut, 10);
+						iQtdeDia = parseInt(oModel[i].Slddia, 10);
 					}
 				}
 
@@ -487,7 +490,6 @@ sap.ui.define([
 							if (vEntregas[i].Matnr == sMatnr) {
 								// iQtdeDia += parseInt(vEntregas[i].Fkimg2);
 								bErro = true;
-
 								break;
 							}
 						}
@@ -502,11 +504,41 @@ sap.ui.define([
 
 							that.byId("sfItem").setValue("");
 							return;
+							
 						} else {
 							var saldo = 0;
 							saldo = iSaldoSap - iQtdeDia;
 
 							that.byId("ifSaldo").setValue(saldo);
+							
+							
+							//Busca o multiplo cadastrado na tabela de Materiais
+							this.MultiploMaterial = 0;
+							
+							var store = db.transaction("Materiais", "readwrite");
+							var objMaterial = store.objectStore("Materiais");
+		
+							var requestMaterial = objMaterial.get(sMatnr);
+		
+							requestMaterial.onsuccess = function(e) {
+								var oMaterial = e.target.result;
+		
+								if (oMaterial == undefined) {
+									
+									MessageBox.show("Não existe o produto " + sMatnr + " cadastrado na tabela de materiais", {
+										icon: MessageBox.Icon.ERROR,
+										title: "Produto não encontrado.",
+										actions: [MessageBox.Action.YES],
+										onClose: function() {
+											
+										}
+									});
+		
+								} else {
+									//Multiplo do material
+									that.MultiploMaterial = parseInt(oMaterial.aumng, 10);
+								}
+							};
 						}
 					};
 				};
@@ -541,7 +573,7 @@ sap.ui.define([
 		onLiveChangeQtde: function(e) {
 			var Qtde = e.getParameter("value");
 
-			this.getView().byId("ifQtde").setValue(parseInt(Qtde));
+			this.getView().byId("ifQtde").setValue(parseInt(Qtde, 10));
 		},
 		/* onLiveChangeQtde  */
 
@@ -598,9 +630,19 @@ sap.ui.define([
 								title: "Erro",
 								actions: [MessageBox.Action.OK],
 							});
+						} else if(that.MultiploMaterial != 0 && (iQuantidade % that.MultiploMaterial) != 0){
+							
+							MessageBox.show("Digite uma quantidade multipla de " + that.MultiploMaterial, {
+								icon: MessageBox.Icon.ERROR,
+								title: "Quantidade Inválida.",
+								actions: [MessageBox.Action.OK],
+								onClose: function() {
+								}
+							});
+							
 						} else {
+							
 							var oModelAux = that.getOwnerComponent().getModel("modelAux");
-
 							oItemEF2.Arktx = oItemEF.Arktx;
 							oItemEF2.Aubel = oItemEF.Aubel;
 							oItemEF2.Aupos = oItemEF.Aupos;

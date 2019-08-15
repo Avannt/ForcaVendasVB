@@ -1,4 +1,4 @@
-<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+<mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
 	controllerName="testeui5.controller.verbaConsultas" xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
 	<Page id="detail" title="Consultas de Verbas" class="sapUiStdPage" showNavButton="true" navButtonPress="onNavBack">
 		<subHeader>
@@ -6,8 +6,7 @@
 				<ToolbarSpacer/>
 				<ToolbarSpacer/>
 				<!--<Button icon="sap-icon://download" press="onDataExport"/>-->
-				<SearchField id="idConsultaVerba" placeholder="Digite o cód/nome do representante" liveChange="onSearch"
-					width="100%"></SearchField>
+				<SearchField id="idConsultaVerba" placeholder="Digite o cód/nome do representante" liveChange="onSearch" width="100%"></SearchField>
 			</Toolbar>
 		</subHeader>
 		<content>
@@ -32,7 +31,10 @@
 					</Column>
 				</columns>
 				<items >
-					<ColumnListItem type="Active">
+					<ColumnListItem type="Inactive">
+						<customData>
+							<core:CustomData key="mydataVerba" value="{path: 'Verbas>linhaDescExc', type: 'sap.ui.model.type.String'}" writeToDom="true"/>
+						</customData>
 						<cells>
 							<Text text="{path : 'Verbas>Reprs'}"/>
 							<Text text="{path : 'Verbas>Name'}"/>

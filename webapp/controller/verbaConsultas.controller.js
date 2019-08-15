@@ -32,6 +32,14 @@ sap.ui.define([
 				store.getAll().onsuccess = function(event) {
 					var vetorSaldo = [];
 					vetorSaldo = event.target.result;
+					
+					for(var i=0; i<vetorSaldo.length; i++){
+						if(vetorSaldo[i].TotalVm < 0){
+							vetorSaldo[i].linhaDescExc = "0";
+						} else {
+							vetorSaldo[i].linhaDescExc = "1";
+						}
+					}
 
 					var oModel = new sap.ui.model.json.JSONModel(vetorSaldo);
 

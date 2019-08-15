@@ -22,7 +22,7 @@
 			<Button icon="sap-icon://accept" text="OK" press="onAprovarDialog"/>
 		</beginButton>
 		<endButton>
-			<Button icon="sap-icon://decline" text="Cancelar" press="onCancelar"/>
+			<Button icon="sap-icon://decline" text="Cancelar" press="onCancelarObservacoes"/>
 		</endButton>
 	</Dialog>
 </core:FragmentDefinition>

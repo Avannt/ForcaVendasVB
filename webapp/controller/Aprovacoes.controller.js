@@ -1082,26 +1082,76 @@ sap.ui.define([
 		onAprovar: function() {
 			var that = this;
 			
-			that.onCarregaExcedentes();
-
-			if (that._ItemDialog) {
-				that._ItemDialog.destroy(true);
+			function continuarComLimite(){
+				
+				that.onCarregaExcedentes();
+	
+				if (that._ItemDialog) {
+					that._ItemDialog.destroy(true);
+				}
+	
+				if (!that._CreateMaterialFragment) {
+	
+					that._ItemDialog = sap.ui.xmlfragment(
+						"testeui5.view.observacoesAprovador",
+						that
+					);
+	
+					that.getView().addDependent(that._ItemDialog);
+				}
+	
+				that.onBloquearCampos();
+	
+				that._ItemDialog.open();
 			}
+			
+			var open1 = indexedDB.open("VB_DataBase");
 
-			if (!that._CreateMaterialFragment) {
-
-				that._ItemDialog = sap.ui.xmlfragment(
-					"testeui5.view.observacoesAprovador",
-					that
-				);
-
-				that.getView().addDependent(this._ItemDialog);
-			}
-
-			that.onBloquearCampos();
-
-			that._ItemDialog.open();
-
+			open1.onerror = function(hxr) {
+				console.log("Erro ao abrir tabelas.");
+				console.log(hxr.Message);
+			};
+			//Load tables
+			open1.onsuccess = function(e) {
+				var db = open1.result;
+				
+				var tx = db.transaction("SaldoVerba", "readwrite");
+				var objSaldoVerba = tx.objectStore("SaldoVerba");
+				
+				var Item = that.getView().getModel("ItemAprovar").getData();
+				var request = objSaldoVerba.get(Item.Lifnr);
+				
+				request.onsuccess = function(evt) {
+					var resultVerba = evt.target.result;
+					
+					if(resultVerba){
+						
+						if(resultVerba.TotalVm < 0){
+						
+							sap.m.MessageBox.show(
+							"O representante " + resultVerba.Reprs + " está com limite negativo. Deseja continuar?", {
+								icon: sap.m.MessageBox.Icon.QUESTION,
+								title: "Limite negativo!",
+								actions: [sap.m.MessageBox.Action.OK, sap.m.MessageBox.Action.CANCEL],
+								onClose: function(oAction) {
+									if(oAction === sap.m.MessageBox.Action.OK){
+										continuarComLimite();
+									}
+								}
+							}
+						);
+						
+						} else {
+						
+							continuarComLimite();
+						}
+						
+					} else {
+						
+						continuarComLimite();
+					}
+				};
+			};
 		},
 
 		onReprovar: function() {
@@ -1451,6 +1501,25 @@ sap.ui.define([
 			if (this._ItemDialog) {
 				this._ItemDialog.destroy(true);
 			}
+		},
+		
+		onCancelarObservacoes: function() {
+			
+			if (this._ItemDialog) {
+				this._ItemDialog.destroy(true);
+			}
+			
+			if (!this._CreateMaterialFragment) {
+
+				this._ItemDialog = sap.ui.xmlfragment(
+					"testeui5.view.AprovacaoDialog",
+					this
+				);
+
+				this.getView().addDependent(this._ItemDialog);
+			}
+			
+			this._ItemDialog.open();
 		},
 
 		onReprovarPedido: function() {

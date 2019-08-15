@@ -29,8 +29,11 @@ tr[data-mydata="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubRow {
   background:  #FF8484 !important;
 }
 
-tr[data-mydataAprov="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubRow {	
-  background:  #FF8484 !important;
+tr[data-mydataAprov="0"], tr[data-mydataAprov="0"] + tr.sapMListTblSubRow {	
+  background:  #df5a3e !important;
+}
+tr[data-mydataVerba="0"], tr[data-mydataVerba="0"] + tr.sapMListTblSubRow {	
+  background:  #df5a3e !important;
 }
 
 tr[data-mydataRP="Inconsistente"], tr[data-mydataRP="Inconsistente"] + tr.sapMListTblSubRow {	

@@ -1316,8 +1316,10 @@ sap.ui.define([
 																								idA960ABB = werks + "." + tabPreco2 + "." + oMaterial.matnr;
 
 																							}
-
-																							if (tipoPedido == "YBON" || tipoPedido == "YBOX") {
+																							
+																							//Regra -> 12/08/2019 - Tratar quando for ybox, não trazer desconto mínimo de tabela de bonificação.
+																							// if (tipoPedido == "YBON" || tipoPedido == "YBOX") {  //era assim
+																							if (tipoPedido == "YBON") {
 
 																								if (that.oItemPedido.mtpos == "NORM") {
 																									tabPreco2 = that.getOwnerComponent().getModel("modelAux").getProperty("/Usuario").tabbon;
@@ -2060,8 +2062,14 @@ sap.ui.define([
 				that.oItemPedido.zzVprodDesc2 = that.oItemPedido.zzVprod;
 
 			} else if (tipoPedido == "YBON" || tipoPedido == "YBOX") {
-
-				that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
+				
+				//Regra -> 12/08/2019 - Tratar quando for ybox não passar por desconto ávista.
+				if(tipoPedido == "YBOX"){
+					that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprod;
+				} else {
+					that.oItemPedido.zzVprodDesc = (that.oItemPedido.zzVprod) - ((that.oItemPedido.zzVprod) * (5 / 100));
+				}
+				
 				that.oItemPedido.zzVprodDesc = that.oItemPedido.zzVprodDesc - (that.oItemPedido.zzVprodDesc * that.oItemPedido.kbetr / 100);
 
 				that.oItemPedido.zzPercDescTotal = that.oItemPedido.kbetr;

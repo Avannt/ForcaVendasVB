@@ -63,8 +63,25 @@ sap.ui.define([
 							"$filter": "INrpedcli eq '" + nrPed + "'"
 						},
 						success: function(retornoitens) {
+							var vetorItens = [];
 							
-							var oModelItensAprovacoes = new sap.ui.model.json.JSONModel(retornoitens.results);
+							for(var i=0; i<retornoitens.results.length; i++){
+								
+								var aux = retornoitens.results[i];
+								var itemAux = aux;
+								
+								itemAux.Zzvalexcedidoitem = itemAux.Zzvproddesc - itemAux.Zzvprod;
+								
+								if(itemAux.Zzvalexcedidoitem > 0){
+									itemAux.linhaDescExc = "1";
+								} else{
+									itemAux.linhaDescExc = "0";
+								}
+								
+								vetorItens.push(itemAux);
+							}
+							
+							var oModelItensAprovacoes = new sap.ui.model.json.JSONModel(vetorItens);
 							that.getView().setModel(oModelItensAprovacoes, "PedidosAprovarItens");
 							
 							that.byId("idPedAprovar").setBusy(false);
@@ -85,8 +102,7 @@ sap.ui.define([
 		
 		onNavBack: function() {
 			sap.ui.core.UIComponent.getRouterFor(this).navTo("Aprovacoes");
-		},
-
+		}
 		/**
 		 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
 		 * (NOT before the first rendering! onInit() is used for that one!).

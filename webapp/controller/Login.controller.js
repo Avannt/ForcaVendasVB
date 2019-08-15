@@ -34,7 +34,7 @@ sap.ui.define([
 				var sUrl;
 				//Versão App
 				if (this.getOwnerComponent().getModel("modelAux").getProperty("/ReleasePRD")) {
-					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.46");
+					this.getOwnerComponent().getModel("modelAux").setProperty("/VersaoApp", "1.0.47");
 					sUrl = "http://104.208.137.3:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/"; // PRD
 					// sUrl = "http://104.46.124.66:8000/sap/opu/odata/sap/ZFORCA_VENDAS_VB_SRV/"; // QAS
 
@@ -1944,11 +1944,11 @@ sap.ui.define([
 																																																																								if (iDias > 90){
 																																																																									bExibePedido = false;
 																																																																								}
+																																																																								
 																																																																							} catch (ex){
 																																																																								bExibePedido = true;
 																																																																							}
 																																																																							
-
 																																																																							var objBancoAcompPedidos = {
 																																																																								idStatusPedido: retornoAcompPedidos.results[i].Nrpedcli,
 																																																																								Nrpedcli: retornoAcompPedidos.results[i].Nrpedcli,
@@ -1980,6 +1980,8 @@ sap.ui.define([
 																																																																								objBancoAcompPedidos.Auart = "YVEX - EXPORTAÇÃO";
 																																																																							} else if (objBancoAcompPedidos == "YENF") {
 																																																																								objBancoAcompPedidos.Auart = "YENF - ENTREGA DE SALDO";
+																																																																							} else if (objBancoAcompPedidos == "YBOX") {
+																																																																								objBancoAcompPedidos.Auart = "YBOX - BONIFICAÇÃO DE EXPORTAÇÃO";
 																																																																							}
 
 																																																																							/* Regra para identificar pedidos inconsistenstes no sap:
@@ -2115,7 +2117,10 @@ sap.ui.define([
 																																																																										objBancoAcompPedidosT.Auart = "YVEX - EXPORTAÇÃO";
 																																																																									} else if (objBancoAcompPedidosT.Auart == "YENF") {
 																																																																										objBancoAcompPedidosT.Auart = "YENF - ENTREGA DE SALDO";
+																																																																									} else if (objBancoAcompPedidosT.Auart == "YBOX") {
+																																																																										objBancoAcompPedidosT.Auart = "YBOX - BONIFICAÇÃO DE EXPORTAÇÃO";
 																																																																									}
+																																																																									
 																																																																									objBancoAcompPedidosT.Erdat = objBancoAcompPedidosT.Erdat.substring(4, 6) + "/" + objBancoAcompPedidosT.Erdat.substring(6, 8) + "/" + objBancoAcompPedidosT.Erdat.substring(0, 4);
 																																																																									objBancoAcompPedidosT.Hora = objBancoAcompPedidosT.Horaped.substring(0, 2) + ":" + objBancoAcompPedidosT.Horaped.substring(2, 4) + ":" + objBancoAcompPedidosT.Horaped.substring(4, 6);
 
