@@ -4,7 +4,7 @@
 		<pages>
 			<Page title="Consultas de Verbas" showNavButton="true" navButtonPress="onNavBack">
 				<content>
-					<IconTabBar id="idTopLevelIconTabBar" key="tab" width="100%">
+					<IconTabBar id="idTopLevelIconTabBar">
 						<items>
 							<IconTabFilter id="tabInfoVerba" key="tab1" text="Dados Verba" icon="sap-icon://hint">
 								<content>
@@ -28,7 +28,7 @@
 									</f:SimpleForm>
 								</content>
 							</IconTabFilter>
-							<IconTabFilter id="tabMovimentacao" key="tab2" text="Movimentação" icon="sap-icon://table-view" width="100%">
+							<IconTabFilter id="tabMovimentacao" key="tab2" text="Movimentação" icon="sap-icon://table-view">
 								<Table id="table_TabelaPrecos" width="100%" class="table" items="{ path: '/' }" updateFinished="onListUpdateFinished"
 									noDataText="Nenhuma movimentação cadastrada para o cliente" busyIndicatorDelay="{detailView>/lineItemTableDelay}" fixedLayout="false">
 									<headerToolbar>

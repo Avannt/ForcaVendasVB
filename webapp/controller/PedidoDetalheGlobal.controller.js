@@ -45,6 +45,7 @@ sap.ui.define([
 		onSelectIconTabBarCmpGlobal: function(evt) {
 			var item = evt.getParameters();
 			var that = this;
+			var oPanel = sap.ui.getCore().byId("idDialog");
 
 			if (item.selectedKey === "tab6" || item.selectedKey === "tab5") {
 
@@ -56,6 +57,8 @@ sap.ui.define([
 				}).then(function(retornoCmpGlobal) {
 
 					console.log("Itens Campanha Global estão OK", "CPG");
+					// oPanel.setBusy(false);
+					
 				}).catch(function(mensagemCmpGlobal) {
 
 					MessageBox.show(mensagemCmpGlobal[0], {
@@ -64,6 +67,7 @@ sap.ui.define([
 						actions: [MessageBox.Action.OK],
 						onClose: function() {
 							that.PDControllerCmpGlobal.byId("idTopLevelIconTabBar").setSelectedKey("tab3");
+							// oPanel.setBusy(false);
 						}
 					});
 				});

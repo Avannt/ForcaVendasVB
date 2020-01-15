@@ -15,7 +15,7 @@
 					emptySpanL="2" emptySpanM="2" columnsL="2" columnsM="2">
 				</form:SimpleForm>
 				<content>
-					<Table id="tEntregas" width="100%" backgroundDesign="Translucent" items="{ path:'PedidosEF>/' }" growingThreshold="7"
+					<Table id="tEntregas" width="100%" backgroundDesign="Translucent" items="{ path:'PedidosEF>/', sorter: { path: 'Vbeln', descending: true}}" growingThreshold="7"
 						growingTriggerText="Proximos Itens &gt;&gt;" growing="true" noDataText="Nenhum item de entrega inserido ..." busyIndicatorDelay="0"
 						fixedLayout="false" itemPress="onDetalharItens">
 						<columns>

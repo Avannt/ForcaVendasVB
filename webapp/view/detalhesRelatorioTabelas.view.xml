@@ -18,32 +18,32 @@
 		</subHeader>
 		<semantic:FullscreenPage id="page">
 			<semantic:content>
-				<Table id="idtablePrecos" busyIndicatorDelay="2000" growing="true" growingScrollToLoad="false" growingThreshold="10" showRowCount="true"
+				<Table id="idtablePrecos" busyIndicatorDelay="2000" growing="true" growingScrollToLoad="false" growingThreshold="10"
 					noDataText="Não possue itens na tabela de preço" updateFinished="onUpdateFinished" width="100%"
 					items="{ path: 'relatorioTabelas>/', sorter: { path: 'ProdutoId', ascending: true}}">
 					<columns>
-						<Column minScreenWidth="320px" hAlign="left" demandPopin="false">
+						<Column minScreenWidth="320px"  demandPopin="false">
 							<Text text="Cod"/>
 						</Column>
-						<Column minScreenWidth="960px" demandPopin="true" hAlign="Left">
+						<Column minScreenWidth="960px" demandPopin="true" >
 							<Text text="Desc"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="460px" hAlign="Right">
+						<Column demandPopin="true" minScreenWidth="460px" >
 							<Text text="Pallet"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="380px" hAlign="Center">
+						<Column demandPopin="true" minScreenWidth="380px" >
 							<Text text="P. Tab"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="320px" hAlign="Center">
+						<Column demandPopin="true" minScreenWidth="320px" >
 							<Text text="P + ST"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="525px" hAlign="Center">
+						<Column demandPopin="true" minScreenWidth="525px" >
 							<Text text="Canal"/>
 						</Column>
-						<Column minScreenWidth="600px" demandPopin="false" hAlign="Center">
+						<Column minScreenWidth="600px" demandPopin="false" >
 							<Text text="Promoção"/>
 						</Column>
-						<Column demandPopin="true" minScreenWidth="320px" hAlign="Center">
+						<Column demandPopin="true" minScreenWidth="320px" >
 							<Text text="P. Liq"/>
 						</Column>
 					</columns>
@@ -51,19 +51,19 @@
 						<ColumnListItem type="Navigation">
 							<!--press="onSelectionChange"-->
 							<cells>
-								<Text text="{relatorioTabelas>ProdutoId}" hAlign="Left"/>
-								<Text text="{relatorioTabelas>Descricao}" hAlign="Left"/>
-								<Text text="{relatorioTabelas>QtPallet}" hAlign="Right"/>
-								<Text text="R$: {relatorioTabelas>PrecoVenda}" hAlign="Center"/>
-								<Text text="R$: {relatorioTabelas>PrecoSubstituicao}" hAlign="Center"/>
-								<Text text="{relatorioTabelas>Canal} %" hAlign="Center"/>
-								<Text text="{relatorioTabelas>PctDescPromo} %" hAlign="Center"/>
-								<Text text="R$: {relatorioTabelas>PrecoLiq}" hAlign="Center"/>
+								<Text text="{relatorioTabelas>ProdutoId}" />
+								<Text text="{relatorioTabelas>Descricao}" />
+								<Text text="{relatorioTabelas>QtPallet}" />
+								<Text text="R$: {relatorioTabelas>PrecoVenda}" />
+								<Text text="R$: {relatorioTabelas>PrecoSubstituicao}" />
+								<Text text="{relatorioTabelas>Canal} %" />
+								<Text text="{relatorioTabelas>PctDescPromo} %" />
+								<Text text="R$: {relatorioTabelas>PrecoLiq}" />
 								<!--<Text text="{CodPedVda}"/>-->
 								<!--<Text text="{path: 'DatEmisDocto'}"/>-->
 								<!--<ObjectListItem number="{DiasAtraso}" numberState="{= ${DiasAtraso} >= 0 ? 'Error' : 'None' }"/>-->
-								<!--<Text text="R$ {ValOriginTitAcr}" hAlign="Left"/>-->
-								<!--<Text text="R$ {ValSdoTitAcr}" hAlign="Right"/>-->
+								<!--<Text text="R$ {ValOriginTitAcr}" />-->
+								<!--<Text text="R$ {ValSdoTitAcr}" />-->
 							</cells>
 						</ColumnListItem>
 					</items>

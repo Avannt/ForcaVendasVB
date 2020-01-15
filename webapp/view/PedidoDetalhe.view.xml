@@ -7,7 +7,7 @@
 					<IconTabBar id="idTopLevelIconTabBar" expanded="true" selectedKey="tab1" stretchContentHeight="true" enableTabReordering="false"
 						select="onTablFilterEvent">
 						<items>
-							<IconTabFilter id="tabClienteStep" text="Dados Cliente" enabled="true" icon="sap-icon://hint" key="tab1">
+							<IconTabFilter id="tabClienteStep" text="Dados Cliente" enabled="true" icon="sap-icon://hint" key="tab1" >
 								<ScrollContainer height="100%" width="100%" horizontal="false" vertical="true">
 									<f:SimpleForm id="form0" minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
 										emptySpanL="2" emptySpanM="3" columnsL="2" columnsM="2">
@@ -104,7 +104,7 @@
 									</Toolbar>
 								</ScrollContainer>
 							</IconTabFilter>
-							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" enabled="false" icon="sap-icon://add" key="tab3">
+							<IconTabFilter id="tabItensPedidoStep" text="Itens Pedido" enabled="false" icon="sap-icon://add" key="tab3" count="{modelAux>/ItensPedidoTab}">
 								<ScrollContainer height="100%" width="100%" horizontal="true" vertical="true">
 									<Toolbar id="lineItemsToolbar">
 										<!--<Title id="lineItemsHeader"/>-->

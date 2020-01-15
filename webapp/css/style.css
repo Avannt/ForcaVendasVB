@@ -11,7 +11,8 @@
 
 .sapMTextBold div > span {
     font-size: 10px !important;
-} 
+}
+
 
 .removePadding {
     padding-top: 0px !important;
@@ -23,6 +24,10 @@
     margin-right: 0px !important;
     margin-botton: 0px !important;
 
+}
+
+li[data-mydataItensEntrega='0'], li[data-mydataItensEntrega='0'] + tr.sapMSelectListItem {	
+  background: red !important;
 }
 
 tr[data-mydata="Diluicao"], tr[data-mydata="Diluicao"] + tr.sapMListTblSubRow {	

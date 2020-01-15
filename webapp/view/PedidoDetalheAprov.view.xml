@@ -16,6 +16,8 @@
 											<Input id="idCodCliente" value="{modelAux>/Lifnr} - {modelAux>/Namerep}" enabled="false"/>
 											<Label text="Cod - Nome Cli"/>
 											<Input id="idNomeRepres" value="{modelAux>/Kunnr} - {modelAux>/Namecli}" enabled="false"/>
+											<Label text="Cidade - Estado Cli"/>
+											<Input id="idLocalCli" value="{PedidosAprovarDetalhe>/Ort01} - {PedidosAprovarDetalhe>/Regio}" enabled="false"/>
 											<Label text="Nº Pedido"/>
 											<Input id="idNumeroPedido" value="{PedidosAprovarDetalhe>/INrpedcli}" enabled="false"/>
 											<Label text="Situação"/>

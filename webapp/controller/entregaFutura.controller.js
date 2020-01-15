@@ -75,7 +75,16 @@ sap.ui.define([
 
 		_onLoadFields: function() {
 			var that = this;
-
+			
+			var oModel = new sap.ui.model.json.JSONModel();
+			that.getView().setModel(oModel, "PedidosEF");
+			that.getView().setModel(oModel, "clientesCadastrados");
+			that.getView().setModel(undefined, "ItensEF");
+			that.getView().setModel(oModel, "entregasEnviar");
+			that.byId("ifVbeln").setValue();
+			that.byId("ifQtde").setValue();
+			that.byId("ifSaldo").setValue();
+			
 			this.onPressDetailBack();
 			oSF = this.byId("sfItem");
 			
@@ -398,8 +407,15 @@ sap.ui.define([
 							var cursor = event.target.result;
 
 							if (cursor) {
-								oItensEF.push(cursor.value);
+								//26/08/2019 - mostrar linha colorida quando item for selecionado
+								//0-> Não selecionado
+								//1-> Selecionado
+								var item = cursor.value;
+								item.ItemSelecionado = "0";
+								
+								oItensEF.push(item);
 								cursor.continue();
+								
 							} else {
 								var oModel = new sap.ui.model.json.JSONModel(oItensEF);
 								that.getView().setModel(oModel, "ItensEF");
@@ -590,7 +606,7 @@ sap.ui.define([
 			iKunrg = this.getView().byId("objectHeader").getNumber();
 			iVbeln = this.getView().byId("ifVbeln").getValue();
 			sMatnr = this.getView().byId("sfItem").getValue();
-			iQuantidade = this.getView().byId("ifQtde").getValue();
+			iQuantidade = parseInt(this.getView().byId("ifQtde").getValue(), 10);
 			iSaldo = parseInt(this.getView().byId("ifSaldo").getValue(), 10);
 
 			idEntregaFutura = iVbeln.toString() + sMatnr;
@@ -622,8 +638,22 @@ sap.ui.define([
 							actions: [MessageBox.Action.OK],
 						});
 					} else {
+						
+						if(iQuantidade == 0){
+							
+							var sMsgErro = "A quantidade digitada é inválida.";
+							MessageBox.error(sMsgErro, {
+								icon: MessageBox.Icon.ERROR,
+								title: "Erro",
+								actions: [MessageBox.Action.OK],
+								onClose: function(){
+									that.getView().byId("ifQtde").setValue(1);
+									that.getView().byId("ifQtde").focus();
+								}
+							});
+						
 						/*INSERIR AQUI A REGRA DE VERIFICAÇÃO DE DISPONIBILIDADE DE ENTREGA DO ITEM EM QUESTÃO*/
-						if (iQuantidade > iSaldo) {
+						} else if (iQuantidade > iSaldo) {
 							var sMsgErro = "Quantidade digitada é maior que a disponível para entrega.";
 							MessageBox.error(sMsgErro, {
 								icon: MessageBox.Icon.ERROR,
@@ -920,7 +950,13 @@ sap.ui.define([
 				// });
 
 			}
-		} /* onEnviarItens */
-
+		}, /* onEnviarItens */
+		
+		colorFormatter: function(value){
+			if(value == "0"){
+				
+				this.addStyleClass("red");
+			}
+		}
 	});
 });

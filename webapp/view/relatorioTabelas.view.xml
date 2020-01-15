@@ -1,16 +1,16 @@
 <mvc:View height="100%" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core"
 	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1" controllerName="testeui5.controller.relatorioTabelas"
 	xmlns="sap.m" xmlns:form="sap.ui.layout.form" xmlns:semantic="sap.m.semantic">
-	<Page title="Relatório de Tabelas" class="" showNavButton="true" navButtonPress="onNavBack">
+	<Page title="Relatório de Tabelas" showNavButton="true" navButtonPress="onNavBack">
 		<content>
-			<VBox class="">
+			<VBox>
 				<form:SimpleForm minWidth="1024" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" labelSpanL="4" labelSpanM="4"
-					emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2" class="">
+					emptySpanL="0" emptySpanM="0" columnsL="2" columnsM="2">
 					<form:content>
 						<core:Title/>
 						<Label text="Estabelecimento *"/>
-						<Select id="idEstabelecimento" forceSelection="false" required="true" showSecondaryValues="false" items="{ path: 'ComboEstabelecimento>/' }"
-							placeholder="Selecione o Estabelecimento" change="onChangeEstabelecimento">
+						<Select id="idEstabelecimento" forceSelection="false" showSecondaryValues="false" items="{ path: 'ComboEstabelecimento>/' }"
+							change="onChangeEstabelecimento">
 							<core:Item key="{ComboEstabelecimento>CodEstabel}" text="{ComboEstabelecimento>NomEstabel}"/>
 						</Select>
 						<Label text="Cliente *"/>
@@ -22,28 +22,27 @@
 							</suggestionItems>
 						</SearchField>
 						<Label text="Tabela preço *"/>
-						<Select id="idTabelaPreco" required="true" showSecondaryValues="true" forceSelection="false" items="{ path: '/' }"
-							placeholder="Selecione a Tabela de Preço" change="onChangeTabelaPreco">
+						<Select id="idTabelaPreco" showSecondaryValues="true" forceSelection="false" items="{ path: '/' }" change="onChangeTabelaPreco">
 							<core:ListItem key="{NrTabPreco}" text="{DescTabela}"/>
 						</Select>
 						<Label text="Vencimentos *"/>
-						<Select id="idVencimento1" showSecondaryValues="false" forceSelection="false" required="true" items="{ path: 'ComboVencimento1>/' }"
-							placeholder="Selecione o Vencimento1" change="onChangeVencimento1">
+						<Select id="idVencimento1" showSecondaryValues="false" forceSelection="false" items="{ path: 'ComboVencimento1>/' }"
+							change="onChangeVencimento1">
 							<core:Item key="{ComboVencimento1>QtdDias}" text="{path: 'ComboVencimento1>QtdDias'}"/>
 						</Select>
 						<Select id="idVencimento2" showSecondaryValues="false" forceSelection="false" items="{ path: 'ComboVencimento2>/' }"
-							placeholder="Selecione o Vencimento2" change="onChangeVencimento2">
+							change="onChangeVencimento2">
 							<core:Item key="{ComboVencimento2>QtdDias}" text="{ComboVencimento2>QtdDias}"/>
 						</Select>
 						<Select id="idVencimento3" showSecondaryValues="false" forceSelection="false" items="{ path: 'ComboVencimento3>/' }"
-							placeholder="Selecione o Vencimento3" change="onChangeVencimento3">
+							change="onChangeVencimento3">
 							<core:Item key="{ComboVencimento3>QtdDias}" text="{ComboVencimento3>QtdDias}"/>
 						</Select>
 						<Label text="Índice *"/>
 						<Input id="idIndice" value="" enabled="false"/>
 						<Label text="Exibição *"/>
-						<Select id="idExibicao" forceSelection="true" required="true" showSecondaryValues="false" items="{ path: 'ComboExibicao>/' }"
-							placeholder="Exibição da tabela de preço" change="onChangeExibicao">
+						<Select id="idExibicao" forceSelection="true" showSecondaryValues="false" items="{ path: 'ComboExibicao>/' }"
+							change="onChangeExibicao">
 							<core:Item key="{ComboExibicao>idExibicao}" text="{ComboExibicao>descricao}"/>
 						</Select>
 						<Label text=""/>

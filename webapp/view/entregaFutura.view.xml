@@ -27,9 +27,12 @@
 							placeholder="Informe o documento ..."/>
 						<Label text="Material" labelFor="sfItem"/>
 						<SearchField id="sfItem" width="100%" placeholder="Pesquisar item..." enableSuggestions="true" search="sfItemSearch" suggest="sfItemSuggest"
-							suggestionItems="{ path: 'ItensEF>/' }">
+							suggestionItems="{ path: 'ItensEF>/' }" >
+							<!--<customData>-->
+							<!--	<core:CustomData key="mydataItensEntrega" value="{path: 'ItensEF>ItemSelecionado'}" writeToDom="true" />-->
+							<!--</customData>-->
 							<suggestionItems>
-								<SuggestionItem text="{ItensEF>Matnr}" description="{ItensEF>Arktx}" key="{ItensEF>Matnr}"/>
+								<SuggestionItem text="{ItensEF>Matnr}" description="{ItensEF>Arktx}" key="{path: 'ItensEF>Matnr', formatter: '.colorFormatter'}" validationSuccess="onTeste"/>
 							</suggestionItems>
 						</SearchField>
 						<Label text="Saldo" labelFor="ifSaldo"/>
