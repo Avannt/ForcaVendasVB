@@ -524,9 +524,8 @@ sap.ui.define([
 						} else {
 							var saldo = 0;
 							saldo = iSaldoSap - iQtdeDia;
-
-							that.byId("ifSaldo").setValue(saldo);
 							
+							that.byId("ifSaldo").setValue(saldo);
 							
 							//Busca o multiplo cadastrado na tabela de Materiais
 							this.MultiploMaterial = 0;
@@ -540,7 +539,9 @@ sap.ui.define([
 								var oMaterial = e.target.result;
 		
 								if (oMaterial == undefined) {
-									
+									/* 20200116 - DDJERI - Foi definido 1 para o multiplicador quando não houver material cadastrado */
+									that.MultiploMaterial = 1;
+									/*
 									MessageBox.show("Não existe o produto " + sMatnr + " cadastrado na tabela de materiais", {
 										icon: MessageBox.Icon.ERROR,
 										title: "Produto não encontrado.",
@@ -548,7 +549,7 @@ sap.ui.define([
 										onClose: function() {
 											
 										}
-									});
+									});*/
 		
 								} else {
 									//Multiplo do material
