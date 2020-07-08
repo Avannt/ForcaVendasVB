@@ -691,9 +691,10 @@ sap.ui.define([
 					if (tipoPedido == "YVEF") {
 
 						var vetorAux = [];
+						
 						for (var i = 0; i < that.oVetorMateriais.length; i++) {
 							var varZ1 = that.oVetorMateriais[i].mstav.toUpperCase();
-							if (varZ1 != "ZF") {
+							if (varZ1 != "Z1") {
 								vetorAux.push(that.oVetorMateriais[i]);
 							}
 						}
@@ -1109,7 +1110,7 @@ sap.ui.define([
 					requestMaterial.onsuccess = function (e) {
 						var oMaterial = e.target.result;
 
-						if (oMaterial == undefined) {
+						if (oMaterial == undefined || ( oMaterial.mstav.toUpperCase() ==  "Z1" && tipoPedido == "YVEF")) {
 							oPanel.setBusy(false);
 
 							MessageBox.show("Não existe o produto: " + codItem, {
@@ -1579,7 +1580,7 @@ sap.ui.define([
 					requestMaterial.onsuccess = function (e) {
 						var oMaterial = e.target.result;
 
-						if (oMaterial == undefined) {
+						if (oMaterial == undefined || (oMaterial.mstav.toUpperCase() ==  "Z1" && tipoPedido == "YVEF")) {
 							oPanel.setBusy(false);
 
 							MessageBox.show("Não existe o produto: " + codItem, {

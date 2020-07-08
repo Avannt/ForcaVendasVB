@@ -594,7 +594,8 @@ sap.ui.define([
 
 									/* Se eu encontrar registro de vendas para o item, inutilizo a campanha */
 									/* obs: as propriedades do AcompPedidoDetalhe estão diferentes do itensPedido, verificar corretamente o nome delas. */
-									if (oPed.det[k].Zzgrupocppa === sTempGrupoSku) {
+									// if (oPed.det[k].Zzgrupocppa === sTempGrupoSku) { // Alteração dia 17/04 - não pode ativar item se tiver vendido algum item 
+									if (oPed.det[k].Matnr === sTempMatnr) {
 										that2.setLog("Item encontrado HIST: " + sTempMatnr + " já foi vendido. A campanha será inutilizada.", "CPA");
 										that.oItemCpPA.bCampanhaVigente = false;
 										bEncontrouItem = true;
@@ -695,7 +696,8 @@ sap.ui.define([
 									/* Se eu encontrar registro de vendas para o item, inutilizo a campanha */
 									/* Alteração Rcardilo - 19/08/2019 - && oPed2.det[k].zzGrupoCpPA === sTempGrupoSku
 										-> Verifiquei que só desabilita se o item econtrado pertence ao mesmo gruposku */
-									if (oPed2.det[k].zzGrupoCpPA === sTempGrupoSku) {
+									// if (oPed2.det[k].zzGrupoCpPA === sTempGrupoSku) {  // Alteração dia 17/04 - não pode ativar item se tiver vendido algum item 
+									if (oPed2.det[k].Matnr === sTempMatnr) {
 										that2.setLog("Item encontrado LOCAL: " + sTempMatnr + " já foi vendido. A campanha será inutilizada.", "CPA");
 										that.oItemCpPA.bCampanhaVigente = false;
 										bEncontrouItem = true;
