@@ -4167,7 +4167,7 @@ sap.ui.define([
 				}
 
 				var nrPedCli = that.getOwnerComponent().getModel("modelAux").getProperty("/NrPedCli");
-				// var oPanel = sap.ui.getCore().byId("idDialog");
+				
 				var oButtonSalvar = sap.ui.getCore().byId("idButtonSalvarDialog");
 				oButtonSalvar.setEnabled(false);
 
